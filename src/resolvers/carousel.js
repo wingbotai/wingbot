@@ -54,7 +54,9 @@ function carousel ({
             }
 
             if (action && typeof action === 'object') {
-                const { type, webviewHeight = WEBVIEW_TALL, url, targetRouteId } = action;
+                const {
+                    type, webviewHeight = WEBVIEW_TALL, url, targetRouteId
+                } = action;
                 switch (type) {
                     case TYPE_URL:
                     case TYPE_URL_WITH_EXT: {

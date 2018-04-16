@@ -24,7 +24,7 @@ function passThread ({ appId }, { isLastIndex }) {
         let data = null;
 
         if (Object.keys(res.data).length > 0) {
-            data = res.data;
+            data = res.data; // eslint-disable-line prefer-destructuring
         }
 
         res.passThread(toAppId, data);

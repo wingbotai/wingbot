@@ -357,7 +357,7 @@ class Request {
             process = object.ref;
 
             if (typeof process === 'string' && process.match(BASE64_REGEX)) {
-                process = (new Buffer(process, 'base64')).toString('utf8');
+                process = Buffer.from(process, 'base64').toString('utf8');
             }
             process = { payload: process };
         }
@@ -490,7 +490,7 @@ Request.referral = function (senderId, action, data = {}, timestamp = Request.ti
 };
 
 Request.optin = function (userRef, action, data = {}, timestamp = Request.timestamp()) {
-    const ref = new Buffer(JSON.stringify({
+    const ref = Buffer.from(JSON.stringify({
         action,
         data
     }));

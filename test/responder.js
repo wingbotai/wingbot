@@ -144,7 +144,7 @@ describe('Responder', function () {
                 assert(sendFn.calledOnce);
                 assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
 
-                const attachment = sendFn.firstCall.args[0].message.attachment;
+                const { attachment } = sendFn.firstCall.args[0].message;
                 assert.equal(attachment.type, media);
                 assert.equal(attachment.payload.url, `${APP_URL}/img.png`);
             });
@@ -158,7 +158,7 @@ describe('Responder', function () {
                 assert(sendFn.calledOnce);
                 assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
 
-                const attachment = sendFn.firstCall.args[0].message.attachment;
+                const { attachment } = sendFn.firstCall.args[0].message;
                 assert.equal(attachment.type, media);
                 assert.equal(attachment.payload.url, 'http://goo.gl/img.png');
             });
@@ -183,10 +183,10 @@ describe('Responder', function () {
             assert(sendFn.calledOnce);
             assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
 
-            const attachment = sendFn.firstCall.args[0].message.attachment;
+            const { attachment } = sendFn.firstCall.args[0].message;
             assert.equal(attachment.type, 'template');
 
-            const payload = attachment.payload;
+            const { payload } = attachment;
             assert.equal(payload.template_type, 'button');
             assert.equal(payload.buttons.length, 2);
 
@@ -217,10 +217,10 @@ describe('Responder', function () {
             assert(sendFn.calledOnce);
             assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
 
-            const attachment = sendFn.firstCall.args[0].message.attachment;
+            const { attachment } = sendFn.firstCall.args[0].message;
             assert.equal(attachment.type, 'template');
 
-            const payload = attachment.payload;
+            const { payload } = attachment;
             assert.equal(payload.template_type, 'receipt');
             assert.equal(payload.elements.length, 1);
 
@@ -332,10 +332,10 @@ describe('Responder', function () {
             assert(sendFn.calledOnce);
             assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
 
-            const attachment = sendFn.firstCall.args[0].message.attachment;
+            const { attachment } = sendFn.firstCall.args[0].message;
             assert.equal(attachment.type, 'template');
 
-            const payload = attachment.payload;
+            const { payload } = attachment;
             assert.equal(payload.template_type, 'generic');
             assert.equal(payload.elements.length, 2);
 
@@ -384,10 +384,10 @@ describe('Responder', function () {
             assert(sendFn.calledOnce);
             assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
 
-            const attachment = sendFn.firstCall.args[0].message.attachment;
+            const { attachment } = sendFn.firstCall.args[0].message;
             assert.equal(attachment.type, 'template');
 
-            const payload = attachment.payload;
+            const { payload } = attachment;
             assert.equal(payload.template_type, 'list');
             assert.equal(payload.elements.length, 2);
 

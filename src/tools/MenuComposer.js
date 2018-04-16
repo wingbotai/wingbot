@@ -59,11 +59,11 @@ class MenuComposer {
      * @returns {MenuComposer}
      */
     addNested (title) {
-        const nested = new MenuComposer(([{ call_to_actions }]) => {
+        const nested = new MenuComposer(([{ call_to_actions: ctas }]) => {
             this.callToActions.push({
                 type: 'nested',
                 title,
-                call_to_actions
+                call_to_actions: ctas
             });
             return this;
         }, false);

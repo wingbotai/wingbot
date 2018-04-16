@@ -71,7 +71,7 @@ describe('callback middeware', function () {
     });
 
     it('should not show backlink to self', function () {
-        const t = this.t;
+        const { t } = this;
 
         return co(function* () {
             yield t.text('foo');
@@ -89,7 +89,7 @@ describe('callback middeware', function () {
     });
 
     it('should not fail in circle', function () {
-        const t = this.t;
+        const { t } = this;
 
         return co(function* () {
             yield t.text('bar');
@@ -102,7 +102,7 @@ describe('callback middeware', function () {
     });
 
     it('should return user back', function () {
-        const t = this.t;
+        const { t } = this;
 
         return co(function* () {
             yield t.text('foo');
@@ -134,7 +134,7 @@ describe('callback middeware', function () {
     });
 
     it('keeps context when provided', function () {
-        const t = this.t;
+        const { t } = this;
 
         return co(function* () {
             yield t.text('foo');
@@ -162,7 +162,7 @@ describe('callback middeware', function () {
     });
 
     it('should display the back message', function () {
-        const t = this.t;
+        const { t } = this;
         // const t = new Tester(() => {});
 
         return co(function* () {

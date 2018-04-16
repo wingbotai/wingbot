@@ -160,7 +160,9 @@ class BuildRouter extends Router {
             this._routes = this._routes.slice(0, this._prebuiltRoutesCount - 1);
         }
 
-        const { blockName, blockType, isRoot, staticBlockId } = block;
+        const {
+            blockName, blockType, isRoot, staticBlockId
+        } = block;
 
         this._context = Object.assign({}, this._context, {
             blockName, blockType, isRoot, staticBlockId
@@ -305,7 +307,7 @@ class BuildRouter extends Router {
         const builtResolvers = this.buildResolvers(resolvers);
         const reducers = this.createReducersArray(builtResolvers);
         return (data, req, res, postBack) => {
-            const path = res.path;
+            const { path } = res;
             const action = req.action();
             return this.processReducers(reducers, req, res, postBack, path, action);
         };
@@ -314,7 +316,9 @@ class BuildRouter extends Router {
     buildResolvers (resolvers, route = {}) {
         const lastIndex = resolvers.length - 1;
 
-        const { path, isFallback, isResponder, expectedPath } = route;
+        const {
+            path, isFallback, isResponder, expectedPath
+        } = route;
 
         return resolvers.map((resolver, i) => {
             const context = Object.assign({}, this._context, {

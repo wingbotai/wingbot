@@ -281,9 +281,8 @@ class Tester {
      * @memberOf Tester
      */
     postBack (action, data = {}, refAction = null, refData = {}) {
-        return this._request(
-            Request.postBack(this.senderId, action, data, refAction, refData)
-        );
+        return this._request(Request
+            .postBack(this.senderId, action, data, refAction, refData));
     }
 
 }

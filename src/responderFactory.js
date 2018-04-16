@@ -19,7 +19,8 @@ function responderFactory (options = { token: null }, senderLogger = console, se
         senderId,
         senderFn = null,
         pageId = undefined,
-        senderHandler = undefined) {
+        senderHandler = undefined
+    ) {
 
         const sendFn = senderFn || senderFnFactory(null, pageId, senderHandler);
         return new Responder(false, senderId, sendFn, options.token, options);

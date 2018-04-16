@@ -55,7 +55,7 @@ function bufferloader (url, limit = 0, limitJustByBody = false, redirCount = 3) 
 
             if (!limitJustByBody && limit > 0 && res.headers && res.headers['content-length']) {
                 const len = parseInt(res.headers['content-length'], 10);
-                if (!isNaN(len) && len > limit) {
+                if (!Number.isNaN(len) && len > limit) {
                     req.removeAllListeners();
                     reject(sizeLimitExceeded(limit, len));
                     return;

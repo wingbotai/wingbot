@@ -211,7 +211,7 @@ class Processor {
             .then(stateObject =>
                 this._ensureUserProfileLoaded(isRef, senderId, pageId, stateObject))
             .then((stateObject) => {
-                state = stateObject.state;
+                state = stateObject.state; // eslint-disable-line prefer-destructuring
                 req = new Request(message, state, pageId);
                 return this.stateStorage.onAfterStateLoad(req, stateObject);
             })
@@ -225,7 +225,7 @@ class Processor {
                 }
 
                 // update the state of request
-                state = stateObject.state;
+                state = stateObject.state; // eslint-disable-line prefer-destructuring
                 req.state = state;
 
                 // prepare responder

@@ -176,8 +176,7 @@ class Settings {
                 return this._post({
                     persistent_menu: newMenu
                 });
-            }).catch(e => this.log.error('Bot settings failed', e))
-        );
+            }).catch(e => this.log.error('Bot settings failed', e)));
 
         return composer.menu(locale, inputDisabled);
     }

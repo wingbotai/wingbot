@@ -142,10 +142,16 @@ class Ai {
                 return Router.CONTINUE;
             }
 
-            const { _aiIntentMatched, _aiFromText, _aiTs, _aiMeta } = req.action(true);
+            const {
+                _aiIntentMatched,
+                _aiFromText,
+                _aiTs,
+                _aiMeta
+            } = req.action(true);
 
             if (_aiIntentMatched) {
-                onIntentConfirmed(req.senderId,
+                onIntentConfirmed(
+                    req.senderId,
                     _aiIntentMatched,
                     _aiFromText,
                     _aiTs,
@@ -234,7 +240,8 @@ class Ai {
         knownIntents,
         threshold = null,
         confidence = null,
-        prefix = DEFAULT_PREFIX) {
+        prefix = DEFAULT_PREFIX
+    ) {
 
         const filterFn = tag => (confidence || this.confidence) > tag.score
             && tag.score >= (threshold || this.threshold);
@@ -270,7 +277,8 @@ class Ai {
         knownIntents,
         threshold = null,
         confidence = null,
-        prefix = DEFAULT_PREFIX) {
+        prefix = DEFAULT_PREFIX
+    ) {
 
         const filterFn = tag => (confidence || this.confidence) > tag.score
             && tag.score >= (threshold || this.threshold);
@@ -394,7 +402,10 @@ class Ai {
 
                     Object.assign(res, {
                         ensures: this._createEnsuresMethod(
-                            dropActions, matchedIntents, actionMap, req
+                            dropActions,
+                            matchedIntents,
+                            actionMap,
+                            req
                         )
                     });
 

@@ -64,7 +64,7 @@ function getLanguageText (translations, lang = null) {
             foundText = translations.find(t => t.l === lang);
         }
         if (!foundText) {
-            foundText = translations[0];
+            [foundText] = translations;
         }
         foundText = foundText ? foundText.t : null;
     } else {

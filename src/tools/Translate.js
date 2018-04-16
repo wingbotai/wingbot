@@ -42,17 +42,16 @@ class Translate {
         }
 
         if (!this._promisedTranslators[lang]) {
-            this._promisedTranslators[lang] = new Promise(
-                (resolve, reject) => {
-                    const filePath = path.join(this._options.sourcePath, `${lang}${this._options.fileSuffix}`);
-                    fs.readFile(filePath, 'utf8', (err, data) => {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        resolve(data);
-                    });
-                })
+            this._promisedTranslators[lang] = new Promise((resolve, reject) => {
+                const filePath = path.join(this._options.sourcePath, `${lang}${this._options.fileSuffix}`);
+                fs.readFile(filePath, 'utf8', (err, data) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(data);
+                });
+            })
                 .then((content) => {
                     const messages = po2json.parse(content, { format: 'mf' });
                     // return translator for the locale
@@ -91,8 +90,7 @@ class Translate {
                     [lang]: {
                         t: translatorsArray[index]
                     }
-                }), {})
-            );
+                }), {}));
     }
 
     /**

@@ -83,7 +83,7 @@ function createValidator (bodyParser, config, log = console) {
     return [
         bodyParser.json(),
         (req, res) => {
-            const body = req.body;
+            const { body } = req;
             const authHeader = req.get('Authorization');
 
             if (config.token && config.token !== authHeader) {

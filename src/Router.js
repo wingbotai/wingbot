@@ -206,7 +206,13 @@ class Router extends ReducerWrapper {
 
             for (const route of this._routes) {
                 iterationResult = yield* this._reduceTheArray(
-                    route, route, action, req, res, relativePostBack, path
+                    route,
+                    route,
+                    action,
+                    req,
+                    res,
+                    relativePostBack,
+                    path
                 );
                 if (typeof iterationResult === 'string' || Array.isArray(iterationResult)) {
                     return iterationResult;
@@ -258,7 +264,13 @@ class Router extends ReducerWrapper {
 
             if (reducer.reducers) {
                 result = yield* this._reduceTheArray(
-                    route, reducer, action, req, res, relativePostBack, path
+                    route,
+                    reducer,
+                    action,
+                    req,
+                    res,
+                    relativePostBack,
+                    path
                 );
             } else {
                 result = reducer.reduce(req, res, relativePostBack, pathContext, action);
@@ -285,7 +297,13 @@ class Router extends ReducerWrapper {
 
                 // NOTE exit point can cause call of an upper exit point
                 return yield* this._callExitPoint(
-                    route, req, res, relativePostBack, path, exitPoint, data
+                    route,
+                    req,
+                    res,
+                    relativePostBack,
+                    path,
+                    exitPoint,
+                    data
                 );
 
             } else if (result !== continueOn) {

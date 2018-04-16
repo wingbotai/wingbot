@@ -26,7 +26,7 @@ function parseActionPayload (object) {
     if (typeof object === 'string') {
         action = object;
     } else if (typeof object.action === 'string') {
-        action = object.action;
+        action = object.action; // eslint-disable-line prefer-destructuring
         data = object.data || data;
     } else {
         let payload = object.payload || object;
@@ -39,7 +39,7 @@ function parseActionPayload (object) {
 
         if (isObject) {
             data = payload.data || payload;
-            action = payload.action;
+            action = payload.action; // eslint-disable-line prefer-destructuring
         } else {
             action = payload;
         }

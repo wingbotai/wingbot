@@ -92,7 +92,7 @@ const DEFAULT_REMOVAL_MAP = [
 
 const diacriticsMap = {};
 for (let i = 0; i < DEFAULT_REMOVAL_MAP.length; i++) {
-    const letters = DEFAULT_REMOVAL_MAP[i].letters;
+    const { letters } = DEFAULT_REMOVAL_MAP[i];
     for (let j = 0; j < letters.length; j++) {
         diacriticsMap[letters[j]] = DEFAULT_REMOVAL_MAP[i].base;
     }
@@ -106,7 +106,7 @@ for (let i = 0; i < DEFAULT_REMOVAL_MAP.length; i++) {
  * @returns {string}
  */
 function replaceDiacritics (str) {
-    return str.replace(/[^\u0000-\u007E]/g, a => diacriticsMap[a] || a);
+    return str.replace(/[^\u0000-\u007E]/g, a => diacriticsMap[a] || a); // eslint-disable-line no-control-regex
 }
 
 /**

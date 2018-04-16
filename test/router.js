@@ -129,8 +129,8 @@ describe('Router', function () {
             const first = sinon.spy(() => Router.CONTINUE);
             const asyncResolver = sinon.spy(() => new Promise(resolve => setTimeout(resolve, 50))
                 .then(() => i++)
-                .then(() => Router.CONTINUE)
-            );
+                .then(() => Router.CONTINUE));
+
             const third = sinon.spy(() => {
                 assert.equal(i, 1, 'The third reducer should be called after asyncResolver was resolved.');
                 return new Promise(resolve => setTimeout(resolve, 50))
