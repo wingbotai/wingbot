@@ -9,7 +9,7 @@ const Tester = require('../Tester');
 /**
  * Test the bot configuration
  *
- * @param {function} botFactory
+ * @param {Function} botFactory
  * @param {string} [postBackTestAction]
  * @param {string} [testText]
  */

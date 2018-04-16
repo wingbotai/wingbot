@@ -27,7 +27,7 @@ function sustainCallback () {
 /**
  * Creates callback middleware, which allows to get user back to previous context
  *
- * @returns {function}
+ * @returns {Function}
  * @module callbackMiddleware
  * @example
  * const { Router, callbackMiddleware, ai } = require(''wingbot');
@@ -152,7 +152,9 @@ function callbackMiddleware () {
      * (go to action, where the callback has been previously set)
      * Returns true, when postback will occur
      *
-     * @param {string} [callbackContext] - the context
+     * @param {Object} state - conversation state
+     * @param {boolean} isText - true if the request is text
+     * @param {Function} rootPostBack - the root router postback function
      * @returns {boolean}
      * @alias module:callbackMiddleware
      * @example
@@ -186,7 +188,8 @@ function callbackMiddleware () {
      * Adds "back" quick reply to other replies
      * (alternative to `proceedCallback()`)
      *
-     * @param {string} replyText - the default text
+     * @param {Object} state - conversation state
+     * @param {boolean} isText - true if the request is text
      * @returns {this}
      * @alias module:callbackMiddleware
      * @example

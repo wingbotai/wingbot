@@ -112,10 +112,10 @@ function replaceDiacritics (str) {
 /**
  *
  * @param {string} string
- * @returns string
+ * @returns {string}
  */
-function tokenize (str) {
-    return replaceDiacritics(`${str}`)
+function tokenize (string) {
+    return replaceDiacritics(`${string}`)
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^[-\s]+|[-\s]+$/g, '')

@@ -34,13 +34,14 @@ class Router extends ReducerWrapper {
         return normalizedPath.replace(/\/$/, '');
     }
 
+    /* eslint jsdoc/check-param-names: 0 */
     /**
      * Appends middleware, action handler or another router
      *
-     * @param {string} [action] name of the action
-     * @param {RegExp|string|function} [matcher] - The function can be async
-     * @param {...(function|Router)} reducers
-     * @returns {{onExit:function}}
+     * @param {string} [action] - name of the action
+     * @param {RegExp|string|Function} [matcher] - The function can be async
+     * @param {...(Function|Router)} reducers
+     * @returns {{onExit:Function}}
      *
      * @example
      * // middleware
@@ -95,6 +96,7 @@ class Router extends ReducerWrapper {
             }
         };
     }
+    /* eslint jsdoc/check-param-names: 1 */
 
     // protected method for bot
     createReducersArray (resolvers, pathContext = { path: '/*' }) {

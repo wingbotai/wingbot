@@ -100,9 +100,9 @@ class ListTemplate extends ButtonTemplate {
     /**
      * Sets default action of recently added element
      *
-     * @param {string} url button url
-     * @param {boolean} hasExtension includes token in url
-     * @param {string} [webviewHeight=null] compact|tall|full
+     * @param {string} url - button url
+     * @param {boolean} hasExtension - includes token in url
+     * @param {string} [webviewHeight=null] - compact|tall|full
      *
      * @memberOf ListTemplate
      */

@@ -44,7 +44,7 @@ function updateLambda (lambdaName, env) {
  *
  * @param {string} lambdaName - bot handler name
  * @param {string} [token] - bot authorization token
- * @param {object} [log] - console.* like logger object
+ * @param {console} [log] - console.* like logger object
  */
 function createUpdater (lambdaName, token = null, log = console) {
 
@@ -95,8 +95,8 @@ function processValidationEvent (event, verifyToken, callback) {
  *
  * @param {Processor|Hook} processor - Root router object or processor function
  * @param {string} verifyToken - chatbot application token
- * @param {object} [log] - console.* like logger object
- * @param {function} [onDispatch] - will be called after dispatch of all events
+ * @param {console} [log] - console.* like logger object
+ * @param {Function} [onDispatch] - will be called after dispatch of all events
  */
 function createHandler (processor, verifyToken, log = console, onDispatch = () => {}) {
 
@@ -174,14 +174,14 @@ function error (statusCode, body, callback, onDispatch, log) {
  *
  * listens for POST on `/validate`
  *
- * @param {object} config
+ * @param {Object} config
  * @param {string} [config.token] - authorization token
  * @param {Blocks} [config.blocksResource] - authorization token
- * @param {function} [config.routerFactory] - creates blank router for testing purposes
+ * @param {Function} [config.routerFactory] - creates blank router for testing purposes
  * @param {string} [config.testText] - text for router testing (null to disable)
  * @param {string} [config.testPostBack] - postback to test the bot (null to disable)
- * @param {object} [log] - console.* like logger object
- * @param {function} [onDispatch]
+ * @param {Object} [log] - console.* like logger object
+ * @param {Function} [onDispatch]
  */
 function createValidator (config, log = console, onDispatch = () => {}) {
 

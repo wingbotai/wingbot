@@ -8,9 +8,8 @@ class BaseTemplate {
     /**
      * Creates an instance of BaseTemplate.
      *
-     * @param {function} onDone
-     * @param {{appUrl:string, token:string, senderId:string, translator:function}} context
-     * @param {function} translator
+     * @param {Function} onDone
+     * @param {{appUrl:string, token:string, senderId:string, translator:Function}} [context]
      *
      * @memberOf BaseTemplate
      */

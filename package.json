@@ -36,6 +36,7 @@
     "eslint-config-airbnb": "^16.1.0",
     "eslint-mocha": "^0.4.0",
     "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsdoc": "^3.6.3",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-mocha": "^5.0.0",
     "eslint-plugin-react": "^7.7.0",

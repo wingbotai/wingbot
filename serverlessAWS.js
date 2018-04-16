@@ -14,7 +14,7 @@ const {
 /**
  * Create a chat event processor
  *
- * @param {function|Router} reducer - Root router object or processor function
+ * @param {Function|Router} reducer - Root router object or processor function
  * @param {Object} processorOptions - settings for message processing
  * @param {string} [processorOptions.pageToken] - page token
  * @param {string} [processorOptions.appSecret] - bot application secret

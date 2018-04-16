@@ -38,7 +38,6 @@ class WingbotModel {
 
     /**
      * @param {string} text - the user input
-     * @param {number} matches - the number of matches
      * @returns {Promise.<Array.<{tag: string, score: number}>>}
      */
     resolve (text) {

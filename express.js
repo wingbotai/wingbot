@@ -19,7 +19,7 @@ const { MongoBotToken, MongoState, MongoChatLog } = require('./src/mongodb');
 /**
  * Create a chat event processor
  *
- * @param {function|Router} reducer - Root router object or processor function
+ * @param {Function|Router} reducer - Root router object or processor function
  * @param {Object} processorOptions - settings for message processing
  * @param {string} [processorOptions.pageToken] - page token
  * @param {string} [processorOptions.appSecret] - bot application secret
@@ -98,9 +98,9 @@ function createProcessor (reducer, processorOptions, stateStorage = null) {
 /**
  * Create an express route for accepting messenger events
  *
- * @param {function|Router} reducer - Root router object or processor function
+ * @param {Processor} processor - Root router object or processor function
  * @param {string} verifyToken - chatbot application token
- * @param {Object} [log] - console.* like logger object
+ * @param {console} [log] - console.* like logger object
  */
 function createRouter (processor, verifyToken, log = console) {
     const app = new Router();

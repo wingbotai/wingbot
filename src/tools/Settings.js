@@ -18,7 +18,7 @@ class Settings {
      * Creates an instance of Settings.
      *
      * @param {string} token
-     * @param {{error:function}} [log]
+     * @param {{error:Function}} [log]
      *
      * @memberOf Settings
      */
@@ -64,7 +64,7 @@ class Settings {
     /**
      * Sets or clears bot's greeting
      *
-     * @param {string} [text=false] leave empty to clear
+     * @param {string} [text=false] - leave empty to clear
      * @returns {Promise}
      *
      * @memberOf Settings
@@ -88,7 +88,7 @@ class Settings {
     /**
      * Sets up the Get Started Button
      *
-     * @param {string|object} [payload=false] leave blank to remove button, or provide the action
+     * @param {string|Object} [payload=false] - leave blank to remove button, or provide the action
      * @returns {Promise}
      *
      * @example

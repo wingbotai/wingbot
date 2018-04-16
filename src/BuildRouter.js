@@ -19,13 +19,15 @@ class BuildRouter extends Router {
      * Create new router from configuration
      *
      * @constructor
-     * @param {object} block
+     * @param {Object} block
      * @param {string} [block.botId] - the ID of bot
      * @param {string} [block.snapshot] - snapshot stage of bot
      * @param {string} [block.token] - authorization token for bot
-     * @param {object} [block.routes] - list of routes for direct bot build
+     * @param {Object} [block.routes] - list of routes for direct bot build
      * @param {string} [block.url] - specify alternative configuration resource
      * @param {Blocks} blocksResource - custom code blocks resource
+     * @param {Object} context - the building context
+     * @param {Request} [request] - the building context
      * @example
      *
      * // usage under serverless environment
@@ -344,7 +346,8 @@ class BuildRouter extends Router {
 }
 
 /**
- *
+ * @param {Object[]} blocks - blocks list
+ * @param {Blocks} blocksResource
  */
 BuildRouter.fromData = function fromData (blocks, blocksResource) {
     const context = {

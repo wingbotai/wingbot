@@ -13,7 +13,7 @@ const DEFAULT_PREFIX = 'default';
 /**
  * Mark request as handled - usefull for AI analytics
  *
- * @param {boolean} [aiHandled] true by default
+ * @param {boolean} [aiHandled] - true by default
  * @returns {Request}
  * @example
  * bot.use('some other query', (req, res) => {
@@ -68,8 +68,8 @@ class Ai {
     /**
      * Usefull method for testing AI routes
      *
-     * @param {string} [intent] intent name
-     * @param {number} [confidence] the confidence of the top intent
+     * @param {string} [intent] - intent name
+     * @param {number} [confidence] - the confidence of the top intent
      * @returns {this}
      * @example
      * const { Tester, ai, Route } = require('bontaut');
@@ -110,9 +110,9 @@ class Ai {
      * To create meta data from recognized request use getMeta handler.
      * Its useful for updating training data for AI
      *
-     * @param {function} onIntentConfirmed - handler, which will be called when intent is confirmed
-     * @param {function} getMeta - handler, which will be called when intent is confirmed
-     * @returns {function}
+     * @param {Function} onIntentConfirmed - handler, which will be called when intent is confirmed
+     * @param {Function} getMeta - handler, which will be called when intent is confirmed
+     * @returns {Function}
      * @example
      * const { Router, ai } = require(''wingbot');
      *
@@ -171,6 +171,7 @@ class Ai {
      * @param {number} [options.cacheSize] - remember number of caches
      * @param {number} [options.matches] - ask AI for number of matches
      * @param {string} prefix - model prefix
+     * @param {WingbotModel} [Model] - model class
      * @returns {WingbotModel}
      * @memberOf Ai
      */
@@ -193,7 +194,7 @@ class Ai {
      * @param {string|Array} intent
      * @param {number} [confidence]
      * @param {string} [prefix]
-     * @returns {function} - the middleware
+     * @returns {Function} - the middleware
      * @memberOf Ai
      * @example
      * const { Router, ai } = require(''wingbot');
@@ -221,7 +222,7 @@ class Ai {
      * @param {number} [threshold] - lower threshold
      * @param {number} [confidence] - upper threshold for confidence
      * @param {string} [prefix] - model name
-     * @returns {function} - the middleware
+     * @returns {Function} - the middleware
      * @memberOf Ai
      * @example
      * const { Router, ai } = require(''wingbot');
@@ -258,7 +259,7 @@ class Ai {
      * @param {number} [threshold] - lower threshold
      * @param {number} [confidence] - upper threshold for confidence
      * @param {string} prefix - model name
-     * @returns {function} - the middleware
+     * @returns {Function} - the middleware
      * @memberOf Ai
      * @example
      * const { Router, ai } = require(''wingbot');

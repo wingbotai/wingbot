@@ -43,9 +43,9 @@ function getAttachment (response) {
 /**
  * Checks attachment type
  *
- * @param {object} response
+ * @param {Object} response
  * @param {string} type
- * @param {string|false} [message='Attachment type does not match'] use false for no asserts
+ * @param {string|false} [message='Attachment type does not match'] - use false for no asserts
  * @returns {boolean}
  */
 function attachmentType (response, type, message = 'Attachment type does not match') {
@@ -65,8 +65,8 @@ function attachmentType (response, type, message = 'Attachment type does not mat
 /**
  * Checks, that response is a text
  *
- * @param {object} response
- * @param {string|false} [message='Should be a text'] use false for no asserts
+ * @param {Object} response
+ * @param {string|false} [message='Should be a text'] - use false for no asserts
  * @returns {boolean}
  */
 function isText (response, message = 'Should be a text') {
@@ -91,9 +91,9 @@ function searchMatchesText (search, text) {
 /**
  * Checks, that text contain a message
  *
- * @param {object} response
+ * @param {Object} response
  * @param {string} search
- * @param {string|false} [message='Should contain a text'] use false for no asserts
+ * @param {string|false} [message='Should contain a text'] - use false for no asserts
  * @returns {boolean}
  */
 function contains (response, search, message = 'Should contain a text') {
@@ -114,9 +114,9 @@ function contains (response, search, message = 'Should contain a text') {
 /**
  * Checks quick response action
  *
- * @param {object} response
+ * @param {Object} response
  * @param {string} action
- * @param {string|false} [message='Should contain the action'] use false for no asserts
+ * @param {string|false} [message='Should contain the action'] - use false for no asserts
  * @returns {boolean}
  */
 function quickReplyAction (response, action, message = 'Should contain the action') {
@@ -140,9 +140,9 @@ function quickReplyAction (response, action, message = 'Should contain the actio
 /**
  * Checks template type
  *
- * @param {object} response
+ * @param {Object} response
  * @param {string} expectedType
- * @param {string|false} [message='Template type does not match'] use false for no asserts
+ * @param {string|false} [message='Template type does not match'] - use false for no asserts
  * @returns {boolean}
  */
 function templateType (response, expectedType, message = 'Template type does not match') {
@@ -162,8 +162,8 @@ function templateType (response, expectedType, message = 'Template type does not
 /**
  * Looks for waiting message
  *
- * @param {object} response
- * @param {string|false} [message='Should be waiting placeholder'] use false for no asserts
+ * @param {Object} response
+ * @param {string|false} [message='Should be waiting placeholder'] - use false for no asserts
  * @returns {boolean}
  */
 function waiting (response, message = 'Should be waiting placeholder') {
@@ -178,9 +178,9 @@ function waiting (response, message = 'Should be waiting placeholder') {
 /**
  * Looks for pass thread control
  *
- * @param {object} response
+ * @param {Object} response
  * @param {string} [appId] - look for specific app id
- * @param {string|false} [message='Should be waiting placeholder'] use false for no asserts
+ * @param {string|false} [message='Should be waiting placeholder'] - use false for no asserts
  * @returns {boolean}
  */
 function passThread (response, appId = null, message = 'Should pass control') {
@@ -195,7 +195,7 @@ function passThread (response, appId = null, message = 'Should pass control') {
 
 /**
  *
- * @param {object} response
+ * @param {Object} response
  * @param {string|false} message
  * @returns {false|Object[]}
  */
@@ -216,7 +216,8 @@ function buttonTemplateButtons (response, message = 'Button template should cont
 /**
  * Validates generic template
  *
- * @param {object} response
+ * @param {Object} response
+ * @param {string} search - look for string
  * @param {number} [count]
  * @param {string|false} message
  * @returns {boolean}
@@ -250,7 +251,7 @@ function buttonTemplate (response, search, count = null, message = 'Should conta
 
 /**
  *
- * @param {object} response
+ * @param {search} response
  * @param {string|false} message
  * @returns {false|Object[]}
  */
@@ -271,7 +272,7 @@ function genericTemplateItems (response, message = 'Generic template should cont
 /**
  * Validates generic template
  *
- * @param {object} response
+ * @param {search} response
  * @param {number} [count]
  * @param {string|false} message
  * @returns {boolean}

@@ -37,10 +37,10 @@ class ButtonTemplate extends BaseTemplate {
      * Adds button. When `hasExtension` is set to `true`, url will contain hash like:
      * `#token=foo&senderId=23344`
      *
-     * @param {string} title button text
-     * @param {string} linkUrl button url
-     * @param {boolean} hasExtension includes token in url
-     * @param {string} [webviewHeight=null] compact|tall|full
+     * @param {string} title - button text
+     * @param {string} linkUrl - button url
+     * @param {boolean} hasExtension - includes token in url
+     * @param {string} [webviewHeight=null] - compact|tall|full
      * @returns {this}
      *
      * @memberOf ButtonTemplate
@@ -59,9 +59,9 @@ class ButtonTemplate extends BaseTemplate {
     /**
      * Adds button, which makes another action
      *
-     * @param {string} title Button title
-     * @param {string} action Button action (can be absolute or relative)
-     * @param {object} [data={}] Action data
+     * @param {string} title - Button title
+     * @param {string} action - Button action (can be absolute or relative)
+     * @param {Object} [data={}] - Action data
      * @returns {this}
      *
      * @memberOf ButtonTemplate

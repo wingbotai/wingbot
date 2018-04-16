@@ -76,7 +76,7 @@ class Request {
     /**
      * Checks, when the attachment is an image
      *
-     * @param {number} [attachmentIndex=0] use, when user sends more then one attachment
+     * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
      * @returns {boolean}
      *
      * @memberOf Request
@@ -88,7 +88,7 @@ class Request {
     /**
      * Checks, when the attachment is a file
      *
-     * @param {number} [attachmentIndex=0] use, when user sends more then one attachment
+     * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
      * @returns {boolean}
      *
      * @memberOf Request
@@ -100,8 +100,8 @@ class Request {
     /**
      * Returns whole attachment or null
      *
-     * @param {number} [attachmentIndex=0] use, when user sends more then one attachment
-     * @returns {object|null}
+     * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
+     * @returns {Object|null}
      *
      * @memberOf Request
      */
@@ -115,7 +115,7 @@ class Request {
     /**
      * Returns attachment URL
      *
-     * @param {number} [attachmentIndex=0] use, when user sends more then one attachment
+     * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
      * @returns {string|null}
      *
      * @memberOf Request
@@ -167,7 +167,7 @@ class Request {
     /**
      * Returns text of the message
      *
-     * @param {boolean} [tokenized=false] when true, message is normalized to lowercase with `-`
+     * @param {boolean} [tokenized=false] - when true, message is normalized to lowercase with `-`
      * @returns {string}
      *
      * @example
@@ -203,7 +203,7 @@ class Request {
      * When `getData` is `true`, object will be returned. Otherwise string or null.
      *
      * @param {boolean} [getData=false]
-     * @returns {null|string|object}
+     * @returns {null|string|Object}
      *
      * @example
      * typeof res.quickReply() === 'string' || res.quickReply() === null;
@@ -275,7 +275,7 @@ class Request {
      * 5. expected state is checked
      *
      * @param {boolean} [getData=false]
-     * @returns {null|string|object}
+     * @returns {null|string|Object}
      *
      * @example
      * typeof res.action() === 'string' || res.action() === null;
@@ -335,7 +335,7 @@ class Request {
      * When `getData` is `true`, object will be returned. Otherwise string or null.
      *
      * @param {boolean} [getData=false]
-     * @returns {null|string|object}
+     * @returns {null|string|Object}
      *
      * @example
      * typeof res.postBack() === 'string' || res.postBack() === null;

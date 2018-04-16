@@ -19,7 +19,7 @@ class Blocks {
      * Register resolver factory
      *
      * @param {string} type - resolver type
-     * @param {function} factoryFn - resolver factory
+     * @param {Function} factoryFn - resolver factory
      */
     resolver (type, factoryFn) {
         this._resources.set(type, factoryFn);

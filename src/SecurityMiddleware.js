@@ -11,8 +11,8 @@ class SecurityMiddleware {
      * Creates an instance of SecurityMiddleware.
      *
      * @param {string} appSecret
-     * @param {{getOrCreateToken:function, findByToken:function}} [tokenStorage] for webview tokens
-     * @param {string} [cookieName] name of the cookie, where the token is stored
+     * @param {{getOrCreateToken:Function,findByToken:Function}} [tokenStorage] - for webview tokens
+     * @param {string} [cookieName] - name of the cookie, where the token is stored
      *
      * @memberOf SecurityMiddleware
      */
@@ -82,8 +82,8 @@ class SecurityMiddleware {
      *
      * - the tokenstorage should be included
      *
-     * @param {object} req express request
-     * @returns Promise.<string>
+     * @param {Object} req - express request
+     * @returns {Promise<string>}
      *
      * @memberOf SecurityMiddleware
      */
@@ -124,7 +124,7 @@ class SecurityMiddleware {
      * Fetch token for user to be used as cookie
      *
      * @param {string} senderId
-     * @returns Promise.<string|null>
+     * @returns {Promise<string|null>}
      *
      * @memberOf SecurityMiddleware
      */

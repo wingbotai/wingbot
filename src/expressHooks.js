@@ -65,14 +65,15 @@ function getVerifierMiddleware (botToken) {
  *
  * listens for POST on `/validate`
  *
- * @param {object} config
+ * @param {any} bodyParser - the plugin
+ * @param {Object} config
  * @param {string} [config.token] - authorization token
  * @param {Blocks} [config.blocksResource] - code blocks
- * @param {function} [config.routerFactory] - creates blank router for testing purposes
+ * @param {Function} [config.routerFactory] - creates blank router for testing purposes
  * @param {string} [config.testText] - text for router testing (null to disable)
  * @param {string} [config.testPostBack] - postback to test the bot (null to disable)
- * @param {object} [log] - console.* like logger object
- * @returns {array}
+ * @param {console} [log] - console like logger object
+ * @returns {[]}
  */
 function createValidator (bodyParser, config, log = console) {
 
@@ -130,7 +131,7 @@ function createValidator (bodyParser, config, log = console) {
  *
  * @param {BuildRouter} bot - instance of bot
  * @param {string} [token] - bot authorization token
- * @param {object} [log] - console.* like logger object
+ * @param {Object} [log] - console.* like logger object
  */
 function createUpdater (bot, token = null, log = console) {
 

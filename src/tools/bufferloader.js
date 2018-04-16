@@ -15,10 +15,10 @@ function sizeLimitExceeded (expected, current) {
  * Downloads a file from url into a buffer. Supports size limits and redirects.
  *
  * @param {string} url
- * @param {number} [limit=0] limit in bytes
- * @param {boolean} [limitJustByBody=false] when true, content size in header is ignored
- * @param {number} [redirCount=3] maximmum amount of redirects
- * @returns Promise.<Buffer>
+ * @param {number} [limit=0] - limit in bytes
+ * @param {boolean} [limitJustByBody=false] - when true, content size in header is ignored
+ * @param {number} [redirCount=3] - maximmum amount of redirects
+ * @returns {Promise<Buffer>}
  *
  * @example
  * router.use('*', (req, res, postBack) => {

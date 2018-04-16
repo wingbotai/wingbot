@@ -29,10 +29,10 @@ class ReceiptTemplate extends BaseTemplate {
      * Adds item to receipt
      *
      * @param {string} title
-     * @param {number} [price=0] a item price
-     * @param {number} [quantity=null] amount of items
-     * @param {string} [image=null] image of item
-     * @param {string} [subtitle=null] optional subtitle
+     * @param {number} [price=0] - a item price
+     * @param {number} [quantity=null] - amount of items
+     * @param {string} [image=null] - image of item
+     * @param {string} [subtitle=null] - optional subtitle
      * @returns {this}
      *
      * @memberOf ReceiptTemplate

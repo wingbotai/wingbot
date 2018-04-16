@@ -16,7 +16,7 @@ class UserLoader {
      *
      *
      * @param {string} id
-     * @returns Promise<{ firstName: string }>
+     * @returns {Promise<{ firstName: string }>}
      *
      * @memberOf UserLoader
      */

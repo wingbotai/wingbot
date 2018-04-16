@@ -28,11 +28,11 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}) {
 /**
  *
  *
- * @param {object|object[]} replies
+ * @param {Object|Object[]} replies
  * @param {string} [path]
- * @param {function} [translate=w => w]
+ * @param {Function} [translate=w => w]
  * @param {Object[]} [quickReplyCollector]
- * @returns {{ quickReplies: object[], expectedKeywords: object[] }}
+ * @returns {{ quickReplies: Object[], expectedKeywords: Object[] }}
  */
 function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCollector = []) {
 
@@ -100,9 +100,9 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
 /**
  *
  *
- * @param {object[]} expectedKeywords
+ * @param {Object[]} expectedKeywords
  * @param {string} normalizedText
- * @returns {null|object}
+ * @returns {null|Object}
  */
 function quickReplyAction (expectedKeywords, normalizedText) {
     if (!normalizedText) {

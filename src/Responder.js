@@ -102,7 +102,7 @@ class Responder {
     }
 
     /**
-     * @type {object}
+     * @type {Object}
      */
     get data () {
         return this._data;
@@ -111,7 +111,7 @@ class Responder {
     /**
      * Set temporary data to responder, which are persisted through single event
      *
-     * @param {object} data
+     * @param {Object} data
      * @returns {this}
      * @example
      *
@@ -134,10 +134,11 @@ class Responder {
         this.routePath = routePath;
     }
 
+    /* eslint jsdoc/check-param-names: 0 */
     /**
      * Send text as a response
      *
-     * @param {string} text text to send to user, can contain placeholders (%s)
+     * @param {string} text - text to send to user, can contain placeholders (%s)
      * @param {Object.<string, string>|Object[]} [quickReplies]
      * @returns {this}
      *
@@ -207,11 +208,12 @@ class Responder {
         this._send(messageData);
         return this;
     }
+    /* eslint jsdoc/check-param-names: 1 */
 
     /**
      * Sets new attributes to state (with Object.assign())
      *
-     * @param {object} object
+     * @param {Object} object
      * @returns {this}
      *
      * @example
@@ -258,7 +260,8 @@ class Responder {
     /**
      * When user writes some text as reply, it will be processed as action
      *
-     * @param {string} action desired action
+     * @param {string} action - desired action
+     * @param {Object} data - desired action data
      * @returns {this}
      *
      * @memberOf Responder
@@ -278,7 +281,7 @@ class Responder {
     /**
      * Converts relative action to absolute action path
      *
-     * @param {string} action relative action to covert to absolute
+     * @param {string} action - relative action to covert to absolute
      * @returns {string} absolute action path
      */
     toAbsoluteAction (action) {
@@ -288,8 +291,8 @@ class Responder {
     /**
      * Sends image as response. Requires appUrl option to send images from server
      *
-     * @param {string} imageUrl relative or absolute url
-     * @param {boolean} [reusable] force facebook to cache image
+     * @param {string} imageUrl - relative or absolute url
+     * @param {boolean} [reusable] - force facebook to cache image
      * @returns {this}
      *
      * @example
@@ -309,8 +312,8 @@ class Responder {
     /**
      * Sends video as response. Requires appUrl option to send videos from server
      *
-     * @param {string} videoUrl relative or absolute url
-     * @param {boolean} [reusable] force facebook to cache asset
+     * @param {string} videoUrl - relative or absolute url
+     * @param {boolean} [reusable] - force facebook to cache asset
      * @returns {this}
      *
      * @example
@@ -330,8 +333,8 @@ class Responder {
     /**
      * Sends file as response. Requires appUrl option to send files from server
      *
-     * @param {string} fileUrl relative or absolute url
-     * @param {boolean} [reusable] force facebook to cache asset
+     * @param {string} fileUrl - relative or absolute url
+     * @param {boolean} [reusable] - force facebook to cache asset
      * @returns {this}
      *
      * @example
@@ -462,7 +465,7 @@ class Responder {
      * Pass thread to another app
      *
      * @param {string} targetAppId
-     * @param {string|object} [data]
+     * @param {string|Object} [data]
      * @returns {this}
      */
     passThread (targetAppId, data = null) {
@@ -485,9 +488,9 @@ class Responder {
      * Sends Receipt template
      *
      * @param {string} recipientName
-     * @param {string} [paymentMethod='Cash'] should not contain more then 4 numbers
-     * @param {string} [currency='USD'] sets right currency
-     * @param {string} [uniqueCode=null] when omitted, will be generated randomly
+     * @param {string} [paymentMethod='Cash'] - should not contain more then 4 numbers
+     * @param {string} [currency='USD'] - sets right currency
+     * @param {string} [uniqueCode=null] - when omitted, will be generated randomly
      * @returns {ReceiptTemplate}
      *
      * @example

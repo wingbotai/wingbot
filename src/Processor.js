@@ -16,12 +16,12 @@ class Processor {
     /**
      * Creates an instance of Processor.
      *
-     * @param {ReducerWrapper|function|Router} reducer
+     * @param {ReducerWrapper|Function|Router} reducer
      * @param {ProcessorOptions} options - documented at express.js
      * @param {{
-        getOrCreateAndLock:function,
-        saveState:function,
-        onAfterStateLoad:function
+        getOrCreateAndLock:Function,
+        saveState:Function,
+        onAfterStateLoad:Function
        }} [stateStorage]
      *
      * @memberOf Processor

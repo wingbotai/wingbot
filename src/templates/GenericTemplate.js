@@ -79,8 +79,8 @@ class GenericTemplate extends ButtonTemplate {
     /**
      * Sets url of recently added element
      *
-     * @param {string} action Button action (can be absolute or relative)
-     * @param {object} [data={}] Action data
+     * @param {string} action - Button action (can be absolute or relative)
+     * @param {Object} [data={}] - Action data
      * @returns {this}
      *
      * @memberOf GenericTemplate
@@ -116,9 +116,9 @@ class GenericTemplate extends ButtonTemplate {
     /**
      * Sets default action of recently added element
      *
-     * @param {string} url button url
-     * @param {boolean} hasExtension includes token in url
-     * @param {string} [webviewHeight=null] compact|tall|full
+     * @param {string} url - button url
+     * @param {boolean} hasExtension - includes token in url
+     * @param {string} [webviewHeight=null] - compact|tall|full
      *
      * @memberOf GenericTemplate
      */

@@ -27,7 +27,7 @@ class ReducerWrapper extends EventEmitter {
     /**
      * Creates an instance of ReducerWrapper.
      *
-     * @param {function} [reduce=o => o] the handler function
+     * @param {Function} [reduce=o => o] - the handler function
      *
      * @memberOf ReducerWrapper
      */
@@ -46,7 +46,7 @@ class ReducerWrapper extends EventEmitter {
      *
      * @param {Request} req
      * @param {Responder} res
-     * @param {function} postBack
+     * @param {Function} postBack
      *
      * @memberOf ReducerWrapper
      */

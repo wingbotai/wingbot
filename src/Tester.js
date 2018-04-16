@@ -21,10 +21,10 @@ class Tester {
     /**
      * Creates an instance of Tester.
      *
-     * @param {Router|ReducerWrapper|function} reducer
+     * @param {Router|ReducerWrapper|Function} reducer
      * @param {string} [senderId=null]
-     * @param {object} [processorOptions={}] options for Processor
-     * @param {MemoryStateStorage} [storage] place to override the storage
+     * @param {Object} [processorOptions={}] - options for Processor
+     * @param {MemoryStateStorage} [storage] - place to override the storage
      *
      * @memberOf Tester
      */
@@ -108,7 +108,7 @@ class Tester {
     /**
      * Returns single response asserter
      *
-     * @param {number} [index=0] response index
+     * @param {number} [index=0] - response index
      * @returns {ResponseAssert}
      *
      * @memberOf Tester
@@ -163,7 +163,7 @@ class Tester {
     /**
      * Returns state
      *
-     * @returns {object}
+     * @returns {Object}
      *
      * @memberOf Tester
      */
@@ -174,7 +174,7 @@ class Tester {
     /**
      * Sets state with `Object.assign()`
      *
-     * @param {object} [state={}]
+     * @param {Object} [state={}]
      *
      * @memberOf Tester
      */
@@ -226,7 +226,8 @@ class Tester {
      * Make optin call
      *
      * @param {string} action
-     * @param {object} [data={}]
+     * @param {Object} [data={}]
+     * @param {string} [userRef] - specific ref string
      * @returns {Promise}
      *
      * @memberOf Tester
@@ -243,7 +244,7 @@ class Tester {
      * Send quick reply
      *
      * @param {string} action
-     * @param {object} [data={}]
+     * @param {Object} [data={}]
      * @returns {Promise}
      *
      * @memberOf Tester
@@ -273,9 +274,9 @@ class Tester {
      * Sends postback, optionally with referrer action
      *
      * @param {string} action
-     * @param {object} [data={}]
+     * @param {Object} [data={}]
      * @param {string} [refAction=null] - referred action
-     * @param {object} [refData={}] - referred action data
+     * @param {Object} [refData={}] - referred action data
      * @returns {Promise}
      *
      * @memberOf Tester

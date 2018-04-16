@@ -19,7 +19,7 @@ class Translate {
 
     /**
      *
-     * @param {object} [options]
+     * @param {Object} [options]
      * @param {string} [options.sourcePath] - optional source path of translation folder
      * @param {string} [options.fileSuffix] - by default `.locale.po`
      */
@@ -65,7 +65,7 @@ class Translate {
      * Creates static translator for static settings
      *
      * @param {string[]} languages - list of required languages
-     * @returns {Promise.<object>}
+     * @returns {Promise<Object>}
      * @example
      * const { Translate } = require(''wingbot');
      *
