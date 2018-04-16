@@ -1,0 +1,66 @@
+{
+  "name": "wingbot",
+  "version": "0.9.0-alpha.1",
+  "description": "Facebook Messenger Chatbot Framework",
+  "main": "index.js",
+  "scripts": {
+    "doc": "node ./bin/makeApiDoc.js && gitbook install ./doc && gitbook build ./doc && rm -rf ./docs && mv ./doc/_book ./docs",
+    "test": "npm run test:lint && npm run test:coverage && npm run test:coverage:threshold",
+    "test:coverage": "nyc --reporter=html mocha --opts ./mocha.opts ./test && nyc report",
+    "test:coverage:threshold": "nyc check-coverage --lines 80 --functions 80 --branches 75",
+    "test:backend": "mocha --opts ./mocha.opts ./test ./src",
+    "test:lint": "eslint --ext .js src test *.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/wingbotai/wingbot.git"
+  },
+  "keywords": [
+    "Facebook",
+    "Messenger",
+    "Chatbot",
+    "Framework",
+    "Bot"
+  ],
+  "engines": {
+    "node": "^6.0.0"
+  },
+  "author": "wingbot.ai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wingbot.ai/wingbot/issues"
+  },
+  "homepage": "https://github.com/wingbot.ai/wingbot#readme",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-mocha": "^0.4.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-mocha": "^5.0.0",
+    "eslint-plugin-react": "^7.7.0",
+    "gitbook-cli": "^2.3.2",
+    "handlebars": "^4.0.11",
+    "jsdoc-to-markdown": "^4.0.1",
+    "mocha": "^5.1.0",
+    "nyc": "^11.6.0",
+    "po2json": "^0.4.5",
+    "sinon": "^4.5.0"
+  },
+  "dependencies": {
+    "co": "^4.6.0",
+    "deep-equal": "^1.0.1",
+    "lodash.transform": "^4.6.0",
+    "path-to-regexp": "^2.2.0",
+    "request": "^2.85.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "optionalDependencies": {
+    "aws-sdk": "^2.78.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "mongoose": "^4.0.0",
+    "po2json": "^0.4.5",
+    "handlebars": "^4.0.11"
+  }
+}
