@@ -1,6 +1,6 @@
 # Wingbot Chatbot Framework
 
-![wingbot chatbot logo](./logo.png "Wingbot Chatbot Framework")
+![wingbot chatbot logo](https://github.com/wingbotai/wingbot/raw/master/doc/logo.png "Wingbot Chatbot Framework")
 
 [![CircleCI](https://circleci.com/gh/wingbotai/wingbot.svg?style=svg)](https://circleci.com/gh/wingbotai/wingbot)
 
@@ -26,7 +26,7 @@ Advanced chatbot framework gives you:
 
     ```javascript
     const express = require('express');
-    const { Router } = require(''wingbot');
+    const { Router } = require('wingbot');
     const { createRouter, createProcessor } = require(''wingbot/express');
 
     const bot = new Router();

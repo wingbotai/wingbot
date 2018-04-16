@@ -22,7 +22,7 @@ It's easy. This basic example can handle everything.
 
 ```javascript
 const express = require('express');
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const mongoose = require('mongoose');
 const { createRouter, createProcessor } = require(''wingbot/express');
 
