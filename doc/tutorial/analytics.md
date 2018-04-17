@@ -5,7 +5,7 @@
 to track chat events simply use
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const botRoot = new Router();
 
 botRoot.on('action', (senderId, action, text, req) => {
@@ -30,7 +30,7 @@ botRoot.on('action', (senderId, action, text, req) => {
 > You can set `req.aiHandled` to true with method `req.markAsHandled()`
 
 ```javascript
-const { Router, ai } = require(''wingbot');
+const { Router, ai } = require('wingbot');
 const botRoot = new Router();
 
 botRoot.use(ai.match('intent'), ...);

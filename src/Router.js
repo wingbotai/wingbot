@@ -3,7 +3,6 @@
  */
 'use strict';
 
-const co = require('co');
 const pathToRegexp = require('path-to-regexp');
 const ReducerWrapper = require('./ReducerWrapper');
 const { makeAbsolute } = require('./utils');
@@ -159,13 +158,13 @@ class Router extends ReducerWrapper {
             const reduceFn = reduce.reduce.bind(reduce);
             reduce = (...args) => reduceFn(...args);
         } else {
-            reduce = co.wrap(reducer);
+            reduce = reducer;
         }
 
         return { resolverPath, isReducer, reduce };
     }
 
-    * _callExitPoint (route, req, res, postBack, path, exitPointName, data = {}) {
+    async _callExitPoint (route, req, res, postBack, path, exitPointName, data = {}) {
         res.setPath(path);
 
         if (!route.exitPoints.has(exitPointName)) {
@@ -175,7 +174,7 @@ class Router extends ReducerWrapper {
         let result = route.exitPoints.get(exitPointName)(data, req, res, postBack);
 
         if (result instanceof Promise) {
-            result = yield result;
+            result = await result;
         }
 
         if (typeof result === 'string' || Array.isArray(result)) {
@@ -200,55 +199,51 @@ class Router extends ReducerWrapper {
         return postBack;
     }
 
-    reduce (req, res, postBack = () => {}, path = '/') {
-        return co(function* () {
-            const action = this._action(req, path);
-            const relativePostBack = this._makePostBackRelative(postBack, path);
-            let iterationResult;
+    async reduce (req, res, postBack = () => {}, path = '/') {
+        const action = this._action(req, path);
+        const relativePostBack = this._makePostBackRelative(postBack, path);
+        let iterationResult;
 
-            for (const route of this._routes) {
-                iterationResult = yield* this._reduceTheArray(
-                    route,
-                    route,
-                    action,
-                    req,
-                    res,
-                    relativePostBack,
-                    path
-                );
-                if (typeof iterationResult === 'string' || Array.isArray(iterationResult)) {
-                    return iterationResult;
-                } else if (iterationResult !== Router.CONTINUE) {
-                    return Router.END;
-                }
+        for (const route of this._routes) {
+            iterationResult = await this._reduceTheArray(
+                route,
+                route,
+                action,
+                req,
+                res,
+                relativePostBack,
+                path
+            );
+            if (typeof iterationResult === 'string' || Array.isArray(iterationResult)) {
+                return iterationResult;
+            } else if (iterationResult !== Router.CONTINUE) {
+                return Router.END;
             }
+        }
 
-            return Router.CONTINUE;
-        }.bind(this));
+        return Router.CONTINUE;
     }
 
     // used as protected method
-    processReducers (reducers, req, res, postBack, path, action) {
+    async processReducers (reducers, req, res, postBack, path, action) {
         const routeToReduce = {
             reducers,
             path: res.routePath,
             exitPoints: new Map()
         };
 
-        return co(function* () {
-            return yield* this._reduceTheArray(
-                routeToReduce,
-                routeToReduce,
-                action,
-                req,
-                res,
-                postBack,
-                res.path
-            );
-        }.bind(this));
+        return this._reduceTheArray(
+            routeToReduce,
+            routeToReduce,
+            action,
+            req,
+            res,
+            postBack,
+            res.path
+        );
     }
 
-    * _reduceTheArray (route, reducerContainer, action, req, res, relativePostBack, path = '/') {
+    async _reduceTheArray (route, reducerContainer, action, req, res, relativePostBack, path = '/') {
         let breakOn = Router.BREAK;
         let continueOn = Router.CONTINUE;
 
@@ -265,7 +260,7 @@ class Router extends ReducerWrapper {
             let result;
 
             if (reducer.reducers) {
-                result = yield* this._reduceTheArray(
+                result = await this._reduceTheArray(
                     route,
                     reducer,
                     action,
@@ -278,7 +273,7 @@ class Router extends ReducerWrapper {
                 result = reducer.reduce(req, res, relativePostBack, pathContext, action);
 
                 if (result instanceof Promise) {
-                    result = yield result;
+                    result = await result;
                 }
             }
 
@@ -295,10 +290,10 @@ class Router extends ReducerWrapper {
                 break; // skip the rest path reducers, continue with next route
 
             } else if (typeof result === 'string' || Array.isArray(result)) {
-                const [exitPoint, data] = Array.isArray(result) ? result : [result];
+                const [exitPoint, data = {}] = Array.isArray(result) ? result : [result];
 
                 // NOTE exit point can cause call of an upper exit point
-                return yield* this._callExitPoint(
+                return this._callExitPoint(
                     route,
                     req,
                     res,

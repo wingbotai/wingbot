@@ -670,33 +670,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="../api/Settings.html">
-            
-                <a href="../api/Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="../api/express.html">
-            
-                <a href="../api/express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="../api/bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="../api/bufferloader.html">
             
                 <a href="../api/bufferloader.html">
             
@@ -709,7 +683,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="../api/Ai.html">
+        <li class="chapter " data-level="2.7" data-path="../api/Ai.html">
             
                 <a href="../api/Ai.html">
             
@@ -722,38 +696,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="../api/serverlessAWS.html">
-            
-                <a href="../api/serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="../api/BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="../api/BuildRouter.html">
             
                 <a href="../api/BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="../api/callback.html">
-            
-                <a href="../api/callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -810,46 +758,46 @@
 <p>Stateless conversation is annoying. Noone wants to repeat, what was said. So <strong>each user has own state object</strong>.</p>
 <h2 id="accessing-user-profile"><a name="accessing-user-profile" class="plugin-anchor" href="#accessing-user-profile"><i class="fa fa-link" aria-hidden="true"></i></a>Accessing user profile</h2>
 <p>Yes, you already have user profile in state.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
 bot.use((req, res) =&gt; {
-    const { gender, locale, profilePic, lastName, firstName } = req.state.user;
-    res.text(`Hello ${firstName || &apos;you!&apos;}`);
+    <span class="hljs-keyword">const</span> { gender, locale, profilePic, lastName, firstName } = req.state.user;
+    res.text(<span class="hljs-string">`Hello <span class="hljs-subst">${firstName || &apos;you!&apos;}</span>`</span>);
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <h2 id="using-the-state-in-navigation"><a name="using-the-state-in-navigation" class="plugin-anchor" href="#using-the-state-in-navigation"><i class="fa fa-link" aria-hidden="true"></i></a>Using the state in navigation</h2>
 <p>Request object contains <code>.state</code> attribute, which represents state before the event, Responder updates new state with <code>Object.assign()</code> approach.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(&apos;/rename&apos;, (req, res) =&gt; {
-    res.text(&apos;So, how will you call me?&apos;)
-        .expected(&apos;setName&apos;);
+bot.use(<span class="hljs-string">&apos;/rename&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;So, how will you call me?&apos;</span>)
+        .expected(<span class="hljs-string">&apos;setName&apos;</span>);
 });
 
-bot.use(&apos;/setName&apos;, (req, res) =&gt; {
-    const name = req.text();
+bot.use(<span class="hljs-string">&apos;/setName&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-keyword">const</span> name = req.text();
 
-    res.text(`Now, I&apos;am ${name}.`)
+    res.text(<span class="hljs-string">`Now, I&apos;am <span class="hljs-subst">${name}</span>.`</span>)
         .setState({ name });
 });
 
 bot.use((req, res) =&gt; {
-    const { name } = req.state;
-    if (name) {
-        res.text(`Call me ${name}, ok?`, {
-            rename: &apos;It\&apos;s not ok&apos;
+    <span class="hljs-keyword">const</span> { name } = req.state;
+    <span class="hljs-keyword">if</span> (name) {
+        res.text(<span class="hljs-string">`Call me <span class="hljs-subst">${name}</span>, ok?`</span>, {
+            rename: <span class="hljs-string">&apos;It\&apos;s not ok&apos;</span>
         });
-    } else {
-        res.text(&apos;I have no name, give me one!&apos;)
-            .expected(&apos;setName&apos;);
+    } <span class="hljs-keyword">else</span> {
+        res.text(<span class="hljs-string">&apos;I have no name, give me one!&apos;</span>)
+            .expected(<span class="hljs-string">&apos;setName&apos;</span>);
     }
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <p>This example makes conversation flow like this:</p>
 <pre><code>*-----------------------------------*
@@ -870,23 +818,23 @@ module.exports = bot;
 *-----------------------------------*
 </code></pre><h2 id="reading-and-modifiing-user-state"><a name="reading-and-modifiing-user-state" class="plugin-anchor" href="#reading-and-modifiing-user-state"><i class="fa fa-link" aria-hidden="true"></i></a>Reading and modifiing user state</h2>
 <p>It&apos;s good to know, that request state is not modified, when <code>res.setState()</code> is called. It will be modified after dispatching process.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
 bot.use((req, res) =&gt; {
-    // let&apos;s give two options to user
-    if (req.state.odd) {
-        res.setState({ odd: false });
-        // still req.state.odd === true
-        this.text(&apos;Odd&apos;);
-    } else {
-        res.setState({ odd: true });
-        // still req.state.odd === false || req.state.odd === undefined
-        this.text(&apos;Even&apos;);
+    <span class="hljs-comment">// let&apos;s give two options to user</span>
+    <span class="hljs-keyword">if</span> (req.state.odd) {
+        res.setState({ odd: <span class="hljs-literal">false</span> });
+        <span class="hljs-comment">// still req.state.odd === true</span>
+        <span class="hljs-keyword">this</span>.text(<span class="hljs-string">&apos;Odd&apos;</span>);
+    } <span class="hljs-keyword">else</span> {
+        res.setState({ odd: <span class="hljs-literal">true</span> });
+        <span class="hljs-comment">// still req.state.odd === false || req.state.odd === undefined</span>
+        <span class="hljs-keyword">this</span>.text(<span class="hljs-string">&apos;Even&apos;</span>);
     }
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <blockquote>
 <p>It&apos;s better to avoid using &quot;default state&quot;, because when you need to change default state in future updates,
@@ -935,7 +883,7 @@ you should also migrate current users states to new structure.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Conversation State","level":"1.3","depth":1,"next":{"title":"User profile","level":"1.3.1","depth":2,"anchor":"#accessing-user-profile","path":"tutorial/conversationState.md","ref":"tutorial/conversationState.md#accessing-user-profile","articles":[]},"previous":{"title":"Postbacks","level":"1.2.3","depth":2,"anchor":"#post-back-is-also-an-action","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#post-back-is-also-an-action","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/conversationState.md","mtime":"2018-04-16T09:53:57.151Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Conversation State","level":"1.3","depth":1,"next":{"title":"User profile","level":"1.3.1","depth":2,"anchor":"#accessing-user-profile","path":"tutorial/conversationState.md","ref":"tutorial/conversationState.md#accessing-user-profile","articles":[]},"previous":{"title":"Postbacks","level":"1.2.3","depth":2,"anchor":"#post-back-is-also-an-action","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#post-back-is-also-an-action","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/conversationState.md","mtime":"2018-04-17T16:51:28.999Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

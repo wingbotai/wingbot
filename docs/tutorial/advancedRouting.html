@@ -670,33 +670,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="../api/Settings.html">
-            
-                <a href="../api/Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="../api/express.html">
-            
-                <a href="../api/express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="../api/bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="../api/bufferloader.html">
             
                 <a href="../api/bufferloader.html">
             
@@ -709,7 +683,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="../api/Ai.html">
+        <li class="chapter " data-level="2.7" data-path="../api/Ai.html">
             
                 <a href="../api/Ai.html">
             
@@ -722,38 +696,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="../api/serverlessAWS.html">
-            
-                <a href="../api/serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="../api/BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="../api/BuildRouter.html">
             
                 <a href="../api/BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="../api/callback.html">
-            
-                <a href="../api/callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -809,33 +757,33 @@
                                 <h1 id="advanced-routing"><a name="advanced-routing" class="plugin-anchor" href="#advanced-routing"><i class="fa fa-link" aria-hidden="true"></i></a>Advanced Routing</h1>
 <h2 id="resolving-actions"><a name="resolving-actions" class="plugin-anchor" href="#resolving-actions"><i class="fa fa-link" aria-hidden="true"></i></a>Resolving actions</h2>
 <p>Text is always treated as action, so theese two routes are matched same, when the <code>/cat</code> action is issued.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(req =&gt; req.action() === &apos;/cat&apos;, (req, res) =&gt; {
-    res.text(&apos;Matched!&apos;);
+bot.use(req =&gt; req.action() === <span class="hljs-string">&apos;/cat&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
 });
 
-bot.use(&apos;/cat&apos;, (req, res) =&gt; { res.text(&apos;Matched!&apos;); });
+bot.use(<span class="hljs-string">&apos;/cat&apos;</span>, (req, res) =&gt; { res.text(<span class="hljs-string">&apos;Matched!&apos;</span>); });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <blockquote>
 <p>Actual path resolver also takes into account the fact, that routers can be nested.</p>
 </blockquote>
 <h2 id="simple-text-actions"><a name="simple-text-actions" class="plugin-anchor" href="#simple-text-actions"><i class="fa fa-link" aria-hidden="true"></i></a>Simple text actions</h2>
 <p>It&apos;s possible to use reqular expression to match the specific text input. Without any AI tool.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(/h[ea]llo|hallo|ciao/, (req, res) =&gt; {
-    res.text(&apos;Matched:&apos;)
-        .text(req.text(true)); // echoes normalized text
+bot.use(<span class="hljs-regexp">/h[ea]llo|hallo|ciao/</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;Matched:&apos;</span>)
+        .text(req.text(<span class="hljs-literal">true</span>)); <span class="hljs-comment">// echoes normalized text</span>
 });
 
-bot.use((req, res) =&gt; { res.text(&apos;Not matched&apos;); });
+bot.use((req, res) =&gt; { res.text(<span class="hljs-string">&apos;Not matched&apos;</span>); });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <p>And the code works like this. It matches lot of words, because the regular expression
 does not match whole words:</p>
@@ -857,42 +805,42 @@ does not match whole words:</p>
 *-----------------------------------*
 </code></pre><h2 id="integrating-with-ai-prediction"><a name="integrating-with-ai-prediction" class="plugin-anchor" href="#integrating-with-ai-prediction"><i class="fa fa-link" aria-hidden="true"></i></a>Integrating with AI prediction</h2>
 <p>It&apos;s ofcourse possible to make integration with 3rd party service. Function should return a boolean, where <code>true === CONTINUE</code> and <code>false === BREAK</code>.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const keyworder = require(&apos;keyworder&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> keyworder = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;keyworder&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
 bot.use((req) =&gt; {
-    if (req.action()) {
-        // skip events with specific action (postback, quick reply, ref...)
-        return false;
+    <span class="hljs-keyword">if</span> (req.action()) {
+        <span class="hljs-comment">// skip events with specific action (postback, quick reply, ref...)</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
     }
-    return keyworder.resolve(req.text())
+    <span class="hljs-keyword">return</span> keyworder.resolve(req.text())
         .then(intents =&gt; intents
-            .some(intent =&gt; intent.tag === &apos;greeting&apos; &amp;&amp; intent.score &gt; 0.95)
+            .some(intent =&gt; intent.tag === <span class="hljs-string">&apos;greeting&apos;</span> &amp;&amp; intent.score &gt; <span class="hljs-number">0.95</span>)
         );
 
 }, (req, res) =&gt; {
-    res.text(&apos;Matched:&apos;);
+    res.text(<span class="hljs-string">&apos;Matched:&apos;</span>);
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <h2 id="redirecting-flow-with-post-back"><a name="redirecting-flow-with-post-back" class="plugin-anchor" href="#redirecting-flow-with-post-back"><i class="fa fa-link" aria-hidden="true"></i></a>Redirecting flow with Post Back</h2>
 <p>Sometimes there is need to redirect the conversation flow. For theese purposes,
 there is a <code>postBack(action: string, data: object?)</code> function.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(&apos;world&apos;, (req, res) =&gt; {
-    res.text(&apos;world&apos;);
+bot.use(<span class="hljs-string">&apos;world&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;world&apos;</span>);
 });
 
 bot.use((req, res, postBack) =&gt; {
-    res.text(&apos;Hello&apos;);
-    postBack(&apos;world&apos;);
+    res.text(<span class="hljs-string">&apos;Hello&apos;</span>);
+    postBack(<span class="hljs-string">&apos;world&apos;</span>);
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <p>The result of postBack looks like this</p>
 <pre><code>*-----------------------------------*
@@ -990,7 +938,7 @@ bot.use(<span class="hljs-string">&apos;expectedRoute&apos;</span>, <span class=
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Advanced Routing","level":"1.5","depth":1,"next":{"title":"Resolving Actions","level":"1.5.1","depth":2,"anchor":"#resolving-actions","path":"tutorial/advancedRouting.md","ref":"tutorial/advancedRouting.md#resolving-actions","articles":[]},"previous":{"title":"Loading Attachments","level":"1.4.3","depth":2,"anchor":"#loading-attachments-to-buffer","path":"tutorial/asyncActions.md","ref":"tutorial/asyncActions.md#loading-attachments-to-buffer","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/advancedRouting.md","mtime":"2018-04-16T09:53:57.154Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Advanced Routing","level":"1.5","depth":1,"next":{"title":"Resolving Actions","level":"1.5.1","depth":2,"anchor":"#resolving-actions","path":"tutorial/advancedRouting.md","ref":"tutorial/advancedRouting.md#resolving-actions","articles":[]},"previous":{"title":"Loading Attachments","level":"1.4.3","depth":2,"anchor":"#loading-attachments-to-buffer","path":"tutorial/asyncActions.md","ref":"tutorial/asyncActions.md#loading-attachments-to-buffer","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/advancedRouting.md","mtime":"2018-04-17T16:51:28.999Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

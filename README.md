@@ -38,15 +38,9 @@ bot.use((req, res, postBack) => {
     });
 });
 
-const processor = createProcessor(bot, {
-    pageToken: 'pagetokenhere',
-    appSecret: 'botappsecret',
-    autoTyping: true
-});
-
 const app = express();
 
-app.use('/bot', createRouter(processor, 'verifyTokenHere'));
+// @todo create documentation
 
 mongoose.connect('mongodb://localhost/myapp')
     .then(() => app.listen(3000));

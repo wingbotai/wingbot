@@ -64,7 +64,7 @@
     <link rel="next" href="Ai.html" />
     
     
-    <link rel="prev" href="express.html" />
+    <link rel="prev" href="ButtonTemplate.html" />
     
 
     </head>
@@ -670,33 +670,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="Settings.html">
-            
-                <a href="Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="express.html">
-            
-                <a href="express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter active" data-level="2.8" data-path="bufferloader.html">
+        <li class="chapter active" data-level="2.6" data-path="bufferloader.html">
             
                 <a href="bufferloader.html">
             
@@ -709,7 +683,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="Ai.html">
+        <li class="chapter " data-level="2.7" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -722,38 +696,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="serverlessAWS.html">
-            
-                <a href="serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="callback.html">
-            
-                <a href="callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -815,11 +763,13 @@
 <dd></dd>
 <dt><a href="#Translate">Translate</a></dt>
 <dd></dd>
+<dt><a href="#ReturnSender">ReturnSender</a></dt>
+<dd></dd>
 </dl>
 
 <h2 id="functions"><a name="functions" class="plugin-anchor" href="#functions"><i class="fa fa-link" aria-hidden="true"></i></a>Functions</h2>
 <dl>
-<dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> &#x21D2;</dt>
+<dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> &#x21D2; <code>Promise.&lt;Buffer&gt;</code></dt>
 <dd><p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
 </dd>
 </dl>
@@ -831,21 +781,21 @@
 <p><strong>Kind</strong>: global class  </p>
 <ul>
 <li><a href="#MemoryStateStorage">MemoryStateStorage</a><ul>
-<li><a href="#MemoryStateStorage_getOrCreateAndLock">.getOrCreateAndLock(senderId, defaultState)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
-<li><a href="#MemoryStateStorage_onAfterStateLoad">.onAfterStateLoad(req, state)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
+<li><a href="#MemoryStateStorage_getOrCreateAndLock">.getOrCreateAndLock(senderId, defaultState, lockTimeout)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
 <li><a href="#MemoryStateStorage_saveState">.saveState(state)</a> &#x21D2; <code>Promise</code></li>
 </ul>
 </li>
 </ul>
 <div id="MemoryStateStorage_getOrCreateAndLock">&#xA0;</div>
 
-<h3 id="memorystatestoragegetorcreateandlocksenderid-defaultstate-&#x21D2;-promiseobject"><a name="memorystatestoragegetorcreateandlocksenderid-defaultstate-&#x21D2;-promiseobject" class="plugin-anchor" href="#memorystatestoragegetorcreateandlocksenderid-defaultstate-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getOrCreateAndLock(senderId, defaultState) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
+<h3 id="memorystatestoragegetorcreateandlocksenderid-defaultstate-locktimeout-&#x21D2;-promiseobject"><a name="memorystatestoragegetorcreateandlocksenderid-defaultstate-locktimeout-&#x21D2;-promiseobject" class="plugin-anchor" href="#memorystatestoragegetorcreateandlocksenderid-defaultstate-locktimeout-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getOrCreateAndLock(senderId, defaultState, lockTimeout) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
 <p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Returns</strong>: <code>Promise.&lt;Object&gt;</code> - - conversation state  </p>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
+<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -853,37 +803,20 @@
 <tr>
 <td>senderId</td>
 <td><code>any</code></td>
+<td></td>
 <td>sender identifier</td>
 </tr>
 <tr>
 <td>defaultState</td>
 <td><code>Object</code></td>
+<td></td>
 <td>default state of the conversation</td>
 </tr>
-</tbody>
-</table>
-<div id="MemoryStateStorage_onAfterStateLoad">&#xA0;</div>
-
-<h3 id="memorystatestorageonafterstateloadreq-state-&#x21D2;-promiseobject"><a name="memorystatestorageonafterstateloadreq-state-&#x21D2;-promiseobject" class="plugin-anchor" href="#memorystatestorageonafterstateloadreq-state-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.onAfterStateLoad(req, state) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Returns</strong>: <code>Promise.&lt;Object&gt;</code> - - conversation state  </p>
-<table>
-<thead>
 <tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>req</td>
-<td><code>Request</code></td>
-<td>chat request</td>
-</tr>
-<tr>
-<td>state</td>
-<td><code>Object</code></td>
-<td>conversation state</td>
+<td>lockTimeout</td>
+<td><code>number</code></td>
+<td><code>300</code></td>
+<td>duration of lock</td>
 </tr>
 </tbody>
 </table>
@@ -915,7 +848,7 @@
 <li><a href="#Translate">Translate</a><ul>
 <li><a href="#new_Translate_new">new Translate()</a></li>
 <li><a href="#new_Translate_new">new Translate([options])</a></li>
-<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;object&gt;</code></li>
+<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
 <li><a href="#Translate_middleware">.middleware(languageResolver)</a> &#x21D2; <code>function</code></li>
 </ul>
 </li>
@@ -938,7 +871,7 @@
 <tbody>
 <tr>
 <td>[options]</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 <td></td>
 </tr>
 <tr>
@@ -955,7 +888,7 @@
 </table>
 <div id="Translate_translator">&#xA0;</div>
 
-<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;object&gt;</code></h3>
+<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
 <p>Creates static translator for static settings</p>
 <p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
 <table>
@@ -1028,7 +961,7 @@ bot.use((req, res) =&gt; {
 <li><a href="#Translate">Translate</a><ul>
 <li><a href="#new_Translate_new">new Translate()</a></li>
 <li><a href="#new_Translate_new">new Translate([options])</a></li>
-<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;object&gt;</code></li>
+<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
 <li><a href="#Translate_middleware">.middleware(languageResolver)</a> &#x21D2; <code>function</code></li>
 </ul>
 </li>
@@ -1051,7 +984,7 @@ bot.use((req, res) =&gt; {
 <tbody>
 <tr>
 <td>[options]</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 <td></td>
 </tr>
 <tr>
@@ -1068,7 +1001,7 @@ bot.use((req, res) =&gt; {
 </table>
 <div id="Translate_translator">&#xA0;</div>
 
-<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;object&gt;</code></h3>
+<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
 <p>Creates static translator for static settings</p>
 <p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
 <table>
@@ -1133,11 +1066,60 @@ bot.use((req, res) =&gt; {
    res.text(res.t(&apos;Translated text&apos;));
 });
 </code></pre>
+<div id="ReturnSender">&#xA0;</div>
+
+<h2 id="returnsender"><a name="returnsender" class="plugin-anchor" href="#returnsender"><i class="fa fa-link" aria-hidden="true"></i></a>ReturnSender</h2>
+<p><strong>Kind</strong>: global class  </p>
+<ul>
+<li><a href="#ReturnSender">ReturnSender</a><ul>
+<li><a href="#new_ReturnSender_new">new ReturnSender(options, userId, incommingMessage, logger)</a></li>
+<li><a href="#ReturnSender_modifyStateBeforeStore">.modifyStateBeforeStore()</a> &#x21D2; <code>Promise.&lt;({senderId:string}|null)&gt;</code></li>
+</ul>
+</li>
+</ul>
+<div id="new_ReturnSender_new">&#xA0;</div>
+
+<h3 id="new-returnsenderoptions-userid-incommingmessage-logger"><a name="new-returnsenderoptions-userid-incommingmessage-logger" class="plugin-anchor" href="#new-returnsenderoptions-userid-incommingmessage-logger"><i class="fa fa-link" aria-hidden="true"></i></a>new ReturnSender(options, userId, incommingMessage, logger)</h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code>Object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>userId</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>incommingMessage</td>
+<td><code>Object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>logger</td>
+<td><code>console</code></td>
+<td>console like logger</td>
+</tr>
+</tbody>
+</table>
+<div id="ReturnSender_modifyStateBeforeStore">&#xA0;</div>
+
+<h3 id="returnsendermodifystatebeforestore-&#x21D2;-promisesenderidstringnull"><a name="returnsendermodifystatebeforestore-&#x21D2;-promisesenderidstringnull" class="plugin-anchor" href="#returnsendermodifystatebeforestore-&#x21D2;-promisesenderidstringnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateBeforeStore() &#x21D2; <code>Promise.&lt;({senderId:string}|null)&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#ReturnSender"><code>ReturnSender</code></a>  </p>
 <div id="bufferloader">&#xA0;</div>
 
-<h2 id="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;"><a name="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;" class="plugin-anchor" href="#bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;"><i class="fa fa-link" aria-hidden="true"></i></a>bufferloader(url, [limit], [limitJustByBody], [redirCount]) &#x21D2;</h2>
+<h2 id="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><a name="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer" class="plugin-anchor" href="#bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><i class="fa fa-link" aria-hidden="true"></i></a>bufferloader(url, [limit], [limitJustByBody], [redirCount]) &#x21D2; <code>Promise.&lt;Buffer&gt;</code></h2>
 <p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
-<p><strong>Kind</strong>: global function<br><strong>Returns</strong>: Promise.<buffer>  </buffer></p>
+<p><strong>Kind</strong>: global function  </p>
 <table>
 <thead>
 <tr>
@@ -1210,7 +1192,7 @@ bot.use((req, res) =&gt; {
 
             
                 
-                <a href="express.html" class="navigation navigation-prev " aria-label="Previous page: Express/MongoDb tools">
+                <a href="ButtonTemplate.html#ReceiptTemplate" class="navigation navigation-prev " aria-label="Previous page: ReceiptTemplate">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
@@ -1226,7 +1208,7 @@ bot.use((req, res) =&gt; {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"2.8","depth":1,"next":{"title":"Ai","level":"2.9","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"Express/MongoDb tools","level":"2.7","depth":1,"path":"api/express.md","ref":"api/express.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2018-04-16T10:41:26.051Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Utils","level":"2.6","depth":1,"next":{"title":"Ai","level":"2.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"2.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2018-04-17T19:01:31.162Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

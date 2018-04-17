@@ -3,7 +3,6 @@
  */
 'use strict';
 
-const co = require('co');
 const Tester = require('../Tester');
 
 /**
@@ -13,33 +12,26 @@ const Tester = require('../Tester');
  * @param {string} [postBackTestAction]
  * @param {string} [testText]
  */
-function validate (botFactory, postBackTestAction = 'start', testText = 'hello') {
-    let bot;
-    try {
-        bot = botFactory();
-    } catch (e) {
-        return Promise.reject(e);
+async function validate (botFactory, postBackTestAction = 'start', testText = 'hello') {
+    const bot = botFactory();
+
+    const t = new Tester(bot);
+
+    if (postBackTestAction) {
+        try {
+            await t.postBack(postBackTestAction);
+        } catch (e) {
+            throw new Error(`Postback failed: ${e.message}`);
+        }
     }
 
-    return co(function* () {
-        const t = new Tester(bot);
-
-        if (postBackTestAction) {
-            try {
-                yield t.postBack(postBackTestAction);
-            } catch (e) {
-                throw new Error(`Postback failed: ${e.message}`);
-            }
+    if (testText) {
+        try {
+            await t.postBack(testText);
+        } catch (e) {
+            throw new Error(`Text message failed: ${e.message}`);
         }
-
-        if (testText) {
-            try {
-                yield t.postBack(testText);
-            } catch (e) {
-                throw new Error(`Text message failed: ${e.message}`);
-            }
-        }
-    });
+    }
 }
 
 module.exports = validate;

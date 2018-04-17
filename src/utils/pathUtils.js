@@ -14,7 +14,7 @@ function makeAbsolute (action, contextPath = '') {
 function actionMatches (route, requestedPath) {
     const isAbsolute = requestedPath.match(/^\//);
     if (isAbsolute) {
-        return pathToRegexp(route).exec(requestedPath);
+        return !!pathToRegexp(route).exec(requestedPath);
     }
     const expectedPos = route.length - requestedPath.length;
     return route.lastIndexOf(requestedPath) === expectedPos && expectedPos !== -1;

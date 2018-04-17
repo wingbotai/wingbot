@@ -5,14 +5,14 @@
 
 * [Responder](#Responder)
     * [new Responder()](#new_Responder_new)
-    * [.data](#Responder_data) : <code>object</code>
+    * [.data](#Responder_data) : <code>Object</code>
     * [.setMessgingType(messagingType, [tag])](#Responder_setMessgingType) ⇒ <code>this</code>
     * [.isResponseType()](#Responder_isResponseType) ⇒ <code>boolean</code>
     * [.setData(data)](#Responder_setData) ⇒ <code>this</code>
     * [.text(text, [quickReplies])](#Responder_text) ⇒ <code>this</code>
     * [.setState(object)](#Responder_setState) ⇒ <code>this</code>
     * [.addQuickReply(action, title, [data], [prepend])](#Responder_addQuickReply)
-    * [.expected(action)](#Responder_expected) ⇒ <code>this</code>
+    * [.expected(action, data)](#Responder_expected) ⇒ <code>this</code>
     * [.toAbsoluteAction(action)](#Responder_toAbsoluteAction) ⇒ <code>string</code>
     * [.image(imageUrl, [reusable])](#Responder_image) ⇒ <code>this</code>
     * [.video(videoUrl, [reusable])](#Responder_video) ⇒ <code>this</code>
@@ -34,7 +34,7 @@ Instance of responder is passed as second parameter of handler (res)
 
 {% raw %}<div id="Responder_data">&nbsp;</div>{% endraw %}
 
-### responder.data : <code>object</code>
+### responder.data : <code>Object</code>
 **Kind**: instance property of [<code>Responder</code>](#Responder)  
 {% raw %}<div id="Responder_setMessgingType">&nbsp;</div>{% endraw %}
 
@@ -61,7 +61,7 @@ Set temporary data to responder, which are persisted through single event
 
 | Param | Type |
 | --- | --- |
-| data | <code>object</code> | 
+| data | <code>Object</code> | 
 
 **Example**  
 ```javascript
@@ -114,7 +114,7 @@ Sets new attributes to state (with Object.assign())
 
 | Param | Type |
 | --- | --- |
-| object | <code>object</code> | 
+| object | <code>Object</code> | 
 
 **Example**  
 ```javascript
@@ -148,7 +148,7 @@ bot.use((req, res) => {
 ```
 {% raw %}<div id="Responder_expected">&nbsp;</div>{% endraw %}
 
-### responder.expected(action) ⇒ <code>this</code>
+### responder.expected(action, data) ⇒ <code>this</code>
 When user writes some text as reply, it will be processed as action
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
@@ -156,6 +156,7 @@ When user writes some text as reply, it will be processed as action
 | Param | Type | Description |
 | --- | --- | --- |
 | action | <code>string</code> | desired action |
+| data | <code>Object</code> | desired action data |
 
 {% raw %}<div id="Responder_toAbsoluteAction">&nbsp;</div>{% endraw %}
 
@@ -268,7 +269,7 @@ Pass thread to another app
 | Param | Type | Default |
 | --- | --- | --- |
 | targetAppId | <code>string</code> |  | 
-| [data] | <code>string</code> \| <code>object</code> | <code>null</code> | 
+| [data] | <code>string</code> \| <code>Object</code> | <code>null</code> | 
 
 {% raw %}<div id="Responder_receipt">&nbsp;</div>{% endraw %}
 

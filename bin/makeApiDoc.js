@@ -11,13 +11,9 @@ const docs = [
     'src/Router.js',
     'src/ReducerWrapper.js',
     ['src/Tester.js', 'src/testTools/ResponseAssert.js', 'src/testTools/AnyResponseAssert.js'],
-    ['src/tools/Settings.js', 'src/tools/MenuComposer.js'],
-    ['src/tools/bufferloader.js', 'src/tools/MemoryStateStorage.js', 'src/tools/Translate.js'],
-    ['express.js', 'src/mongodb/MongoState.js', 'src/mongodb/MongoChatLog.js'],
+    ['src/tools/bufferloader.js', 'src/tools/MemoryStateStorage.js', 'src/tools/Translate.js', 'src/ReturnSender.js'],
     'src/Ai.js',
-    ['serverlessAWS.js', 'src/serverlessHook.js'],
-    ['src/BuildRouter.js', 'src/Blocks.js'],
-    ['src/middlewares/callback.js']
+    ['src/BuildRouter.js', 'src/Blocks.js']
 ];
 
 let srcFile;

@@ -1,7 +1,6 @@
 'use strict';
 
 const assert = require('assert');
-const co = require('co');
 const sinon = require('sinon');
 const Translate = require('../../src/tools/Translate');
 const Router = require('../../src/Router');
@@ -12,7 +11,7 @@ describe('<Translate>', function () {
 
     describe('#middleware()', function () {
 
-        it('should work', co.wrap(function* () {
+        it('should work', async () => {
             const router = new Router();
 
             const t = new Translate({ sourcePath: __dirname });
@@ -29,15 +28,15 @@ describe('<Translate>', function () {
 
             const tester = new Tester(router);
 
-            yield tester.postBack('/test');
+            await tester.postBack('/test');
 
             tester.passedAction('/test');
             tester.any()
                 .contains('value1') // translated key1
                 .contains('unknown key');
-        }));
+        });
 
-        it('should fail with unknown locale', co.wrap(function* () {
+        it('should fail with unknown locale', async () => {
             const router = new Router();
 
             const t = new Translate({ sourcePath: __dirname });
@@ -49,12 +48,12 @@ describe('<Translate>', function () {
 
             const tester = new Tester(router);
 
-            yield tester.postBack('/test').then(() => {
+            await tester.postBack('/test').then(() => {
                 throw new Error('This should not happen');
             }, () => null);
 
             assert(testRoute.notCalled);
-        }));
+        });
 
     });
 

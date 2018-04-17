@@ -30,20 +30,11 @@ class MemoryStateStorage {
      *
      * @param {any} senderId - sender identifier
      * @param {Object} defaultState - default state of the conversation
+     * @param {number} lockTimeout - duration of lock
      * @returns {Promise.<Object>} - conversation state
      */
-    getOrCreateAndLock (senderId, defaultState = {}) {
+    getOrCreateAndLock (senderId, defaultState = {}, lockTimeout = 300) { // eslint-disable-line no-unused-vars,max-len
         const state = this.getState(senderId, defaultState);
-        return Promise.resolve(state);
-    }
-
-    /**
-     *
-     * @param {Request} req - chat request
-     * @param {Object} state - conversation state
-     * @returns {Promise.<Object>} - conversation state
-     */
-    onAfterStateLoad (req, state) {
         return Promise.resolve(state);
     }
 

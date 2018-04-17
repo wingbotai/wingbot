@@ -1,13 +1,13 @@
 {
   "name": "wingbot",
-  "version": "0.9.0-alpha.3",
+  "version": "0.9.0-alpha.4",
   "description": "Facebook Messenger Chatbot Framework",
   "main": "index.js",
   "scripts": {
     "doc": "node ./bin/makeApiDoc.js && gitbook install ./doc && gitbook build ./doc && rm -rf ./docs && mv ./doc/_book ./docs",
     "test": "npm run test:lint && npm run test:coverage && npm run test:coverage:threshold",
     "test:coverage": "nyc --reporter=html mocha --opts ./mocha.opts ./test && nyc report",
-    "test:coverage:threshold": "nyc check-coverage --lines 80 --functions 80 --branches 75",
+    "test:coverage:threshold": "nyc check-coverage --lines 80 --functions 80 --branches 74",
     "test:backend": "mocha --opts ./mocha.opts ./test ./src",
     "test:lint": "eslint --ext .js src test *.js"
   },
@@ -23,7 +23,7 @@
     "Bot"
   ],
   "engines": {
-    "node": "^6.0.0"
+    "node": "^8.0.0"
   },
   "author": "wingbot.ai",
   "license": "MIT",
@@ -49,18 +49,11 @@
     "sinon": "^4.5.0"
   },
   "dependencies": {
-    "co": "^4.6.0",
-    "deep-equal": "^1.0.1",
-    "lodash.transform": "^4.6.0",
     "path-to-regexp": "^2.2.0",
     "request": "^2.85.0",
     "request-promise-native": "^1.0.5"
   },
   "optionalDependencies": {
-    "aws-sdk": "^2.78.0",
-    "body-parser": "^1.18.2",
-    "express": "^4.16.3",
-    "mongoose": "^4.0.0",
     "po2json": "^0.4.5",
     "handlebars": "^4.0.11"
   }

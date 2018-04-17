@@ -27,7 +27,6 @@ Advanced chatbot framework gives you:
     ```javascript
     const express = require('express');
     const { Router } = require('wingbot');
-    const { createRouter, createProcessor } = require(''wingbot/express');
 
     const bot = new Router();
 
@@ -41,15 +40,9 @@ Advanced chatbot framework gives you:
         });
     });
 
-    const processor = createProcessor(bot, {
-        pageToken: 'pagetokenhere',
-        appSecret: 'botappsecret',
-        autoTyping: true
-    });
-
     const app = express();
 
-    app.use('/bot', createRouter(processor, 'verifyTokenHere'));
+    // @todo create documentation
 
     mongoose.connect('mongodb://localhost/myapp')
         .then(() => app.listen(3000));

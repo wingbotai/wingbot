@@ -668,33 +668,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="api/Settings.html">
-            
-                <a href="api/Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="api/express.html">
-            
-                <a href="api/express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="api/bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="api/bufferloader.html">
             
                 <a href="api/bufferloader.html">
             
@@ -707,7 +681,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="api/Ai.html">
+        <li class="chapter " data-level="2.7" data-path="api/Ai.html">
             
                 <a href="api/Ai.html">
             
@@ -720,38 +694,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="api/serverlessAWS.html">
-            
-                <a href="api/serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="api/BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="api/BuildRouter.html">
             
                 <a href="api/BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="api/callback.html">
-            
-                <a href="api/callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -824,34 +772,27 @@
 </ul>
 <ul>
 <li><p><strong>Create your first chatbot</strong></p>
-<pre><code class="lang-javascript">const express = require(&apos;express&apos;);
-const { Router } = require(&apos;wingbot&apos;);
-const { createRouter, createProcessor } = require(&apos;&apos;wingbot/express&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;express&apos;</span>);
+<span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const bot = new Router();
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(&apos;/hello&apos;, (req, res, postBack) =&gt; {
-    res.text(&apos;Hello world&apos;);
+bot.use(<span class="hljs-string">&apos;/hello&apos;</span>, (req, res, postBack) =&gt; {
+    res.text(<span class="hljs-string">&apos;Hello world&apos;</span>);
 });
 
 bot.use((req, res, postBack) =&gt; {
-    res.text(&apos;What you want?&apos;, {
-        hello: &apos;Say hello world&apos;
+    res.text(<span class="hljs-string">&apos;What you want?&apos;</span>, {
+        hello: <span class="hljs-string">&apos;Say hello world&apos;</span>
     });
 });
 
-const processor = createProcessor(bot, {
-    pageToken: &apos;pagetokenhere&apos;,
-    appSecret: &apos;botappsecret&apos;,
-    autoTyping: true
-});
+<span class="hljs-keyword">const</span> app = express();
 
-const app = express();
+<span class="hljs-comment">// @todo create documentation</span>
 
-app.use(&apos;/bot&apos;, createRouter(processor, &apos;verifyTokenHere&apos;));
-
-mongoose.connect(&apos;mongodb://localhost/myapp&apos;)
-    .then(() =&gt; app.listen(3000));
+mongoose.connect(<span class="hljs-string">&apos;mongodb://localhost/myapp&apos;</span>)
+    .then(() =&gt; app.listen(<span class="hljs-number">3000</span>));
 </code></pre>
 </li>
 <li><p><strong>Deploy and setup Facebook Messenger Application</strong></p>
@@ -909,7 +850,7 @@ mongoose.connect(&apos;mongodb://localhost/myapp&apos;)
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.1","depth":1,"next":{"title":"Building a Conversation","level":"1.2","depth":1,"path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md","articles":[{"title":"Asking a question","level":"1.2.1","depth":2,"anchor":"#asking-a-question","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#asking-a-question","articles":[]},{"title":"Using quick replies","level":"1.2.2","depth":2,"anchor":"#using-quick-replies-for-controlling-conversation","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#using-quick-replies-for-controlling-conversation","articles":[]},{"title":"Postbacks","level":"1.2.3","depth":2,"anchor":"#post-back-is-also-an-action","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#post-back-is-also-an-action","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"README.md","mtime":"2018-04-16T10:41:10.493Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.1","depth":1,"next":{"title":"Building a Conversation","level":"1.2","depth":1,"path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md","articles":[{"title":"Asking a question","level":"1.2.1","depth":2,"anchor":"#asking-a-question","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#asking-a-question","articles":[]},{"title":"Using quick replies","level":"1.2.2","depth":2,"anchor":"#using-quick-replies-for-controlling-conversation","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#using-quick-replies-for-controlling-conversation","articles":[]},{"title":"Postbacks","level":"1.2.3","depth":2,"anchor":"#post-back-is-also-an-action","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#post-back-is-also-an-action","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"README.md","mtime":"2018-04-17T18:57:47.127Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

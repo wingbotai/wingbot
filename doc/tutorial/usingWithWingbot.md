@@ -6,7 +6,7 @@
 
 ```javascript
 'use strict';
-const { BuildRouter, Blocks, Router, ai } = require(''wingbot');
+const { BuildRouter, Blocks, Router, ai } = require('wingbot');
 
 const wingbotConfig = {
     botId: '2d48492a-a281-4223-8e6f-7f60a447bc41',
@@ -18,8 +18,8 @@ const botName = 'bot-name';
 
 const blocks = new Blocks();
 
-blocks.code('exampleBlock', function* (req, res, postBack, context, params) {
-    yield res.run('responseBlockName');
+blocks.code('exampleBlock', async (req, res, postBack, context, params) => {
+    await res.run('responseBlockName');
 });
 
 ai.register(`${botName}-${wingbotConfig.snapshot}`);

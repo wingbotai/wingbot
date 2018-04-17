@@ -6,9 +6,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Processor = require('../src/Processor');
-const Request = require('../src/Request');
 const ReducerWrapper = require('../src/ReducerWrapper');
-const { senderFactory } = require('../src/tools');
 
 const EMPTY_STATE = { user: {} };
 
@@ -25,29 +23,15 @@ function createStateStorage (state = EMPTY_STATE, simulateError = true) {
         getOrCreateAndLock (/* senderId, defaultState, timeout */) {
             this.times++;
             if (simulateError && this.times < 2) {
-                const err = new Error();
-                err.code = 11000;
-                return Promise.reject(err);
+                return Promise.reject(Object.assign(new Error(), { code: 11000 }));
             }
 
             return Promise.resolve(this.model);
-        },
-        onAfterStateLoad (req, preparedState) {
-            return preparedState;
         }
     };
     sinon.spy(storage, 'getOrCreateAndLock');
     sinon.spy(storage, 'saveState');
-    sinon.spy(storage, 'onAfterStateLoad');
     return storage;
-}
-
-function createSenderFnFactory () {
-    const factory = sinon.spy(() => {
-        factory.sender = sinon.spy();
-        return factory.sender;
-    });
-    return factory;
 }
 
 function createLogger (errFn = (m, e) => { throw e; }) {
@@ -58,13 +42,11 @@ function createLogger (errFn = (m, e) => { throw e; }) {
     };
 }
 
-function makeOptions (securityMiddleware = null) {
-    const senderFnFactory = createSenderFnFactory();
-    const defaultState = {};
+function makeOptions (stateStorage, tokenStorage = null) {
     const log = createLogger();
 
     return {
-        senderFnFactory, defaultState, log, appSecret: 'a', pageToken: 'a', securityMiddleware, loadUsers: false
+        log, stateStorage, tokenStorage
     };
 }
 
@@ -76,8 +58,8 @@ describe('Processor', function () {
             const reducer = sinon.spy();
 
             const stateStorage = createStateStorage();
-            const opts = makeOptions();
-            const proc = new Processor(reducer, opts, stateStorage);
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
 
             return proc.processMessage({
                 sender: {
@@ -100,8 +82,8 @@ describe('Processor', function () {
             });
 
             const stateStorage = createStateStorage();
-            const opts = makeOptions();
-            const proc = new Processor(reducer, opts, stateStorage);
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
 
             return proc.processMessage({
                 sender: {
@@ -110,7 +92,7 @@ describe('Processor', function () {
                 message: {
                     text: 'ahoj'
                 }
-            }, 10).then(() => {
+            }, 10).then((res) => {
                 assert(reducer.calledOnce);
 
                 assert.deepEqual(stateStorage.model.state, {
@@ -121,7 +103,7 @@ describe('Processor', function () {
                 });
 
                 assert(stateStorage.saveState.called);
-                assert(opts.senderFnFactory.sender.called);
+                assert.strictEqual(res.responses.length, 1);
                 assert.deepEqual(stateStorage.getOrCreateAndLock.firstCall.args, [
                     1,
                     {},
@@ -140,8 +122,8 @@ describe('Processor', function () {
                 _expected: { action: 'expect' }
             });
 
-            const opts = makeOptions();
-            const proc = new Processor(reducer, opts, stateStorage);
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
 
             return proc.processMessage({
                 sender: {
@@ -174,10 +156,10 @@ describe('Processor', function () {
             });
 
             const stateStorage = createStateStorage();
-            const opts = makeOptions();
+            const opts = makeOptions(stateStorage);
             opts.senderFnFactory = undefined;
             opts.log = createLogger(() => {});
-            const proc = new Processor(reducer, opts, stateStorage);
+            const proc = new Processor(reducer, opts);
 
             const message = {
                 timestamp: 1,
@@ -190,13 +172,10 @@ describe('Processor', function () {
             };
 
             return proc.processMessage(message, 10)
-                .then(() => responder._send({ wait: 1 }))
                 .then(() => {
-                    const { error } = opts.log;
-                    assert(error.calledOnce);
-                    assert(error.firstCall.args[0] instanceof Error);
-                    assert.equal(error.firstCall.args[0].statusCode, 400);
-                    assert(typeof error.firstCall.args[1] === 'object');
+                    assert.throws(() => {
+                        responder._send({ wait: 1 });
+                    });
                 });
         });
 
@@ -209,8 +188,8 @@ describe('Processor', function () {
             });
 
             const stateStorage = createStateStorage();
-            const opts = makeOptions();
-            const proc = new Processor(reducer, opts, stateStorage);
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
 
             const message = {
                 timestamp: 1,
@@ -239,8 +218,8 @@ describe('Processor', function () {
             });
 
             const stateStorage = createStateStorage();
-            const opts = makeOptions();
-            const proc = new Processor(reducer, opts, stateStorage);
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
 
             return proc.processMessage()
                 .then(() => {
@@ -261,14 +240,14 @@ describe('Processor', function () {
 
             const reducer = sinon.spy((req, res, postBack) => {
                 if (!req.action()) {
-                    const resolve = postBack.wait();
-                    setTimeout(() => resolve('actionName'), 50);
+                    const action = new Promise(r => setTimeout(() => r('actionName'), 50));
+                    postBack(action);
                 }
             });
 
             const stateStorage = createStateStorage(EMPTY_STATE, false);
-            const opts = makeOptions();
-            const proc = new Processor(reducer, opts, stateStorage);
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
 
             return proc.processMessage({
                 sender: {
@@ -295,13 +274,13 @@ describe('Processor', function () {
             const actionSpy = sinon.spy();
             wrapper.on('action', actionSpy);
 
-            const securityMiddleware = {
-                getOrCreateToken: sinon.spy(() => Promise.resolve('token'))
+            const tokenStorage = {
+                getOrCreateToken: sinon.spy(() => Promise.resolve({ token: 'token' }))
             };
 
             const stateStorage = createStateStorage();
-            const opts = makeOptions(securityMiddleware);
-            const proc = new Processor(wrapper, opts, stateStorage);
+            const opts = makeOptions(stateStorage, tokenStorage);
+            const proc = new Processor(wrapper, opts);
 
             return proc.processMessage({
                 sender: {
@@ -312,8 +291,8 @@ describe('Processor', function () {
                 }
             })
                 // events are processed as next tick
-                .then(() => new Promise(r => process.nextTick(r)))
-                .then(() => {
+                .then(res => new Promise(r => process.nextTick(() => r(res))))
+                .then((res) => {
                     assert(reducer.calledOnce);
 
                     assert.deepEqual(stateStorage.model.state, {
@@ -324,27 +303,13 @@ describe('Processor', function () {
                     });
 
                     assert(stateStorage.saveState.called);
-                    assert(opts.senderFnFactory.sender.called);
+                    assert.equal(res.responses.length, 1);
 
                     assert(actionSpy.calledOnce);
                 });
         });
 
-        it('throws error, when the token is missing', function () {
-            assert.throws(() => new Processor(state => state, {}));
-        });
-
-        it('throws error, when the app secret is missing', function () {
-            assert.throws(() => new Processor(state => state, { pageToken: 'a' }));
-        });
-
-        it('should accept custom user loader', () => {
-            const userLoader = {};
-            const u = new Processor(s => s, { pageToken: 'a', appSecret: 'b', userLoader });
-            assert.strictEqual(u.userLoader, userLoader);
-        });
-
-        it('should accept optins and save them in state', function () {
+        /* it('should accept optins and save them in state', function () {
 
             let callNo = 0;
 
@@ -364,23 +329,17 @@ describe('Processor', function () {
             });
 
             const stateStorage = createStateStorage();
-            const opts = makeOptions();
+            const opts = makeOptions(stateStorage);
             const sender = sinon.spy(() => Promise.resolve({ recipient_id: 'senderid' }));
 
             opts.senderFnFactory = senderFactory('a', { log: () => {} }, () => {}, sender);
 
-            const proc = new Processor(reducer, opts, stateStorage);
+            const proc = new Processor(reducer, opts);
 
             return proc.processMessage(Request.optin('optinid', 'action'), 10).then(() => {
                 assert(reducer.calledTwice);
 
-                assert(stateStorage.onAfterStateLoad.called);
-                assert(stateStorage.onAfterStateLoad.firstCall
-                    .calledBefore(stateStorage.getOrCreateAndLock.firstCall));
                 assert(stateStorage.saveState.called);
-
-                assert(stateStorage.getOrCreateAndLock.secondCall
-                    .calledBefore(stateStorage.onAfterStateLoad.secondCall));
 
                 assert.equal(sender.callCount, 3);
 
@@ -400,7 +359,7 @@ describe('Processor', function () {
                     _expectedKeywords: null
                 });
             });
-        });
+        }); */
     });
 
 });

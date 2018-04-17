@@ -8,6 +8,7 @@ const Processor = require('./Processor');
 const Request = require('./Request');
 const { MemoryStateStorage } = require('./tools');
 const ReducerWrapper = require('./ReducerWrapper');
+const ReturnSender = require('./ReturnSender');
 const { actionMatches, parseActionPayload } = require('./utils');
 const { AnyResponseAssert, ResponseAssert, asserts } = require('./testTools');
 
@@ -35,28 +36,11 @@ class Tester {
         storage = new MemoryStateStorage()
     ) {
         this._sequence = 0;
-        this._responsesCollector = [];
         this._actionsCollector = [];
-        this._responsesMock = [];
 
         this.storage = storage;
 
         this.senderId = senderId || `${Math.random() * 1000}${Date.now()}`;
-
-        // replace sender
-        const senderFnFactory = (userId, received, pageId, handler = (res, d) => d) =>
-            (data = null) => {
-                // on send
-                if (data === null) {
-                    return { status: 200, responses: this._responsesMock };
-                }
-                this._responsesMock.push({
-                    message_id: `${Date.now()}${Math.random()}.${this._sequence++}`
-                });
-                this._responsesCollector.push(data);
-                handler({ recipient_id: this.senderId }, data);
-                return { status: 200, responses: this._responsesMock };
-            };
 
         // replace logger (throw instead of log)
         const log = {
@@ -76,33 +60,32 @@ class Tester {
         });
 
         this.processor = new Processor(wrappedReducer, Object.assign({
-            pageToken: 'foo',
-            appSecret: 'bar',
-            senderFnFactory,
+            stateStorage: this.storage,
             log,
             loadUsers: false
-        }, processorOptions), this.storage);
+        }, processorOptions));
 
         this.responses = [];
         this.actions = [];
     }
 
     _request (data) {
-        return this.processor.processMessage(data)
-            .then(() => this.acquireResponseActions());
+        const messageSender = new ReturnSender({}, this.senderId, data);
+        messageSender.simulatesOptIn = true;
+
+        return this.processor.processMessage(data, null, messageSender)
+            .then(res => this._acquireResponseActions(res, messageSender));
     }
 
-    /**
-     * Resets action collector and fetches new actions, when there are some
-     *
-     * @memberOf Tester
-     */
-    acquireResponseActions () {
-        this.responses = this._responsesCollector;
+    _acquireResponseActions (res, messageSender) {
+        if (res.status !== 200) {
+            throw new Error(`Processor failed with status ${res.status}`);
+        }
+        this.responses = messageSender._sent;
         this.actions = this._actionsCollector;
-        this._responsesCollector = [];
         this._actionsCollector = [];
         this._responsesMock = [];
+        return res;
     }
 
     /**
@@ -155,7 +138,8 @@ class Tester {
      * @memberOf Tester
      */
     passedAction (path) {
-        const ok = this.actions.some(action => !action.action.match(/\*/) && actionMatches(action.action, path));
+        const ok = this.actions
+            .some(action => !action.action.match(/\*/) && actionMatches(action.action, path));
         assert.ok(ok, `Action ${path} was not passed`);
         return this;
     }

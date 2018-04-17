@@ -4,13 +4,12 @@
 'use strict';
 
 const assert = require('assert');
-const co = require('co');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 
 describe('Tester', function () {
 
-    it('should be able to test', function () {
+    it('should be able to test', async function () {
 
         const music = new Router();
 
@@ -101,79 +100,76 @@ describe('Tester', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
-            yield t.postBack('/start');
+        await t.postBack('/start');
 
-            t.passedAction('start');
-            t.passedAction('/start');
-            t.any()
-                .contains('Go thru')
-                .contains('Hello')
-                .quickReplyAction('music')
-                .quickReplyAction('read');
-            t.lastRes()
-                .contains('Hello')
-                .quickReplyAction('music')
-                .quickReplyAction('read');
+        t.passedAction('start');
+        t.passedAction('/start');
+        t.any()
+            .contains('Go thru')
+            .contains('Hello')
+            .quickReplyAction('music')
+            .quickReplyAction('read');
+        t.lastRes()
+            .contains('Hello')
+            .quickReplyAction('music')
+            .quickReplyAction('read');
 
-            assert.throws(() => t.any().contains('nothing'));
-            assert.throws(() => t.lastRes().contains('nothing'));
-            assert.throws(() => t.any().quickReplyAction('nothing'));
-            assert.throws(() => t.lastRes().quickReplyAction('nothing'));
+        assert.throws(() => t.any().contains('nothing'));
+        assert.throws(() => t.lastRes().contains('nothing'));
+        assert.throws(() => t.any().quickReplyAction('nothing'));
+        assert.throws(() => t.lastRes().quickReplyAction('nothing'));
 
-            assert.throws(() => t.any().templateType('button'));
-            assert.throws(() => t.any().attachmentType('image'));
-            assert.throws(() => t.lastRes().templateType('button'));
-            assert.throws(() => t.lastRes().attachmentType('image'));
+        assert.throws(() => t.any().templateType('button'));
+        assert.throws(() => t.any().attachmentType('image'));
+        assert.throws(() => t.lastRes().templateType('button'));
+        assert.throws(() => t.lastRes().attachmentType('image'));
 
-            yield t.quickReply('music');
+        await t.quickReply('music');
 
-            t.passedAction('/music')
-                .any()
-                .contains('Listen')
-                .quickReplyAction('play');
+        t.passedAction('/music')
+            .any()
+            .contains('Listen')
+            .quickReplyAction('play');
 
-            yield t.text('plej');
+        await t.text('plej');
 
-            t.passedAction('play')
-                .passedAction('/music');
+        t.passedAction('play')
+            .passedAction('/music');
 
-            t.res(0).attachmentType('image');
-            t.res(1).contains('Listen');
+        t.res(0).attachmentType('image');
+        t.res(1).contains('Listen');
 
-            t.any()
-                .attachmentType('image')
-                .contains('Listen');
+        t.any()
+            .attachmentType('image')
+            .contains('Listen');
 
-            yield t.quickReply('back');
+        await t.quickReply('back');
 
-            t.passedAction('/music/back');
-            t.passedAction('/start');
-            t.any().contains('Data was passed');
+        t.passedAction('/music/back');
+        t.passedAction('/start');
+        t.any().contains('Data was passed');
 
-            yield t.quickReply('read');
+        await t.quickReply('read');
 
-            t.passedAction('/read');
-            t.any().contains('Lets read');
-            t.any().contains('what');
-            t.any().templateType('button');
+        t.passedAction('/read');
+        t.any().contains('Lets read');
+        t.any().contains('what');
+        t.any().templateType('button');
 
-            yield t.text('faa');
+        await t.text('faa');
 
-            t.passedAction('go');
-            t.any().contains('See: 1');
-            assert.throws(() => t.any().contains('See: 0'));
+        t.passedAction('go');
+        t.any().contains('See: 1');
+        assert.throws(() => t.any().contains('See: 0'));
 
-            yield t.text('Random Text');
+        await t.text('Random Text');
 
-            t.passedAction('out');
-            t.any().contains('Yeah: 1');
-            t.any().contains('Random Text');
-
-        });
+        t.passedAction('out');
+        t.any().contains('Yeah: 1');
+        t.any().contains('Random Text');
     });
 
-    it('should match path only when the end matches', () => {
+    it('should match path only when the end matches', async () => {
         const nested = new Router();
 
         nested.use('in', (req, res) => {
@@ -186,18 +182,15 @@ describe('Tester', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
+        await t.postBack('/inner/in');
 
-            yield t.postBack('/inner/in');
+        t.any()
+            .contains('INNER');
 
-            t.any()
-                .contains('INNER');
-
-            t.passedAction('in');
-        });
+        t.passedAction('in');
     });
 
-    it('should work with optins', function () {
+    it('should work with optins', async function () {
 
         const r = new Router();
         let i = 0;
@@ -220,41 +213,37 @@ describe('Tester', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
+        await t.postBack('/start');
 
-            yield t.postBack('/start');
-
-            assert.deepEqual(t.getState().state, {
-                i: 2,
-                _expected: null,
-                _expectedKeywords: null
-            });
-
-            t.any()
-                .contains('postback')
-                .contains('hasSender')
-                .contains('Hello 0')
-                .contains('Go 1');
-
-            yield t.optin('/start');
-
-            assert.deepEqual(t.getState().state, {
-                i: 4,
-                _expected: null,
-                _expectedKeywords: null
-            });
-
-            t.any()
-                .contains('optin')
-                .contains('noSender')
-                .contains('Hello 0')
-                .contains('Go 3');
-
+        assert.deepEqual(t.getState().state, {
+            i: 2,
+            _expected: null,
+            _expectedKeywords: null
         });
+
+        t.any()
+            .contains('postback')
+            .contains('hasSender')
+            .contains('Hello 0')
+            .contains('Go 1');
+
+        await t.optin('/start');
+
+        assert.deepEqual(t.getState().state, {
+            i: 4,
+            _expected: null,
+            _expectedKeywords: null
+        });
+
+        t.any()
+            .contains('optin')
+            .contains('noSender')
+            .contains('Hello 0')
+            .contains('Go 3');
 
     });
 
-    it('should match referral path only when is defined', () => {
+    it('should match referral path only when is defined', async () => {
         const r = new Router();
 
         r.use('/start', (req, res) => {
@@ -267,22 +256,19 @@ describe('Tester', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
+        await t.postBack('/start');
 
-            yield t.postBack('/start');
+        t.passedAction('start');
 
+        await t.postBack('/start', {}, '/ref');
+
+        t.passedAction('ref');
+        assert.throws(() => {
             t.passedAction('start');
-
-            yield t.postBack('/start', {}, '/ref');
-
-            t.passedAction('ref');
-            assert.throws(() => {
-                t.passedAction('start');
-            }, 'should not pass through start action');
-        });
+        }, 'should not pass through start action');
     });
 
-    it('should recognise pass thread', function () {
+    it('should recognise pass thread', async function () {
         const r = new Router();
 
         r.use('/start', (req, res) => {
@@ -296,22 +282,19 @@ describe('Tester', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
+        await t.postBack('start');
 
-            yield t.postBack('start');
+        t.passedAction('start');
+        t.any().passThread();
+        t.res(0).passThread();
 
+        await t.passThread({ theData: 'PASS' });
+
+        t.passedAction('pass-thread');
+
+        assert.throws(() => {
             t.passedAction('start');
-            t.any().passThread();
-            t.res(0).passThread();
-
-            yield t.passThread({ theData: 'PASS' });
-
-            t.passedAction('pass-thread');
-
-            assert.throws(() => {
-                t.passedAction('start');
-            }, 'should not pass through start action');
-        });
+        }, 'should not pass through start action');
     });
 
 });

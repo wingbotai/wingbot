@@ -21,10 +21,9 @@ const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
  */
 class Responder {
 
-    constructor (isRef, senderId, sendFn, token = null, options = {}, data = {}) {
-        this._sendFn = sendFn;
+    constructor (senderId, messageSender, token = null, options = {}, data = {}) {
+        this._messageSender = messageSender;
         this._senderId = senderId;
-        this._isRef = isRef;
         this.token = token;
 
         this.newState = {};
@@ -73,7 +72,7 @@ class Responder {
             });
         }
 
-        this._sendFn(data);
+        this._messageSender.send(data);
     }
 
     /**
@@ -171,10 +170,6 @@ class Responder {
                 text: null
             }
         };
-
-        if (this._isRef) {
-            messageData.recipient = { user_ref: this._senderId };
-        }
 
         let replies = null;
         if (args.length > 0 && typeof args[args.length - 1] === 'object' && args[args.length - 1] !== null) {
@@ -373,12 +368,6 @@ class Responder {
             }
         };
 
-        if (this._isRef) {
-            Object.assign(messageData, {
-                recipient: { user_ref: this._senderId }
-            });
-        }
-
         let autoTyping = null;
         if (`${url}`.match(/\.gif$/i)) {
             autoTyping = false;
@@ -400,12 +389,6 @@ class Responder {
                 }
             }
         };
-
-        if (this._isRef) {
-            Object.assign(messageData, {
-                recipient: { user_ref: this._senderId }
-            });
-        }
 
         this._autoTypingIfEnabled(null);
         this._send(messageData);
@@ -601,10 +584,6 @@ class Responder {
             },
             sender_action: action
         };
-
-        if (this._isRef) {
-            messageData.recipient = { user_ref: this._senderId };
-        }
 
         this._send(messageData);
         return this;

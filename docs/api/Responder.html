@@ -670,33 +670,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="Settings.html">
-            
-                <a href="Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="express.html">
-            
-                <a href="express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="bufferloader.html">
             
                 <a href="bufferloader.html">
             
@@ -709,7 +683,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="Ai.html">
+        <li class="chapter " data-level="2.7" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -722,38 +696,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="serverlessAWS.html">
-            
-                <a href="serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="callback.html">
-            
-                <a href="callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -813,14 +761,14 @@
 <ul>
 <li><a href="#Responder">Responder</a><ul>
 <li><a href="#new_Responder_new">new Responder()</a></li>
-<li><a href="#Responder_data">.data</a> : <code>object</code></li>
+<li><a href="#Responder_data">.data</a> : <code>Object</code></li>
 <li><a href="#Responder_setMessgingType">.setMessgingType(messagingType, [tag])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_isResponseType">.isResponseType()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Responder_setData">.setData(data)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_text">.text(text, [quickReplies])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_setState">.setState(object)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_addQuickReply">.addQuickReply(action, title, [data], [prepend])</a></li>
-<li><a href="#Responder_expected">.expected(action)</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_expected">.expected(action, data)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_toAbsoluteAction">.toAbsoluteAction(action)</a> &#x21D2; <code>string</code></li>
 <li><a href="#Responder_image">.image(imageUrl, [reusable])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_video">.video(videoUrl, [reusable])</a> &#x21D2; <code>this</code></li>
@@ -843,7 +791,7 @@
 <p>Instance of responder is passed as second parameter of handler (res)</p>
 <div id="Responder_data">&#xA0;</div>
 
-<h3 id="responderdata--object"><a name="responderdata--object" class="plugin-anchor" href="#responderdata--object"><i class="fa fa-link" aria-hidden="true"></i></a>responder.data : <code>object</code></h3>
+<h3 id="responderdata--object"><a name="responderdata--object" class="plugin-anchor" href="#responderdata--object"><i class="fa fa-link" aria-hidden="true"></i></a>responder.data : <code>Object</code></h3>
 <p><strong>Kind</strong>: instance property of <a href="#Responder"><code>Responder</code></a>  </p>
 <div id="Responder_setMessgingType">&#xA0;</div>
 
@@ -890,7 +838,7 @@
 <tbody>
 <tr>
 <td>data</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 </tr>
 </tbody>
 </table>
@@ -963,7 +911,7 @@ res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
 <tbody>
 <tr>
 <td>object</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 </tr>
 </tbody>
 </table>
@@ -1024,7 +972,7 @@ res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
 </code></pre>
 <div id="Responder_expected">&#xA0;</div>
 
-<h3 id="responderexpectedaction-&#x21D2;-this"><a name="responderexpectedaction-&#x21D2;-this" class="plugin-anchor" href="#responderexpectedaction-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expected(action) &#x21D2; <code>this</code></h3>
+<h3 id="responderexpectedaction-data-&#x21D2;-this"><a name="responderexpectedaction-data-&#x21D2;-this" class="plugin-anchor" href="#responderexpectedaction-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expected(action, data) &#x21D2; <code>this</code></h3>
 <p>When user writes some text as reply, it will be processed as action</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
 <table>
@@ -1040,6 +988,11 @@ res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
 <td>action</td>
 <td><code>string</code></td>
 <td>desired action</td>
+</tr>
+<tr>
+<td>data</td>
+<td><code>Object</code></td>
+<td>desired action data</td>
 </tr>
 </tbody>
 </table>
@@ -1230,7 +1183,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 <tr>
 <td>[data]</td>
 <td><code>string</code> \</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 <td><code>null</code></td>
 </tr>
 </tbody>
@@ -1426,7 +1379,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"2.2","depth":1,"next":{"title":"Router","level":"2.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"2.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-04-16T10:41:26.037Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"2.2","depth":1,"next":{"title":"Router","level":"2.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"2.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-04-17T19:01:30.669Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

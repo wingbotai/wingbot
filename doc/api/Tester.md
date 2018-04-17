@@ -17,17 +17,16 @@
 * [Tester](#Tester)
     * [new Tester()](#new_Tester_new)
     * _instance_
-        * [.acquireResponseActions()](#Tester_acquireResponseActions)
         * [.res([index])](#Tester_res) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
         * [.any()](#Tester_any) ⇒ [<code>AnyResponseAssert</code>](#AnyResponseAssert)
         * [.lastRes()](#Tester_lastRes) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
         * [.passedAction(path)](#Tester_passedAction) ⇒ <code>this</code>
-        * [.getState()](#Tester_getState) ⇒ <code>object</code>
+        * [.getState()](#Tester_getState) ⇒ <code>Object</code>
         * [.setState([state])](#Tester_setState)
         * [.text(text)](#Tester_text) ⇒ <code>Promise</code>
         * [.intent(intent, text)](#Tester_intent) ⇒ <code>Promise</code>
         * [.passThread([data], [appId])](#Tester_passThread) ⇒ <code>Promise</code>
-        * [.optin(action, [data])](#Tester_optin) ⇒ <code>Promise</code>
+        * [.optin(action, [data], [userRef])](#Tester_optin) ⇒ <code>Promise</code>
         * [.quickReply(action, [data])](#Tester_quickReply) ⇒ <code>Promise</code>
         * [.postBack(action, [data], [refAction], [refData])](#Tester_postBack) ⇒ <code>Promise</code>
     * _static_
@@ -39,12 +38,6 @@
 ### new Tester()
 Utility for testing requests
 
-{% raw %}<div id="Tester_acquireResponseActions">&nbsp;</div>{% endraw %}
-
-### tester.acquireResponseActions()
-Resets action collector and fetches new actions, when there are some
-
-**Kind**: instance method of [<code>Tester</code>](#Tester)  
 {% raw %}<div id="Tester_res">&nbsp;</div>{% endraw %}
 
 ### tester.res([index]) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
@@ -81,7 +74,7 @@ Checks, that app past the action
 
 {% raw %}<div id="Tester_getState">&nbsp;</div>{% endraw %}
 
-### tester.getState() ⇒ <code>object</code>
+### tester.getState() ⇒ <code>Object</code>
 Returns state
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
@@ -94,7 +87,7 @@ Sets state with `Object.assign()`
 
 | Param | Type | Default |
 | --- | --- | --- |
-| [state] | <code>object</code> | <code>{}</code> | 
+| [state] | <code>Object</code> | <code>{}</code> | 
 
 {% raw %}<div id="Tester_text">&nbsp;</div>{% endraw %}
 
@@ -133,15 +126,16 @@ Makes pass thread control request
 
 {% raw %}<div id="Tester_optin">&nbsp;</div>{% endraw %}
 
-### tester.optin(action, [data]) ⇒ <code>Promise</code>
+### tester.optin(action, [data], [userRef]) ⇒ <code>Promise</code>
 Make optin call
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
 
-| Param | Type | Default |
-| --- | --- | --- |
-| action | <code>string</code> |  | 
-| [data] | <code>object</code> | <code>{}</code> | 
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| action | <code>string</code> |  |  |
+| [data] | <code>Object</code> | <code>{}</code> |  |
+| [userRef] | <code>string</code> | <code>null</code> | specific ref string |
 
 {% raw %}<div id="Tester_quickReply">&nbsp;</div>{% endraw %}
 
@@ -153,7 +147,7 @@ Send quick reply
 | Param | Type | Default |
 | --- | --- | --- |
 | action | <code>string</code> |  | 
-| [data] | <code>object</code> | <code>{}</code> | 
+| [data] | <code>Object</code> | <code>{}</code> | 
 
 {% raw %}<div id="Tester_postBack">&nbsp;</div>{% endraw %}
 
@@ -165,9 +159,9 @@ Sends postback, optionally with referrer action
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | action | <code>string</code> |  |  |
-| [data] | <code>object</code> | <code>{}</code> |  |
+| [data] | <code>Object</code> | <code>{}</code> |  |
 | [refAction] | <code>string</code> | <code>null</code> | referred action |
-| [refData] | <code>object</code> | <code>{}</code> | referred action data |
+| [refData] | <code>Object</code> | <code>{}</code> | referred action data |
 
 {% raw %}<div id="Tester_Tester">&nbsp;</div>{% endraw %}
 
@@ -183,7 +177,7 @@ Creates an instance of Tester.
 | --- | --- | --- | --- |
 | reducer | <code>Router</code> \| <code>ReducerWrapper</code> \| <code>function</code> |  |  |
 | [senderId] | <code>string</code> | <code>null</code> |  |
-| [processorOptions] | <code>object</code> | <code>{}</code> | options for Processor |
+| [processorOptions] | <code>Object</code> | <code>{}</code> | options for Processor |
 | [storage] | <code>MemoryStateStorage</code> |  | place to override the storage |
 
 {% raw %}<div id="ResponseAssert">&nbsp;</div>{% endraw %}

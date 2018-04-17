@@ -670,33 +670,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="../api/Settings.html">
-            
-                <a href="../api/Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="../api/express.html">
-            
-                <a href="../api/express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="../api/bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="../api/bufferloader.html">
             
                 <a href="../api/bufferloader.html">
             
@@ -709,7 +683,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="../api/Ai.html">
+        <li class="chapter " data-level="2.7" data-path="../api/Ai.html">
             
                 <a href="../api/Ai.html">
             
@@ -722,38 +696,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="../api/serverlessAWS.html">
-            
-                <a href="../api/serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="../api/BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="../api/BuildRouter.html">
             
                 <a href="../api/BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="../api/callback.html">
-            
-                <a href="../api/callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -809,16 +757,16 @@
                                 <h1 id="building-a-conversation"><a name="building-a-conversation" class="plugin-anchor" href="#building-a-conversation"><i class="fa fa-link" aria-hidden="true"></i></a>Building a Conversation</h1>
 <h2 id="echo-reacting-to-text-messages"><a name="echo-reacting-to-text-messages" class="plugin-anchor" href="#echo-reacting-to-text-messages"><i class="fa fa-link" aria-hidden="true"></i></a>Echo: Reacting to text messages</h2>
 <p>Let&apos;s start with simple example. This is how to make an echo.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-// this route processes all incomming messages
+<span class="hljs-comment">// this route processes all incomming messages</span>
 bot.use((req, res) =&gt; {
-    res.text(&apos;I\&apos;ve got this message:&apos;)
+    res.text(<span class="hljs-string">&apos;I\&apos;ve got this message:&apos;</span>)
         .text(req.text());
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <p>This works like this:</p>
 <pre><code>*-----------------------------------*
@@ -833,27 +781,27 @@ module.exports = bot;
 </code></pre><h2 id="asking-a-question"><a name="asking-a-question" class="plugin-anchor" href="#asking-a-question"><i class="fa fa-link" aria-hidden="true"></i></a>Asking a question</h2>
 <p>When asking user a question, it&apos;s important to keeping reply in context. The <code>res.expected(&lt;path&gt;)</code> method ensures, that response will be dispatched by <code>/whichCat</code> route.</p>
 <p>Routes shoud always begin with <code>/</code> slash, but when referencing route, starting slash is treated as absolute path reference. When you omit the starting slash, path is treated as relative.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(&apos;/whichCat&apos;, (req, res, postBack) =&gt; {
-    const lowercaseText = req.text(true); // converts &quot;N&#xFD;an. C&#xE1;t&quot; to &quot;nyan-cat&quot;
+bot.use(<span class="hljs-string">&apos;/whichCat&apos;</span>, (req, res, postBack) =&gt; {
+    <span class="hljs-keyword">const</span> lowercaseText = req.text(<span class="hljs-literal">true</span>); <span class="hljs-comment">// converts &quot;N&#xFD;an. C&#xE1;t&quot; to &quot;nyan-cat&quot;</span>
 
-    if (lowercaseText.match(/nyan-cat/)) {
-        res.text(&apos;Yeah, nyan cat!&apos;);
-    } else if (lowercaseText.match(/grumpy-cat/)) {
-        res.text(&apos;Ugh, grumpy cat!&apos;);
-    } else {
-        return Router.CONTINUE;
+    <span class="hljs-keyword">if</span> (lowercaseText.match(<span class="hljs-regexp">/nyan-cat/</span>)) {
+        res.text(<span class="hljs-string">&apos;Yeah, nyan cat!&apos;</span>);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (lowercaseText.match(<span class="hljs-regexp">/grumpy-cat/</span>)) {
+        res.text(<span class="hljs-string">&apos;Ugh, grumpy cat!&apos;</span>);
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> Router.CONTINUE;
     }
 });
 
 bot.use((req, res) =&gt; {
-    res.text(&apos;So, Nyan cat or grumpy cat?&apos;)
-        .expected(&apos;whichCat&apos;); // set the route, which will process next text request
+    res.text(<span class="hljs-string">&apos;So, Nyan cat or grumpy cat?&apos;</span>)
+        .expected(<span class="hljs-string">&apos;whichCat&apos;</span>); <span class="hljs-comment">// set the route, which will process next text request</span>
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <p>This works like this:</p>
 <pre><code>*-----------------------------------*
@@ -869,55 +817,55 @@ module.exports = bot;
 </code></pre><h2 id="using-quick-replies-for-controlling-conversation"><a name="using-quick-replies-for-controlling-conversation" class="plugin-anchor" href="#using-quick-replies-for-controlling-conversation"><i class="fa fa-link" aria-hidden="true"></i></a>Using Quick Replies for controlling conversation</h2>
 <p>Click is always simplier then writing a text. And also working with events is much easier then text processing.
 Let&apos;s lead conversation throuch quick replies.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(&apos;/grumpy&apos;, (req, res) =&gt; {
-    res.text(&apos;Ugh, grumpy cat!&apos;);
+bot.use(<span class="hljs-string">&apos;/grumpy&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;Ugh, grumpy cat!&apos;</span>);
 });
 
-bot.use(&apos;/nyan&apos;, (req, res) =&gt; {
-    res.text(&apos;Yeah, nyan cat!&apos;);
+bot.use(<span class="hljs-string">&apos;/nyan&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;Yeah, nyan cat!&apos;</span>);
 });
 
 bot.use((req, res) =&gt; {
-    // let&apos;s give two options to user
-    res.text(&apos;So, Nyan cat or grumpy cat?&apos;, {
-        grumpy: &apos;Grumpy cat&apos;,
-        nyan: &apos;Nyan cat&apos;
+    <span class="hljs-comment">// let&apos;s give two options to user</span>
+    res.text(<span class="hljs-string">&apos;So, Nyan cat or grumpy cat?&apos;</span>, {
+        grumpy: <span class="hljs-string">&apos;Grumpy cat&apos;</span>,
+        nyan: <span class="hljs-string">&apos;Nyan cat&apos;</span>
     });
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <p>This code works <strong>exacly like previous example</strong>, because when quick replies are used, treir text representation
 is used to match the users input. String <code>&quot;Nyan cat&quot;</code> is converted to regular expression <code>/nyan-cat/</code>;</p>
 <h2 id="post-back-is-also-an-action"><a name="post-back-is-also-an-action" class="plugin-anchor" href="#post-back-is-also-an-action"><i class="fa fa-link" aria-hidden="true"></i></a>Post Back is also an action!</h2>
 <p>We&apos;ve normalized all Quick Replies, Post Backs, or Referrals to actions! You don&apos;t have to care about action type.</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
-const bot = new Router();
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(&apos;/grumpy&apos;, (req, res) =&gt; {
-    res.text(&apos;Ugh, grumpy cat!&apos;);
+bot.use(<span class="hljs-string">&apos;/grumpy&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;Ugh, grumpy cat!&apos;</span>);
 });
 
-bot.use(&apos;/nyan&apos;, (req, res) =&gt; {
-    res.text(&apos;Yeah, nyan cat!&apos;);
+bot.use(<span class="hljs-string">&apos;/nyan&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;Yeah, nyan cat!&apos;</span>);
 });
 
 bot.use((req, res) =&gt; {
-    // allow access grumpy cat with button
-    res.button(&apos;Lets choose grumpy cat&apos;)
-        .postBackButton(&apos;Call it&apos;, &apos;grumpy&apos;)
+    <span class="hljs-comment">// allow access grumpy cat with button</span>
+    res.button(<span class="hljs-string">&apos;Lets choose grumpy cat&apos;</span>)
+        .postBackButton(<span class="hljs-string">&apos;Call it&apos;</span>, <span class="hljs-string">&apos;grumpy&apos;</span>)
         .send();
 
-    // and nyan cat with quick reply
-    res.text(&apos;So, Nyan cat or grumpy cat?&apos;, {
-        nyan: &apos;Nyan cat&apos;
+    <span class="hljs-comment">// and nyan cat with quick reply</span>
+    res.text(<span class="hljs-string">&apos;So, Nyan cat or grumpy cat?&apos;</span>, {
+        nyan: <span class="hljs-string">&apos;Nyan cat&apos;</span>
     });
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 
                                 
@@ -962,7 +910,7 @@ module.exports = bot;
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Building a Conversation","level":"1.2","depth":1,"next":{"title":"Asking a question","level":"1.2.1","depth":2,"anchor":"#asking-a-question","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#asking-a-question","articles":[]},"previous":{"title":"Getting Started","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/buildingConversation.md","mtime":"2018-04-16T09:53:57.153Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Building a Conversation","level":"1.2","depth":1,"next":{"title":"Asking a question","level":"1.2.1","depth":2,"anchor":"#asking-a-question","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#asking-a-question","articles":[]},"previous":{"title":"Getting Started","level":"1.1","depth":1,"path":"README.md","ref":"README.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/buildingConversation.md","mtime":"2018-04-17T16:51:28.999Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

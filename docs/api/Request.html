@@ -670,33 +670,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="Settings.html">
-            
-                <a href="Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="express.html">
-            
-                <a href="express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="bufferloader.html">
             
                 <a href="bufferloader.html">
             
@@ -709,7 +683,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="Ai.html">
+        <li class="chapter " data-level="2.7" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -722,38 +696,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="serverlessAWS.html">
-            
-                <a href="serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="callback.html">
-            
-                <a href="callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -821,20 +769,20 @@
 <li><a href="#Request_isAttachment">.isAttachment()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isImage">.isImage([attachmentIndex])</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isFile">.isFile([attachmentIndex])</a> &#x21D2; <code>boolean</code></li>
-<li><a href="#Request_attachment">.attachment([attachmentIndex])</a> &#x21D2; <code>object</code> | <code>null</code></li>
+<li><a href="#Request_attachment">.attachment([attachmentIndex])</a> &#x21D2; <code>Object</code> | <code>null</code></li>
 <li><a href="#Request_attachmentUrl">.attachmentUrl([attachmentIndex])</a> &#x21D2; <code>string</code> | <code>null</code></li>
 <li><a href="#Request_isMessage">.isMessage()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isQuickReply">.isQuickReply()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isText">.isText()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_text">.text([tokenized])</a> &#x21D2; <code>string</code></li>
 <li><a href="#Request_expected">.expected()</a> &#x21D2; <code>string</code> | <code>null</code></li>
-<li><a href="#Request_quickReply">.quickReply([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></li>
+<li><a href="#Request_quickReply">.quickReply([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></li>
 <li><a href="#Request_isPostBack">.isPostBack()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isReferral">.isReferral()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isPassThread">.isPassThread()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isOptin">.isOptin()</a> &#x21D2; <code>boolean</code></li>
-<li><a href="#Request_action">.action([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></li>
-<li><a href="#Request_postBack">.postBack([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></li>
+<li><a href="#Request_action">.action([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></li>
+<li><a href="#Request_postBack">.postBack([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></li>
 </ul>
 </li>
 </ul>
@@ -992,7 +940,7 @@
 </table>
 <div id="Request_attachment">&#xA0;</div>
 
-<h3 id="requestattachmentattachmentindex-&#x21D2;-object--null"><a name="requestattachmentattachmentindex-&#x21D2;-object--null" class="plugin-anchor" href="#requestattachmentattachmentindex-&#x21D2;-object--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.attachment([attachmentIndex]) &#x21D2; <code>object</code> | <code>null</code></h3>
+<h3 id="requestattachmentattachmentindex-&#x21D2;-object--null"><a name="requestattachmentattachmentindex-&#x21D2;-object--null" class="plugin-anchor" href="#requestattachmentattachmentindex-&#x21D2;-object--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.attachment([attachmentIndex]) &#x21D2; <code>Object</code> | <code>null</code></h3>
 <p>Returns whole attachment or null</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <table>
@@ -1084,7 +1032,7 @@
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_quickReply">&#xA0;</div>
 
-<h3 id="requestquickreplygetdata-&#x21D2;-null--string--object"><a name="requestquickreplygetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestquickreplygetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.quickReply([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></h3>
+<h3 id="requestquickreplygetdata-&#x21D2;-null--string--object"><a name="requestquickreplygetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestquickreplygetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.quickReply([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></h3>
 <p>Returns action or data of quick reply
 When <code>getData</code> is <code>true</code>, object will be returned. Otherwise string or null.</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
@@ -1130,7 +1078,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_action">&#xA0;</div>
 
-<h3 id="requestactiongetdata-&#x21D2;-null--string--object"><a name="requestactiongetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestactiongetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.action([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></h3>
+<h3 id="requestactiongetdata-&#x21D2;-null--string--object"><a name="requestactiongetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestactiongetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.action([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></h3>
 <p>Returns action of the postback or quickreply
 When <code>getData</code> is <code>true</code>, object will be returned. Otherwise string or null.</p>
 <ol>
@@ -1163,7 +1111,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </code></pre>
 <div id="Request_postBack">&#xA0;</div>
 
-<h3 id="requestpostbackgetdata-&#x21D2;-null--string--object"><a name="requestpostbackgetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestpostbackgetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.postBack([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></h3>
+<h3 id="requestpostbackgetdata-&#x21D2;-null--string--object"><a name="requestpostbackgetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestpostbackgetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.postBack([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></h3>
 <p>Returns action or data of postback
 When <code>getData</code> is <code>true</code>, object will be returned. Otherwise string or null.</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
@@ -1230,7 +1178,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"2.1","depth":1,"next":{"title":"Responder","level":"2.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Serverless AWS Lambda","level":"1.10.3","depth":2,"anchor":"#serverless-aws-lambda","path":"tutorial/usingWithWingbot.md","ref":"tutorial/usingWithWingbot.md#serverless-aws-lambda","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2018-04-16T10:41:26.033Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"2.1","depth":1,"next":{"title":"Responder","level":"2.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Serverless AWS Lambda","level":"1.10.3","depth":2,"anchor":"#serverless-aws-lambda","path":"tutorial/usingWithWingbot.md","ref":"tutorial/usingWithWingbot.md#serverless-aws-lambda","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2018-04-17T19:01:30.665Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -5,7 +5,7 @@
 Text is always treated as action, so theese two routes are matched same, when the `/cat` action is issued.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use(req => req.action() === '/cat', (req, res) => {
@@ -24,7 +24,7 @@ module.exports = bot;
 It's possible to use reqular expression to match the specific text input. Without any AI tool.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use(/h[ea]llo|hallo|ciao/, (req, res) => {
@@ -64,7 +64,7 @@ does not match whole words:
 It's ofcourse possible to make integration with 3rd party service. Function should return a boolean, where `true === CONTINUE` and `false === BREAK`.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const keyworder = require('keyworder');
 const bot = new Router();
 
@@ -91,7 +91,7 @@ Sometimes there is need to redirect the conversation flow. For theese purposes,
 there is a `postBack(action: string, data: object?)` function.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use('world', (req, res) => {

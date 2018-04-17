@@ -4,7 +4,6 @@
 'use strict';
 
 const assert = require('assert');
-const co = require('co');
 const sinon = require('sinon');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
@@ -19,7 +18,7 @@ function delay (job) {
 
 describe('Router extended functions', function () {
 
-    it('should accept or with nested router', function () {
+    it('should accept or with nested router', async function () {
         const matcherForSpy = sinon.spy(() => delay(() => false));
 
         const nested = new Router();
@@ -41,19 +40,16 @@ describe('Router extended functions', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
-            yield t.postBack('/start');
+        await t.postBack('/start');
 
-            assert(matcherForSpy.calledOnce);
+        assert(matcherForSpy.calledOnce);
 
-            t.any()
-                .contains('FIRST')
-                .contains('FOLLOW');
-
-        });
+        t.any()
+            .contains('FIRST')
+            .contains('FOLLOW');
     });
 
-    it('should proceed deep link into the nested router', function () {
+    it('should proceed deep link into the nested router', async function () {
         const nested = new Router();
 
         nested.use('/', (req, res) => delay(() => {
@@ -77,22 +73,19 @@ describe('Router extended functions', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
-            yield t.postBack('/start');
+        await t.postBack('/start');
 
-            t.any()
-                .contains('START');
+        t.any()
+            .contains('START');
 
-            yield t.quickReply('nested/deep');
+        await t.quickReply('nested/deep');
 
-            t.passedAction('deep');
+        t.passedAction('deep');
 
-            t.res(0).contains('DEEP');
-
-        });
+        t.res(0).contains('DEEP');
     });
 
-    it('should be able to use array as OR condition', function () {
+    it('should be able to use array as OR condition', async function () {
 
         const nested = new Router();
 
@@ -152,37 +145,35 @@ describe('Router extended functions', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
-            yield t.postBack('/start');
-            yield t.quickReply('music');
+        await t.postBack('/start');
+        await t.quickReply('music');
 
-            t.passedAction('/music')
-                .any()
-                .contains('Listen')
-                .quickReplyAction('play');
+        t.passedAction('/music')
+            .any()
+            .contains('Listen')
+            .quickReplyAction('play');
 
-            yield t.text('play');
+        await t.text('play');
 
-            t.any()
-                .contains('PLAY');
-            t.passedAction('play');
+        t.any()
+            .contains('PLAY');
+        t.passedAction('play');
 
-            yield t.text('stop');
+        await t.text('stop');
 
-            assert.strictEqual(t.responses.length, 1);
-            t.any()
-                .contains('stop test');
+        assert.strictEqual(t.responses.length, 1);
+        t.any()
+            .contains('stop test');
 
 
-            yield t.text('start');
+        await t.text('start');
 
-            assert.strictEqual(t.responses.length, 1);
-            t.any()
-                .contains('start test');
-        });
+        assert.strictEqual(t.responses.length, 1);
+        t.any()
+            .contains('start test');
     });
 
-    it('should match the text from quick reply', () => {
+    it('should match the text from quick reply', async function () {
         const r = new Router();
 
         r.use('/start', (req, res) => {
@@ -203,31 +194,29 @@ describe('Router extended functions', function () {
 
         const t = new Tester(r);
 
-        return co(function* () {
-            yield t.postBack('/start');
+        await t.postBack('/start');
 
-            t.any()
-                .contains('START');
+        t.any()
+            .contains('START');
 
-            yield t.text('test');
+        await t.text('test');
 
-            t.passedAction('rt');
+        t.passedAction('rt');
 
-            t.res(0).contains('DEEP');
+        t.res(0).contains('DEEP');
 
-            yield t.text('test');
+        await t.text('test');
 
-            t.passedAction('fallback');
+        t.passedAction('fallback');
 
-            yield t.postBack('/start');
+        await t.postBack('/start');
 
-            t.any()
-                .contains('START');
+        t.any()
+            .contains('START');
 
-            yield t.text('test test');
+        await t.text('test test');
 
-            t.passedAction('fallback');
-        });
+        t.passedAction('fallback');
     });
 
 });

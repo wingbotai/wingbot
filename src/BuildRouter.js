@@ -39,8 +39,8 @@ class BuildRouter extends Router {
      *
      * const blocks = new Blocks();
      *
-     * blocks.code('exampleBlock', function* (req, res, postBack, context, params) {
-     *     yield res.run('responseBlockName');
+     * blocks.code('exampleBlock', async (req, res, postBack, context, params) => {
+     *     await res.run('responseBlockName');
      * });
      *
      * const bot = new BuildRouter({

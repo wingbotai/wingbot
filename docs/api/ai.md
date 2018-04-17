@@ -25,7 +25,7 @@
     * [.prefixTranslator(prefix, req)](#Ai_prefixTranslator)
     * [.mockIntent([intent], [confidence])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.onConfirmMiddleware(onIntentConfirmed, getMeta)](#Ai_onConfirmMiddleware) ⇒ <code>function</code>
-    * [.register(model, options, prefix)](#Ai_register) ⇒ <code>WingbotModel</code>
+    * [.register(model, options, prefix, [Model])](#Ai_register) ⇒ <code>WingbotModel</code>
     * [.match(intent, [confidence], [prefix])](#Ai_match) ⇒ <code>function</code>
     * [.navigate(knownIntents, [threshold], [confidence], [prefix])](#Ai_navigate) ⇒ <code>function</code>
     * [.makeSure(knownIntents, [threshold], [confidence], prefix)](#Ai_makeSure) ⇒ <code>function</code>
@@ -134,7 +134,7 @@ bot.use(ai.makeSure(['intent1', 'intent2']), (req, res) => {
 ```
 {% raw %}<div id="Ai_register">&nbsp;</div>{% endraw %}
 
-### ai.register(model, options, prefix) ⇒ <code>WingbotModel</code>
+### ai.register(model, options, prefix, [Model]) ⇒ <code>WingbotModel</code>
 Registers Wingbot AI model
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
@@ -146,6 +146,7 @@ Registers Wingbot AI model
 | [options.cacheSize] | <code>number</code> | remember number of caches |
 | [options.matches] | <code>number</code> | ask AI for number of matches |
 | prefix | <code>string</code> | model prefix |
+| [Model] | <code>WingbotModel</code> | model class |
 
 {% raw %}<div id="Ai_match">&nbsp;</div>{% endraw %}
 

@@ -19,7 +19,7 @@ function customCode (params, context, blocks) {
 
     const paramsData = typeof params.params === 'object' ? params.params : {};
 
-    return function* (req, res, postBack, path, action) {
+    return async function (req, res, postBack, path, action) {
 
         Object.assign(res, {
             run (codeBlockName) {
@@ -36,7 +36,7 @@ function customCode (params, context, blocks) {
         let ret = customFn(req, res, postBack, context, paramsData);
 
         if (typeof ret === 'object' && ret !== null) {
-            ret = yield ret;
+            ret = await ret;
         }
 
         if (typeof ret !== 'undefined') {

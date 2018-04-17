@@ -14,7 +14,7 @@ There are two approches to drive asynchronous actions:
 For fast async operations you can use blocking approach. You can simply return a Promise.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 function asyncAction () {
@@ -41,7 +41,7 @@ For non blocking approach is good to know, that **only postBack can be called af
 Any other calls, like `setState()` will have no effect. This is the only right way to make non-blocking asynchronous operations.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 function asyncAction () {
@@ -76,7 +76,7 @@ module.exports = bot;
 Most simpliest way to upload attachments is converting them to base64 buffer:
 
 ```javascript
-const { Router, bufferloader } = require(''wingbot');
+const { Router, bufferloader } = require('wingbot');
 const bot = new Router();
 
 function asyncAction () {

@@ -4,7 +4,6 @@
 'use strict';
 
 const assert = require('assert');
-const co = require('co');
 const Router = require('../../src/Router');
 const Tester = require('../../src/Tester');
 const { callbackMiddleware } = require('../../src/middlewares/callback');
@@ -70,138 +69,123 @@ describe('callback middeware', function () {
         this.t = new Tester(bot);
     });
 
-    it('should not show backlink to self', function () {
+    it('should not show backlink to self', async function () {
         const { t } = this;
 
-        return co(function* () {
-            yield t.text('foo');
+        await t.text('foo');
 
-            yield t.text('foo');
+        await t.text('foo');
 
-            assert.deepEqual(t.responses[1].message, {
-                text: 'So, what you want?',
-                quick_replies: [
-                    { content_type: 'text', payload: '/barRoute', title: 'Go to bar' }
-                ]
-            });
-
+        assert.deepEqual(t.responses[1].message, {
+            text: 'So, what you want?',
+            quick_replies: [
+                { content_type: 'text', payload: '/barRoute', title: 'Go to bar' }
+            ]
         });
     });
 
-    it('should not fail in circle', function () {
+    it('should not fail in circle', async function () {
         const { t } = this;
 
-        return co(function* () {
-            yield t.text('bar');
+        await t.text('bar');
 
-            yield t.text('bar');
+        await t.text('bar');
 
-            assert.strictEqual(t.actions.length, 1);
-
-        });
+        assert.strictEqual(t.actions.length, 1);
     });
 
-    it('should return user back', function () {
+    it('should return user back', async function () {
         const { t } = this;
 
-        return co(function* () {
-            yield t.text('foo');
+        await t.text('foo');
 
-            t.passedAction('fooRoute')
-                .any()
-                .contains('This is your FOO response')
-                .contains('So, what you want?')
-                .quickReplyAction('barRoute');
+        t.passedAction('fooRoute')
+            .any()
+            .contains('This is your FOO response')
+            .contains('So, what you want?')
+            .quickReplyAction('barRoute');
 
-            assert.throws(() => {
-                t.passedAction('barRoute');
-            });
-
-            yield t.text('bar');
-
-            t.passedAction('fooRoute')
-                .passedAction('barRoute')
-                .any()
-                .contains('This is your BAR response')
-                .contains('So, what you want?');
-
-            assert.throws(() => t.any()
-                .contains('This is your FOO response'));
-            assert.throws(() => t.any()
-                .contains('So, what\'s next?'));
-
+        assert.throws(() => {
+            t.passedAction('barRoute');
         });
+
+        await t.text('bar');
+
+        t.passedAction('fooRoute')
+            .passedAction('barRoute')
+            .any()
+            .contains('This is your BAR response')
+            .contains('So, what you want?');
+
+        assert.throws(() => t.any()
+            .contains('This is your FOO response'));
+        assert.throws(() => t.any()
+            .contains('So, what\'s next?'));
     });
 
-    it('keeps context when provided', function () {
+    it('keeps context when provided', async function () {
         const { t } = this;
 
-        return co(function* () {
-            yield t.text('foo');
+        await t.text('foo');
 
-            t.passedAction('fooRoute')
-                .any()
-                .contains('This is your FOO response')
-                .contains('So, what you want?')
-                .quickReplyAction('barRoute');
+        t.passedAction('fooRoute')
+            .any()
+            .contains('This is your FOO response')
+            .contains('So, what you want?')
+            .quickReplyAction('barRoute');
 
-            assert.throws(() => {
-                t.passedAction('barRoute');
-            });
-
-            yield t.text('context');
-
-            t.passedAction('contextRoute')
-                .any()
-                .contains('This is your CONTEXT response')
-                .contains('So, in context?');
-
-            assert.throws(() => t.passedAction('fooRoute'));
-
+        assert.throws(() => {
+            t.passedAction('barRoute');
         });
+
+        await t.text('context');
+
+        t.passedAction('contextRoute')
+            .any()
+            .contains('This is your CONTEXT response')
+            .contains('So, in context?');
+
+        assert.throws(() => t.passedAction('fooRoute'));
     });
 
-    it('should display the back message', function () {
+    it('should display the back message', async function () {
         const { t } = this;
         // const t = new Tester(() => {});
 
-        return co(function* () {
-            yield t.text('bar');
+        await t.text('bar');
 
-            t.passedAction('barRoute')
-                .any()
-                .contains('This is your BAR response')
-                .contains('So, what\'s next?')
-                .quickReplyAction('fooRoute');
+        t.passedAction('barRoute')
+            .any()
+            .contains('This is your BAR response')
+            .contains('So, what\'s next?')
+            .quickReplyAction('fooRoute');
 
-            assert.throws(() => {
-                t.passedAction('fooRoute');
-            });
-
-            yield t.text('foo');
-
-            t.passedAction('fooRoute')
-                .any()
-                .contains('This is your FOO response');
-
-            assert.deepEqual(t.responses[1].message, {
-                text: 'So, what you want?',
-                quick_replies: [
-                    {
-                        content_type: 'text',
-                        payload: '{"action":"/barRoute","data":{"_isFromCallback":"default"}}',
-                        title: 'Go back'
-                    },
-                    { content_type: 'text', payload: '/barRoute', title: 'Go to bar' }
-                ]
-            });
-
-            assert.throws(() => t.any()
-                .contains('This is your BAR response'));
-            assert.throws(() => t.any()
-                .contains('So, what\'s next?'));
-
+        assert.throws(() => {
+            t.passedAction('fooRoute');
         });
+
+        await t.text('foo');
+
+        t.passedAction('fooRoute')
+            .any()
+            .contains('This is your FOO response');
+
+        assert.deepEqual(t.responses[1].message, {
+            text: 'So, what you want?',
+            quick_replies: [
+                {
+                    content_type: 'text',
+                    payload: '{"action":"/barRoute","data":{"_isFromCallback":"default"}}',
+                    title: 'Go back'
+                },
+                { content_type: 'text', payload: '/barRoute', title: 'Go to bar' }
+            ]
+        });
+
+        assert.throws(() => t.any()
+            .contains('This is your BAR response'));
+        assert.throws(() => t.any()
+            .contains('So, what\'s next?'));
     });
 
 

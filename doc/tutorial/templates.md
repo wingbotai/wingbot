@@ -9,7 +9,7 @@
 Show the button template
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 
 const bot = new Router();
 
@@ -29,7 +29,7 @@ module.exports = bot;
 Show the generic template
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 
 const bot = new Router();
 
@@ -55,7 +55,7 @@ module.exports = bot;
 Show the receipt template
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 
 const bot = new Router();
 
@@ -72,7 +72,7 @@ module.exports = bot;
   - **Dont forget to whitelist your domain**
 
     ```javascript
-    const { Settings } = require(''wingbot');
+    const { Settings } = require('wingbot');
 
     const settings = new Settings('pagetoken');
 

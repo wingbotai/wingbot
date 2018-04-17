@@ -36,7 +36,7 @@ setting them to state.
 
 ```javascript
 // setName.js
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 
 const bot = new Router();
 
@@ -71,7 +71,7 @@ And here is how to connect the block into the application.
 
 ```javascript
 // index.js
-const { Router, Settings } = require(''wingbot');
+const { Router, Settings } = require('wingbot');
 const setName = require('./setName');
 
 const settings = new Settings('pagetoken');

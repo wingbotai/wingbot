@@ -14,8 +14,10 @@ const TOKEN = 't';
 function createAssets () {
     const sendFn = sinon.spy();
     const translator = sinon.spy(w => `-${w}`);
+
+    const messageSender = { send: sendFn };
     const opts = { translator, appUrl: APP_URL };
-    return { sendFn, opts };
+    return { sendFn, opts, messageSender };
 }
 
 describe('Responder', function () {
@@ -23,8 +25,8 @@ describe('Responder', function () {
     describe('#text()', function () {
 
         it('should send nice text', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             assert.strictEqual(res.text('Hello'), res, 'should return self');
 
@@ -36,15 +38,14 @@ describe('Responder', function () {
         });
 
         it('should send nice text with quick replies', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(true, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             assert.strictEqual(res.text('Hello', {
                 option: 'Text'
             }), res, 'should return self');
 
             assert(sendFn.calledOnce);
-            assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
             assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, 'option');
@@ -53,8 +54,8 @@ describe('Responder', function () {
         });
 
         it('should send nice structured text with advanced quick replies', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
             res.path = '/foo';
 
             assert.strictEqual(res.text('Hello %s', 'string', {
@@ -88,30 +89,30 @@ describe('Responder', function () {
         });
 
         it('should send typing off and seen messages', function () {
-            const { sendFn, opts } = createAssets();
+            const { sendFn, opts, messageSender } = createAssets();
 
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.typingOn();
             res.typingOff();
             res.seen();
 
-            assert(sendFn.callCount, 3);
+            assert.equal(sendFn.callCount, 3);
             assert.equal(sendFn.getCall(0).args[0].sender_action, 'typing_on');
             assert.equal(sendFn.getCall(1).args[0].sender_action, 'typing_off');
             assert.equal(sendFn.getCall(2).args[0].sender_action, 'mark_seen');
         });
 
         it('should send "typing" and "wait" in case of autoTyping is on', function () {
-            const { sendFn, opts } = createAssets();
+            const { sendFn, opts, messageSender } = createAssets();
             opts.autoTyping = true;
 
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.text('Hahahaaaa');
             res.text('You are so funny!! So funny I need to write this veeeeeeery long message to test typing_on is longer for long texts.');
 
-            assert(sendFn.callCount, 6);
+            assert.equal(sendFn.callCount, 6);
             assert.equal(sendFn.getCall(0).args[0].sender_action, 'typing_on');
             assert.equal(typeof sendFn.getCall(1).args[0].wait, 'number');
             assert.equal(sendFn.getCall(2).args[0].message.text, '-Hahahaaaa');
@@ -136,13 +137,13 @@ describe('Responder', function () {
         describe(`#${media}()`, function () {
 
             it(`should send ${media} url with base path`, function () {
-                const { sendFn, opts } = createAssets();
-                const res = new Responder(true, SENDER_ID, sendFn, TOKEN, opts);
+                const { sendFn, opts, messageSender } = createAssets();
+                const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
                 assert.strictEqual(res[media]('/img.png'), res, 'should return self');
 
                 assert(sendFn.calledOnce);
-                assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
+                assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
 
                 const { attachment } = sendFn.firstCall.args[0].message;
                 assert.equal(attachment.type, media);
@@ -150,8 +151,8 @@ describe('Responder', function () {
             });
 
             it(`should send ${media} url without base path`, function () {
-                const { sendFn, opts } = createAssets();
-                const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+                const { sendFn, opts, messageSender } = createAssets();
+                const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
                 assert.strictEqual(res[media]('http://goo.gl/img.png'), res, 'should return self');
 
@@ -170,8 +171,8 @@ describe('Responder', function () {
     describe('#button()', function () {
 
         it('should send message with url', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(true, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.setPath('/hello');
 
@@ -181,7 +182,7 @@ describe('Responder', function () {
                 .send();
 
             assert(sendFn.calledOnce);
-            assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
+            assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
 
             const { attachment } = sendFn.firstCall.args[0].message;
             assert.equal(attachment.type, 'template');
@@ -207,8 +208,8 @@ describe('Responder', function () {
     describe('#receipt()', function () {
 
         it('should send message with receipt', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.receipt('Name', 'Cash', 'CZK', '1')
                 .addElement('Element', 1, 2, '/inside.png', 'text')
@@ -237,8 +238,8 @@ describe('Responder', function () {
     describe('#toAbsoluteAction()', function () {
 
         it('converts relative ation to absolute', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             assert.equal(res.toAbsoluteAction('xyz'), 'xyz');
             assert.equal(res.toAbsoluteAction('/xyz'), '/xyz');
@@ -260,8 +261,8 @@ describe('Responder', function () {
     describe('#setMessgingType()', function () {
 
         it('sends default message type', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             assert.strictEqual(res.text('Hello'), res, 'should return self');
 
@@ -272,8 +273,8 @@ describe('Responder', function () {
         });
 
         it('sets message type to message', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.setMessgingType(Responder.TYPE_NON_PROMOTIONAL_SUBSCRIPTION);
 
@@ -289,8 +290,8 @@ describe('Responder', function () {
         });
 
         it('sets message tag to message', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.setMessgingType(Responder.TYPE_MESSAGE_TAG, 'TAG');
 
@@ -314,8 +315,8 @@ describe('Responder', function () {
     describe('#genericTemplate()', function () {
 
         it('should send message with generic template', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(true, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.setPath('/path');
 
@@ -330,7 +331,7 @@ describe('Responder', function () {
                 .send();
 
             assert(sendFn.calledOnce);
-            assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
+            assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
 
             const { attachment } = sendFn.firstCall.args[0].message;
             assert.equal(attachment.type, 'template');
@@ -365,8 +366,8 @@ describe('Responder', function () {
     describe('#list()', function () {
 
         it('should send message with generic template', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(true, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.setPath('/path');
 
@@ -382,7 +383,7 @@ describe('Responder', function () {
                 .send();
 
             assert(sendFn.calledOnce);
-            assert.equal(sendFn.firstCall.args[0].recipient.user_ref, SENDER_ID);
+            assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
 
             const { attachment } = sendFn.firstCall.args[0].message;
             assert.equal(attachment.type, 'template');
@@ -418,8 +419,8 @@ describe('Responder', function () {
     describe('#expected()', function () {
 
         it('should set state to absolute expected value', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.setPath('/relative');
 
@@ -429,8 +430,8 @@ describe('Responder', function () {
         });
 
         it('should set state absolute expectation', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(true, SENDER_ID, sendFn, TOKEN, opts);
+            const { messageSender, opts } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.setPath('/relative');
 
@@ -440,8 +441,8 @@ describe('Responder', function () {
         });
 
         it('should null expected action with null', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(false, SENDER_ID, sendFn, TOKEN, opts);
+            const { messageSender, opts } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.setPath('/relative');
 
@@ -456,8 +457,8 @@ describe('Responder', function () {
     describe('#wait()', function () {
 
         it('creates wait action', function () {
-            const { sendFn, opts } = createAssets();
-            const res = new Responder(true, SENDER_ID, sendFn, TOKEN, opts);
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
             res.wait(100);
 

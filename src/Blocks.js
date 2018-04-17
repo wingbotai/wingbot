@@ -43,7 +43,7 @@ class Blocks {
      * Register custom code block
      *
      * @param {string|Blocks} name - block name or blocks object to include
-     * @param {string} [factoryFn] - block factory - optional when including another blocks object
+     * @param {Function} [factoryFn] - block factory - optional when including another blocks object
      */
     code (name, factoryFn = null) {
         if (typeof name === 'string') {

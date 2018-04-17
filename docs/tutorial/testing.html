@@ -670,33 +670,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="../api/Settings.html">
-            
-                <a href="../api/Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="../api/express.html">
-            
-                <a href="../api/express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="../api/bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="../api/bufferloader.html">
             
                 <a href="../api/bufferloader.html">
             
@@ -709,7 +683,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="../api/Ai.html">
+        <li class="chapter " data-level="2.7" data-path="../api/Ai.html">
             
                 <a href="../api/Ai.html">
             
@@ -722,38 +696,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="../api/serverlessAWS.html">
-            
-                <a href="../api/serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="../api/BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="../api/BuildRouter.html">
             
                 <a href="../api/BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="../api/callback.html">
-            
-                <a href="../api/callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -810,34 +758,34 @@
 <h2 id="its-simple"><a name="its-simple" class="plugin-anchor" href="#its-simple"><i class="fa fa-link" aria-hidden="true"></i></a>It&apos;s simple</h2>
 <p>We made testing bots as simple as possible. Our testing tool provides methods
 for simulating</p>
-<pre><code class="lang-javascript">const { Tester } = require(&apos;&apos;wingbot&apos;);
-const assert = require(&apos;assert&apos;);
-const bot = require(&apos;../botRoot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Tester } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> assert = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;assert&apos;</span>);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;../botRoot&apos;</span>);
 
-describe(&apos;/bot&apos;, function () {
+describe(<span class="hljs-string">&apos;/bot&apos;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
 
-    it(&apos;should work&apos;, async function () {
-        const t = new Tester(bot);
+    it(<span class="hljs-string">&apos;should work&apos;</span>, <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">const</span> t = <span class="hljs-keyword">new</span> Tester(bot);
 
-        await t.postBack(&apos;/start&apos;); // send the postback
+        <span class="hljs-keyword">await</span> t.postBack(<span class="hljs-string">&apos;/start&apos;</span>); <span class="hljs-comment">// send the postback</span>
 
-        t.passedAction(&apos;start&apos;);   // check, that action passed
-
-        t.any()
-            .contains(&apos;Hello&apos;)     // check the text response
-            .quickReplyAction(&apos;continue&apos;);
-
-        await t.quickReply(&apos;continue&apos;); // select the quick reply
-
-        t.passedAction(&apos;introduction&apos;);
-
-        await t.text(&apos;Show me the goods!&apos;);
+        t.passedAction(<span class="hljs-string">&apos;start&apos;</span>);   <span class="hljs-comment">// check, that action passed</span>
 
         t.any()
-            .templateType(&apos;generic&apos;); // look for generic template
+            .contains(<span class="hljs-string">&apos;Hello&apos;</span>)     <span class="hljs-comment">// check the text response</span>
+            .quickReplyAction(<span class="hljs-string">&apos;continue&apos;</span>);
 
-        // check the state
-        assert.strictEqual(t.getState().seenGoods, true, &apos;seenGoods has to be true&apos;);
+        <span class="hljs-keyword">await</span> t.quickReply(<span class="hljs-string">&apos;continue&apos;</span>); <span class="hljs-comment">// select the quick reply</span>
+
+        t.passedAction(<span class="hljs-string">&apos;introduction&apos;</span>);
+
+        <span class="hljs-keyword">await</span> t.text(<span class="hljs-string">&apos;Show me the goods!&apos;</span>);
+
+        t.any()
+            .templateType(<span class="hljs-string">&apos;generic&apos;</span>); <span class="hljs-comment">// look for generic template</span>
+
+        <span class="hljs-comment">// check the state</span>
+        assert.strictEqual(t.getState().seenGoods, <span class="hljs-literal">true</span>, <span class="hljs-string">&apos;seenGoods has to be true&apos;</span>);
     });
 
 });
@@ -885,7 +833,7 @@ describe(&apos;/bot&apos;, function () {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Testing","level":"1.8","depth":1,"next":{"title":"Analytics","level":"1.9","depth":1,"path":"tutorial/analytics.md","ref":"tutorial/analytics.md","articles":[]},"previous":{"title":"Webviews","level":"1.7.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/testing.md","mtime":"2018-04-16T09:53:57.153Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Testing","level":"1.8","depth":1,"next":{"title":"Analytics","level":"1.9","depth":1,"path":"tutorial/analytics.md","ref":"tutorial/analytics.md","articles":[]},"previous":{"title":"Webviews","level":"1.7.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/testing.md","mtime":"2018-04-17T16:51:28.999Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

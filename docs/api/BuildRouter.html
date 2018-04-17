@@ -61,10 +61,8 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="callback.html" />
     
-    
-    <link rel="prev" href="serverlessAWS.html" />
+    <link rel="prev" href="Ai.html" />
     
 
     </head>
@@ -670,33 +668,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="Settings.html">
-            
-                <a href="Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="express.html">
-            
-                <a href="express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="bufferloader.html">
             
                 <a href="bufferloader.html">
             
@@ -709,7 +681,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="Ai.html">
+        <li class="chapter " data-level="2.7" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -722,38 +694,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="serverlessAWS.html">
-            
-                <a href="serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter active" data-level="2.11" data-path="BuildRouter.html">
+        <li class="chapter active" data-level="2.8" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="callback.html">
-            
-                <a href="callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -824,8 +770,8 @@
 <ul>
 <li><a href="#BuildRouter">BuildRouter</a><ul>
 <li><a href="#new_BuildRouter_new">new BuildRouter()</a></li>
-<li><a href="#new_BuildRouter_new">new BuildRouter(block, blocksResource)</a></li>
-<li><a href="#BuildRouter_fromData">.fromData()</a></li>
+<li><a href="#new_BuildRouter_new">new BuildRouter(block, blocksResource, context, [request])</a></li>
+<li><a href="#BuildRouter_fromData">.fromData(blocks, blocksResource)</a></li>
 </ul>
 </li>
 </ul>
@@ -835,7 +781,7 @@
 <p>Build bot from Wingbot configuration file or snapshot url</p>
 <div id="new_BuildRouter_new">&#xA0;</div>
 
-<h3 id="new-buildrouterblock-blocksresource"><a name="new-buildrouterblock-blocksresource" class="plugin-anchor" href="#new-buildrouterblock-blocksresource"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, blocksResource)</h3>
+<h3 id="new-buildrouterblock-blocksresource-context-request"><a name="new-buildrouterblock-blocksresource-context-request" class="plugin-anchor" href="#new-buildrouterblock-blocksresource-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, blocksResource, context, [request])</h3>
 <p>Create new router from configuration</p>
 <table>
 <thead>
@@ -848,7 +794,7 @@
 <tbody>
 <tr>
 <td>block</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 <td></td>
 </tr>
 <tr>
@@ -868,7 +814,7 @@
 </tr>
 <tr>
 <td>[block.routes]</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 <td>list of routes for direct bot build</td>
 </tr>
 <tr>
@@ -880,6 +826,16 @@
 <td>blocksResource</td>
 <td><a href="#Blocks"><code>Blocks</code></a></td>
 <td>custom code blocks resource</td>
+</tr>
+<tr>
+<td>context</td>
+<td><code>Object</code></td>
+<td>the building context</td>
+</tr>
+<tr>
+<td>[request]</td>
+<td><code>Request</code></td>
+<td>the building context</td>
 </tr>
 </tbody>
 </table>
@@ -893,8 +849,8 @@ const config = require(&apos;./config&apos;);
 
 const blocks = new Blocks();
 
-blocks.code(&apos;exampleBlock&apos;, function* (req, res, postBack, context, params) {
-    yield res.run(&apos;responseBlockName&apos;);
+blocks.code(&apos;exampleBlock&apos;, async (req, res, postBack, context, params) =&gt; {
+    await res.run(&apos;responseBlockName&apos;);
 });
 
 const bot = new BuildRouter({
@@ -925,8 +881,28 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 </code></pre>
 <div id="BuildRouter_fromData">&#xA0;</div>
 
-<h3 id="buildrouterfromdata"><a name="buildrouterfromdata" class="plugin-anchor" href="#buildrouterfromdata"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData()</h3>
+<h3 id="buildrouterfromdatablocks-blocksresource"><a name="buildrouterfromdatablocks-blocksresource" class="plugin-anchor" href="#buildrouterfromdatablocks-blocksresource"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, blocksResource)</h3>
 <p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blocks</td>
+<td><code>Array.&lt;Object&gt;</code></td>
+<td>blocks list</td>
+</tr>
+<tr>
+<td>blocksResource</td>
+<td><a href="#Blocks"><code>Blocks</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="BuildRouter">&#xA0;</div>
 
 <h2 id="buildrouter"><a name="buildrouter" class="plugin-anchor" href="#buildrouter"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter</h2>
@@ -934,8 +910,8 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <ul>
 <li><a href="#BuildRouter">BuildRouter</a><ul>
 <li><a href="#new_BuildRouter_new">new BuildRouter()</a></li>
-<li><a href="#new_BuildRouter_new">new BuildRouter(block, blocksResource)</a></li>
-<li><a href="#BuildRouter_fromData">.fromData()</a></li>
+<li><a href="#new_BuildRouter_new">new BuildRouter(block, blocksResource, context, [request])</a></li>
+<li><a href="#BuildRouter_fromData">.fromData(blocks, blocksResource)</a></li>
 </ul>
 </li>
 </ul>
@@ -945,7 +921,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <p>Build bot from Wingbot configuration file or snapshot url</p>
 <div id="new_BuildRouter_new">&#xA0;</div>
 
-<h3 id="new-buildrouterblock-blocksresource"><a name="new-buildrouterblock-blocksresource" class="plugin-anchor" href="#new-buildrouterblock-blocksresource"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, blocksResource)</h3>
+<h3 id="new-buildrouterblock-blocksresource-context-request"><a name="new-buildrouterblock-blocksresource-context-request" class="plugin-anchor" href="#new-buildrouterblock-blocksresource-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, blocksResource, context, [request])</h3>
 <p>Create new router from configuration</p>
 <table>
 <thead>
@@ -958,7 +934,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <tbody>
 <tr>
 <td>block</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 <td></td>
 </tr>
 <tr>
@@ -978,7 +954,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 </tr>
 <tr>
 <td>[block.routes]</td>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 <td>list of routes for direct bot build</td>
 </tr>
 <tr>
@@ -990,6 +966,16 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <td>blocksResource</td>
 <td><a href="#Blocks"><code>Blocks</code></a></td>
 <td>custom code blocks resource</td>
+</tr>
+<tr>
+<td>context</td>
+<td><code>Object</code></td>
+<td>the building context</td>
+</tr>
+<tr>
+<td>[request]</td>
+<td><code>Request</code></td>
+<td>the building context</td>
 </tr>
 </tbody>
 </table>
@@ -1003,8 +989,8 @@ const config = require(&apos;./config&apos;);
 
 const blocks = new Blocks();
 
-blocks.code(&apos;exampleBlock&apos;, function* (req, res, postBack, context, params) {
-    yield res.run(&apos;responseBlockName&apos;);
+blocks.code(&apos;exampleBlock&apos;, async (req, res, postBack, context, params) =&gt; {
+    await res.run(&apos;responseBlockName&apos;);
 });
 
 const bot = new BuildRouter({
@@ -1035,8 +1021,28 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 </code></pre>
 <div id="BuildRouter_fromData">&#xA0;</div>
 
-<h3 id="buildrouterfromdata"><a name="buildrouterfromdata" class="plugin-anchor" href="#buildrouterfromdata"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData()</h3>
+<h3 id="buildrouterfromdatablocks-blocksresource"><a name="buildrouterfromdatablocks-blocksresource" class="plugin-anchor" href="#buildrouterfromdatablocks-blocksresource"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, blocksResource)</h3>
 <p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blocks</td>
+<td><code>Array.&lt;Object&gt;</code></td>
+<td>blocks list</td>
+</tr>
+<tr>
+<td>blocksResource</td>
+<td><a href="#Blocks"><code>Blocks</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="Blocks">&#xA0;</div>
 
 <h2 id="blocks"><a name="blocks" class="plugin-anchor" href="#blocks"><i class="fa fa-link" aria-hidden="true"></i></a>Blocks</h2>
@@ -1099,8 +1105,8 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 </tr>
 <tr>
 <td>[factoryFn]</td>
-<td><code>string</code></td>
-<td><code>null</code></td>
+<td><code>function</code></td>
+<td><code></code></td>
 <td>block factory - optional when including another blocks object</td>
 </tr>
 </tbody>
@@ -1132,14 +1138,10 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 
             
                 
-                <a href="serverlessAWS.html" class="navigation navigation-prev " aria-label="Previous page: Serverless">
+                <a href="Ai.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Ai">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
-                
-                <a href="callback.html" class="navigation navigation-next " aria-label="Next page: Middlewares">
-                    <i class="fa fa-angle-right"></i>
-                </a>
                 
             
         
@@ -1148,7 +1150,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"2.11","depth":1,"next":{"title":"Middlewares","level":"2.12","depth":1,"path":"api/callback.md","ref":"api/callback.md","articles":[]},"previous":{"title":"Serverless","level":"2.10","depth":1,"path":"api/serverlessAWS.md","ref":"api/serverlessAWS.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2018-04-16T10:41:26.058Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"2.8","depth":1,"previous":{"title":"Ai","level":"2.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2018-04-17T19:01:31.167Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

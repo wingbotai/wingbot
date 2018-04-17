@@ -13,20 +13,20 @@
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
     * [.isImage([attachmentIndex])](#Request_isImage) ⇒ <code>boolean</code>
     * [.isFile([attachmentIndex])](#Request_isFile) ⇒ <code>boolean</code>
-    * [.attachment([attachmentIndex])](#Request_attachment) ⇒ <code>object</code> \| <code>null</code>
+    * [.attachment([attachmentIndex])](#Request_attachment) ⇒ <code>Object</code> \| <code>null</code>
     * [.attachmentUrl([attachmentIndex])](#Request_attachmentUrl) ⇒ <code>string</code> \| <code>null</code>
     * [.isMessage()](#Request_isMessage) ⇒ <code>boolean</code>
     * [.isQuickReply()](#Request_isQuickReply) ⇒ <code>boolean</code>
     * [.isText()](#Request_isText) ⇒ <code>boolean</code>
     * [.text([tokenized])](#Request_text) ⇒ <code>string</code>
     * [.expected()](#Request_expected) ⇒ <code>string</code> \| <code>null</code>
-    * [.quickReply([getData])](#Request_quickReply) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
+    * [.quickReply([getData])](#Request_quickReply) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
     * [.isPostBack()](#Request_isPostBack) ⇒ <code>boolean</code>
     * [.isReferral()](#Request_isReferral) ⇒ <code>boolean</code>
     * [.isPassThread()](#Request_isPassThread) ⇒ <code>boolean</code>
     * [.isOptin()](#Request_isOptin) ⇒ <code>boolean</code>
-    * [.action([getData])](#Request_action) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
-    * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
+    * [.action([getData])](#Request_action) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
+    * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
 
 {% raw %}<div id="new_Request_new">&nbsp;</div>{% endraw %}
 
@@ -113,7 +113,7 @@ Checks, when the attachment is a file
 
 {% raw %}<div id="Request_attachment">&nbsp;</div>{% endraw %}
 
-### request.attachment([attachmentIndex]) ⇒ <code>object</code> \| <code>null</code>
+### request.attachment([attachmentIndex]) ⇒ <code>Object</code> \| <code>null</code>
 Returns whole attachment or null
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
@@ -174,7 +174,7 @@ Returns the request expected handler in case have been set last response
 **Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_quickReply">&nbsp;</div>{% endraw %}
 
-### request.quickReply([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
+### request.quickReply([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
 Returns action or data of quick reply
 When `getData` is `true`, object will be returned. Otherwise string or null.
 
@@ -215,7 +215,7 @@ Returns true, if request is the optin
 **Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_action">&nbsp;</div>{% endraw %}
 
-### request.action([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
+### request.action([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
 Returns action of the postback or quickreply
 When `getData` is `true`, object will be returned. Otherwise string or null.
 
@@ -238,7 +238,7 @@ typeof res.action(true) === 'object';
 ```
 {% raw %}<div id="Request_postBack">&nbsp;</div>{% endraw %}
 
-### request.postBack([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
+### request.postBack([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
 Returns action or data of postback
 When `getData` is `true`, object will be returned. Otherwise string or null.
 

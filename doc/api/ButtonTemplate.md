@@ -53,7 +53,7 @@ Adds button, which makes another action
 | --- | --- | --- | --- |
 | title | <code>string</code> |  | Button title |
 | action | <code>string</code> |  | Button action (can be absolute or relative) |
-| [data] | <code>object</code> | <code>{}</code> | Action data |
+| [data] | <code>Object</code> | <code>{}</code> | Action data |
 
 {% raw %}<div id="ButtonTemplate_shareButton">&nbsp;</div>{% endraw %}
 
@@ -110,7 +110,7 @@ Sets url of recently added element
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | action | <code>string</code> |  | Button action (can be absolute or relative) |
-| [data] | <code>object</code> | <code>{}</code> | Action data |
+| [data] | <code>Object</code> | <code>{}</code> | Action data |
 
 {% raw %}<div id="GenericTemplate_setElementImage">&nbsp;</div>{% endraw %}
 
@@ -162,7 +162,7 @@ Adds button, which makes another action
 | --- | --- | --- | --- |
 | title | <code>string</code> |  | Button title |
 | action | <code>string</code> |  | Button action (can be absolute or relative) |
-| [data] | <code>object</code> | <code>{}</code> | Action data |
+| [data] | <code>Object</code> | <code>{}</code> | Action data |
 
 {% raw %}<div id="ButtonTemplate_shareButton">&nbsp;</div>{% endraw %}
 

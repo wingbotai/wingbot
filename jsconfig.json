@@ -3,7 +3,7 @@
         "module": "commonjs",
         "target": "es2017",
         "allowSyntheticDefaultImports": true,
-        "checkJs": false
+        "checkJs": true
     },
     "exclude": [
         "node_modules",

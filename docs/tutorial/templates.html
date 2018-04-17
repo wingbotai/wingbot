@@ -670,33 +670,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.6" data-path="../api/Settings.html">
-            
-                <a href="../api/Settings.html">
-            
-                    
-                    Bot Settings
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.7" data-path="../api/express.html">
-            
-                <a href="../api/express.html">
-            
-                    
-                    Express/MongoDb tools
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.8" data-path="../api/bufferloader.html">
+        <li class="chapter " data-level="2.6" data-path="../api/bufferloader.html">
             
                 <a href="../api/bufferloader.html">
             
@@ -709,7 +683,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="../api/Ai.html">
+        <li class="chapter " data-level="2.7" data-path="../api/Ai.html">
             
                 <a href="../api/Ai.html">
             
@@ -722,38 +696,12 @@
             
         </li>
     
-        <li class="chapter " data-level="2.10" data-path="../api/serverlessAWS.html">
-            
-                <a href="../api/serverlessAWS.html">
-            
-                    
-                    Serverless
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.11" data-path="../api/BuildRouter.html">
+        <li class="chapter " data-level="2.8" data-path="../api/BuildRouter.html">
             
                 <a href="../api/BuildRouter.html">
             
                     
                     Wingbot.ai
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="2.12" data-path="../api/callback.html">
-            
-                <a href="../api/callback.html">
-            
-                    
-                    Middlewares
             
                 </a>
             
@@ -814,62 +762,62 @@
 </ul>
 <h2 id="button-template"><a name="button-template" class="plugin-anchor" href="#button-template"><i class="fa fa-link" aria-hidden="true"></i></a>Button Template</h2>
 <p>Show the button template</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const bot = new Router();
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
 bot.use((req, res) =&gt; {
-    res.button(&apos;Hello&apos;)
-        .postBackButton(&apos;Text&apos;, &apos;action&apos;)            // makes a postback
-        .urlButton(&apos;Url button&apos;, &apos;/internal&apos;, true)  // opens authorized webview
-        .urlButton(&apos;Other button&apos;, &apos;https://goo.gl&apos;) // opens in internal browser
+    res.button(<span class="hljs-string">&apos;Hello&apos;</span>)
+        .postBackButton(<span class="hljs-string">&apos;Text&apos;</span>, <span class="hljs-string">&apos;action&apos;</span>)            <span class="hljs-comment">// makes a postback</span>
+        .urlButton(<span class="hljs-string">&apos;Url button&apos;</span>, <span class="hljs-string">&apos;/internal&apos;</span>, <span class="hljs-literal">true</span>)  <span class="hljs-comment">// opens authorized webview</span>
+        .urlButton(<span class="hljs-string">&apos;Other button&apos;</span>, <span class="hljs-string">&apos;https://goo.gl&apos;</span>) <span class="hljs-comment">// opens in internal browser</span>
         .send();
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <h2 id="generic-template"><a name="generic-template" class="plugin-anchor" href="#generic-template"><i class="fa fa-link" aria-hidden="true"></i></a>Generic Template</h2>
 <p>Show the generic template</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const bot = new Router();
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
 bot.use((req, res) =&gt; {
     res.genericTemplate()
-        .addElement(&apos;title&apos;, &apos;subtitle&apos;)
-            .setElementImage(&apos;/local.png&apos;)               // set local image
-            .setElementUrl(&apos;https://www.seznam.cz&apos;)
-            .postBackButton(&apos;Button title&apos;, &apos;action&apos;, { actionData: 1 })
-        .addElement(&apos;another&apos;, &apos;subtitle&apos;)
-            .setElementImage(&apos;https://goo.gl/image.png&apos;) // use remote image
-            .setElementAction(&apos;action&apos;, { actionData: 1 })
-            .urlButton(&apos;Local link with extension&apos;, &apos;/local/path&apos;, true, &apos;compact&apos;)
+        .addElement(<span class="hljs-string">&apos;title&apos;</span>, <span class="hljs-string">&apos;subtitle&apos;</span>)
+            .setElementImage(<span class="hljs-string">&apos;/local.png&apos;</span>)               <span class="hljs-comment">// set local image</span>
+            .setElementUrl(<span class="hljs-string">&apos;https://www.seznam.cz&apos;</span>)
+            .postBackButton(<span class="hljs-string">&apos;Button title&apos;</span>, <span class="hljs-string">&apos;action&apos;</span>, { actionData: <span class="hljs-number">1</span> })
+        .addElement(<span class="hljs-string">&apos;another&apos;</span>, <span class="hljs-string">&apos;subtitle&apos;</span>)
+            .setElementImage(<span class="hljs-string">&apos;https://goo.gl/image.png&apos;</span>) <span class="hljs-comment">// use remote image</span>
+            .setElementAction(<span class="hljs-string">&apos;action&apos;</span>, { actionData: <span class="hljs-number">1</span> })
+            .urlButton(<span class="hljs-string">&apos;Local link with extension&apos;</span>, <span class="hljs-string">&apos;/local/path&apos;</span>, <span class="hljs-literal">true</span>, <span class="hljs-string">&apos;compact&apos;</span>)
         .send();
 });
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <h2 id="receipt-template"><a name="receipt-template" class="plugin-anchor" href="#receipt-template"><i class="fa fa-link" aria-hidden="true"></i></a>Receipt Template</h2>
 <p>Show the receipt template</p>
-<pre><code class="lang-javascript">const { Router } = require(&apos;&apos;wingbot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const bot = new Router();
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
 bot.use((req, res) =&gt; {
-    res.receipt(&apos;Name&apos;, &apos;Cash&apos;, &apos;CZK&apos;, &apos;1&apos;)
-        .addElement(&apos;Element name&apos;, 1, 2, &apos;/inside.png&apos;, &apos;text&apos;)
+    res.receipt(<span class="hljs-string">&apos;Name&apos;</span>, <span class="hljs-string">&apos;Cash&apos;</span>, <span class="hljs-string">&apos;CZK&apos;</span>, <span class="hljs-string">&apos;1&apos;</span>)
+        .addElement(<span class="hljs-string">&apos;Element name&apos;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-string">&apos;/inside.png&apos;</span>, <span class="hljs-string">&apos;text&apos;</span>)
         .send();
 
-module.exports = bot;
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <h2 id="working-with-webviews"><a name="working-with-webviews" class="plugin-anchor" href="#working-with-webviews"><i class="fa fa-link" aria-hidden="true"></i></a>Working with webviews</h2>
 <ul>
 <li><p><strong>Dont forget to whitelist your domain</strong></p>
-<pre><code class="lang-javascript">const { Settings } = require(&apos;&apos;wingbot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Settings } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const settings = new Settings(&apos;pagetoken&apos;);
+<span class="hljs-keyword">const</span> settings = <span class="hljs-keyword">new</span> Settings(<span class="hljs-string">&apos;pagetoken&apos;</span>);
 
-settings.whitelistDomain(&apos;https://mydomain.com&apos;);
+settings.whitelistDomain(<span class="hljs-string">&apos;https://mydomain.com&apos;</span>);
 </code></pre>
 </li>
 <li><p><strong>Include Facebook Code in your page</strong></p>
@@ -995,7 +943,7 @@ settings.whitelistDomain(&apos;https://mydomain.com&apos;);
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Sending Templates","level":"1.7","depth":1,"next":{"title":"Button Template","level":"1.7.1","depth":2,"anchor":"#button-template","path":"tutorial/templates.md","ref":"tutorial/templates.md#button-template","articles":[]},"previous":{"title":"Example","level":"1.6.2","depth":2,"anchor":"#example","path":"tutorial/nestingRouters.md","ref":"tutorial/nestingRouters.md#example","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/templates.md","mtime":"2018-04-16T09:53:57.153Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T10:41:28.747Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Sending Templates","level":"1.7","depth":1,"next":{"title":"Button Template","level":"1.7.1","depth":2,"anchor":"#button-template","path":"tutorial/templates.md","ref":"tutorial/templates.md#button-template","articles":[]},"previous":{"title":"Example","level":"1.6.2","depth":2,"anchor":"#example","path":"tutorial/nestingRouters.md","ref":"tutorial/nestingRouters.md#example","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/templates.md","mtime":"2018-04-17T16:51:28.999Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

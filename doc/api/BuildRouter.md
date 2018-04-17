@@ -17,8 +17,8 @@
 
 * [BuildRouter](#BuildRouter)
     * [new BuildRouter()](#new_BuildRouter_new)
-    * [new BuildRouter(block, blocksResource)](#new_BuildRouter_new)
-    * [.fromData()](#BuildRouter_fromData)
+    * [new BuildRouter(block, blocksResource, context, [request])](#new_BuildRouter_new)
+    * [.fromData(blocks, blocksResource)](#BuildRouter_fromData)
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
@@ -27,19 +27,21 @@ Build bot from Wingbot configuration file or snapshot url
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
-### new BuildRouter(block, blocksResource)
+### new BuildRouter(block, blocksResource, context, [request])
 Create new router from configuration
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| block | <code>object</code> |  |
+| block | <code>Object</code> |  |
 | [block.botId] | <code>string</code> | the ID of bot |
 | [block.snapshot] | <code>string</code> | snapshot stage of bot |
 | [block.token] | <code>string</code> | authorization token for bot |
-| [block.routes] | <code>object</code> | list of routes for direct bot build |
+| [block.routes] | <code>Object</code> | list of routes for direct bot build |
 | [block.url] | <code>string</code> | specify alternative configuration resource |
 | blocksResource | [<code>Blocks</code>](#Blocks) | custom code blocks resource |
+| context | <code>Object</code> | the building context |
+| [request] | <code>Request</code> | the building context |
 
 **Example**  
 ```javascript
@@ -52,8 +54,8 @@ const config = require('./config');
 
 const blocks = new Blocks();
 
-blocks.code('exampleBlock', function* (req, res, postBack, context, params) {
-    yield res.run('responseBlockName');
+blocks.code('exampleBlock', async (req, res, postBack, context, params) => {
+    await res.run('responseBlockName');
 });
 
 const bot = new BuildRouter({
@@ -84,8 +86,14 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 ```
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
-### BuildRouter.fromData()
+### BuildRouter.fromData(blocks, blocksResource)
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blocks | <code>Array.&lt;Object&gt;</code> | blocks list |
+| blocksResource | [<code>Blocks</code>](#Blocks) |  |
+
 {% raw %}<div id="BuildRouter">&nbsp;</div>{% endraw %}
 
 ## BuildRouter
@@ -93,8 +101,8 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 
 * [BuildRouter](#BuildRouter)
     * [new BuildRouter()](#new_BuildRouter_new)
-    * [new BuildRouter(block, blocksResource)](#new_BuildRouter_new)
-    * [.fromData()](#BuildRouter_fromData)
+    * [new BuildRouter(block, blocksResource, context, [request])](#new_BuildRouter_new)
+    * [.fromData(blocks, blocksResource)](#BuildRouter_fromData)
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
@@ -103,19 +111,21 @@ Build bot from Wingbot configuration file or snapshot url
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
-### new BuildRouter(block, blocksResource)
+### new BuildRouter(block, blocksResource, context, [request])
 Create new router from configuration
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| block | <code>object</code> |  |
+| block | <code>Object</code> |  |
 | [block.botId] | <code>string</code> | the ID of bot |
 | [block.snapshot] | <code>string</code> | snapshot stage of bot |
 | [block.token] | <code>string</code> | authorization token for bot |
-| [block.routes] | <code>object</code> | list of routes for direct bot build |
+| [block.routes] | <code>Object</code> | list of routes for direct bot build |
 | [block.url] | <code>string</code> | specify alternative configuration resource |
 | blocksResource | [<code>Blocks</code>](#Blocks) | custom code blocks resource |
+| context | <code>Object</code> | the building context |
+| [request] | <code>Request</code> | the building context |
 
 **Example**  
 ```javascript
@@ -128,8 +138,8 @@ const config = require('./config');
 
 const blocks = new Blocks();
 
-blocks.code('exampleBlock', function* (req, res, postBack, context, params) {
-    yield res.run('responseBlockName');
+blocks.code('exampleBlock', async (req, res, postBack, context, params) => {
+    await res.run('responseBlockName');
 });
 
 const bot = new BuildRouter({
@@ -160,8 +170,14 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 ```
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
-### BuildRouter.fromData()
+### BuildRouter.fromData(blocks, blocksResource)
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blocks | <code>Array.&lt;Object&gt;</code> | blocks list |
+| blocksResource | [<code>Blocks</code>](#Blocks) |  |
+
 {% raw %}<div id="Blocks">&nbsp;</div>{% endraw %}
 
 ## Blocks
@@ -195,5 +211,5 @@ Register custom code block
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | name | <code>string</code> \| [<code>Blocks</code>](#Blocks) |  | block name or blocks object to include |
-| [factoryFn] | <code>string</code> | <code>null</code> | block factory - optional when including another blocks object |
+| [factoryFn] | <code>function</code> | <code></code> | block factory - optional when including another blocks object |
 

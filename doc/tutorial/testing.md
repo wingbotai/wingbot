@@ -6,7 +6,7 @@ We made testing bots as simple as possible. Our testing tool provides methods
 for simulating
 
 ```javascript
-const { Tester } = require(''wingbot');
+const { Tester } = require('wingbot');
 const assert = require('assert');
 const bot = require('../botRoot');
 

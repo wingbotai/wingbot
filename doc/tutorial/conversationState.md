@@ -7,7 +7,7 @@ Stateless conversation is annoying. Noone wants to repeat, what was said. So **e
 Yes, you already have user profile in state.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use((req, res) => {
@@ -23,7 +23,7 @@ module.exports = bot;
 Request object contains `.state` attribute, which represents state before the event, Responder updates new state with `Object.assign()` approach.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use('/rename', (req, res) => {
@@ -79,7 +79,7 @@ This example makes conversation flow like this:
 It's good to know, that request state is not modified, when `res.setState()` is called. It will be modified after dispatching process.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use((req, res) => {

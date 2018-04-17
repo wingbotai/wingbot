@@ -5,7 +5,7 @@
 Let's start with simple example. This is how to make an echo.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 // this route processes all incomming messages
@@ -38,7 +38,7 @@ When asking user a question, it's important to keeping reply in context. The `re
 Routes shoud always begin with `/` slash, but when referencing route, starting slash is treated as absolute path reference. When you omit the starting slash, path is treated as relative.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use('/whichCat', (req, res, postBack) => {
@@ -82,7 +82,7 @@ Click is always simplier then writing a text. And also working with events is mu
 Let's lead conversation throuch quick replies.
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use('/grumpy', (req, res) => {
@@ -114,7 +114,7 @@ We've normalized all Quick Replies, Post Backs, or Referrals to actions! You don
 
 
 ```javascript
-const { Router } = require(''wingbot');
+const { Router } = require('wingbot');
 const bot = new Router();
 
 bot.use('/grumpy', (req, res) => {

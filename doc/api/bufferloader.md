@@ -8,12 +8,14 @@
 <dd></dd>
 <dt><a href="#Translate">Translate</a></dt>
 <dd></dd>
+<dt><a href="#ReturnSender">ReturnSender</a></dt>
+<dd></dd>
 </dl>
 
 ## Functions
 
 <dl>
-<dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> ⇒</dt>
+<dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> ⇒ <code>Promise.&lt;Buffer&gt;</code></dt>
 <dd><p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
 </dd>
 </dl>
@@ -26,31 +28,20 @@ Memory conversation state storage for testing purposes
 **Kind**: global class  
 
 * [MemoryStateStorage](#MemoryStateStorage)
-    * [.getOrCreateAndLock(senderId, defaultState)](#MemoryStateStorage_getOrCreateAndLock) ⇒ <code>Promise.&lt;Object&gt;</code>
-    * [.onAfterStateLoad(req, state)](#MemoryStateStorage_onAfterStateLoad) ⇒ <code>Promise.&lt;Object&gt;</code>
+    * [.getOrCreateAndLock(senderId, defaultState, lockTimeout)](#MemoryStateStorage_getOrCreateAndLock) ⇒ <code>Promise.&lt;Object&gt;</code>
     * [.saveState(state)](#MemoryStateStorage_saveState) ⇒ <code>Promise</code>
 
 {% raw %}<div id="MemoryStateStorage_getOrCreateAndLock">&nbsp;</div>{% endraw %}
 
-### memoryStateStorage.getOrCreateAndLock(senderId, defaultState) ⇒ <code>Promise.&lt;Object&gt;</code>
+### memoryStateStorage.getOrCreateAndLock(senderId, defaultState, lockTimeout) ⇒ <code>Promise.&lt;Object&gt;</code>
 **Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
 **Returns**: <code>Promise.&lt;Object&gt;</code> - - conversation state  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| senderId | <code>any</code> | sender identifier |
-| defaultState | <code>Object</code> | default state of the conversation |
-
-{% raw %}<div id="MemoryStateStorage_onAfterStateLoad">&nbsp;</div>{% endraw %}
-
-### memoryStateStorage.onAfterStateLoad(req, state) ⇒ <code>Promise.&lt;Object&gt;</code>
-**Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
-**Returns**: <code>Promise.&lt;Object&gt;</code> - - conversation state  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>Request</code> | chat request |
-| state | <code>Object</code> | conversation state |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| senderId | <code>any</code> |  | sender identifier |
+| defaultState | <code>Object</code> |  | default state of the conversation |
+| lockTimeout | <code>number</code> | <code>300</code> | duration of lock |
 
 {% raw %}<div id="MemoryStateStorage_saveState">&nbsp;</div>{% endraw %}
 
@@ -69,7 +60,7 @@ Memory conversation state storage for testing purposes
 * [Translate](#Translate)
     * [new Translate()](#new_Translate_new)
     * [new Translate([options])](#new_Translate_new)
-    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;Object&gt;</code>
     * [.middleware(languageResolver)](#Translate_middleware) ⇒ <code>function</code>
 
 {% raw %}<div id="new_Translate_new">&nbsp;</div>{% endraw %}
@@ -83,13 +74,13 @@ Tool for text translation
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [options] | <code>object</code> |  |
+| [options] | <code>Object</code> |  |
 | [options.sourcePath] | <code>string</code> | optional source path of translation folder |
 | [options.fileSuffix] | <code>string</code> | by default `.locale.po` |
 
 {% raw %}<div id="Translate_translator">&nbsp;</div>{% endraw %}
 
-### translate.translator(languages) ⇒ <code>Promise.&lt;object&gt;</code>
+### translate.translator(languages) ⇒ <code>Promise.&lt;Object&gt;</code>
 Creates static translator for static settings
 
 **Kind**: instance method of [<code>Translate</code>](#Translate)  
@@ -145,7 +136,7 @@ bot.use((req, res) => {
 * [Translate](#Translate)
     * [new Translate()](#new_Translate_new)
     * [new Translate([options])](#new_Translate_new)
-    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;object&gt;</code>
+    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;Object&gt;</code>
     * [.middleware(languageResolver)](#Translate_middleware) ⇒ <code>function</code>
 
 {% raw %}<div id="new_Translate_new">&nbsp;</div>{% endraw %}
@@ -159,13 +150,13 @@ Tool for text translation
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [options] | <code>object</code> |  |
+| [options] | <code>Object</code> |  |
 | [options.sourcePath] | <code>string</code> | optional source path of translation folder |
 | [options.fileSuffix] | <code>string</code> | by default `.locale.po` |
 
 {% raw %}<div id="Translate_translator">&nbsp;</div>{% endraw %}
 
-### translate.translator(languages) ⇒ <code>Promise.&lt;object&gt;</code>
+### translate.translator(languages) ⇒ <code>Promise.&lt;Object&gt;</code>
 Creates static translator for static settings
 
 **Kind**: instance method of [<code>Translate</code>](#Translate)  
@@ -213,13 +204,36 @@ bot.use((req, res) => {
    res.text(res.t('Translated text'));
 });
 ```
+{% raw %}<div id="ReturnSender">&nbsp;</div>{% endraw %}
+
+## ReturnSender
+**Kind**: global class  
+
+* [ReturnSender](#ReturnSender)
+    * [new ReturnSender(options, userId, incommingMessage, logger)](#new_ReturnSender_new)
+    * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;({senderId:string}\|null)&gt;</code>
+
+{% raw %}<div id="new_ReturnSender_new">&nbsp;</div>{% endraw %}
+
+### new ReturnSender(options, userId, incommingMessage, logger)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>Object</code> |  |
+| userId | <code>string</code> |  |
+| incommingMessage | <code>Object</code> |  |
+| logger | <code>console</code> | console like logger |
+
+{% raw %}<div id="ReturnSender_modifyStateBeforeStore">&nbsp;</div>{% endraw %}
+
+### returnSender.modifyStateBeforeStore() ⇒ <code>Promise.&lt;({senderId:string}\|null)&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
 {% raw %}<div id="bufferloader">&nbsp;</div>{% endraw %}
 
-## bufferloader(url, [limit], [limitJustByBody], [redirCount]) ⇒
+## bufferloader(url, [limit], [limitJustByBody], [redirCount]) ⇒ <code>Promise.&lt;Buffer&gt;</code>
 Downloads a file from url into a buffer. Supports size limits and redirects.
 
 **Kind**: global function  
-**Returns**: Promise.<Buffer>  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |

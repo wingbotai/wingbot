@@ -72,7 +72,7 @@
 
 **Example**
 ```javascript
-const { Keyworder } = require(''wingbot');
+const { Keyworder } = require('wingbot');
 const keyworder = new Keyworder('http://example-ai-api.com/', 'modelName');
 
 router.use(keyworder.middleware('hello-intent'), (req, res) => {
