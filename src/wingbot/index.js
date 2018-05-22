@@ -3,10 +3,10 @@
  */
 'use strict';
 
-const validate = require('./validate');
+const validateBot = require('./validateBot');
 const WingbotModel = require('./WingbotModel');
 
 module.exports = {
-    validate,
+    validateBot,
     WingbotModel
 };

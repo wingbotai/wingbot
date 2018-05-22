@@ -12,7 +12,7 @@ class ReturnSender {
      * @param {Object} incommingMessage
      * @param {console} logger - console like logger
      */
-    constructor (options, userId, incommingMessage, logger = console) {
+    constructor (options, userId, incommingMessage, logger = null) {
         this._queue = [];
         this._sent = [];
         this._responses = [];
@@ -21,7 +21,7 @@ class ReturnSender {
 
         this._isWorking = false;
 
-        this._sendLogs = false;
+        this._sendLogs = logger !== null;
 
         this._userId = userId;
 
@@ -103,7 +103,7 @@ class ReturnSender {
     finished () {
         this._finished = true;
         if (this._sendLogs) {
-            this._sendLogs = true;
+            this._sendLogs = false;
             this._logger.log(this._userId, this._sent, this._incommingMessage);
         }
         return this._promise

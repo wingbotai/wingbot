@@ -10,7 +10,7 @@ Framework for building reusable chatbot components. **Routing**, **Keyword recog
 
 ## Requirements and installation
 
-  - requires `nodejs` > 6.0
+  - requires `nodejs` > 8.0
 
   ```bash
   $ npm i -S wingbot

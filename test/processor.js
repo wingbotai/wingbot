@@ -34,7 +34,9 @@ function createStateStorage (state = EMPTY_STATE, simulateError = true) {
     return storage;
 }
 
-function createLogger (errFn = (m, e) => { throw e; }) {
+function createLogger (errFn = (m, e) => {
+    throw e;
+}) {
     return {
         log: sinon.spy(),
         warn: sinon.spy(),

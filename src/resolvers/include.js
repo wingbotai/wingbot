@@ -3,9 +3,7 @@
  */
 'use strict';
 
-const BuildRouter = require('../BuildRouter');
-
-function include (params, context, blocks) {
+function include (params, context, plugins) {
     const includedRouter = context.blocks
         .find(block => block.staticBlockId === params.staticBlockId);
 
@@ -13,7 +11,7 @@ function include (params, context, blocks) {
         throw new Error(`Block ${params.staticBlockId} not found!`);
     }
 
-    return new BuildRouter(includedRouter, blocks, context);
+    return new context.BuildRouter(includedRouter, plugins, context);
 }
 
 module.exports = include;

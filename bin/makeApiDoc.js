@@ -13,7 +13,7 @@ const docs = [
     ['src/Tester.js', 'src/testTools/ResponseAssert.js', 'src/testTools/AnyResponseAssert.js'],
     ['src/tools/bufferloader.js', 'src/tools/MemoryStateStorage.js', 'src/tools/Translate.js', 'src/ReturnSender.js'],
     'src/Ai.js',
-    ['src/BuildRouter.js', 'src/Blocks.js']
+    ['src/BuildRouter.js', 'src/Plugins.js']
 ];
 
 let srcFile;

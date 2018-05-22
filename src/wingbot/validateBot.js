@@ -8,12 +8,13 @@ const Tester = require('../Tester');
 /**
  * Test the bot configuration
  *
- * @param {Function} botFactory
+ * @param {BuildRouter} bot
+ * @param {Object} validationRequestBody
  * @param {string} [postBackTestAction]
  * @param {string} [testText]
  */
-async function validate (botFactory, postBackTestAction = 'start', testText = 'hello') {
-    const bot = botFactory();
+async function validateBot (bot, validationRequestBody, postBackTestAction = 'start', testText = 'hello') {
+    bot.buildWithSnapshot(validationRequestBody.blocks, Number.MAX_SAFE_INTEGER);
 
     const t = new Tester(bot);
 
@@ -32,6 +33,8 @@ async function validate (botFactory, postBackTestAction = 'start', testText = 'h
             throw new Error(`Text message failed: ${e.message}`);
         }
     }
+
+    bot.resetRouter();
 }
 
-module.exports = validate;
+module.exports = validateBot;

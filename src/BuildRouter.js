@@ -7,6 +7,15 @@ const requestNative = require('request-promise-native');
 const Router = require('./Router');
 const Ai = require('./Ai');
 const expected = require('./resolvers/expected');
+const defaultResourceMap = require('./defaultResourceMap');
+
+/**
+ * @typedef {Object} ConfigStorage
+ * @prop {{():Promise}} invalidateConfig
+ * @prop {{():Promise<number>}} getConfigTimestamp
+ * @prop {{(config:Object):Promise<Object>}} updateConfig
+ * @prop {{():Promise<Object>}} getConfig
+ */
 
 /**
  * Build bot from Wingbot configuration file or snapshot url
@@ -25,9 +34,11 @@ class BuildRouter extends Router {
      * @param {string} [block.token] - authorization token for bot
      * @param {Object} [block.routes] - list of routes for direct bot build
      * @param {string} [block.url] - specify alternative configuration resource
-     * @param {Blocks} blocksResource - custom code blocks resource
+     * @param {Plugins} plugins - custom code blocks resource
      * @param {Object} context - the building context
-     * @param {Request} [request] - the building context
+     * @param {Object} [context.linksTranslator] - function, that translates links globally
+     * @param {ConfigStorage} [context.configStorage] - function, that translates links globally
+     * @param {Function} [request] - the building context
      * @example
      *
      * // usage under serverless environment
@@ -69,14 +80,14 @@ class BuildRouter extends Router {
      *
      * module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
      */
-    constructor (block, blocksResource, context = {}, request = requestNative) {
+    constructor (block, plugins, context = {}, request = requestNative) {
         super();
 
         if (!block || typeof block !== 'object') {
             throw new Error('Params should be an object');
         }
 
-        this._blocksResource = blocksResource;
+        this._plugins = plugins;
 
         this._context = context;
 
@@ -92,6 +103,23 @@ class BuildRouter extends Router {
 
         this._prebuiltRoutesCount = null;
 
+        this.resources = defaultResourceMap();
+
+        this._loadBotAuthorization = block.token || null;
+
+        this._configStorage = context.configStorage;
+
+        this._runningReqs = [];
+
+        this._configTs = 0;
+
+        /**
+         * Timeout, when the router is not checking for new configuration
+         *
+         * @prop {number}
+         */
+        this.keepConfigFor = 10000;
+
         if (typeof block.routes === 'object') {
             this._buildBot(block);
         } else if (typeof block.url === 'string') {
@@ -102,19 +130,72 @@ class BuildRouter extends Router {
         } else {
             throw new Error('Not implemented yet');
         }
-
-        this._loadBotAuthorization = block.token || null;
     }
 
-    reduce (...args) {
+    async reduce (...args) {
         if (this._botLoaded === null) {
-            this._botLoaded = this._loadBot();
+            this._botLoaded = this._checkForBotUpdate()
+                .then(() => {
+                    this._botLoaded = null;
+                });
         }
-        return this._botLoaded
-            .then(() => super.reduce(...args));
+
+        await this._botLoaded;
+
+        let runningRequest;
+        try {
+            const reducePromise = super.reduce(...args);
+
+            runningRequest = reducePromise
+                .catch(() => { /* mute fails */ });
+            this._runningReqs.push(runningRequest);
+
+            return await reducePromise;
+        } finally {
+            if (runningRequest) {
+                this._runningReqs = this._runningReqs
+                    .filter(rr => rr !== runningRequest);
+            }
+        }
     }
 
-    _loadBot () {
+    async _checkForBotUpdate () {
+        if (this._configTs > Date.now() - this.keepConfigFor) {
+            // do not update recently updated of fixed configurations
+            return;
+        } else if (!this._configStorage) {
+            // not need to wait for existing requests, there are no existing ones
+            const snapshot = await this._loadBot();
+            this.buildWithSnapshot(snapshot.blocks);
+            return;
+        }
+
+        // check for current TS
+        const ts = await this._configStorage.getConfigTimestamp();
+
+        if (ts <= this._configTs && this._configTs !== 0 && ts !== 0) {
+            // do not update, when there is no better configuration
+            return;
+        }
+
+        let snapshot;
+
+        if (ts === 0) {
+            // there is no configuration, load it from server
+            snapshot = await this._loadBot();
+            snapshot = await this._configStorage.updateConfig(snapshot);
+        } else {
+            // probably someone has updated the configuration
+            snapshot = await this._configStorage.getConfig();
+        }
+
+        // wait for running request
+        await Promise.all(this._runningReqs);
+
+        this.buildWithSnapshot(snapshot.blocks, snapshot.timestamp);
+    }
+
+    async _loadBot () {
         const req = {
             url: this._loadBotUrl,
             json: true
@@ -126,36 +207,31 @@ class BuildRouter extends Router {
             };
         }
 
-        return this._request(req)
-            .then((snapshot) => {
-                if (!snapshot || !Array.isArray(snapshot.blocks)) {
-                    throw new Error('Bad BOT definition API response');
-                }
-                const { blocks } = snapshot;
+        const snapshot = await this._request(req);
 
-                Object.assign(this._context, { blocks });
+        if (!snapshot || !Array.isArray(snapshot.blocks)) {
+            throw new Error('Bad BOT definition API response');
+        }
 
-                const rootBlock = blocks.find(block => block.isRoot);
-
-                this._buildBot(rootBlock);
-            });
+        return snapshot;
     }
 
-    buildWithSnapshot (blocks) {
+    buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER) {
         Object.assign(this._context, { blocks });
 
         const rootBlock = blocks.find(block => block.isRoot);
 
-        this._buildBot(rootBlock);
+        this._buildBot(rootBlock, setConfigTimestamp);
     }
 
     resetRouter () {
         if (this._prebuiltRoutesCount !== null) {
             this._routes = this._routes.slice(0, this._prebuiltRoutesCount - 1);
+            this._configTs = 0;
         }
     }
 
-    _buildBot (block) {
+    _buildBot (block, setConfigTimestamp = Number.MAX_SAFE_INTEGER) {
         if (this._prebuiltRoutesCount === null) {
             this._prebuiltRoutesCount = this._routes.length;
         } else {
@@ -167,7 +243,7 @@ class BuildRouter extends Router {
         } = block;
 
         this._context = Object.assign({}, this._context, {
-            blockName, blockType, isRoot, staticBlockId
+            blockName, blockType, isRoot, staticBlockId, BuildRouter
         });
 
         this._linksMap = this._createLinksMap(block);
@@ -176,7 +252,7 @@ class BuildRouter extends Router {
 
         this._buildRoutes(block.routes);
 
-        this._botLoaded = Promise.resolve();
+        this._configTs = setConfigTimestamp;
     }
 
     _setExpectedFromResponderRoutes (routes) {
@@ -338,25 +414,31 @@ class BuildRouter extends Router {
     }
 
     _resolverFactory (resolver, context) {
-        const factoryFn = this._blocksResource.getResolverFactory(resolver.type);
+        const { type } = resolver;
 
-        return factoryFn(resolver.params, context, this._blocksResource);
+        if (!this.resources.has(type)) {
+            throw new Error(`Unknown Resolver: ${type} Ensure its registration.`);
+        }
+
+        const factoryFn = this.resources.get(type);
+
+        return factoryFn(resolver.params, context, this._plugins);
     }
 
 }
 
 /**
  * @param {Object[]} blocks - blocks list
- * @param {Blocks} blocksResource
+ * @param {Plugins} plugins
  */
-BuildRouter.fromData = function fromData (blocks, blocksResource) {
+BuildRouter.fromData = function fromData (blocks, plugins) {
     const context = {
         blocks
     };
 
     const rootBlock = blocks.find(block => block.isRoot);
 
-    return new BuildRouter(rootBlock, blocksResource, context);
+    return new BuildRouter(rootBlock, plugins, context);
 };
 
 module.exports = BuildRouter;

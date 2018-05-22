@@ -85,8 +85,7 @@ class Processor {
         messageSender = new ReturnSender(
             {},
             message && message.sender && message.sender.id,
-            message,
-            pageId
+            message
         ),
         responderData = {}
     ) {
@@ -109,6 +108,7 @@ class Processor {
             await this._processMessage(message, pageId, messageSender, responderData);
             result = await messageSender.finished();
         } catch (e) {
+            this.reportSendError(e, message);
             const { code = 500 } = e;
             this.options.log.error(e);
             result = { status: code };

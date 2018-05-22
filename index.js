@@ -11,8 +11,9 @@ const Tester = require('./src/Tester');
 const Ai = require('./src/Ai');
 const { asserts } = require('./src/testTools');
 const BuildRouter = require('./src/BuildRouter');
+const { validateBot } = require('./src/wingbot');
 const ReturnSender = require('./src/ReturnSender');
-const Blocks = require('./src/Blocks');
+const Plugins = require('./src/Plugins');
 const { callbackMiddleware, sustainCallback } = require('./src/middlewares/callback');
 
 const {
@@ -38,8 +39,10 @@ module.exports = {
 
     // Wingbot
     ai: Ai.ai,
-    Blocks,
+    Blocks: Plugins, // @deprecated
+    Plugins,
     BuildRouter,
+    validateBot,
 
     // middlewares
     callbackMiddleware,

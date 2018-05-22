@@ -4,7 +4,7 @@
 'use strict';
 
 function customCode (params, context, blocks) {
-    const customFn = blocks.getCustomCodeFactory(params.codeBlockId);
+    const customFn = blocks.getPluginFactory(params.codeBlockId);
 
     const { router, isLastIndex } = context;
 
