@@ -11,6 +11,7 @@ devel/node_modules
 
 # NodeJs
 
+package-lock.json
 /npm-debug.log
 node_modules
 /config/config.development.js

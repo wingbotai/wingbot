@@ -5,9 +5,16 @@
 <dd></dd>
 <dt><a href="#BuildRouter">BuildRouter</a></dt>
 <dd></dd>
-<dt><a href="#Blocks">Blocks</a></dt>
-<dd><p>Custom code blocks for BuildRouter and wingbot.ai</p>
+<dt><a href="#Plugins">Plugins</a></dt>
+<dd><p>Custom code plugins for BuildRouter and wingbot.ai</p>
 </dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#ConfigStorage">ConfigStorage</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="BuildRouter">&nbsp;</div>{% endraw %}
@@ -17,8 +24,11 @@
 
 * [BuildRouter](#BuildRouter)
     * [new BuildRouter()](#new_BuildRouter_new)
-    * [new BuildRouter(block, blocksResource, context, [request])](#new_BuildRouter_new)
-    * [.fromData(blocks, blocksResource)](#BuildRouter_fromData)
+    * [new BuildRouter(block, plugins, context, [request])](#new_BuildRouter_new)
+    * _instance_
+        * [.keepConfigFor](#BuildRouter_keepConfigFor)
+    * _static_
+        * [.fromData(blocks, plugins)](#BuildRouter_fromData)
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
@@ -27,7 +37,7 @@ Build bot from Wingbot configuration file or snapshot url
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
-### new BuildRouter(block, blocksResource, context, [request])
+### new BuildRouter(block, plugins, context, [request])
 Create new router from configuration
 
 
@@ -39,9 +49,11 @@ Create new router from configuration
 | [block.token] | <code>string</code> | authorization token for bot |
 | [block.routes] | <code>Object</code> | list of routes for direct bot build |
 | [block.url] | <code>string</code> | specify alternative configuration resource |
-| blocksResource | [<code>Blocks</code>](#Blocks) | custom code blocks resource |
+| plugins | [<code>Plugins</code>](#Plugins) | custom code blocks resource |
 | context | <code>Object</code> | the building context |
-| [request] | <code>Request</code> | the building context |
+| [context.linksTranslator] | <code>Object</code> | function, that translates links globally |
+| [context.configStorage] | [<code>ConfigStorage</code>](#ConfigStorage) | function, that translates links globally |
+| [request] | <code>function</code> | the building context |
 
 **Example**  
 ```javascript
@@ -84,15 +96,27 @@ if (config.isProduction) {
 
 module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
 ```
+{% raw %}<div id="BuildRouter_keepConfigFor">&nbsp;</div>{% endraw %}
+
+### buildRouter.keepConfigFor
+Timeout, when the router is not checking for new configuration
+
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+**Properties**
+
+| Type |
+| --- |
+| <code>number</code> | 
+
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
-### BuildRouter.fromData(blocks, blocksResource)
+### BuildRouter.fromData(blocks, plugins)
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | blocks | <code>Array.&lt;Object&gt;</code> | blocks list |
-| blocksResource | [<code>Blocks</code>](#Blocks) |  |
+| plugins | [<code>Plugins</code>](#Plugins) |  |
 
 {% raw %}<div id="BuildRouter">&nbsp;</div>{% endraw %}
 
@@ -101,8 +125,11 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 
 * [BuildRouter](#BuildRouter)
     * [new BuildRouter()](#new_BuildRouter_new)
-    * [new BuildRouter(block, blocksResource, context, [request])](#new_BuildRouter_new)
-    * [.fromData(blocks, blocksResource)](#BuildRouter_fromData)
+    * [new BuildRouter(block, plugins, context, [request])](#new_BuildRouter_new)
+    * _instance_
+        * [.keepConfigFor](#BuildRouter_keepConfigFor)
+    * _static_
+        * [.fromData(blocks, plugins)](#BuildRouter_fromData)
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
@@ -111,7 +138,7 @@ Build bot from Wingbot configuration file or snapshot url
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
-### new BuildRouter(block, blocksResource, context, [request])
+### new BuildRouter(block, plugins, context, [request])
 Create new router from configuration
 
 
@@ -123,9 +150,11 @@ Create new router from configuration
 | [block.token] | <code>string</code> | authorization token for bot |
 | [block.routes] | <code>Object</code> | list of routes for direct bot build |
 | [block.url] | <code>string</code> | specify alternative configuration resource |
-| blocksResource | [<code>Blocks</code>](#Blocks) | custom code blocks resource |
+| plugins | [<code>Plugins</code>](#Plugins) | custom code blocks resource |
 | context | <code>Object</code> | the building context |
-| [request] | <code>Request</code> | the building context |
+| [context.linksTranslator] | <code>Object</code> | function, that translates links globally |
+| [context.configStorage] | [<code>ConfigStorage</code>](#ConfigStorage) | function, that translates links globally |
+| [request] | <code>function</code> | the building context |
 
 **Example**  
 ```javascript
@@ -168,48 +197,56 @@ if (config.isProduction) {
 
 module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
 ```
+{% raw %}<div id="BuildRouter_keepConfigFor">&nbsp;</div>{% endraw %}
+
+### buildRouter.keepConfigFor
+Timeout, when the router is not checking for new configuration
+
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+**Properties**
+
+| Type |
+| --- |
+| <code>number</code> | 
+
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
-### BuildRouter.fromData(blocks, blocksResource)
+### BuildRouter.fromData(blocks, plugins)
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | blocks | <code>Array.&lt;Object&gt;</code> | blocks list |
-| blocksResource | [<code>Blocks</code>](#Blocks) |  |
+| plugins | [<code>Plugins</code>](#Plugins) |  |
 
-{% raw %}<div id="Blocks">&nbsp;</div>{% endraw %}
+{% raw %}<div id="Plugins">&nbsp;</div>{% endraw %}
 
-## Blocks
-Custom code blocks for BuildRouter and wingbot.ai
+## Plugins
+Custom code plugins for BuildRouter and wingbot.ai
 
 **Kind**: global class  
+{% raw %}<div id="Plugins_register">&nbsp;</div>{% endraw %}
 
-* [Blocks](#Blocks)
-    * [.resolver(type, factoryFn)](#Blocks_resolver)
-    * [.code(name, [factoryFn])](#Blocks_code)
+### plugins.register(name, [factoryFn])
+Register plugin
 
-{% raw %}<div id="Blocks_resolver">&nbsp;</div>{% endraw %}
-
-### blocks.resolver(type, factoryFn)
-Register resolver factory
-
-**Kind**: instance method of [<code>Blocks</code>](#Blocks)  
+**Kind**: instance method of [<code>Plugins</code>](#Plugins)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| type | <code>string</code> | resolver type |
-| factoryFn | <code>function</code> | resolver factory |
+| name | <code>string</code> \| [<code>Plugins</code>](#Plugins) | plugin name or plugins object to include |
+| [factoryFn] | <code>function</code> | plugin factory - optional when including plugin object |
 
-{% raw %}<div id="Blocks_code">&nbsp;</div>{% endraw %}
+{% raw %}<div id="ConfigStorage">&nbsp;</div>{% endraw %}
 
-### blocks.code(name, [factoryFn])
-Register custom code block
+## ConfigStorage : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
 
-**Kind**: instance method of [<code>Blocks</code>](#Blocks)  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| name | <code>string</code> \| [<code>Blocks</code>](#Blocks) |  | block name or blocks object to include |
-| [factoryFn] | <code>function</code> | <code></code> | block factory - optional when including another blocks object |
+| Name | Type |
+| --- | --- |
+| invalidateConfig | <code>Object</code> | 
+| getConfigTimestamp | <code>Object</code> | 
+| updateConfig | <code>Object</code> | 
+| getConfig | <code>Object</code> | 
 

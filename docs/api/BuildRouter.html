@@ -758,9 +758,15 @@
 <dd></dd>
 <dt><a href="#BuildRouter">BuildRouter</a></dt>
 <dd></dd>
-<dt><a href="#Blocks">Blocks</a></dt>
-<dd><p>Custom code blocks for BuildRouter and wingbot.ai</p>
+<dt><a href="#Plugins">Plugins</a></dt>
+<dd><p>Custom code plugins for BuildRouter and wingbot.ai</p>
 </dd>
+</dl>
+
+<h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
+<dl>
+<dt><a href="#ConfigStorage">ConfigStorage</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 <div id="BuildRouter">&#xA0;</div>
@@ -770,8 +776,15 @@
 <ul>
 <li><a href="#BuildRouter">BuildRouter</a><ul>
 <li><a href="#new_BuildRouter_new">new BuildRouter()</a></li>
-<li><a href="#new_BuildRouter_new">new BuildRouter(block, blocksResource, context, [request])</a></li>
-<li><a href="#BuildRouter_fromData">.fromData(blocks, blocksResource)</a></li>
+<li><a href="#new_BuildRouter_new">new BuildRouter(block, plugins, context, [request])</a></li>
+<li><em>instance</em><ul>
+<li><a href="#BuildRouter_keepConfigFor">.keepConfigFor</a></li>
+</ul>
+</li>
+<li><em>static</em><ul>
+<li><a href="#BuildRouter_fromData">.fromData(blocks, plugins)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -781,7 +794,7 @@
 <p>Build bot from Wingbot configuration file or snapshot url</p>
 <div id="new_BuildRouter_new">&#xA0;</div>
 
-<h3 id="new-buildrouterblock-blocksresource-context-request"><a name="new-buildrouterblock-blocksresource-context-request" class="plugin-anchor" href="#new-buildrouterblock-blocksresource-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, blocksResource, context, [request])</h3>
+<h3 id="new-buildrouterblock-plugins-context-request"><a name="new-buildrouterblock-plugins-context-request" class="plugin-anchor" href="#new-buildrouterblock-plugins-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, plugins, context, [request])</h3>
 <p>Create new router from configuration</p>
 <table>
 <thead>
@@ -823,8 +836,8 @@
 <td>specify alternative configuration resource</td>
 </tr>
 <tr>
-<td>blocksResource</td>
-<td><a href="#Blocks"><code>Blocks</code></a></td>
+<td>plugins</td>
+<td><a href="#Plugins"><code>Plugins</code></a></td>
 <td>custom code blocks resource</td>
 </tr>
 <tr>
@@ -833,8 +846,18 @@
 <td>the building context</td>
 </tr>
 <tr>
+<td>[context.linksTranslator]</td>
+<td><code>Object</code></td>
+<td>function, that translates links globally</td>
+</tr>
+<tr>
+<td>[context.configStorage]</td>
+<td><a href="#ConfigStorage"><code>ConfigStorage</code></a></td>
+<td>function, that translates links globally</td>
+</tr>
+<tr>
 <td>[request]</td>
-<td><code>Request</code></td>
+<td><code>function</code></td>
 <td>the building context</td>
 </tr>
 </tbody>
@@ -879,9 +902,26 @@ if (config.isProduction) {
 
 module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
 </code></pre>
+<div id="BuildRouter_keepConfigFor">&#xA0;</div>
+
+<h3 id="buildrouterkeepconfigfor"><a name="buildrouterkeepconfigfor" class="plugin-anchor" href="#buildrouterkeepconfigfor"><i class="fa fa-link" aria-hidden="true"></i></a>buildRouter.keepConfigFor</h3>
+<p>Timeout, when the router is not checking for new configuration</p>
+<p><strong>Kind</strong>: instance property of <a href="#BuildRouter"><code>BuildRouter</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 <div id="BuildRouter_fromData">&#xA0;</div>
 
-<h3 id="buildrouterfromdatablocks-blocksresource"><a name="buildrouterfromdatablocks-blocksresource" class="plugin-anchor" href="#buildrouterfromdatablocks-blocksresource"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, blocksResource)</h3>
+<h3 id="buildrouterfromdatablocks-plugins"><a name="buildrouterfromdatablocks-plugins" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, plugins)</h3>
 <p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
 <table>
 <thead>
@@ -898,8 +938,8 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <td>blocks list</td>
 </tr>
 <tr>
-<td>blocksResource</td>
-<td><a href="#Blocks"><code>Blocks</code></a></td>
+<td>plugins</td>
+<td><a href="#Plugins"><code>Plugins</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -910,8 +950,15 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <ul>
 <li><a href="#BuildRouter">BuildRouter</a><ul>
 <li><a href="#new_BuildRouter_new">new BuildRouter()</a></li>
-<li><a href="#new_BuildRouter_new">new BuildRouter(block, blocksResource, context, [request])</a></li>
-<li><a href="#BuildRouter_fromData">.fromData(blocks, blocksResource)</a></li>
+<li><a href="#new_BuildRouter_new">new BuildRouter(block, plugins, context, [request])</a></li>
+<li><em>instance</em><ul>
+<li><a href="#BuildRouter_keepConfigFor">.keepConfigFor</a></li>
+</ul>
+</li>
+<li><em>static</em><ul>
+<li><a href="#BuildRouter_fromData">.fromData(blocks, plugins)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -921,7 +968,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <p>Build bot from Wingbot configuration file or snapshot url</p>
 <div id="new_BuildRouter_new">&#xA0;</div>
 
-<h3 id="new-buildrouterblock-blocksresource-context-request"><a name="new-buildrouterblock-blocksresource-context-request" class="plugin-anchor" href="#new-buildrouterblock-blocksresource-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, blocksResource, context, [request])</h3>
+<h3 id="new-buildrouterblock-plugins-context-request"><a name="new-buildrouterblock-plugins-context-request" class="plugin-anchor" href="#new-buildrouterblock-plugins-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, plugins, context, [request])</h3>
 <p>Create new router from configuration</p>
 <table>
 <thead>
@@ -963,8 +1010,8 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <td>specify alternative configuration resource</td>
 </tr>
 <tr>
-<td>blocksResource</td>
-<td><a href="#Blocks"><code>Blocks</code></a></td>
+<td>plugins</td>
+<td><a href="#Plugins"><code>Plugins</code></a></td>
 <td>custom code blocks resource</td>
 </tr>
 <tr>
@@ -973,8 +1020,18 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <td>the building context</td>
 </tr>
 <tr>
+<td>[context.linksTranslator]</td>
+<td><code>Object</code></td>
+<td>function, that translates links globally</td>
+</tr>
+<tr>
+<td>[context.configStorage]</td>
+<td><a href="#ConfigStorage"><code>ConfigStorage</code></a></td>
+<td>function, that translates links globally</td>
+</tr>
+<tr>
 <td>[request]</td>
-<td><code>Request</code></td>
+<td><code>function</code></td>
 <td>the building context</td>
 </tr>
 </tbody>
@@ -1019,9 +1076,26 @@ if (config.isProduction) {
 
 module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
 </code></pre>
+<div id="BuildRouter_keepConfigFor">&#xA0;</div>
+
+<h3 id="buildrouterkeepconfigfor"><a name="buildrouterkeepconfigfor" class="plugin-anchor" href="#buildrouterkeepconfigfor"><i class="fa fa-link" aria-hidden="true"></i></a>buildRouter.keepConfigFor</h3>
+<p>Timeout, when the router is not checking for new configuration</p>
+<p><strong>Kind</strong>: instance property of <a href="#BuildRouter"><code>BuildRouter</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 <div id="BuildRouter_fromData">&#xA0;</div>
 
-<h3 id="buildrouterfromdatablocks-blocksresource"><a name="buildrouterfromdatablocks-blocksresource" class="plugin-anchor" href="#buildrouterfromdatablocks-blocksresource"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, blocksResource)</h3>
+<h3 id="buildrouterfromdatablocks-plugins"><a name="buildrouterfromdatablocks-plugins" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, plugins)</h3>
 <p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
 <table>
 <thead>
@@ -1038,60 +1112,26 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <td>blocks list</td>
 </tr>
 <tr>
-<td>blocksResource</td>
-<td><a href="#Blocks"><code>Blocks</code></a></td>
+<td>plugins</td>
+<td><a href="#Plugins"><code>Plugins</code></a></td>
 </tr>
 </tbody>
 </table>
-<div id="Blocks">&#xA0;</div>
+<div id="Plugins">&#xA0;</div>
 
-<h2 id="blocks"><a name="blocks" class="plugin-anchor" href="#blocks"><i class="fa fa-link" aria-hidden="true"></i></a>Blocks</h2>
-<p>Custom code blocks for BuildRouter and wingbot.ai</p>
+<h2 id="plugins"><a name="plugins" class="plugin-anchor" href="#plugins"><i class="fa fa-link" aria-hidden="true"></i></a>Plugins</h2>
+<p>Custom code plugins for BuildRouter and wingbot.ai</p>
 <p><strong>Kind</strong>: global class  </p>
-<ul>
-<li><a href="#Blocks">Blocks</a><ul>
-<li><a href="#Blocks_resolver">.resolver(type, factoryFn)</a></li>
-<li><a href="#Blocks_code">.code(name, [factoryFn])</a></li>
-</ul>
-</li>
-</ul>
-<div id="Blocks_resolver">&#xA0;</div>
+<div id="Plugins_register">&#xA0;</div>
 
-<h3 id="blocksresolvertype-factoryfn"><a name="blocksresolvertype-factoryfn" class="plugin-anchor" href="#blocksresolvertype-factoryfn"><i class="fa fa-link" aria-hidden="true"></i></a>blocks.resolver(type, factoryFn)</h3>
-<p>Register resolver factory</p>
-<p><strong>Kind</strong>: instance method of <a href="#Blocks"><code>Blocks</code></a>  </p>
+<h3 id="pluginsregistername-factoryfn"><a name="pluginsregistername-factoryfn" class="plugin-anchor" href="#pluginsregistername-factoryfn"><i class="fa fa-link" aria-hidden="true"></i></a>plugins.register(name, [factoryFn])</h3>
+<p>Register plugin</p>
+<p><strong>Kind</strong>: instance method of <a href="#Plugins"><code>Plugins</code></a>  </p>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>type</td>
-<td><code>string</code></td>
-<td>resolver type</td>
-</tr>
-<tr>
-<td>factoryFn</td>
-<td><code>function</code></td>
-<td>resolver factory</td>
-</tr>
-</tbody>
-</table>
-<div id="Blocks_code">&#xA0;</div>
-
-<h3 id="blockscodename-factoryfn"><a name="blockscodename-factoryfn" class="plugin-anchor" href="#blockscodename-factoryfn"><i class="fa fa-link" aria-hidden="true"></i></a>blocks.code(name, [factoryFn])</h3>
-<p>Register custom code block</p>
-<p><strong>Kind</strong>: instance method of <a href="#Blocks"><code>Blocks</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -1099,15 +1139,43 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <tr>
 <td>name</td>
 <td><code>string</code> \</td>
-<td><a href="#Blocks"><code>Blocks</code></a></td>
-<td></td>
-<td>block name or blocks object to include</td>
+<td><a href="#Plugins"><code>Plugins</code></a></td>
+<td>plugin name or plugins object to include</td>
 </tr>
 <tr>
 <td>[factoryFn]</td>
 <td><code>function</code></td>
-<td><code></code></td>
-<td>block factory - optional when including another blocks object</td>
+<td>plugin factory - optional when including plugin object</td>
+</tr>
+</tbody>
+</table>
+<div id="ConfigStorage">&#xA0;</div>
+
+<h2 id="configstorage--object"><a name="configstorage--object" class="plugin-anchor" href="#configstorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>ConfigStorage : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>invalidateConfig</td>
+<td><code>Object</code></td>
+</tr>
+<tr>
+<td>getConfigTimestamp</td>
+<td><code>Object</code></td>
+</tr>
+<tr>
+<td>updateConfig</td>
+<td><code>Object</code></td>
+</tr>
+<tr>
+<td>getConfig</td>
+<td><code>Object</code></td>
 </tr>
 </tbody>
 </table>
@@ -1150,7 +1218,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"2.8","depth":1,"previous":{"title":"Ai","level":"2.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2018-04-17T19:01:31.167Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-17T19:01:33.918Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"2.8","depth":1,"previous":{"title":"Ai","level":"2.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2018-05-22T11:53:55.140Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-05-22T11:54:00.089Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

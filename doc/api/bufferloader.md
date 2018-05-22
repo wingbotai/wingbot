@@ -217,12 +217,12 @@ bot.use((req, res) => {
 
 ### new ReturnSender(options, userId, incommingMessage, logger)
 
-| Param | Type | Description |
-| --- | --- | --- |
-| options | <code>Object</code> |  |
-| userId | <code>string</code> |  |
-| incommingMessage | <code>Object</code> |  |
-| logger | <code>console</code> | console like logger |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| userId | <code>string</code> |  |  |
+| incommingMessage | <code>Object</code> |  |  |
+| logger | <code>console</code> | <code></code> | console like logger |
 
 {% raw %}<div id="ReturnSender_modifyStateBeforeStore">&nbsp;</div>{% endraw %}
 

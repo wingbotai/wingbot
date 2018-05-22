@@ -6,7 +6,7 @@
 
 ```javascript
 'use strict';
-const { BuildRouter, Blocks, Router, ai } = require('wingbot');
+const { BuildRouter, Plugins, Router, ai } = require('wingbot');
 
 const wingbotConfig = {
     botId: '2d48492a-a281-4223-8e6f-7f60a447bc41',
@@ -16,9 +16,9 @@ const wingbotConfig = {
 
 const botName = 'bot-name';
 
-const blocks = new Blocks();
+const plugins = new Plugins();
 
-blocks.code('exampleBlock', async (req, res, postBack, context, params) => {
+plugins.code('exampleBlock', async (req, res, postBack, context, params) => {
     await res.run('responseBlockName');
 });
 
