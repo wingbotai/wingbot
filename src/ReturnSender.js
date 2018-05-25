@@ -100,21 +100,27 @@ class ReturnSender {
         return Promise.resolve(this._simulateStateChange);
     }
 
-    finished () {
+    async finished () {
         this._finished = true;
-        if (this._sendLogs) {
-            this._sendLogs = false;
-            this._logger.log(this._userId, this._sent, this._incommingMessage);
-        }
-        return this._promise
-            .then(() => ({
+
+        try {
+            await this._promise;
+
+            if (this._sendLogs) {
+                this._sendLogs = false;
+                this._logger.log(this._userId, this._sent, this._incommingMessage);
+            }
+
+            return {
                 status: 200,
                 responses: this._responses
-            }))
-            .catch(e => ({
+            };
+        } catch (e) {
+            return {
                 status: e.code || 500,
                 responses: this._responses
-            }));
+            };
+        }
     }
 
 }
