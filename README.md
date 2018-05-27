@@ -13,20 +13,20 @@ Framework for building reusable chatbot components. **Routing**, **Keyword recog
 
   1. **Install the Wingbot CLI**
 
-    ```bash
-    $ npm i -g wingbot-cli
-    ```
+  ```bash
+  $ npm i -g wingbot-cli
+  ```
 
   2. **Create a project folder and run init command**
 
-    ```bash
-    $ mkdir my-bot
-    $ cd my-bot
-    $ wingbot init
-    ```
+  ```bash
+  $ mkdir my-bot
+  $ cd my-bot
+  $ wingbot init
+  ```
 
-    You will be asked for project details
+  You will be asked for project details
 
-    ![wingbot init command](https://github.com/wingbotai/wingbot/raw/master/doc/wingbotInit.png "Wingbot Init Command")
+  ![wingbot init command](https://github.com/wingbotai/wingbot/raw/master/doc/wingbotInit.png "Wingbot Init Command")
 
   3. **Deploy your bot**
