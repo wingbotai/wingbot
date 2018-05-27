@@ -9,6 +9,8 @@ const Request = require('./src/Request');
 const ReducerWrapper = require('./src/ReducerWrapper');
 const Tester = require('./src/Tester');
 const Ai = require('./src/Ai');
+const WingbotModel = require('./src/wingbot/WingbotModel');
+const CachedModel = require('./src/wingbot/CachedModel');
 const { asserts } = require('./src/testTools');
 const BuildRouter = require('./src/BuildRouter');
 const { validateBot } = require('./src/wingbot');
@@ -36,6 +38,7 @@ module.exports = {
     asserts,
     MemoryStateStorage,
     Translate,
+    CachedModel,
 
     // Wingbot
     ai: Ai.ai,
@@ -43,6 +46,7 @@ module.exports = {
     Plugins,
     BuildRouter,
     validateBot,
+    WingbotModel,
 
     // middlewares
     callbackMiddleware,

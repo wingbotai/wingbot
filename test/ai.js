@@ -6,9 +6,9 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Ai = require('../src/Ai');
-const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const Request = require('../src/Request');
+const WingbotModel = require('../src/wingbot/WingbotModel');
 
 const DEFAULT_SCORE = 0.96;
 
@@ -21,7 +21,8 @@ function fakeReq (text = 'text') {
         {
             data: { timestamp: Date.now() },
             text () { return text; },
-            isText () { return !!text; }
+            isText () { return !!text; },
+            _intents: null
         },
         {},
         sinon.spy()
@@ -39,13 +40,15 @@ describe('<Ai>', function () {
 
         this.fakeRequest = sinon.spy(() => syncRes);
 
-        ai.register('test', { request: this.fakeRequest });
+        const model = new WingbotModel({ model: 'test', request: this.fakeRequest });
+        ai.register(model);
     });
 
     describe('match()', function () {
 
         it('should use cache for responding requests', async function () {
-            ai.register('test', { request: this.fakeRequest, cacheSize: 1 });
+            const model = new WingbotModel({ model: 'test', request: this.fakeRequest, cacheSize: 1 });
+            ai.register(model);
 
             const mid = ai.match('hello');
             const mid2 = ai.match(['hello']);
@@ -54,7 +57,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledOnce);
             assert.strictEqual(res, Router.CONTINUE);
-            assert.strictEqual(args[0].confidences.hello, DEFAULT_SCORE);
+            assert.strictEqual(args[0]._intents[0].score, DEFAULT_SCORE);
 
             args = fakeReq();
 
@@ -63,7 +66,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledOnce);
             assert.strictEqual(res, Router.CONTINUE);
-            assert.strictEqual(args[0].confidences.hello, DEFAULT_SCORE);
+            assert.strictEqual(args[0]._intents[0].score, DEFAULT_SCORE);
 
             syncRes = Promise.resolve(createResponse(null));
             args = fakeReq('unknown');
@@ -71,17 +74,17 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledTwice);
             assert.strictEqual(res, Router.BREAK);
-            assert.strictEqual(args[0].confidences, undefined);
+            assert.deepStrictEqual(args[0]._intents, []);
         });
 
         it('should skip request without texts', async function () {
             const mid = ai.match('hello', 0.1);
             const args = fakeReq(null);
-            const res = mid(...args);
+            const res = await mid(...args);
 
             assert.ok(!this.fakeRequest.called);
             assert.strictEqual(res, Router.BREAK);
-            assert.strictEqual(args[0].confidences, undefined);
+            assert.strictEqual(args[0]._intents, null);
         });
 
         it('should skip request when the confidence is low', async function () {
@@ -91,7 +94,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.called);
             assert.strictEqual(res, Router.BREAK);
-            assert.strictEqual(args[0].confidences, undefined);
+            assert.deepStrictEqual(args[0]._intents, [{ intent: 'hello', score: 0.96 }]);
         });
 
         it('mutes errors', async function () {
@@ -102,7 +105,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledOnce);
             assert.strictEqual(res, Router.BREAK);
-            assert.strictEqual(args[0].confidences, undefined);
+            assert.deepStrictEqual(args[0]._intents, []);
         });
 
         it('mutes bad responses', async function () {
@@ -113,7 +116,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledOnce);
             assert.strictEqual(res, Router.BREAK);
-            assert.strictEqual(args[0].confidences, undefined);
+            assert.deepStrictEqual(args[0]._intents, []);
         });
 
     });
@@ -132,11 +135,10 @@ describe('<Ai>', function () {
             return match(req, {})
                 .then((res) => {
                     assert.strictEqual(res, Router.CONTINUE);
-                    const { aiIntent, aiIntentScore, aiHandled } = req;
+                    const { intent, score } = req._intents[0];
 
-                    assert.strictEqual(aiIntent, 'testIntent');
-                    assert.strictEqual(aiIntentScore, ai.confidence);
-                    assert.strictEqual(aiHandled, true);
+                    assert.strictEqual(intent, 'testIntent');
+                    assert.strictEqual(score, ai.confidence);
                 });
         });
 
@@ -153,140 +155,11 @@ describe('<Ai>', function () {
             return match(req, {})
                 .then((res) => {
                     assert.strictEqual(res, Router.CONTINUE);
-                    const { aiIntent, aiIntentScore, aiHandled } = req;
+                    const { intent, score } = req._intents[0];
 
-                    assert.strictEqual(aiIntent, 'testIntent');
-                    assert.strictEqual(aiIntentScore, ai.confidence);
-                    assert.strictEqual(aiHandled, true);
+                    assert.strictEqual(intent, 'testIntent');
+                    assert.strictEqual(score, ai.confidence);
                 });
-        });
-
-    });
-
-    ['makeSure', 'navigate'].forEach((method) => {
-
-        describe(`${method}()`, function () {
-
-            it('proceeds to next resolver, when confidence is unsure', async function () {
-                const mid = ai[method]({ hello: 'helloAction', dropIntent: 'drop' }, 0.5, 0.97);
-                const args = fakeReq('text');
-                const res = await mid(...args);
-
-                assert.ok(this.fakeRequest.calledOnce);
-                assert.strictEqual(res, Router.CONTINUE);
-                assert.strictEqual(args[0].confidences.hello, DEFAULT_SCORE);
-
-                assert.deepEqual(args[1].ensures({
-                    helloAction: 'Yes',
-                    drop: 'No',
-                    leave: 'Yes'
-                }), {
-                    helloAction: {
-                        title: 'Yes',
-                        _aiIntentMatched: 'hello',
-                        _aiFromText: 'text',
-                        _aiTs: args[0].data.timestamp,
-                        _aiMeta: null
-                    },
-                    leave: 'Yes'
-                });
-            });
-
-            it('skips resolver, when there is bad confidence', async function () {
-                const mid = ai[method]({ hello: 'helloAction', dropIntent: 'drop' }, 0.99, 0.99);
-                const args = fakeReq('text');
-                const res = await mid(...args);
-
-                assert.ok(this.fakeRequest.calledOnce);
-                assert.strictEqual(res, Router.BREAK);
-            });
-
-            it('skips resolver, when there no matching actions', async function () {
-                const mid = ai[method](['unknownAction'], 0.1, 0.1);
-                const mid2 = ai[method](['unknownAction']);
-                const mid3 = ai[method](['unknownAction'], 0.97, 0.98);
-                const args = fakeReq('text');
-                const res = await mid(...args);
-                const res2 = await mid2(...args);
-                const res3 = await mid3(...args);
-
-                assert.ok(this.fakeRequest.calledOnce);
-                assert.strictEqual(res, Router.BREAK);
-                assert.strictEqual(res2, Router.BREAK);
-                assert.strictEqual(res3, Router.BREAK);
-            });
-
-            if (method === 'makeSure') {
-                it('skips resolver, when there is high confidence', async function () {
-                    const mid = ai[method]({ hello: 'helloAction', dropIntent: 'drop' }, 0.5, 0.5);
-                    const args = fakeReq('text');
-                    const res = await mid(...args);
-
-                    assert.ok(this.fakeRequest.calledOnce);
-                    assert.strictEqual(res, Router.BREAK);
-                });
-            } else if (method === 'navigate') {
-                it('makes a postback high confidence', async function () {
-                    const mid = ai[method]({ hello: 'helloAction', dropIntent: 'drop' }, 0.5, 0.5);
-                    const args = fakeReq('text');
-                    const res = await mid(...args);
-
-                    assert.ok(this.fakeRequest.calledOnce);
-                    assert.strictEqual(res, Router.END);
-                    assert.ok(args[2].calledOnce);
-                    assert.deepEqual(args[2].firstCall.args, ['helloAction']);
-                });
-            }
-
-        });
-
-    });
-
-    describe('#onConfirmMiddleware()', function () {
-
-        it('should be trigged, when user confirms an intent', async function () {
-            const r = new Router();
-            const onConfirmSpy = sinon.spy();
-
-            r.use(ai.onConfirmMiddleware(onConfirmSpy, req => ({
-                aiIntentScore: req.aiIntentScore
-            })));
-
-            r.use(ai.makeSure(['testIntent']), (req, res) => {
-                res.text('NAVI', res.ensures({
-                    testIntent: 'quick reply'
-                }));
-            });
-
-            r.use('testIntent', (req, res) => {
-                res.text('RESPONSE');
-            });
-
-            const t = new Tester(r);
-
-            ai.mockIntent('testIntent', 0.7);
-
-            await t.text('Any text');
-
-            t.any()
-                .quickReplyAction('testIntent')
-                .contains('NAVI');
-
-            assert.strictEqual(onConfirmSpy.callCount, 0);
-
-            await t.quickReply('testIntent');
-
-            t.any()
-                .contains('RESPONSE');
-
-            assert.strictEqual(onConfirmSpy.callCount, 1);
-            assert.deepEqual(onConfirmSpy.firstCall.args, [
-                t.senderId,
-                'testIntent',
-                'Any text',
-                onConfirmSpy.firstCall.args[3],
-                { aiIntentScore: 0.7 }
-            ]);
         });
 
     });

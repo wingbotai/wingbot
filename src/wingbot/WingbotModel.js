@@ -1,93 +1,76 @@
 'use strict';
 
 const request = require('request-promise-native');
+const { tokenize } = require('../utils');
 const assert = require('assert');
+const CachedModel = require('./CachedModel');
 
-const DEFAULT_CACHE_SIZE = 10;
-const DEFAULT_MATCHES = 4;
+const DEFAULT_MATCHES = 1;
+const SERVICE_URL = 'https://model.wingbot.ai';
 
 /**
- * @typedef {{ tag: string, score: number }} Intent
+ * @typedef {{intent:string,score:number,entities?:Object[]}} Intent
  */
 
 /**
  * @class
  */
-class WingbotModel {
+class WingbotModel extends CachedModel {
 
     /**
      * @param {Object} options
-     * @param {string} options.serviceUrl
+     * @param {string} [options.serviceUrl]
      * @param {string} options.model
-     * @param {number} options.cacheSize
-     * @param {number} options.matches
+     * @param {number} [options.cacheSize]
+     * @param {number} [options.matches]
      * @param {{ warn: Function }} [log]
      */
     constructor (options, log = console) {
-        assert.equal(typeof options.serviceUrl, 'string', 'The serviceUrl option has to be string');
+        super(options, log);
+
         assert.equal(typeof options.model, 'string', 'The model option has to be string');
-        this._options = options;
-        this._log = log;
 
         this._matches = options.matches || DEFAULT_MATCHES;
-        this._cacheSize = options.cacheSize || DEFAULT_CACHE_SIZE;
-        this._cache = [];
-        this._cacheMap = new Map();
         this._request = options.request || request;
+
+        this._serviceUrl = options.serviceUrl || SERVICE_URL;
+        this._model = options.model;
     }
 
     /**
-     * @param {string} text - the user input
-     * @returns {Promise.<Array.<{tag: string, score: number}>>}
+     *
+     * @param {string} text
+     * @returns {Promise<Intent[]>}
      */
-    resolve (text) {
-        if (this._cacheMap.has(text)) {
-            return this._cacheMap.get(text);
-        }
-
-        const promise = this._resolve(text)
-            .then((res) => {
-                // clean the cache
-                while (this._cache.length > this._cacheSize) {
-                    const clean = this._cache.shift();
-                    this._cacheMap.delete(clean);
-                }
-
-                return res;
-            });
-
-
-        this._cache.push(text);
-        this._cacheMap.set(text, promise);
-
-        return promise;
-    }
-
-    _resolve (text) {
-
+    async _queryModel (text) {
         if ((text || '').trim().length === 0) {
-            return Promise.resolve([]);
+            return [];
         }
 
-        const qs = { text, matches: this._matches };
+        const qs = {
+            text: tokenize(text).replace(/-/g, ' '),
+            matches: this._matches
+        };
 
-        return this._request({
-            uri: `${this._options.serviceUrl}/${this._options.model}`,
-            qs,
-            json: true,
-            timeout: 20000
-        }).then((response) => {
+        try {
+            const response = await this._request({
+                uri: `${this._serviceUrl}/${this._model}`,
+                qs,
+                json: true,
+                timeout: 20000
+            });
 
             if (response.error || !Array.isArray(response.tags)) {
                 this._log.warn(response.error);
                 return [];
             }
 
-            return response.tags;
-        }).catch((err) => {
-            this._log.warn(err);
+            return response.tags
+                .map(({ tag, score }) => ({ intent: tag, score }));
+        } catch (e) {
+            this._log.warn('AI query failed', e);
             return [];
-        });
+        }
     }
 
 }

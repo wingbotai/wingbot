@@ -14,7 +14,14 @@ class Processor {
      * Creates an instance of Processor.
      *
      * @param {ReducerWrapper|Function|Router} reducer
-     * @param {ProcessorOptions} [options] - documented at express.js
+     * @param {Object} [options] - processor options
+     * @param {string} [options.appUrl] - url basepath for relative links
+     * @param {Object} [options.stateStorage] - chatbot state storage
+     * @param {Object} [options.tokenStorage] - frontend token storage
+     * @param {Function} [options.translator] - text translate function
+     * @param {number} [options.timeout] - text translate function
+     * @param {Function} [options.log] - console like error logger
+     * @param {Object} [options.defaultState] - default chat state
      *
      * @memberOf Processor
      */

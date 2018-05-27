@@ -7,23 +7,7 @@ const assert = require('assert');
 const { WingbotModel } = require('./wingbot');
 const Router = require('./Router');
 
-const SERVICE_URL = 'https://model.wingbot.ai';
 const DEFAULT_PREFIX = 'default';
-
-/**
- * Mark request as handled - usefull for AI analytics
- *
- * @param {boolean} [aiHandled] - true by default
- * @returns {Request}
- * @example
- * bot.use('some other query', (req, res) => {
- *     req.markAsHandled();
- * });
- */
-function markAsHandled (aiHandled = true) {
-    Object.assign(this, { aiHandled });
-    return this;
-}
 
 /**
  * @class Ai
@@ -41,13 +25,6 @@ class Ai {
         this.confidence = 0.94;
 
         /**
-         * Lower threshold - for navigate and makeSure methods
-         *
-         * @type {number}
-         */
-        this.threshold = 0.6;
-
-        /**
          * The logger (console by default)
          *
          * @type {Object}
@@ -60,7 +37,7 @@ class Ai {
          * @param {string} prefix
          * @param {Request} req
          */
-        this.prefixTranslator = (prefix, req) => prefix; // eslint-disable-line
+        this.getPrefix = (prefix, req) => prefix; // eslint-disable-line
 
         this._mockIntent = null;
     }
@@ -106,86 +83,54 @@ class Ai {
     }
 
     /**
-     * When user confirms their intent, onIntentConfirmed handler will be called.
-     * To create meta data from recognized request use getMeta handler.
-     * Its useful for updating training data for AI
+     * Registers Wingbot AI model
      *
-     * @param {Function} onIntentConfirmed - handler, which will be called when intent is confirmed
-     * @param {Function} getMeta - handler, which will be called when intent is confirmed
-     * @returns {Function}
-     * @example
-     * const { Router, ai } = require(''wingbot');
+     * @template T
+     * @param {string|WingbotModel|T} model - wingbot model name or AI plugin
+     * @param {string} prefix - model prefix
      *
-     * bot.use(ai.onConfirmMiddleware((senderId, intent, text, timestamp, meta) => {
-     *     // log this information
-     * }, (req) => {
-     *     // create and return meta data object
-     * }));
-     *
-     * bot.use(ai.makeSure(['intent1', 'intent2']), (req, res) => {
-     *     console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
-     *
-     *     res.text('What you mean?', res.ensures({
-     *         intent1: 'Intent one?',
-     *         intent2: 'Intent two?',
-     *         anyOther: 'Niether'
-     *     }));
-     * });
+     * @returns {WingbotModel|T}
+     * @memberOf Ai
      */
-    onConfirmMiddleware (onIntentConfirmed, getMeta = null) {
-        return (req) => {
-            if (getMeta !== null) {
-                Object.assign(req, { _aiGetMetaFn: getMeta });
-            }
+    register (model, prefix = 'default') {
+        let modelObj;
 
-            if (!req.isQuickReply()) {
+        if (typeof model === 'string') {
+            modelObj = new WingbotModel({
+                model
+            }, this.logger);
+        } else {
+            modelObj = model;
+        }
+
+        this._keyworders.set(prefix, modelObj);
+
+        return modelObj;
+    }
+
+    /**
+     * Middleware, which ensures, that AI data are properly loaded in Request
+     *
+     * @param {string} prefix - AI model prefix
+     * @example
+     * const { ai, Router } = require('wingbot');
+     *
+     * const bot = new Router();
+     *
+     * bot.use(ai.load());
+     */
+    load (prefix = DEFAULT_PREFIX) {
+        return async (req) => {
+            if (!req.isText()) {
                 return Router.CONTINUE;
             }
 
-            const {
-                _aiIntentMatched,
-                _aiFromText,
-                _aiTs,
-                _aiMeta
-            } = req.action(true);
-
-            if (_aiIntentMatched) {
-                onIntentConfirmed(
-                    req.senderId,
-                    _aiIntentMatched,
-                    _aiFromText,
-                    _aiTs,
-                    _aiMeta
-                );
+            if (!req._intents) {
+                req._intents = await this._queryModel(prefix, req);
             }
 
             return Router.CONTINUE;
         };
-    }
-
-    /**
-     * Registers Wingbot AI model
-     *
-     * @param {string} model - model name
-     * @param {Object} options - the configuration
-     * @param {number} [options.cacheSize] - remember number of caches
-     * @param {number} [options.matches] - ask AI for number of matches
-     * @param {string} prefix - model prefix
-     * @param {WingbotModel} [Model] - model class
-     * @returns {WingbotModel}
-     * @memberOf Ai
-     */
-    register (model, options = {}, prefix = 'default', Model = WingbotModel) {
-        const opts = Object.assign({
-            serviceUrl: SERVICE_URL,
-            model
-        }, options);
-
-        const keyworder = new Model(opts, this.logger);
-
-        this._keyworders.set(prefix, keyworder);
-
-        return keyworder;
     }
 
     /**
@@ -202,257 +147,60 @@ class Ai {
      * ai.register('app-model');
      *
      * bot.use(ai.match('intent1'), (req, res) => {
-     *     console.log(req.confidences); // { intent1: 0.9604 }
+     *     console.log(req.intent()); // { intent: 'intent1', score: 0.9604 }
      *
      *     res.text('Oh, intent 1 :)');
      * });
      */
     match (intent, confidence = null, prefix = DEFAULT_PREFIX) {
         const intents = Array.isArray(intent) ? intent : [intent];
-        return this._middlewareFactory(prefix, intents, null, confidence || true);
-    }
 
-    /**
-     * Create AI middleware, which resolves multiple replies
-     * and **makes postback, when it's confident**
-     * Confidence should be between `threshold` and `confidence` to proceed
-     * to next resolver
-     *
-     * @param {Array|Object} knownIntents - list or map of accepted intents
-     * @param {number} [threshold] - lower threshold
-     * @param {number} [confidence] - upper threshold for confidence
-     * @param {string} [prefix] - model name
-     * @returns {Function} - the middleware
-     * @memberOf Ai
-     * @example
-     * const { Router, ai } = require(''wingbot');
-     *
-     * bot.use(ai.navigate(['intent1', 'intent2']), (req, res) => {
-     *     console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
-     *
-     *     res.text('What you mean?', res.ensures({
-     *         intent1: 'Intent one?',
-     *         intent2: 'Intent two?',
-     *         anyOther: 'Niether'
-     *     }));
-     * });
-     */
-    navigate (
-        knownIntents,
-        threshold = null,
-        confidence = null,
-        prefix = DEFAULT_PREFIX
-    ) {
-
-        const filterFn = tag => (confidence || this.confidence) > tag.score
-            && tag.score >= (threshold || this.threshold);
-
-        return this._middlewareFactory(prefix, knownIntents, filterFn, confidence || true);
-    }
-
-    /**
-     * Create AI middleware, which resolves multiple replies.
-     * Confidence should be between `threshold` and `confidence` to proceed
-     * to next resolver
-     *
-     * @param {Array|Object} knownIntents - list or map of accepted intents
-     * @param {number} [threshold] - lower threshold
-     * @param {number} [confidence] - upper threshold for confidence
-     * @param {string} prefix - model name
-     * @returns {Function} - the middleware
-     * @memberOf Ai
-     * @example
-     * const { Router, ai } = require(''wingbot');
-     *
-     * bot.use(ai.makeSure(['intent1', 'intent2']), (req, res) => {
-     *     console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
-     *
-     *     res.text('What you mean?', res.ensures({
-     *         intent1: 'Intent one?',
-     *         intent2: 'Intent two?',
-     *         anyOther: 'Niether'
-     *     }));
-     * });
-     */
-    makeSure (
-        knownIntents,
-        threshold = null,
-        confidence = null,
-        prefix = DEFAULT_PREFIX
-    ) {
-
-        const filterFn = tag => (confidence || this.confidence) > tag.score
-            && tag.score >= (threshold || this.threshold);
-
-        return this._middlewareFactory(prefix, knownIntents, filterFn);
-    }
-
-    _queryModel (prefix, req) {
-        if (this._mockIntent !== null) {
-            return Promise.resolve([{
-                tag: this._mockIntent.intent,
-                score: this._mockIntent.confidence || this.confidence
-            }]);
-        } else if (req.data.intent) {
-            return Promise.resolve([{
-                tag: req.data.intent,
-                score: this.confidence
-            }]);
-        }
-        const prefixForRequest = this.prefixTranslator(prefix, req);
-
-        const model = this._keyworders.get(prefixForRequest);
-        assert.ok(!!model, 'The model should be registered!');
-
-        return model.resolve(req.text(true).replace(/-/g, ' '));
-    }
-
-    _setAiMetadata (req, firstTag = null, aiHandled = false) {
-        if (aiHandled && !req.aiHandled) {
-            Object.assign(req, { aiHandled: true });
-        }
-        if (req.aiIntent) {
-            // skip
-        } else if (firstTag) {
-            Object.assign(req, {
-                aiIntent: firstTag.tag,
-                aiIntentScore: firstTag.score,
-                markAsHandled,
-                aiHandled
-            });
-        } else if (typeof req.aiIntent === 'undefined') {
-            Object.assign(req, {
-                aiIntent: null,
-                aiIntentScore: null,
-                markAsHandled,
-                aiHandled
-            });
-        }
-    }
-
-    _middlewareFactory (prefix, knownIntents, filterFn = null, postBackConfidence = null) {
-        const acceptIntents = Array.isArray(knownIntents)
-            ? knownIntents
-            : Object.keys(knownIntents);
-
-        const actionMap = Array.isArray(knownIntents)
-            ? knownIntents.reduce((o, i) => Object.assign(o, { [i]: i }), {})
-            : knownIntents;
-
-        return (req, res, postBack) => {
-            this._setAiMetadata(req);
-
+        return async (req) => {
             if (!req.isText()) {
                 return Router.BREAK;
             }
 
-            return this._queryModel(prefix, req)
-                .then((tags) => {
-                    this._setAiMetadata(req, tags[0]);
-                    if (tags.length === 0) {
-                        return Router.BREAK;
-                    }
+            if (!req._intents) {
+                req._intents = await this._queryModel(prefix, req);
+            }
 
-                    const firstTag = tags[0];
+            if (req._intents.length === 0) {
+                return Router.BREAK;
+            }
 
-                    const useConfidence = postBackConfidence === true
-                        ? this.confidence
-                        : postBackConfidence;
+            const [winningIntent] = req._intents;
 
-                    if (postBackConfidence !== null
-                            && acceptIntents.indexOf(firstTag.tag) !== -1
-                            && firstTag.score >= useConfidence) {
+            const useConfidence = confidence === null
+                ? this.confidence
+                : confidence;
 
-                        this._setAiMetadata(req, tags[0], true);
+            if (intents.includes(winningIntent.intent)
+                    && winningIntent.score >= useConfidence) {
 
-                        if (filterFn !== null) {
-                            postBack(actionMap[firstTag.tag]);
-                            return Router.END;
-                        }
+                return Router.CONTINUE;
+            }
 
-                        Object.assign(req, {
-                            confidences: {
-                                [firstTag.tag]: firstTag.score
-                            }
-                        });
-
-                        return Router.CONTINUE;
-                    }
-
-                    if (filterFn === null) {
-                        return Router.BREAK;
-                    }
-
-                    const matchedIntents = tags
-                        .filter(tag => acceptIntents.indexOf(tag.tag) !== -1 && filterFn(tag));
-
-                    const confidences = matchedIntents
-                        .reduce((o, tag) => Object.assign(o, { [tag.tag]: tag.score }), {});
-
-                    const dropActions = acceptIntents
-                        .filter(intent => typeof confidences[intent] === 'undefined')
-                        .map(intent => actionMap[intent]);
-
-                    if (matchedIntents.length === 0) {
-                        return Router.BREAK;
-                    }
-
-                    Object.assign(req, {
-                        confidences
-                    });
-
-                    Object.assign(res, {
-                        ensures: this._createEnsuresMethod(
-                            dropActions,
-                            matchedIntents,
-                            actionMap,
-                            req
-                        )
-                    });
-
-                    return Router.CONTINUE;
-                });
+            return Router.BREAK;
         };
     }
 
-    _createEnsuresMethod (dropActions, matchedIntents, actionMap, req) {
-        return function ensures (replies) {
-            const ret = Object.assign({}, replies);
+    async _queryModel (prefix, req) {
+        if (this._mockIntent !== null) {
+            return [{
+                intent: this._mockIntent.intent,
+                score: this._mockIntent.confidence || this.confidence
+            }];
+        } else if (req.data.intent) {
+            return [{
+                intent: req.data.intent,
+                score: this.confidence
+            }];
+        }
+        const prefixForRequest = this.getPrefix(prefix, req);
+        const model = this._keyworders.get(prefixForRequest);
+        assert.ok(!!model, 'The AI model should be registered!');
 
-            dropActions.forEach((action) => {
-                if (typeof ret[action] !== 'undefined') {
-                    delete ret[action];
-                }
-            });
-
-            matchedIntents.forEach((intent) => {
-                const action = actionMap[intent.tag];
-                let assign = null;
-
-                if (typeof ret[action] === 'string') {
-                    assign = {
-                        title: ret[action]
-                    };
-                } else if (typeof ret[action] === 'object') {
-                    assign = ret[action];
-                }
-                if (assign !== null) {
-                    let _aiMeta = null;
-                    if (req._aiGetMetaFn) {
-                        _aiMeta = req._aiGetMetaFn(req);
-                    }
-                    Object.assign(assign, {
-                        _aiIntentMatched: intent.tag,
-                        _aiTs: req.data.timestamp,
-                        _aiFromText: req.text(),
-                        _aiMeta
-                    });
-                    Object.assign(ret, { [action]: assign });
-                }
-            });
-
-            return ret;
-        };
+        return model.resolve(req.text(), req);
     }
 
 }

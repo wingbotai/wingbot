@@ -53,6 +53,31 @@ class Request {
          * @prop {object} state current state of the conversation
          */
         this.state = state;
+
+        this._intents = null;
+    }
+
+    /**
+     * Returns intent, when using AI
+     *
+     * @param {boolean|number} getDataOrScore - score limit or true for getting intent data
+     * @returns {null|string|{intent:string,score:number,entities?:Object[]}}
+     */
+    intent (getDataOrScore = false) {
+        if (!this._intents || this._intents.length === 0) {
+            return null;
+        }
+
+        const [intent] = this._intents;
+
+        if (typeof getDataOrScore === 'number') {
+            return intent.score >= getDataOrScore
+                ? intent.intent
+                : null;
+        } else if (getDataOrScore) {
+            return intent;
+        }
+        return intent.intent;
     }
 
     /**
@@ -354,12 +379,13 @@ class Request {
         let process = {};
 
         if (object && object.ref) {
-            process = object.ref;
+            let payload = object.ref;
 
-            if (typeof process === 'string' && process.match(BASE64_REGEX)) {
-                process = Buffer.from(process, 'base64').toString('utf8');
+            if (typeof payload === 'string' && payload.match(BASE64_REGEX)) {
+                payload = Buffer.from(payload, 'base64').toString('utf8');
             }
-            process = { payload: process };
+
+            process = { payload };
         }
 
         return this._processPayload(process, getData);

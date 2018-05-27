@@ -5,6 +5,7 @@
 
 const assert = require('assert');
 const Request = require('../src/Request');
+const Ai = require('../src/Ai');
 
 const SENDER_ID = 'abcde';
 const ACTION = 'action ACTION';
@@ -199,7 +200,7 @@ describe('Request', function () {
 
         it('should return referral action name', function () {
             const req = new Request(
-                Request.postBack(SENDER_ID, ACTION, REF_ACTION, REF_DATA),
+                Request.postBack(SENDER_ID, ACTION, DATA, REF_ACTION, REF_DATA),
                 STATE
             );
             assert.strictEqual(req.postBack(), ACTION);
@@ -322,6 +323,42 @@ describe('Request', function () {
             assert.strictEqual(req.attachment(), null);
         });
 
+    });
+
+    describe('#intent()', () => {
+
+        it('should return intent, when present', async () => {
+            const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
+            await Ai.ai.load()(req);
+            assert.strictEqual(req.intent(), 'foo');
+        });
+
+        it('should return intent data, when present', async () => {
+            const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
+            await Ai.ai.load()(req);
+            assert.deepStrictEqual(req.intent(true), { intent: 'foo', score: Ai.ai.confidence });
+        });
+
+        it('should return null, when present, but score is too low', async () => {
+            const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
+            await Ai.ai.load()(req);
+            assert.strictEqual(req.intent(0.99), null);
+            assert.strictEqual(req.intent(0.1), 'foo');
+        });
+
+        it('should return null, when intent is missing', async () => {
+            const req = new Request(Request.postBack(SENDER_ID, 'any'), STATE);
+            await Ai.ai.load()(req);
+            assert.strictEqual(req.intent(), null);
+            assert.strictEqual(req.intent(true), null);
+        });
+
+        it('should return null, when AI middleware is not used', async () => {
+            const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
+
+            assert.strictEqual(req.intent(), null);
+            assert.strictEqual(req.intent(true), null);
+        });
     });
 
 

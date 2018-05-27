@@ -46,12 +46,9 @@ botRoot.on('action', (senderId, action, text, req) => {
         // aiHandled = whether the intent was handled or not
     }
 
-    // logging all intent scores
-    if (req.confidences) {
-        Object.keys(req.confidences)
-            .forEach((intent) => {
-                const score = req.confidences[intent];
-            });
+    // logging winning intent score
+    if (req.intent()) {
+        const { intent, score } = req.intent();
     }
 });
 ```

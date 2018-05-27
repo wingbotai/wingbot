@@ -12,7 +12,7 @@ const docs = [
     'src/ReducerWrapper.js',
     ['src/Tester.js', 'src/testTools/ResponseAssert.js', 'src/testTools/AnyResponseAssert.js'],
     ['src/tools/bufferloader.js', 'src/tools/MemoryStateStorage.js', 'src/tools/Translate.js', 'src/ReturnSender.js'],
-    'src/Ai.js',
+    ['src/Ai.js', 'src/wingbot/WingbotModel.js', 'src/wingbot/CachedModel.js'],
     ['src/BuildRouter.js', 'src/Plugins.js']
 ];
 
