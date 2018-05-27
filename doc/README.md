@@ -12,52 +12,27 @@ Advanced chatbot framework gives you:
 - Familiar Node.js routing interface for **Fast development**
 - **Unit tests** friendly bot framework
 
+Check our [wingbot.ai chatbot designer](https://wingbot.ai)
 
-## How to start
 
-  - **Install the framework**
+## First wingbot.ai chatbot for Facebook Messenger
+
+  1. **Install the Wingbot CLI**
 
     ```bash
-    $ npm i -S wingbot
+    $ npm i -g wingbot-cli
     ```
 
+  2. **Create a project folder and run init command**
 
-  - **Create your first chatbot**
-
-    ```javascript
-    const express = require('express');
-    const { Router } = require('wingbot');
-
-    const bot = new Router();
-
-    bot.use('/hello', (req, res, postBack) => {
-        res.text('Hello world');
-    });
-
-    bot.use((req, res, postBack) => {
-        res.text('What you want?', {
-            hello: 'Say hello world'
-        });
-    });
-
-    const app = express();
-
-    // @todo create documentation
-
-    mongoose.connect('mongodb://localhost/myapp')
-        .then(() => app.listen(3000));
+    ```bash
+    $ mkdir my-bot
+    $ cd my-bot
+    $ wingbot init
     ```
 
-  - **Deploy and setup Facebook Messenger Application**
+    You will be asked for project details
 
-    1. Create Facebook Application for Messenger platform
-    2. Create page token and put it in Processor
-    3. Create the webhook and use previously created `verifyToken`
-    4. Subscribe a page to the FB Application
+    ![wingbot init command](https://github.com/wingbotai/wingbot/raw/master/doc/wingbotInit.png "Wingbot Init Command")
 
-## Requirements
-
-  - requires `mongoose` >= 4.0
-  - requires `nodejs` >= 6.0
-  - requires `express` >= 4.0
-  - requires `body-parser` >= 1.10
+  3. **Deploy your bot**

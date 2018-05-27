@@ -9,7 +9,10 @@ const DEFAULT_MATCHES = 1;
 const SERVICE_URL = 'https://model.wingbot.ai';
 
 /**
- * @typedef {{intent:string,score:number,entities?:Object[]}} Intent
+ * @typedef {Object} Intent
+ * @param {string} intent
+ * @param {number} score
+ * @param {Object[]} [entities]
  */
 
 /**

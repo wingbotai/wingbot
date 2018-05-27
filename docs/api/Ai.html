@@ -758,13 +758,18 @@
 <dl>
 <dt><a href="#Ai">Ai</a></dt>
 <dd></dd>
+<dt><a href="#WingbotModel">WingbotModel</a></dt>
+<dd></dd>
+<dt><a href="#CachedModel">CachedModel</a></dt>
+<dd></dd>
 </dl>
 
-<h2 id="functions"><a name="functions" class="plugin-anchor" href="#functions"><i class="fa fa-link" aria-hidden="true"></i></a>Functions</h2>
+<h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#markAsHandled">markAsHandled([aiHandled])</a> &#x21D2; <code>Request</code></dt>
-<dd><p>Mark request as handled - usefull for AI analytics</p>
-</dd>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 <div id="Ai">&#xA0;</div>
@@ -774,15 +779,12 @@
 <ul>
 <li><a href="#Ai">Ai</a><ul>
 <li><a href="#Ai_confidence">.confidence</a> : <code>number</code></li>
-<li><a href="#Ai_threshold">.threshold</a> : <code>number</code></li>
 <li><a href="#Ai_logger">.logger</a> : <code>Object</code></li>
-<li><a href="#Ai_prefixTranslator">.prefixTranslator(prefix, req)</a></li>
+<li><a href="#Ai_getPrefix">.getPrefix(prefix, req)</a></li>
 <li><a href="#Ai_mockIntent">.mockIntent([intent], [confidence])</a> &#x21D2; <code>this</code></li>
-<li><a href="#Ai_onConfirmMiddleware">.onConfirmMiddleware(onIntentConfirmed, getMeta)</a> &#x21D2; <code>function</code></li>
-<li><a href="#Ai_register">.register(model, options, prefix, [Model])</a> &#x21D2; <code>WingbotModel</code></li>
+<li><a href="#Ai_register">.register(model, prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></li>
+<li><a href="#Ai_load">.load(prefix)</a></li>
 <li><a href="#Ai_match">.match(intent, [confidence], [prefix])</a> &#x21D2; <code>function</code></li>
-<li><a href="#Ai_navigate">.navigate(knownIntents, [threshold], [confidence], [prefix])</a> &#x21D2; <code>function</code></li>
-<li><a href="#Ai_makeSure">.makeSure(knownIntents, [threshold], [confidence], prefix)</a> &#x21D2; <code>function</code></li>
 </ul>
 </li>
 </ul>
@@ -791,19 +793,14 @@
 <h3 id="aiconfidence--number"><a name="aiconfidence--number" class="plugin-anchor" href="#aiconfidence--number"><i class="fa fa-link" aria-hidden="true"></i></a>ai.confidence : <code>number</code></h3>
 <p>Upper threshold - for match method and for navigate method</p>
 <p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
-<div id="Ai_threshold">&#xA0;</div>
-
-<h3 id="aithreshold--number"><a name="aithreshold--number" class="plugin-anchor" href="#aithreshold--number"><i class="fa fa-link" aria-hidden="true"></i></a>ai.threshold : <code>number</code></h3>
-<p>Lower threshold - for navigate and makeSure methods</p>
-<p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
 <div id="Ai_logger">&#xA0;</div>
 
 <h3 id="ailogger--object"><a name="ailogger--object" class="plugin-anchor" href="#ailogger--object"><i class="fa fa-link" aria-hidden="true"></i></a>ai.logger : <code>Object</code></h3>
 <p>The logger (console by default)</p>
 <p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
-<div id="Ai_prefixTranslator">&#xA0;</div>
+<div id="Ai_getPrefix">&#xA0;</div>
 
-<h3 id="aiprefixtranslatorprefix-req"><a name="aiprefixtranslatorprefix-req" class="plugin-anchor" href="#aiprefixtranslatorprefix-req"><i class="fa fa-link" aria-hidden="true"></i></a>ai.prefixTranslator(prefix, req)</h3>
+<h3 id="aigetprefixprefix-req"><a name="aigetprefixprefix-req" class="plugin-anchor" href="#aigetprefixprefix-req"><i class="fa fa-link" aria-hidden="true"></i></a>ai.getPrefix(prefix, req)</h3>
 <p>The prefix translator - for request-specific prefixes</p>
 <p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
 <table>
@@ -878,13 +875,11 @@ describe(<span class="hljs-string">&apos;bot&apos;</span>, <span class="hljs-fun
     });
 });
 </code></pre>
-<div id="Ai_onConfirmMiddleware">&#xA0;</div>
+<div id="Ai_register">&#xA0;</div>
 
-<h3 id="aionconfirmmiddlewareonintentconfirmed-getmeta-&#x21D2;-function"><a name="aionconfirmmiddlewareonintentconfirmed-getmeta-&#x21D2;-function" class="plugin-anchor" href="#aionconfirmmiddlewareonintentconfirmed-getmeta-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.onConfirmMiddleware(onIntentConfirmed, getMeta) &#x21D2; <code>function</code></h3>
-<p>When user confirms their intent, onIntentConfirmed handler will be called.
-To create meta data from recognized request use getMeta handler.
-Its useful for updating training data for AI</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<h3 id="airegistermodel-prefix-&#x21D2;-wingbotmodel--t"><a name="airegistermodel-prefix-&#x21D2;-wingbotmodel--t" class="plugin-anchor" href="#airegistermodel-prefix-&#x21D2;-wingbotmodel--t"><i class="fa fa-link" aria-hidden="true"></i></a>ai.register(model, prefix) &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></h3>
+<p>Registers Wingbot AI model</p>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Template</strong>: T  </p>
 <table>
 <thead>
 <tr>
@@ -896,42 +891,25 @@ Its useful for updating training data for AI</p>
 </thead>
 <tbody>
 <tr>
-<td>onIntentConfirmed</td>
-<td><code>function</code></td>
+<td>model</td>
+<td><code>string</code> \</td>
+<td><a href="#WingbotModel"><code>WingbotModel</code></a> \</td>
+<td><code>T</code></td>
 <td></td>
-<td>handler, which will be called when intent is confirmed</td>
+<td>wingbot model name or AI plugin</td>
 </tr>
 <tr>
-<td>getMeta</td>
-<td><code>function</code></td>
-<td><code></code></td>
-<td>handler, which will be called when intent is confirmed</td>
+<td>prefix</td>
+<td><code>string</code></td>
+<td><code>&quot;default&quot;</code></td>
+<td>model prefix</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Router, ai } = require(&apos;&apos;wingbot&apos;);
+<div id="Ai_load">&#xA0;</div>
 
-bot.use(ai.onConfirmMiddleware((senderId, intent, text, timestamp, meta) =&gt; {
-    // log this information
-}, (req) =&gt; {
-    // create and return meta data object
-}));
-
-bot.use(ai.makeSure([&apos;intent1&apos;, &apos;intent2&apos;]), (req, res) =&gt; {
-    console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
-
-    res.text(&apos;What you mean?&apos;, res.ensures({
-        intent1: &apos;Intent one?&apos;,
-        intent2: &apos;Intent two?&apos;,
-        anyOther: &apos;Niether&apos;
-    }));
-});
-</code></pre>
-<div id="Ai_register">&#xA0;</div>
-
-<h3 id="airegistermodel-options-prefix-model-&#x21D2;-wingbotmodel"><a name="airegistermodel-options-prefix-model-&#x21D2;-wingbotmodel" class="plugin-anchor" href="#airegistermodel-options-prefix-model-&#x21D2;-wingbotmodel"><i class="fa fa-link" aria-hidden="true"></i></a>ai.register(model, options, prefix, [Model]) &#x21D2; <code>WingbotModel</code></h3>
-<p>Registers Wingbot AI model</p>
+<h3 id="ailoadprefix"><a name="ailoadprefix" class="plugin-anchor" href="#ailoadprefix"><i class="fa fa-link" aria-hidden="true"></i></a>ai.load(prefix)</h3>
+<p>Middleware, which ensures, that AI data are properly loaded in Request</p>
 <p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
 <table>
 <thead>
@@ -943,37 +921,19 @@ bot.use(ai.makeSure([&apos;intent1&apos;, &apos;intent2&apos;]), (req, res) =&gt
 </thead>
 <tbody>
 <tr>
-<td>model</td>
-<td><code>string</code></td>
-<td>model name</td>
-</tr>
-<tr>
-<td>options</td>
-<td><code>Object</code></td>
-<td>the configuration</td>
-</tr>
-<tr>
-<td>[options.cacheSize]</td>
-<td><code>number</code></td>
-<td>remember number of caches</td>
-</tr>
-<tr>
-<td>[options.matches]</td>
-<td><code>number</code></td>
-<td>ask AI for number of matches</td>
-</tr>
-<tr>
 <td>prefix</td>
 <td><code>string</code></td>
-<td>model prefix</td>
-</tr>
-<tr>
-<td>[Model]</td>
-<td><code>WingbotModel</code></td>
-<td>model class</td>
+<td>AI model prefix</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { ai, Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+
+bot.use(ai.load());
+</code></pre>
 <div id="Ai_match">&#xA0;</div>
 
 <h3 id="aimatchintent-confidence-prefix-&#x21D2;-function"><a name="aimatchintent-confidence-prefix-&#x21D2;-function" class="plugin-anchor" href="#aimatchintent-confidence-prefix-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.match(intent, [confidence], [prefix]) &#x21D2; <code>function</code></h3>
@@ -1011,154 +971,204 @@ bot.use(ai.makeSure([&apos;intent1&apos;, &apos;intent2&apos;]), (req, res) =&gt
 ai.register(&apos;app-model&apos;);
 
 bot.use(ai.match(&apos;intent1&apos;), (req, res) =&gt; {
-    console.log(req.confidences); // { intent1: 0.9604 }
+    console.log(req.intent()); // { intent: &apos;intent1&apos;, score: 0.9604 }
 
     res.text(&apos;Oh, intent 1 :)&apos;);
 });
 </code></pre>
-<div id="Ai_navigate">&#xA0;</div>
+<div id="WingbotModel">&#xA0;</div>
 
-<h3 id="ainavigateknownintents-threshold-confidence-prefix-&#x21D2;-function"><a name="ainavigateknownintents-threshold-confidence-prefix-&#x21D2;-function" class="plugin-anchor" href="#ainavigateknownintents-threshold-confidence-prefix-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.navigate(knownIntents, [threshold], [confidence], [prefix]) &#x21D2; <code>function</code></h3>
-<p>Create AI middleware, which resolves multiple replies
-and <strong>makes postback, when it&apos;s confident</strong>
-Confidence should be between <code>threshold</code> and <code>confidence</code> to proceed
-to next resolver</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware  </p>
+<h2 id="wingbotmodel"><a name="wingbotmodel" class="plugin-anchor" href="#wingbotmodel"><i class="fa fa-link" aria-hidden="true"></i></a>WingbotModel</h2>
+<p><strong>Kind</strong>: global class  </p>
+<ul>
+<li><a href="#WingbotModel">WingbotModel</a><ul>
+<li><a href="#new_WingbotModel_new">new WingbotModel(options, [log])</a></li>
+<li><a href="#WingbotModel__queryModel">._queryModel(text)</a> &#x21D2; <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code></li>
+</ul>
+</li>
+</ul>
+<div id="new_WingbotModel_new">&#xA0;</div>
+
+<h3 id="new-wingbotmodeloptions-log"><a name="new-wingbotmodeloptions-log" class="plugin-anchor" href="#new-wingbotmodeloptions-log"><i class="fa fa-link" aria-hidden="true"></i></a>new WingbotModel(options, [log])</h3>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
-<th>Default</th>
-<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>knownIntents</td>
-<td><code>Array</code> \</td>
+<td>options</td>
 <td><code>Object</code></td>
-<td></td>
-<td>list or map of accepted intents</td>
 </tr>
 <tr>
-<td>[threshold]</td>
-<td><code>number</code></td>
-<td><code></code></td>
-<td>lower threshold</td>
-</tr>
-<tr>
-<td>[confidence]</td>
-<td><code>number</code></td>
-<td><code></code></td>
-<td>upper threshold for confidence</td>
-</tr>
-<tr>
-<td>[prefix]</td>
+<td>[options.serviceUrl]</td>
 <td><code>string</code></td>
-<td></td>
-<td>model name</td>
 </tr>
-</tbody>
-</table>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Router, ai } = require(&apos;&apos;wingbot&apos;);
-
-bot.use(ai.navigate([&apos;intent1&apos;, &apos;intent2&apos;]), (req, res) =&gt; {
-    console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
-
-    res.text(&apos;What you mean?&apos;, res.ensures({
-        intent1: &apos;Intent one?&apos;,
-        intent2: &apos;Intent two?&apos;,
-        anyOther: &apos;Niether&apos;
-    }));
-});
-</code></pre>
-<div id="Ai_makeSure">&#xA0;</div>
-
-<h3 id="aimakesureknownintents-threshold-confidence-prefix-&#x21D2;-function"><a name="aimakesureknownintents-threshold-confidence-prefix-&#x21D2;-function" class="plugin-anchor" href="#aimakesureknownintents-threshold-confidence-prefix-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.makeSure(knownIntents, [threshold], [confidence], prefix) &#x21D2; <code>function</code></h3>
-<p>Create AI middleware, which resolves multiple replies.
-Confidence should be between <code>threshold</code> and <code>confidence</code> to proceed
-to next resolver</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware  </p>
-<table>
-<thead>
 <tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
+<td>options.model</td>
+<td><code>string</code></td>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td>knownIntents</td>
-<td><code>Array</code> \</td>
+<td>[options.cacheSize]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[options.matches]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[log]</td>
 <td><code>Object</code></td>
-<td></td>
-<td>list or map of accepted intents</td>
-</tr>
-<tr>
-<td>[threshold]</td>
-<td><code>number</code></td>
-<td><code></code></td>
-<td>lower threshold</td>
-</tr>
-<tr>
-<td>[confidence]</td>
-<td><code>number</code></td>
-<td><code></code></td>
-<td>upper threshold for confidence</td>
-</tr>
-<tr>
-<td>prefix</td>
-<td><code>string</code></td>
-<td></td>
-<td>model name</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Router, ai } = require(&apos;&apos;wingbot&apos;);
+<div id="WingbotModel__queryModel">&#xA0;</div>
 
-bot.use(ai.makeSure([&apos;intent1&apos;, &apos;intent2&apos;]), (req, res) =&gt; {
-    console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
-
-    res.text(&apos;What you mean?&apos;, res.ensures({
-        intent1: &apos;Intent one?&apos;,
-        intent2: &apos;Intent two?&apos;,
-        anyOther: &apos;Niether&apos;
-    }));
-});
-</code></pre>
-<div id="markAsHandled">&#xA0;</div>
-
-<h2 id="markashandledaihandled-&#x21D2;-request"><a name="markashandledaihandled-&#x21D2;-request" class="plugin-anchor" href="#markashandledaihandled-&#x21D2;-request"><i class="fa fa-link" aria-hidden="true"></i></a>markAsHandled([aiHandled]) &#x21D2; <code>Request</code></h2>
-<p>Mark request as handled - usefull for AI analytics</p>
-<p><strong>Kind</strong>: global function  </p>
+<h3 id="wingbotmodelquerymodeltext-&#x21D2;-promisearrayintent"><a name="wingbotmodelquerymodeltext-&#x21D2;-promisearrayintent" class="plugin-anchor" href="#wingbotmodelquerymodeltext-&#x21D2;-promisearrayintent"><i class="fa fa-link" aria-hidden="true"></i></a>wingbotModel._queryModel(text) &#x21D2; <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#WingbotModel"><code>WingbotModel</code></a>  </p>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
-<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="CachedModel">&#xA0;</div>
+
+<h2 id="cachedmodel"><a name="cachedmodel" class="plugin-anchor" href="#cachedmodel"><i class="fa fa-link" aria-hidden="true"></i></a>CachedModel</h2>
+<p><strong>Kind</strong>: global class  </p>
+<ul>
+<li><a href="#CachedModel">CachedModel</a><ul>
+<li><a href="#new_CachedModel_new">new CachedModel(options, [log])</a></li>
+<li><a href="#CachedModel_resolve">.resolve(text)</a> &#x21D2; <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code></li>
+<li><a href="#CachedModel__queryModel">._queryModel(text)</a> &#x21D2; <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code></li>
+</ul>
+</li>
+</ul>
+<div id="new_CachedModel_new">&#xA0;</div>
+
+<h3 id="new-cachedmodeloptions-log"><a name="new-cachedmodeloptions-log" class="plugin-anchor" href="#new-cachedmodeloptions-log"><i class="fa fa-link" aria-hidden="true"></i></a>new CachedModel(options, [log])</h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code>Object</code></td>
+</tr>
+<tr>
+<td>[options.cacheSize]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[log]</td>
+<td><code>Object</code></td>
+</tr>
+</tbody>
+</table>
+<div id="CachedModel_resolve">&#xA0;</div>
+
+<h3 id="cachedmodelresolvetext-&#x21D2;-promisearrayintent"><a name="cachedmodelresolvetext-&#x21D2;-promisearrayintent" class="plugin-anchor" href="#cachedmodelresolvetext-&#x21D2;-promisearrayintent"><i class="fa fa-link" aria-hidden="true"></i></a>cachedModel.resolve(text) &#x21D2; <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#CachedModel"><code>CachedModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>[aiHandled]</td>
-<td><code>boolean</code></td>
-<td><code>true</code></td>
-<td>true by default</td>
+<td>text</td>
+<td><code>string</code></td>
+<td>the user input</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;some other query&apos;</span>, (req, res) =&gt; {
-    req.markAsHandled();
-});
-</code></pre>
+<div id="CachedModel__queryModel">&#xA0;</div>
+
+<h3 id="cachedmodelquerymodeltext-&#x21D2;-promisearrayintent"><a name="cachedmodelquerymodeltext-&#x21D2;-promisearrayintent" class="plugin-anchor" href="#cachedmodelquerymodeltext-&#x21D2;-promisearrayintent"><i class="fa fa-link" aria-hidden="true"></i></a>cachedModel._queryModel(text) &#x21D2; <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#CachedModel"><code>CachedModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="Intent">&#xA0;</div>
+
+<h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[entities]</td>
+<td><code>Array.&lt;Object&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<div id="Intent">&#xA0;</div>
+
+<h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[entities]</td>
+<td><code>Array.&lt;Object&gt;</code></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1202,7 +1212,7 @@ bot.use(ai.makeSure([&apos;intent1&apos;, &apos;intent2&apos;]), (req, res) =&gt
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"2.7","depth":1,"next":{"title":"Wingbot.ai","level":"2.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"2.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2018-05-22T11:53:54.794Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-05-22T11:54:00.089Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"2.7","depth":1,"next":{"title":"Wingbot.ai","level":"2.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"2.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2018-05-27T19:19:53.917Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-05-27T19:20:01.034Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -754,7 +754,19 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <div id="Request">&#xA0;</div>
+                                <h2 id="classes"><a name="classes" class="plugin-anchor" href="#classes"><i class="fa fa-link" aria-hidden="true"></i></a>Classes</h2>
+<dl>
+<dt><a href="#Request">Request</a></dt>
+<dd></dd>
+</dl>
+
+<h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
+<dl>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
+</dl>
+
+<div id="Request">&#xA0;</div>
 
 <h2 id="request"><a name="request" class="plugin-anchor" href="#request"><i class="fa fa-link" aria-hidden="true"></i></a>Request</h2>
 <p><strong>Kind</strong>: global class  </p>
@@ -766,6 +778,7 @@
 <li><a href="#Request_recipientId">.recipientId</a></li>
 <li><a href="#Request_pageId">.pageId</a></li>
 <li><a href="#Request_state">.state</a></li>
+<li><a href="#Request_intent">.intent(getDataOrScore)</a> &#x21D2; <code>null</code> | <code>string</code> | <a href="#Intent"><code>Intent</code></a></li>
 <li><a href="#Request_isAttachment">.isAttachment()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isImage">.isImage([attachmentIndex])</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isFile">.isFile([attachmentIndex])</a> &#x21D2; <code>boolean</code></li>
@@ -884,6 +897,30 @@
 <td>state</td>
 <td><code>object</code></td>
 <td>current state of the conversation</td>
+</tr>
+</tbody>
+</table>
+<div id="Request_intent">&#xA0;</div>
+
+<h3 id="requestintentgetdataorscore-&#x21D2;-null--string--intent"><a name="requestintentgetdataorscore-&#x21D2;-null--string--intent" class="plugin-anchor" href="#requestintentgetdataorscore-&#x21D2;-null--string--intent"><i class="fa fa-link" aria-hidden="true"></i></a>request.intent(getDataOrScore) &#x21D2; <code>null</code> | <code>string</code> | <a href="#Intent"><code>Intent</code></a></h3>
+<p>Returns intent, when using AI</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getDataOrScore</td>
+<td><code>boolean</code> \</td>
+<td><code>number</code></td>
+<td><code>false</code></td>
+<td>score limit or true for getting intent data</td>
 </tr>
 </tbody>
 </table>
@@ -1135,6 +1172,32 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <pre><code class="lang-javascript"><span class="hljs-keyword">typeof</span> res.postBack() === <span class="hljs-string">&apos;string&apos;</span> || res.postBack() === <span class="hljs-literal">null</span>;
 <span class="hljs-keyword">typeof</span> res.postBack(<span class="hljs-literal">true</span>) === <span class="hljs-string">&apos;object&apos;</span>;
 </code></pre>
+<div id="Intent">&#xA0;</div>
+
+<h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[entities]</td>
+<td><code>Array.&lt;Object&gt;</code></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1178,7 +1241,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"2.1","depth":1,"next":{"title":"Responder","level":"2.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Serverless AWS Lambda","level":"1.10.3","depth":2,"anchor":"#serverless-aws-lambda","path":"tutorial/usingWithWingbot.md","ref":"tutorial/usingWithWingbot.md#serverless-aws-lambda","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2018-05-22T11:53:52.497Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-05-22T11:54:00.089Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"2.1","depth":1,"next":{"title":"Responder","level":"2.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Serverless AWS Lambda","level":"1.10.3","depth":2,"anchor":"#serverless-aws-lambda","path":"tutorial/usingWithWingbot.md","ref":"tutorial/usingWithWingbot.md#serverless-aws-lambda","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2018-05-27T19:19:53.899Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-05-27T19:20:01.034Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

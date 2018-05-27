@@ -3,14 +3,19 @@
 <dl>
 <dt><a href="#Ai">Ai</a></dt>
 <dd></dd>
+<dt><a href="#WingbotModel">WingbotModel</a></dt>
+<dd></dd>
+<dt><a href="#CachedModel">CachedModel</a></dt>
+<dd></dd>
 </dl>
 
-## Functions
+## Typedefs
 
 <dl>
-<dt><a href="#markAsHandled">markAsHandled([aiHandled])</a> ⇒ <code>Request</code></dt>
-<dd><p>Mark request as handled - usefull for AI analytics</p>
-</dd>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="Ai">&nbsp;</div>{% endraw %}
@@ -20,26 +25,17 @@
 
 * [Ai](#Ai)
     * [.confidence](#Ai_confidence) : <code>number</code>
-    * [.threshold](#Ai_threshold) : <code>number</code>
     * [.logger](#Ai_logger) : <code>Object</code>
-    * [.prefixTranslator(prefix, req)](#Ai_prefixTranslator)
+    * [.getPrefix(prefix, req)](#Ai_getPrefix)
     * [.mockIntent([intent], [confidence])](#Ai_mockIntent) ⇒ <code>this</code>
-    * [.onConfirmMiddleware(onIntentConfirmed, getMeta)](#Ai_onConfirmMiddleware) ⇒ <code>function</code>
-    * [.register(model, options, prefix, [Model])](#Ai_register) ⇒ <code>WingbotModel</code>
+    * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
+    * [.load(prefix)](#Ai_load)
     * [.match(intent, [confidence], [prefix])](#Ai_match) ⇒ <code>function</code>
-    * [.navigate(knownIntents, [threshold], [confidence], [prefix])](#Ai_navigate) ⇒ <code>function</code>
-    * [.makeSure(knownIntents, [threshold], [confidence], prefix)](#Ai_makeSure) ⇒ <code>function</code>
 
 {% raw %}<div id="Ai_confidence">&nbsp;</div>{% endraw %}
 
 ### ai.confidence : <code>number</code>
 Upper threshold - for match method and for navigate method
-
-**Kind**: instance property of [<code>Ai</code>](#Ai)  
-{% raw %}<div id="Ai_threshold">&nbsp;</div>{% endraw %}
-
-### ai.threshold : <code>number</code>
-Lower threshold - for navigate and makeSure methods
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
 {% raw %}<div id="Ai_logger">&nbsp;</div>{% endraw %}
@@ -48,9 +44,9 @@ Lower threshold - for navigate and makeSure methods
 The logger (console by default)
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
-{% raw %}<div id="Ai_prefixTranslator">&nbsp;</div>{% endraw %}
+{% raw %}<div id="Ai_getPrefix">&nbsp;</div>{% endraw %}
 
-### ai.prefixTranslator(prefix, req)
+### ai.getPrefix(prefix, req)
 The prefix translator - for request-specific prefixes
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
@@ -98,56 +94,38 @@ describe('bot', function () {
     });
 });
 ```
-{% raw %}<div id="Ai_onConfirmMiddleware">&nbsp;</div>{% endraw %}
+{% raw %}<div id="Ai_register">&nbsp;</div>{% endraw %}
 
-### ai.onConfirmMiddleware(onIntentConfirmed, getMeta) ⇒ <code>function</code>
-When user confirms their intent, onIntentConfirmed handler will be called.
-To create meta data from recognized request use getMeta handler.
-Its useful for updating training data for AI
+### ai.register(model, prefix) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
+Registers Wingbot AI model
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
+**Template**: T  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| onIntentConfirmed | <code>function</code> |  | handler, which will be called when intent is confirmed |
-| getMeta | <code>function</code> | <code></code> | handler, which will be called when intent is confirmed |
+| model | <code>string</code> \| [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code> |  | wingbot model name or AI plugin |
+| prefix | <code>string</code> | <code>&quot;default&quot;</code> | model prefix |
 
-**Example**  
-```javascript
-const { Router, ai } = require(''wingbot');
+{% raw %}<div id="Ai_load">&nbsp;</div>{% endraw %}
 
-bot.use(ai.onConfirmMiddleware((senderId, intent, text, timestamp, meta) => {
-    // log this information
-}, (req) => {
-    // create and return meta data object
-}));
-
-bot.use(ai.makeSure(['intent1', 'intent2']), (req, res) => {
-    console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
-
-    res.text('What you mean?', res.ensures({
-        intent1: 'Intent one?',
-        intent2: 'Intent two?',
-        anyOther: 'Niether'
-    }));
-});
-```
-{% raw %}<div id="Ai_register">&nbsp;</div>{% endraw %}
-
-### ai.register(model, options, prefix, [Model]) ⇒ <code>WingbotModel</code>
-Registers Wingbot AI model
+### ai.load(prefix)
+Middleware, which ensures, that AI data are properly loaded in Request
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| model | <code>string</code> | model name |
-| options | <code>Object</code> | the configuration |
-| [options.cacheSize] | <code>number</code> | remember number of caches |
-| [options.matches] | <code>number</code> | ask AI for number of matches |
-| prefix | <code>string</code> | model prefix |
-| [Model] | <code>WingbotModel</code> | model class |
+| prefix | <code>string</code> | AI model prefix |
 
+**Example**  
+```javascript
+const { ai, Router } = require('wingbot');
+
+const bot = new Router();
+
+bot.use(ai.load());
+```
 {% raw %}<div id="Ai_match">&nbsp;</div>{% endraw %}
 
 ### ai.match(intent, [confidence], [prefix]) ⇒ <code>function</code>
@@ -169,88 +147,99 @@ const { Router, ai } = require(''wingbot');
 ai.register('app-model');
 
 bot.use(ai.match('intent1'), (req, res) => {
-    console.log(req.confidences); // { intent1: 0.9604 }
+    console.log(req.intent()); // { intent: 'intent1', score: 0.9604 }
 
     res.text('Oh, intent 1 :)');
 });
 ```
-{% raw %}<div id="Ai_navigate">&nbsp;</div>{% endraw %}
+{% raw %}<div id="WingbotModel">&nbsp;</div>{% endraw %}
 
-### ai.navigate(knownIntents, [threshold], [confidence], [prefix]) ⇒ <code>function</code>
-Create AI middleware, which resolves multiple replies
-and **makes postback, when it's confident**
-Confidence should be between `threshold` and `confidence` to proceed
-to next resolver
+## WingbotModel
+**Kind**: global class  
 
-**Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Returns**: <code>function</code> - - the middleware  
+* [WingbotModel](#WingbotModel)
+    * [new WingbotModel(options, [log])](#new_WingbotModel_new)
+    * [._queryModel(text)](#WingbotModel__queryModel) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| knownIntents | <code>Array</code> \| <code>Object</code> |  | list or map of accepted intents |
-| [threshold] | <code>number</code> | <code></code> | lower threshold |
-| [confidence] | <code>number</code> | <code></code> | upper threshold for confidence |
-| [prefix] | <code>string</code> |  | model name |
+{% raw %}<div id="new_WingbotModel_new">&nbsp;</div>{% endraw %}
 
-**Example**  
-```javascript
-const { Router, ai } = require(''wingbot');
+### new WingbotModel(options, [log])
 
-bot.use(ai.navigate(['intent1', 'intent2']), (req, res) => {
-    console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
+| Param | Type |
+| --- | --- |
+| options | <code>Object</code> | 
+| [options.serviceUrl] | <code>string</code> | 
+| options.model | <code>string</code> | 
+| [options.cacheSize] | <code>number</code> | 
+| [options.matches] | <code>number</code> | 
+| [log] | <code>Object</code> | 
 
-    res.text('What you mean?', res.ensures({
-        intent1: 'Intent one?',
-        intent2: 'Intent two?',
-        anyOther: 'Niether'
-    }));
-});
-```
-{% raw %}<div id="Ai_makeSure">&nbsp;</div>{% endraw %}
+{% raw %}<div id="WingbotModel__queryModel">&nbsp;</div>{% endraw %}
 
-### ai.makeSure(knownIntents, [threshold], [confidence], prefix) ⇒ <code>function</code>
-Create AI middleware, which resolves multiple replies.
-Confidence should be between `threshold` and `confidence` to proceed
-to next resolver
+### wingbotModel._queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+**Kind**: instance method of [<code>WingbotModel</code>](#WingbotModel)  
 
-**Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Returns**: <code>function</code> - - the middleware  
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| knownIntents | <code>Array</code> \| <code>Object</code> |  | list or map of accepted intents |
-| [threshold] | <code>number</code> | <code></code> | lower threshold |
-| [confidence] | <code>number</code> | <code></code> | upper threshold for confidence |
-| prefix | <code>string</code> |  | model name |
+{% raw %}<div id="CachedModel">&nbsp;</div>{% endraw %}
 
-**Example**  
-```javascript
-const { Router, ai } = require(''wingbot');
+## CachedModel
+**Kind**: global class  
 
-bot.use(ai.makeSure(['intent1', 'intent2']), (req, res) => {
-    console.log(req.confidences); // { intent1: 0.8604, intent2: undefined }
+* [CachedModel](#CachedModel)
+    * [new CachedModel(options, [log])](#new_CachedModel_new)
+    * [.resolve(text)](#CachedModel_resolve) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+    * [._queryModel(text)](#CachedModel__queryModel) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
 
-    res.text('What you mean?', res.ensures({
-        intent1: 'Intent one?',
-        intent2: 'Intent two?',
-        anyOther: 'Niether'
-    }));
-});
-```
-{% raw %}<div id="markAsHandled">&nbsp;</div>{% endraw %}
+{% raw %}<div id="new_CachedModel_new">&nbsp;</div>{% endraw %}
 
-## markAsHandled([aiHandled]) ⇒ <code>Request</code>
-Mark request as handled - usefull for AI analytics
+### new CachedModel(options, [log])
 
-**Kind**: global function  
+| Param | Type |
+| --- | --- |
+| options | <code>Object</code> | 
+| [options.cacheSize] | <code>number</code> | 
+| [log] | <code>Object</code> | 
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [aiHandled] | <code>boolean</code> | <code>true</code> | true by default |
+{% raw %}<div id="CachedModel_resolve">&nbsp;</div>{% endraw %}
 
-**Example**  
-```javascript
-bot.use('some other query', (req, res) => {
-    req.markAsHandled();
-});
-```
+### cachedModel.resolve(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+**Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | the user input |
+
+{% raw %}<div id="CachedModel__queryModel">&nbsp;</div>{% endraw %}
+
+### cachedModel._queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+**Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
+
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
+
+{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+
+## Intent : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| intent | <code>string</code> | 
+| score | <code>number</code> | 
+| [entities] | <code>Array.&lt;Object&gt;</code> | 
+
+{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+
+## Intent : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| intent | <code>string</code> | 
+| score | <code>number</code> | 
+| [entities] | <code>Array.&lt;Object&gt;</code> | 
+

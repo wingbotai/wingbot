@@ -1,3 +1,17 @@
+## Classes
+
+<dl>
+<dt><a href="#Request">Request</a></dt>
+<dd></dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
+</dl>
+
 {% raw %}<div id="Request">&nbsp;</div>{% endraw %}
 
 ## Request
@@ -10,6 +24,7 @@
     * [.recipientId](#Request_recipientId)
     * [.pageId](#Request_pageId)
     * [.state](#Request_state)
+    * [.intent(getDataOrScore)](#Request_intent) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
     * [.isImage([attachmentIndex])](#Request_isImage) ⇒ <code>boolean</code>
     * [.isFile([attachmentIndex])](#Request_isFile) ⇒ <code>boolean</code>
@@ -82,6 +97,17 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | Name | Type | Description |
 | --- | --- | --- |
 | state | <code>object</code> | current state of the conversation |
+
+{% raw %}<div id="Request_intent">&nbsp;</div>{% endraw %}
+
+### request.intent(getDataOrScore) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
+Returns intent, when using AI
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| getDataOrScore | <code>boolean</code> \| <code>number</code> | <code>false</code> | score limit or true for getting intent data |
 
 {% raw %}<div id="Request_isAttachment">&nbsp;</div>{% endraw %}
 
@@ -253,3 +279,14 @@ When `getData` is `true`, object will be returned. Otherwise string or null.
 typeof res.postBack() === 'string' || res.postBack() === null;
 typeof res.postBack(true) === 'object';
 ```
+{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+
+## Intent : <code>Object</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| intent | <code>string</code> | 
+| score | <code>number</code> | 
+| [entities] | <code>Array.&lt;Object&gt;</code> | 
+

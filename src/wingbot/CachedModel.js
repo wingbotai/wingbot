@@ -5,6 +5,13 @@
 
 const DEFAULT_CACHE_SIZE = 10;
 
+/**
+ * @typedef {Object} Intent
+ * @param {string} intent
+ * @param {number} score
+ * @param {Object[]} [entities]
+ */
+
 class CachedModel {
 
     /**
@@ -23,7 +30,7 @@ class CachedModel {
 
     /**
      * @param {string} text - the user input
-     * @returns {Promise<{intent:string,score:number,entities?:Object[]}[]>}
+     * @returns {Promise<Intent[]>}
      */
     async resolve (text) {
         if (this._cacheMap.has(text)) {
@@ -51,7 +58,7 @@ class CachedModel {
     /**
      *
      * @param {string} text
-     * @returns {Promise<{intent:string,score:number,entities?:Object[]}[]>}
+     * @returns {Promise<Intent[]>}
      */
     async _queryModel (text) { // eslint-disable-line no-unused-vars
         throw new Error('Not implemented!');

@@ -8,6 +8,13 @@ const { tokenize, quickReplyAction, parseActionPayload } = require('./utils');
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
 /**
+ * @typedef {Object} Intent
+ * @param {string} intent
+ * @param {number} score
+ * @param {Object[]} [entities]
+ */
+
+/**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
  * @class Request
@@ -61,7 +68,7 @@ class Request {
      * Returns intent, when using AI
      *
      * @param {boolean|number} getDataOrScore - score limit or true for getting intent data
-     * @returns {null|string|{intent:string,score:number,entities?:Object[]}}
+     * @returns {null|string|Intent}
      */
     intent (getDataOrScore = false) {
         if (!this._intents || this._intents.length === 0) {

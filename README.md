@@ -6,42 +6,27 @@
 
 Framework for building reusable chatbot components. **Routing**, **Keyword recognition** is built-in.
 
-- [**[API documentation](https://wingbotai.github.com/wingbot)**]
+- [**[API documentation](https://wingbotai.github.io/wingbot)**]
+- [**[wingbot.ai chatbot designer](https://wingbot.ai)**]
 
-## Requirements and installation
+## First wingbot.ai chatbot for Facebook Messenger
 
-  - requires `nodejs` > 8.0
+  1. **Install the Wingbot CLI**
 
-  ```bash
-  $ npm i -S wingbot
-  ```
+    ```bash
+    $ npm i -g wingbot-cli
+    ```
 
-## Basic setup with Express
+  2. **Create a project folder and run init command**
 
-It's easy. This basic example can handle everything.
+    ```bash
+    $ mkdir my-bot
+    $ cd my-bot
+    $ wingbot init
+    ```
 
-```javascript
-const express = require('express');
-const { Router } = require('wingbot');
-const mongoose = require('mongoose');
-const { createRouter, createProcessor } = require('wingbot/express');
+    You will be asked for project details
 
-const bot = new Router();
+    ![wingbot init command](https://github.com/wingbotai/wingbot/raw/master/doc/wingbotInit.png "Wingbot Init Command")
 
-bot.use('/hello', (req, res, postBack) => {
-    res.text('Hello world');
-});
-
-bot.use((req, res, postBack) => {
-    res.text('What you want?', {
-        hello: 'Say hello world'
-    });
-});
-
-const app = express();
-
-// @todo create documentation
-
-mongoose.connect('mongodb://localhost/myapp')
-    .then(() => app.listen(3000));
-```
+  3. **Deploy your bot**
