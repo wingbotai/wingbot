@@ -28,6 +28,8 @@
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
     * [.isImage([attachmentIndex])](#Request_isImage) ⇒ <code>boolean</code>
     * [.isFile([attachmentIndex])](#Request_isFile) ⇒ <code>boolean</code>
+    * [.hasLocation()](#Request_hasLocation) ⇒ <code>boolean</code>
+    * [.getLocation()](#Request_getLocation) ⇒ <code>null</code> \| <code>Object</code>
     * [.attachment([attachmentIndex])](#Request_attachment) ⇒ <code>Object</code> \| <code>null</code>
     * [.attachmentUrl([attachmentIndex])](#Request_attachmentUrl) ⇒ <code>string</code> \| <code>null</code>
     * [.isMessage()](#Request_isMessage) ⇒ <code>boolean</code>
@@ -137,6 +139,40 @@ Checks, when the attachment is a file
 | --- | --- | --- | --- |
 | [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
 
+{% raw %}<div id="Request_hasLocation">&nbsp;</div>{% endraw %}
+
+### request.hasLocation() ⇒ <code>boolean</code>
+Checks for location in attachments
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+{% raw %}<div id="Request_getLocation">&nbsp;</div>{% endraw %}
+
+### request.getLocation() ⇒ <code>null</code> \| <code>Object</code>
+Gets location coordinates from attachment, when exists
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Example**  
+```javascript
+const { Router } = require('wingbot');
+
+const bot = new Router();
+
+bot.use('start', (req, res) => {
+    res.text('share location?', [
+        // location share quick reply
+        { action: 'locAction', title: 'Share location', isLocation: true }
+    ]);
+});
+
+bot.use('locAction', (req, res) => {
+    if (req.hasLocation()) {
+        const { lat, long } = req.getLocation();
+        res.text(`Got ${lat}, ${long}`);
+    } else {
+        res.text('No location received');
+    }
+});
+```
 {% raw %}<div id="Request_attachment">&nbsp;</div>{% endraw %}
 
 ### request.attachment([attachmentIndex]) ⇒ <code>Object</code> \| <code>null</code>
