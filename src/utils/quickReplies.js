@@ -65,7 +65,9 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
 
     const quickReplies = iterate
         .map((reply) => {
-            const { title, action, match } = reply;
+            const {
+                title, action, match, isLocation = false
+            } = reply;
             const absoluteAction = makeAbsolute(action, path);
 
             let payload = absoluteAction;
@@ -88,7 +90,7 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
             expectedKeywords.push(expect);
 
             return {
-                content_type: 'text',
+                content_type: isLocation ? 'location' : 'text',
                 title: translatedTitle,
                 payload
             };

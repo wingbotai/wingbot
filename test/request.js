@@ -361,5 +361,45 @@ describe('Request', function () {
         });
     });
 
+    describe('#hasLocation()', () => {
+
+        it('should return false, when there is no location', () => {
+            let req = new Request(Request.postBack(SENDER_ID, 'any'), STATE);
+
+            assert.strictEqual(req.hasLocation(), false);
+
+            req = new Request(Request.fileAttachment(SENDER_ID, 'http', 'image'), STATE);
+
+            assert.strictEqual(req.hasLocation(), false);
+        });
+
+        it('should return true, when there is a location', () => {
+            const req = new Request(Request.location(SENDER_ID, 10, 20), STATE);
+
+            assert.strictEqual(req.hasLocation(), true);
+        });
+
+    });
+
+    describe('#getLocation()', () => {
+
+        it('should return false, when there is no location', () => {
+            let req = new Request(Request.postBack(SENDER_ID, 'any'), STATE);
+
+            assert.strictEqual(req.getLocation(), null);
+
+            req = new Request(Request.fileAttachment(SENDER_ID, 'http', 'image'), STATE);
+
+            assert.strictEqual(req.getLocation(), null);
+        });
+
+        it('should return true, when there is a location', () => {
+            const req = new Request(Request.location(SENDER_ID, 10, 20), STATE);
+
+            assert.deepStrictEqual(req.getLocation(), { lat: 10, long: 20 });
+        });
+
+    });
+
 
 });

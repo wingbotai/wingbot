@@ -130,6 +130,53 @@ class Request {
     }
 
     /**
+     * Checks for location in attachments
+     *
+     * @returns {boolean}
+     *
+     * @memberOf Request
+     */
+    hasLocation () {
+        return this.attachments.some(at => at.type === 'location');
+    }
+
+    /**
+     * Gets location coordinates from attachment, when exists
+     *
+     * @returns {null|{lat:number,long:number}}
+     *
+     * @example
+     * const { Router } = require('wingbot');
+     *
+     * const bot = new Router();
+     *
+     * bot.use('start', (req, res) => {
+     *     res.text('share location?', [
+     *         // location share quick reply
+     *         { action: 'locAction', title: 'Share location', isLocation: true }
+     *     ]);
+     * });
+     *
+     * bot.use('locAction', (req, res) => {
+     *     if (req.hasLocation()) {
+     *         const { lat, long } = req.getLocation();
+     *         res.text(`Got ${lat}, ${long}`);
+     *     } else {
+     *         res.text('No location received');
+     *     }
+     * });
+     */
+    getLocation () {
+        const location = this.attachments.find(at => at.type === 'location');
+
+        if (!location) {
+            return null;
+        }
+
+        return location.payload.coordinates;
+    }
+
+    /**
      * Returns whole attachment or null
      *
      * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
@@ -494,9 +541,9 @@ Request.intent = function (senderId, text, intent, timestamp = Request.timestamp
     return res;
 };
 
-Request.quickReply = function (senderId, action, data = {}) {
+Request.quickReply = function (senderId, action, data = {}, timestamp = Request.timestamp()) {
     return {
-        timestamp: Request.timestamp(),
+        timestamp,
         sender: {
             id: senderId
         },
@@ -508,6 +555,38 @@ Request.quickReply = function (senderId, action, data = {}) {
                     data
                 })
             }
+        }
+    };
+};
+
+Request.quickReplyText = function (senderId, text, payload, timestamp = Request.timestamp()) {
+    return {
+        timestamp,
+        sender: {
+            id: senderId
+        },
+        message: {
+            text,
+            quick_reply: {
+                payload
+            }
+        }
+    };
+};
+
+Request.location = function (senderId, lat, long, timestamp = Request.timestamp()) {
+    return {
+        timestamp,
+        sender: {
+            id: senderId
+        },
+        message: {
+            attachments: [{
+                type: 'location',
+                payload: {
+                    coordinates: { lat, long }
+                }
+            }]
         }
     };
 };
