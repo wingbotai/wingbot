@@ -1,5 +1,6 @@
 /*
  * @author David Menger
+ * @module wingbot
  */
 'use strict';
 
@@ -527,11 +528,11 @@ class Responder {
      * res.genericTemplate()
      *     .addElement('title', 'subtitle')
      *         .setElementImage('/local.png')
-     *         .setElementUrl('https://www.seznam.cz')
+     *         .setElementAction('https://www.seznam.cz')
      *         .postBackButton('Button title', 'action', { actionData: 1 })
      *     .addElement('another', 'subtitle')
      *         .setElementImage('https://goo.gl/image.png')
-     *         .setElementAction('action', { actionData: 1 })
+     *         .setElementActionPostback('action', { actionData: 1 })
      *         .urlButton('Local link with extension', '/local/path', true, 'compact')
      *     .send();
      *

@@ -20,6 +20,7 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}) {
 
     return {
         action,
+        title,
         match,
         data: payloadData
     };
@@ -104,12 +105,21 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
  *
  * @param {Object[]} expectedKeywords
  * @param {string} normalizedText
+ * @param {string} [text]
  * @returns {null|Object}
  */
-function quickReplyAction (expectedKeywords, normalizedText) {
+function quickReplyAction (expectedKeywords, normalizedText, text = null) {
     if (!normalizedText) {
         return null;
     }
+
+    const exactMatch = expectedKeywords
+        .filter(keyword => keyword.title === text);
+
+    if (exactMatch.length === 1) {
+        return exactMatch[0];
+    }
+
     const found = expectedKeywords
         .filter(keyword => normalizedText.match(new RegExp(keyword.match)));
 

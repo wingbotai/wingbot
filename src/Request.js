@@ -392,7 +392,11 @@ class Request {
         }
 
         if (!res && this.state._expectedKeywords) {
-            const payload = quickReplyAction(this.state._expectedKeywords, this.text(true));
+            const payload = quickReplyAction(
+                this.state._expectedKeywords,
+                this.text(true),
+                this.text()
+            );
             if (payload) {
                 res = this._processPayload(payload, getData);
             }

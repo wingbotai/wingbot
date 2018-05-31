@@ -8,10 +8,18 @@ const Responder = require('./Responder');
 const Request = require('./Request');
 const ReturnSender = require('./ReturnSender');
 
+/**
+ * @typedef {Object} AutoTypingConfig
+ * @prop {number} time - duration
+ * @prop {number} perCharacters - number of characters
+ * @prop {number} minTime - minimum writing time
+ * @prop {number} maxTime - maximum writing time
+ */
+
 class Processor {
 
     /**
-     * Creates an instance of Processor.
+     * Creates an instance of Processor
      *
      * @param {ReducerWrapper|Function|Router} reducer
      * @param {Object} [options] - processor options
@@ -20,6 +28,7 @@ class Processor {
      * @param {Object} [options.tokenStorage] - frontend token storage
      * @param {Function} [options.translator] - text translate function
      * @param {number} [options.timeout] - text translate function
+     * @param {boolean|AutoTypingConfig} [options.autoTyping] - enable or disable automatic typing
      * @param {Function} [options.log] - console like error logger
      * @param {Object} [options.defaultState] - default chat state
      *
@@ -33,7 +42,8 @@ class Processor {
             translator: w => w,
             timeout: 100,
             log: console,
-            defaultState: {}
+            defaultState: {},
+            autoTyping: false
         };
 
         Object.assign(this.options, options);
