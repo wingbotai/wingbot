@@ -116,6 +116,11 @@ class ReturnSender {
                 responses: this._responses
             };
         } catch (e) {
+            if (this._logger) {
+                this._logger.error(e, this._userId, this._sent, this._incommingMessage);
+            } else {
+                console.error(e, this._userId, this._sent, this._incommingMessage); // eslint-disable-line
+            }
             return {
                 status: e.code || 500,
                 responses: this._responses

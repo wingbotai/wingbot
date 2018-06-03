@@ -11,7 +11,7 @@ There are two approches to drive asynchronous actions:
 
 ## Blocking Asynchronous actions
 
-For fast async operations you can use blocking approach. You can simply return a Promise.
+For fast async operations you can use blocking approach. You can simply return a Promise or make function async. **This approach is not recommended for production environments.**
 
 ```javascript
 const { Router } = require('wingbot');
@@ -21,19 +21,22 @@ function asyncAction () {
     return new Promise(r => setTimeout(() => r(Math.rand()), 100));
 }
 
-bot.use((req, res) => {
-    return asyncAction()
-        .then(result => {
-            res.text('Complete!')
+bot.use(async (req, res) => {
+    try {
+        res.typingOn();
+        const result = await asyncAction();
+
+        res.text('Complete!')
                 .setState({ result });
-        })
-        .catch((err => {
-            res.text('Async action failed');
-        });
+    } catch (e) {
+        res.text('Async action failed');
+    }
 });
 
 module.exports = bot;
 ```
+
+> It's not good to block messaging event processing with async actions, when action takes more then `timeout` (Processor option), it can lead to overwriting state, when concurrent request arrives.
 
 ## Non blocking asynchronous actions
 
@@ -59,17 +62,19 @@ bot.use('/asyncComplete', (req, res) => {
 });
 
 bot.use((req, res, postBack) => {
-    // wait method is usefull for testing
-    const handler = postBack.wait();
-    asyncAction()
-        .then(result => handler('asyncComplete', { result }))
-        .catch(err => handler('asyncComplete', { err }));
+    res.typingOn();
+    postBack('asyncComplete', async () => {
+        try {
+            const result = await asyncAction();
+            return { result };
+        } catch (err) {
+            return err;
+        }
+    });
 });
 
 module.exports = bot;
 ```
-
-> `postBack.wait()` helps you to write sequential tests. Conversation is not blocked, while the action runs, but final Promise is resolved, after the `handler()` function is called.
 
 ## Loading Attachments to Buffer
 
@@ -100,10 +105,15 @@ bot.use((req, res, postBack) => {
     if (!req.isAttachment()) {
         return Router.CONTINUE;
     }
-    const handler = postBack.wait();
-    bufferloader(this.req.attachmentUrl(), 1024)
-        .then(buf => handler('uploadComplete', { result: buf.toString('base64') }))
-        .catch(err => handler('uploadComplete', { err }));
+    res.typingOn();
+    postBack('uploadComplete', async () => {
+        try {
+            const buf = bufferloader(req.attachmentUrl(), 1024);
+            return { result: buf.toString('base64') };
+        } catch (err) {
+            return { err };
+        }
+    });
 });
 
 module.exports = bot;

@@ -318,16 +318,12 @@ describe('Router', function () {
             const router = new Router();
 
             const route = sinon.spy((req, res, postBack) => {
-                const resolve = postBack.wait();
-                resolve('relative', { data: 1 });
+                postBack('relative', Promise.resolve({ data: 1 }));
             });
 
             const noRoute = sinon.spy();
-            const deferredPostBack = sinon.spy();
 
-            const postBack = {
-                wait: sinon.spy(() => deferredPostBack)
-            };
+            const postBack = sinon.spy(() => null);
             const req = createMockReq('action with text', 'anotherAction');
             const res = createMockRes();
 
@@ -338,9 +334,8 @@ describe('Router', function () {
 
             assert(!noRoute.called, 'route should not be called');
             shouldBeCalled(route, req, res);
-            assert(postBack.wait.calledOnce);
-            assert(deferredPostBack.calledOnce);
-            assert.deepEqual(deferredPostBack.firstCall.args, ['/prefix/relative', { data: 1 }]);
+            assert(postBack.calledOnce);
+            assert.deepEqual(postBack.firstCall.args, ['/prefix/relative', Promise.resolve({ data: 1 })]);
         });
 
     });

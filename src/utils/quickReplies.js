@@ -105,11 +105,11 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
  *
  * @param {Object[]} expectedKeywords
  * @param {string} normalizedText
- * @param {string} [text]
+ * @param {string} text
  * @returns {null|Object}
  */
-function quickReplyAction (expectedKeywords, normalizedText, text = null) {
-    if (!normalizedText) {
+function quickReplyAction (expectedKeywords, normalizedText, text) {
+    if (!text) {
         return null;
     }
 
@@ -118,6 +118,8 @@ function quickReplyAction (expectedKeywords, normalizedText, text = null) {
 
     if (exactMatch.length === 1) {
         return exactMatch[0];
+    } else if (!normalizedText) {
+        return null;
     }
 
     const found = expectedKeywords

@@ -27,6 +27,13 @@ class Responder {
         this._senderId = senderId;
         this.token = token;
 
+        /**
+         * The empty object, which is filled with res.setState() method
+         * and saved (with Object.assign) at the end of event processing
+         * into the conversation state.
+         *
+         * @prop {object}
+         */
         this.newState = {};
 
         this.path = '';

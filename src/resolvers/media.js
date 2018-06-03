@@ -5,6 +5,7 @@
 
 const Router = require('../Router');
 const hbs = require('./hbs');
+const { stateData } = require('./utils');
 
 function media ({ type, url }, { isLastIndex }) {
 
@@ -17,8 +18,8 @@ function media ({ type, url }, { isLastIndex }) {
     }
 
     return (req, res) => {
-        const stateData = Object.assign({}, req.state, res.state, res.data);
-        const sendUrl = urlTemplate(stateData);
+        const data = stateData(req, res);
+        const sendUrl = urlTemplate(data);
 
         res[type](sendUrl, true);
 

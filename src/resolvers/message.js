@@ -4,7 +4,9 @@
 'use strict';
 
 const Router = require('../Router');
-const { customFn, getLanguageText, cachedTranslatedCompilator } = require('./utils');
+const {
+    customFn, getLanguageText, cachedTranslatedCompilator, stateData
+} = require('./utils');
 
 function parseReplies (replies, linksMap) {
     return replies.map((reply) => {
@@ -71,8 +73,8 @@ function message (params, { isLastIndex, linksMap }) {
             }
         }
 
-        const stateData = Object.assign({}, req.state, res.state, res.data);
-        const text = textTemplate(stateData);
+        const data = stateData(req, res);
+        const text = textTemplate(data);
 
         if (replies) {
             res.text(text, replies

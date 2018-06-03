@@ -2,22 +2,6 @@
 
 Stateless conversation is annoying. Noone wants to repeat, what was said. So **each user has own state object**.
 
-## Accessing user profile
-
-Yes, you already have user profile in state.
-
-```javascript
-const { Router } = require('wingbot');
-const bot = new Router();
-
-bot.use((req, res) => {
-    const { gender, locale, profilePic, lastName, firstName } = req.state.user;
-    res.text(`Hello ${firstName || 'you!'}`);
-});
-
-module.exports = bot;
-```
-
 ## Using the state in navigation
 
 Request object contains `.state` attribute, which represents state before the event, Responder updates new state with `Object.assign()` approach.

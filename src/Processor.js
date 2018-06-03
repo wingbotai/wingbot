@@ -40,7 +40,7 @@ class Processor {
             stateStorage: new MemoryStateStorage(),
             tokenStorage: null,
             translator: w => w,
-            timeout: 100,
+            timeout: 300,
             log: console,
             defaultState: {},
             autoTyping: false
@@ -56,17 +56,16 @@ class Processor {
     }
 
     _createPostBack (postbackAcumulator) {
-        return (action, data = {}) => {
-            if (action instanceof Promise) {
-                postbackAcumulator.push(action
-                    .then((result) => {
-                        if (typeof result === 'string') {
-                            return { action, data: {} };
-                        } else if (typeof result !== 'object' || result === null) {
-                            throw new Error('Postback promise should be resolved with action name or { action, data = {} } object');
-                        }
-                        return result;
-                    }));
+        return (action, inputData = {}) => {
+            let data = inputData;
+            if (typeof data === 'function') {
+                // @ts-ignore
+                data = data();
+            }
+
+            if (data instanceof Promise) {
+                postbackAcumulator.push(data
+                    .then(result => ({ action, data: result || {} })));
             } else {
                 postbackAcumulator.push({ action, data });
             }

@@ -1,6 +1,18 @@
 # Summary
 
-## Building a chat bot
+## Building a chatbot with designer
+
+* [Deploying a bot application](designerBot/deployingBot.md)
+    * [Principle](designerBot/deployingBot.md#principle)
+    * [Starting a new project](designerBot/deployingBot.md#starting-a-new-chatbot-project)
+    * [Wingbot project structure](designerBot/deployingBot.md#wingbot-project-structure)
+* [Scripting: Snippets and conditions](designerBot/scripting.md)
+    * [Snippet concept](designerBot/scripting.md#snippet-concept)
+    * [Conversation state and data](designerBot/scripting.md#conversation-state-and-data)
+    * [Using data in designer](designerBot/scripting.md#using-data-in-designer)
+    * [Loading data from APIs](designerBot/scripting.md#loading-data-from-apis)
+
+## Chatbots withot designer
 
 * [Getting Started](README.md)
 * [Building a Conversation](tutorial/buildingConversation.md)
@@ -8,7 +20,6 @@
     * [Using quick replies](tutorial/buildingConversation.md#using-quick-replies-for-controlling-conversation)
     * [Postbacks](tutorial/buildingConversation.md#post-back-is-also-an-action)
 * [Conversation State](tutorial/conversationState.md)
-    * [User profile](tutorial/conversationState.md#accessing-user-profile)
     * [Using state in navigation](tutorial/conversationState.md#using-the-state-in-navigation)
     * [Reading and writing state](tutorial/conversationState.md#reading-and-modifiing-user-state)
 * [Asynchronous Actions](tutorial/asyncActions.md)
@@ -30,10 +41,6 @@
     * [Webviews](tutorial/templates.md#working-with-webviews)
 * [Testing](tutorial/testing.md)
 * [Analytics](tutorial/analytics.md)
-* [Using with Wingbot.ai](tutorial/usingWithWingbot.md)
-    * [Bot configuration](tutorial/usingWithWingbot.md#bot-configuration)
-    * [Express Mongodb](tutorial/usingWithWingbot.md#express-mongodb)
-    * [Serverless AWS Lambda](tutorial/usingWithWingbot.md#serverless-aws-lambda)
 
 ## API
 

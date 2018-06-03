@@ -6,6 +6,8 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Processor = require('../src/Processor');
+const Tester = require('../src/Tester');
+const Router = require('../src/Router');
 const ReducerWrapper = require('../src/ReducerWrapper');
 
 const EMPTY_STATE = { user: {} };
@@ -109,7 +111,7 @@ describe('Processor', function () {
                 assert.deepEqual(stateStorage.getOrCreateAndLock.firstCall.args, [
                     1,
                     {},
-                    100
+                    300
                 ]);
             });
         });
@@ -309,6 +311,26 @@ describe('Processor', function () {
 
                     assert(actionSpy.calledOnce);
                 });
+        });
+
+        it('makes async postbacks', async () => {
+            const bot = new Router();
+
+            const wait = resData => new Promise(r => setTimeout(() => r(resData), 100));
+
+            bot.use('start', (req, res, postBack) => {
+                postBack('process', async () => wait({ test: 2 }));
+            });
+
+            bot.use('process', (req, res) => {
+                res.text(`result is ${req.action(true).test}`);
+            });
+
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            t.res(0).contains('result is 2');
         });
 
         /* it('should accept optins and save them in state', function () {

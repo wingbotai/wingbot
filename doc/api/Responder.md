@@ -5,6 +5,7 @@
 
 * [Responder](#Responder)
     * [new Responder()](#new_Responder_new)
+    * [.newState](#Responder_newState)
     * [.data](#Responder_data) : <code>Object</code>
     * [.setMessgingType(messagingType, [tag])](#Responder_setMessgingType) ⇒ <code>this</code>
     * [.isResponseType()](#Responder_isResponseType) ⇒ <code>boolean</code>
@@ -31,6 +32,20 @@
 
 ### new Responder()
 Instance of responder is passed as second parameter of handler (res)
+
+{% raw %}<div id="Responder_newState">&nbsp;</div>{% endraw %}
+
+### responder.newState
+The empty object, which is filled with res.setState() method
+and saved (with Object.assign) at the end of event processing
+into the conversation state.
+
+**Kind**: instance property of [<code>Responder</code>](#Responder)  
+**Properties**
+
+| Type |
+| --- |
+| <code>object</code> | 
 
 {% raw %}<div id="Responder_data">&nbsp;</div>{% endraw %}
 
@@ -327,11 +342,11 @@ Creates a generic template
 res.genericTemplate()
     .addElement('title', 'subtitle')
         .setElementImage('/local.png')
-        .setElementUrl('https://www.seznam.cz')
+        .setElementAction('https://www.seznam.cz')
         .postBackButton('Button title', 'action', { actionData: 1 })
     .addElement('another', 'subtitle')
         .setElementImage('https://goo.gl/image.png')
-        .setElementAction('action', { actionData: 1 })
+        .setElementActionPostback('action', { actionData: 1 })
         .urlButton('Local link with extension', '/local/path', true, 'compact')
     .send();
 ```

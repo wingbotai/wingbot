@@ -90,7 +90,9 @@ function randomizedCompiler (text, lang) {
 }
 
 function stateData (req, res) {
-    return Object.assign({}, req.state, res.state, res.data);
+    return Object.assign({}, req.state, res.newState, res.data, {
+        _action: req.action(true)
+    });
 }
 
 function cachedTranslatedCompilator (text) {
