@@ -94,7 +94,7 @@ class ReturnSender {
     }
 
     /**
-     * @returns {Promise<{senderId:string}|null>}
+     * @returns {Promise<{senderId?:string}|null>}
      */
     modifyStateBeforeStore () {
         return Promise.resolve(this._simulateStateChange);

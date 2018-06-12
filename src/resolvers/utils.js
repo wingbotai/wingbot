@@ -120,7 +120,8 @@ function processButtons (
     elem,
     linksMap,
     senderId,
-    linksTranslator = (sndr, defaultText, urlText) => urlText
+    // eslint-disable-next-line no-unused-vars
+    linksTranslator = (sndr, defaultText, urlText, isExtUrl) => urlText
 ) {
     buttons.forEach(({
         title: btnTitle,
@@ -135,12 +136,14 @@ function processButtons (
             targetRouteId
         } = btnAction;
 
+        const isExtUrl = type === TYPE_URL_WITH_EXT;
+
         switch (type) {
             case TYPE_URL:
             case TYPE_URL_WITH_EXT: {
                 const hasExtention = type === TYPE_URL_WITH_EXT;
                 let urlText = getText(url, state);
-                urlText = linksTranslator(senderId, defaultText, urlText);
+                urlText = linksTranslator(senderId, defaultText, urlText, isExtUrl);
                 elem.urlButton(btnTitleText, urlText, hasExtention, webviewHeight);
                 break;
             }

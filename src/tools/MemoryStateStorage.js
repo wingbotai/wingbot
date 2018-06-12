@@ -3,6 +3,14 @@
  */
 'use strict';
 
+
+/**
+ * @typedef {Object} State
+ * @prop {string} senderId
+ * @prop {string} pageId
+ * @prop {Object} state
+ */
+
 /**
  * Memory conversation state storage for testing purposes
  *
@@ -14,28 +22,51 @@ class MemoryStateStorage {
         this.store = new Map();
     }
 
-    getState (senderId, defaultState = {}) {
-        if (this.store.has(senderId)) {
-            return this.store.get(senderId);
+    _key (senderId, pageId) {
+        return `${senderId}|${pageId}`;
+    }
+
+    getStateSync (senderId, pageId) {
+        const key = this._key(senderId, pageId);
+        if (this.store.has(key)) {
+            return this.store.get(key);
         }
-        const state = {
-            senderId,
-            state: defaultState
-        };
-        this.saveState(state);
+        return null;
+    }
+
+    getOrCreateStateSync (senderId, pageId, defaultState = {}) {
+        let state = this.getStateSync(senderId, pageId);
+        if (!state) {
+            state = {
+                senderId,
+                pageId,
+                state: defaultState
+            };
+            this.saveState(state);
+        }
         return state;
     }
 
     /**
      *
-     * @param {any} senderId - sender identifier
+     * @param {string} senderId
+     * @param {string} pageId
+     * @returns {Promise<State|null>}
+     */
+    async getState (senderId, pageId) {
+        return this.getStateSync(senderId, pageId);
+    }
+
+    /**
+     *
+     * @param {string} senderId - sender identifier
+     * @param {string} pageId - page or channel identifier
      * @param {Object} defaultState - default state of the conversation
      * @param {number} lockTimeout - duration of lock
-     * @returns {Promise.<Object>} - conversation state
+     * @returns {Promise.<State>} - conversation state
      */
-    getOrCreateAndLock (senderId, defaultState = {}, lockTimeout = 300) { // eslint-disable-line no-unused-vars,max-len
-        const state = this.getState(senderId, defaultState);
-        return Promise.resolve(state);
+    async getOrCreateAndLock (senderId, pageId, defaultState = {}, lockTimeout = 300) { // eslint-disable-line no-unused-vars,max-len
+        return this.getOrCreateStateSync(senderId, pageId, defaultState);
     }
 
     /**
@@ -44,7 +75,8 @@ class MemoryStateStorage {
      * @returns {Promise}
      */
     saveState (state) {
-        this.store.set(state.senderId, state);
+        const { senderId, pageId } = state;
+        this.store.set(this._key(senderId, pageId), state);
         return Promise.resolve(state);
     }
 

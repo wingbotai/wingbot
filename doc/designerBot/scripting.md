@@ -20,7 +20,7 @@ Easiest way to add custom behavior to your chatbot is to use **snippet directly 
     + `void` - returning nothing lets Router automatically proceed the rest of interaction
     + `Promise` - you can use an async function, which return a Promise
     + `Router.CONTINUE` - continues in a messaging event processing
-      > returning `Router.CONTINUE` at the and of the interaction causes bot to continue to following interactions
+      > returning `Router.CONTINUE` at the end of the interaction causes bot to continue to following interactions
     + `Router.END` - stops processing a messaging event
 - return value of **condition function**
     + `true` - yes, show the interaction

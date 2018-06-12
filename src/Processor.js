@@ -40,7 +40,7 @@ class Processor {
             stateStorage: new MemoryStateStorage(),
             tokenStorage: null,
             translator: w => w,
-            timeout: 300,
+            timeout: 30000,
             log: console,
             defaultState: {},
             autoTyping: false
@@ -50,6 +50,9 @@ class Processor {
 
         this.reducer = reducer;
 
+        /**
+         * @type {StateStorage}
+         */
         this.stateStorage = this.options.stateStorage;
 
         this.tokenStorage = this.options.tokenStorage;
@@ -72,7 +75,7 @@ class Processor {
         };
     }
 
-    reportSendError (err, message) {
+    reportSendError (err, message, pageId) {
         if (!message || !message.sender || !message.sender.id) {
             return;
         }
@@ -81,7 +84,7 @@ class Processor {
         }
         const senderId = message.sender.id;
 
-        this._loadState(senderId)
+        this._loadState(senderId, pageId, 500)
             .then((state) => {
                 Object.assign(state, {
                     lastSendError: new Date(),
@@ -124,8 +127,10 @@ class Processor {
             await this._processMessage(message, pageId, messageSender, responderData);
             result = await messageSender.finished();
         } catch (e) {
-            this.reportSendError(e, message);
             const { code = 500 } = e;
+            if (code !== 403) {
+                this.reportSendError(e, message, pageId);
+            }
             this.options.log.error(e);
             result = { status: code };
         }
@@ -137,59 +142,72 @@ class Processor {
 
         const postbackAcumulator = [];
 
-        let [stateObject, token] = await Promise.all([ // eslint-disable-line prefer-const
-            this._loadState(senderId),
-            this._getOrCreateToken(senderId)
+        const [originalState, token] = await Promise.all([
+            this._loadState(senderId, pageId, this.options.timeout),
+            this._getOrCreateToken(senderId, pageId)
         ]);
 
-        // ensure the request was not processed
-        if (stateObject.lastTimestamps && message.timestamp
-                && stateObject.lastTimestamps.indexOf(message.timestamp) !== -1) {
+        let stateObject = originalState;
 
-            throw Object.assign(new Error('Message has been already processed'), { code: 403 });
+        try {
+            // ensure the request was not processed
+            if (stateObject.lastTimestamps && message.timestamp
+                    && stateObject.lastTimestamps.indexOf(message.timestamp) !== -1) {
+
+                throw Object.assign(new Error('Message has been already processed'), { code: 403 });
+            }
+
+            // prepare request and responder
+            let { state } = stateObject;
+
+            const req = new Request(message, state, pageId);
+            const res = new Responder(senderId, messageSender, token, this.options, responderData);
+            const postBack = this._createPostBack(postbackAcumulator);
+
+            // process the event
+            let reduceResult;
+            if (typeof this.reducer === 'function') {
+                reduceResult = this.reducer(req, res, postBack);
+            } else {
+                reduceResult = this.reducer.reduce(req, res, postBack);
+            }
+            if (reduceResult instanceof Promise) { // note the result can be undefined
+                await reduceResult;
+            }
+
+            // update state
+            const senderUpdate = await messageSender.modifyStateBeforeStore();
+
+            if (senderUpdate && senderUpdate.senderId) {
+                senderId = senderUpdate.senderId; // eslint-disable-line prefer-destructuring
+                stateObject = await this._loadState(senderId, pageId, 500);
+                state = stateObject.state; // eslint-disable-line prefer-destructuring
+            }
+
+            state = this._mergeState(state, req, res, senderUpdate);
+
+            let lastTimestamps = stateObject.lastTimestamps || [];
+            if (message.timestamp) {
+                lastTimestamps = lastTimestamps.slice(-9);
+                lastTimestamps.push(message.timestamp);
+            }
+
+            Object.assign(stateObject, {
+                state,
+                lastTimestamps,
+                lastInteraction: new Date(),
+                off: false
+            });
+
+            if (senderUpdate) {
+                delete senderUpdate.state;
+                Object.assign(stateObject, senderUpdate);
+            }
+
+        } catch (e) {
+            await this.stateStorage.saveState(originalState);
+            throw e;
         }
-
-        // prepare request and responder
-        let { state } = stateObject;
-
-        const req = new Request(message, state, pageId);
-        const res = new Responder(senderId, messageSender, token, this.options, responderData);
-        const postBack = this._createPostBack(postbackAcumulator);
-
-        // process the event
-        let reduceResult;
-        if (typeof this.reducer === 'function') {
-            reduceResult = this.reducer(req, res, postBack);
-        } else {
-            reduceResult = this.reducer.reduce(req, res, postBack);
-        }
-        if (reduceResult instanceof Promise) { // note the result can be undefined
-            await reduceResult;
-        }
-
-        // update state
-        const senderUpdate = await messageSender.modifyStateBeforeStore();
-
-        if (senderUpdate && senderUpdate.senderId) {
-            senderId = senderUpdate.senderId; // eslint-disable-line prefer-destructuring
-            stateObject = await this._loadState(senderId);
-            state = stateObject.state; // eslint-disable-line prefer-destructuring
-        }
-
-        state = this._mergeState(state, req, res);
-
-        let lastTimestamps = stateObject.lastTimestamps || [];
-        if (message.timestamp) {
-            lastTimestamps = lastTimestamps.slice(-9);
-            lastTimestamps.push(message.timestamp);
-        }
-
-        Object.assign(stateObject, {
-            state,
-            lastTimestamps,
-            lastInteraction: new Date(),
-            off: false
-        });
 
         await this.stateStorage.saveState(stateObject);
 
@@ -214,8 +232,12 @@ class Processor {
             }), Promise.resolve());
     }
 
-    _mergeState (previousState, req, res) {
+    _mergeState (previousState, req, res, senderStateUpdate) {
         const state = Object.assign({}, previousState, res.newState);
+
+        if (senderStateUpdate && senderStateUpdate.state) {
+            Object.assign(state, senderStateUpdate.state);
+        }
 
         const isUserEvent = req.isMessage() || req.isPostBack()
             || req.isReferral() || req.isAttachment();
@@ -229,19 +251,20 @@ class Processor {
         if (isUserEvent && !res.newState._expectedKeywords) {
             state._expectedKeywords = null;
         }
+
         return state;
     }
 
-    _getOrCreateToken (senderId) {
+    _getOrCreateToken (senderId, pageId) {
         if (!senderId || !this.tokenStorage) {
             return null;
         }
 
-        return this.tokenStorage.getOrCreateToken(senderId)
+        return this.tokenStorage.getOrCreateToken(senderId, pageId)
             .then(token => token.token);
     }
 
-    _loadState (senderId) {
+    _loadState (senderId, pageId, lock = 0) {
         if (!senderId) {
             return Promise.resolve({
                 state: Object.assign({}, this.options.defaultState)
@@ -249,7 +272,7 @@ class Processor {
         }
 
         return new Promise((resolve, reject) => {
-            let retrys = 4;
+            let retrys = lock === 0 ? 0 : 4;
 
             const onLoad = (res) => {
                 if (!res) {
@@ -258,7 +281,7 @@ class Processor {
                         return;
                     }
 
-                    this._model(senderId)
+                    this._model(senderId, pageId, lock)
                         .then(onLoad)
                         .catch(reject);
                 } else {
@@ -270,19 +293,20 @@ class Processor {
         });
     }
 
-    _wait () {
-        return new Promise(r => setTimeout(() => r(null), this.options.timeout + 25));
+    _wait (timeout) {
+        const wait = Math.min(timeout + 50, 2000);
+        return new Promise(r => setTimeout(() => r(null), wait));
     }
 
-    _model (senderId) {
-        const { timeout, defaultState } = this.options;
+    _model (senderId, pageId, timeout) {
+        const { defaultState } = this.options;
         return this.stateStorage
-            .getOrCreateAndLock(senderId, defaultState, timeout)
+            .getOrCreateAndLock(senderId, pageId, defaultState, timeout)
             .catch((err) => {
                 if (!err || err.code !== 11000) {
                     this.options.log.error('Bot processor load error', err);
                 }
-                return this._wait();
+                return this._wait(timeout);
             });
     }
 

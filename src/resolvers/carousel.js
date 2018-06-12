@@ -57,11 +57,16 @@ function carousel ({
                 const {
                     type, webviewHeight = WEBVIEW_TALL, url, targetRouteId
                 } = action;
+
+                const isExtUrl = type === TYPE_URL_WITH_EXT;
+
                 switch (type) {
                     case TYPE_URL:
                     case TYPE_URL_WITH_EXT: {
                         const hasExtension = type === TYPE_URL_WITH_EXT;
-                        const urlText = getText(url, state);
+                        const textLabel = titleText || subtitleText;
+                        let urlText = getText(url, state);
+                        urlText = linksTranslator(req.senderId, textLabel, urlText, isExtUrl);
                         elem.setElementAction(urlText, hasExtension, webviewHeight);
                         break;
                     }

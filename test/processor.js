@@ -50,7 +50,7 @@ function makeOptions (stateStorage, tokenStorage = null) {
     const log = createLogger();
 
     return {
-        log, stateStorage, tokenStorage
+        log, stateStorage, tokenStorage, timeout: 300
     };
 }
 
@@ -110,6 +110,7 @@ describe('Processor', function () {
                 assert.strictEqual(res.responses.length, 1);
                 assert.deepEqual(stateStorage.getOrCreateAndLock.firstCall.args, [
                     1,
+                    10,
                     {},
                     300
                 ]);

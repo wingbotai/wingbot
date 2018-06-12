@@ -3,6 +3,19 @@
  */
 'use strict';
 
+const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
+const Request = require('./Request'); // eslint-disable-line no-unused-vars
+
+
+/**
+ * @callback Plugin
+ * @param {Request} req
+ * @param {Responder} res
+ * @param {Function} [postBack]
+ * @param {{isLastIndex:boolean,path:string,expectedPath:string}} [context]
+ * @param {Object} [paramsData]
+ */
+
 /**
  * Custom code plugins for BuildRouter and wingbot.ai
  */
@@ -28,11 +41,11 @@ class Plugins {
      * Register plugin
      *
      * @param {string|Plugins} name - plugin name or plugins object to include
-     * @param {Function} [factoryFn] - plugin factory - optional when including plugin object
+     * @param {Plugin} [plugin] - plugin - optional when including plugin object
      */
-    register (name, factoryFn) {
+    register (name, plugin) {
         if (typeof name === 'string') {
-            this._plugins.set(name, factoryFn);
+            this._plugins.set(name, plugin);
             return;
         }
         name._plugins.forEach((el, key) => {

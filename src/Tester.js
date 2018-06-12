@@ -24,6 +24,7 @@ class Tester {
      *
      * @param {Router|ReducerWrapper|Function} reducer
      * @param {string} [senderId=null]
+     * @param {string} [pageId=null]
      * @param {Object} [processorOptions={}] - options for Processor
      * @param {MemoryStateStorage} [storage] - place to override the storage
      *
@@ -32,6 +33,7 @@ class Tester {
     constructor (
         reducer,
         senderId = null,
+        pageId = null,
         processorOptions = {},
         storage = new MemoryStateStorage()
     ) {
@@ -41,6 +43,7 @@ class Tester {
         this.storage = storage;
 
         this.senderId = senderId || `${Math.random() * 1000}${Date.now()}`;
+        this.pageId = pageId || `${Math.random() * 1000}${Date.now()}`;
 
         // replace logger (throw instead of log)
         const log = {
@@ -73,7 +76,7 @@ class Tester {
         const messageSender = new ReturnSender({}, this.senderId, data);
         messageSender.simulatesOptIn = true;
 
-        return this.processor.processMessage(data, null, messageSender)
+        return this.processor.processMessage(data, this.pageId, messageSender)
             .then(res => this._acquireResponseActions(res, messageSender));
     }
 
@@ -152,7 +155,11 @@ class Tester {
      * @memberOf Tester
      */
     getState () {
-        return this.storage.getState(this.senderId);
+        return this.storage.getOrCreateStateSync(
+            this.senderId,
+            this.pageId,
+            this.processor.options.defaultState
+        );
     }
 
     /**

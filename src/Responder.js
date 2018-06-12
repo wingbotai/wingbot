@@ -1,6 +1,5 @@
 /*
  * @author David Menger
- * @module wingbot
  */
 'use strict';
 

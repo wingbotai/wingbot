@@ -28,7 +28,14 @@ class ButtonTemplate extends BaseTemplate {
                 `token=${encodeURIComponent(this.context.token)}`,
                 `senderId=${encodeURIComponent(this.context.senderId)}`
             ];
-            return `${this.context.appUrl || ''}${url}#${hash.join('&')}`;
+            const ret = `${url}#${hash.join('&')}`;
+
+            // prepend url only when url does not contain sheme
+            if (ret.match(/^https?:\/\//) || !this.context.appUrl) {
+                return ret;
+            }
+
+            return `${this.context.appUrl}${ret}`;
         }
         return url;
     }

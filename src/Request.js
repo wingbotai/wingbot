@@ -461,9 +461,9 @@ class Request {
 
 }
 
-function createReferral (action, data = {}) {
+function createReferral (action, data = {}, timestamp = Request.timestamp()) {
     return {
-        timestamp: Request.timestamp(),
+        timestamp,
         ref: JSON.stringify({
             action,
             data
@@ -487,7 +487,14 @@ Request.timestamp = function () {
     return now;
 };
 
-Request.postBack = function (senderId, action, data = {}, refAction = null, refData = {}) {
+Request.postBack = function (
+    senderId,
+    action,
+    data = {},
+    refAction = null,
+    refData = {},
+    timestamp = Request.timestamp()
+) {
     const postback = {
         payload: {
             action,
@@ -496,11 +503,11 @@ Request.postBack = function (senderId, action, data = {}, refAction = null, refD
     };
     if (refAction) {
         Object.assign(postback, {
-            referral: createReferral(refAction, refData)
+            referral: createReferral(refAction, refData, timestamp)
         });
     }
     return {
-        timestamp: Request.timestamp(),
+        timestamp,
         sender: {
             id: senderId
         },
@@ -601,7 +608,7 @@ Request.referral = function (senderId, action, data = {}, timestamp = Request.ti
         sender: {
             id: senderId
         },
-        referral: createReferral(action, data)
+        referral: createReferral(action, data, timestamp)
     };
 };
 

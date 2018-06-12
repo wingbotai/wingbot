@@ -3,9 +3,19 @@
  */
 'use strict';
 
+const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
+const Request = require('./Request'); // eslint-disable-line no-unused-vars
+
 const pathToRegexp = require('path-to-regexp');
 const ReducerWrapper = require('./ReducerWrapper');
 const { makeAbsolute } = require('./utils');
+
+/**
+ * @callback Resolver
+ * @param {Request} req
+ * @param {Responder} res
+ * @param {Function} postBack
+ */
 
 /**
  * Cascading router
@@ -37,9 +47,7 @@ class Router extends ReducerWrapper {
     /**
      * Appends middleware, action handler or another router
      *
-     * @param {string} [action] - name of the action
-     * @param {RegExp|string|Function} [matcher] - The function can be async
-     * @param {...(Function|Router)} reducers
+     * @param {...string|Resolver|RegExp|Router} resolvers - list of resolvers
      * @returns {{onExit:Function}}
      *
      * @example
@@ -86,9 +94,6 @@ class Router extends ReducerWrapper {
         });
 
         return {
-            next (...args) {
-                return this.onExit(...args);
-            },
             onExit (actionName, listener) {
                 exitPoints.set(actionName, listener);
                 return this;
