@@ -34,12 +34,11 @@ reducer.on('action', (senderId, processedAction, text, req) => {
 Reducer function
 
 **Kind**: instance method of [<code>ReducerWrapper</code>](#ReducerWrapper)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| req | <code>Request</code> | 
-| res | <code>Responder</code> | 
-| postBack | <code>function</code> | 
+- req <code>Request</code>
+- res <code>Responder</code>
+- postBack <code>function</code>
 
 {% raw %}<div id="ReducerWrapper_ReducerWrapper">&nbsp;</div>{% endraw %}
 
@@ -50,8 +49,7 @@ Reducer function
 #### new ReducerWrapper([reduce])
 Creates an instance of ReducerWrapper.
 
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [reduce] | <code>function</code> | <code>o &#x3D;&gt; o</code> | the handler function |
+- [reduce] <code>function</code> <code> = o &#x3D;&gt; o</code> - the handler function
 

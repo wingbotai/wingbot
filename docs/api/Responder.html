@@ -881,28 +881,11 @@ into the conversation state.</p>
 <div id="Responder_setMessgingType">&#xA0;</div>
 
 <h3 id="respondersetmessgingtypemessagingtype-tag-&#x21D2;-this"><a name="respondersetmessgingtypemessagingtype-tag-&#x21D2;-this" class="plugin-anchor" href="#respondersetmessgingtypemessagingtype-tag-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setMessgingType(messagingType, [tag]) &#x21D2; <code>this</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>messagingType</td>
-<td><code>string</code></td>
-<td></td>
-</tr>
-<tr>
-<td>[tag]</td>
-<td><code>string</code></td>
-<td><code>null</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>messagingType <code>string</code></li>
+<li>[tag] <code>string</code> <code> = null</code></li>
+</ul>
 <div id="Responder_isResponseType">&#xA0;</div>
 
 <h3 id="responderisresponsetype-&#x21D2;-boolean"><a name="responderisresponsetype-&#x21D2;-boolean" class="plugin-anchor" href="#responderisresponsetype-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>responder.isResponseType() &#x21D2; <code>boolean</code></h3>
@@ -912,21 +895,10 @@ into the conversation state.</p>
 
 <h3 id="respondersetdatadata-&#x21D2;-this"><a name="respondersetdatadata-&#x21D2;-this" class="plugin-anchor" href="#respondersetdatadata-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setData(data) &#x21D2; <code>this</code></h3>
 <p>Set temporary data to responder, which are persisted through single event</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>data</td>
-<td><code>Object</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>data <code>Object</code></li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;foo&apos;</span>, (req, res, postBack) =&gt; {
     res.setData({ a: <span class="hljs-number">1</span> });
@@ -941,28 +913,11 @@ bot.use(<span class="hljs-string">&apos;bar&apos;</span>, (req, res) =&gt; {
 
 <h3 id="respondertexttext-quickreplies-&#x21D2;-this"><a name="respondertexttext-quickreplies-&#x21D2;-this" class="plugin-anchor" href="#respondertexttext-quickreplies-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.text(text, [quickReplies]) &#x21D2; <code>this</code></h3>
 <p>Send text as a response</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>text</td>
-<td><code>string</code></td>
-<td>text to send to user, can contain placeholders (%s)</td>
-</tr>
-<tr>
-<td>[quickReplies]</td>
-<td><code>Object.&lt;string, string&gt;</code> \</td>
-<td><code>Array.&lt;Object&gt;</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>text <code>string</code> - text to send to user, can contain placeholders (%s)</li>
+<li>[quickReplies] <code>Object.&lt;string, string&gt;</code> | <code>Array.&lt;Object&gt;</code></li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// simply</span>
 res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, {
@@ -985,21 +940,10 @@ res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
 
 <h3 id="respondersetstateobject-&#x21D2;-this"><a name="respondersetstateobject-&#x21D2;-this" class="plugin-anchor" href="#respondersetstateobject-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setState(object) &#x21D2; <code>this</code></h3>
 <p>Sets new attributes to state (with Object.assign())</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>object</td>
-<td><code>Object</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>object <code>Object</code></li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">res.setState({ visited: <span class="hljs-literal">true</span> });
 </code></pre>
@@ -1007,43 +951,13 @@ res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
 
 <h3 id="responderaddquickreplyaction-title-data-prepend"><a name="responderaddquickreplyaction-title-data-prepend" class="plugin-anchor" href="#responderaddquickreplyaction-title-data-prepend"><i class="fa fa-link" aria-hidden="true"></i></a>responder.addQuickReply(action, title, [data], [prepend])</h3>
 <p>Appends quick reply, to be sent with following text method</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>action</td>
-<td><code>string</code></td>
-<td></td>
-<td>relative or absolute action</td>
-</tr>
-<tr>
-<td>title</td>
-<td><code>string</code></td>
-<td></td>
-<td>quick reply title</td>
-</tr>
-<tr>
-<td>[data]</td>
-<td><code>Object</code></td>
-<td></td>
-<td>additional data</td>
-</tr>
-<tr>
-<td>[prepend]</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>set true to add reply at the beginning</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>action <code>string</code> - relative or absolute action</li>
+<li>title <code>string</code> - quick reply title</li>
+<li>[data] <code>Object</code> - additional data</li>
+<li>[prepend] <code>boolean</code> <code> = false</code> - set true to add reply at the beginning</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">bot.use((req, res) =&gt; {
     res.addQuickReply(<span class="hljs-string">&apos;barAction&apos;</span>, <span class="hljs-string">&apos;last action&apos;</span>);
@@ -1059,78 +973,28 @@ res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
 
 <h3 id="responderexpectedaction-data-&#x21D2;-this"><a name="responderexpectedaction-data-&#x21D2;-this" class="plugin-anchor" href="#responderexpectedaction-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expected(action, data) &#x21D2; <code>this</code></h3>
 <p>When user writes some text as reply, it will be processed as action</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>action</td>
-<td><code>string</code></td>
-<td>desired action</td>
-</tr>
-<tr>
-<td>data</td>
-<td><code>Object</code></td>
-<td>desired action data</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>action <code>string</code> - desired action</li>
+<li>data <code>Object</code> - desired action data</li>
+</ul>
 <div id="Responder_toAbsoluteAction">&#xA0;</div>
 
 <h3 id="respondertoabsoluteactionaction-&#x21D2;-string"><a name="respondertoabsoluteactionaction-&#x21D2;-string" class="plugin-anchor" href="#respondertoabsoluteactionaction-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>responder.toAbsoluteAction(action) &#x21D2; <code>string</code></h3>
 <p>Converts relative action to absolute action path</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Returns</strong>: <code>string</code> - absolute action path  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>action</td>
-<td><code>string</code></td>
-<td>relative action to covert to absolute</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Returns</strong>: <code>string</code> - absolute action path<br><strong>Params</strong></p>
+<ul>
+<li>action <code>string</code> - relative action to covert to absolute</li>
+</ul>
 <div id="Responder_image">&#xA0;</div>
 
 <h3 id="responderimageimageurl-reusable-&#x21D2;-this"><a name="responderimageimageurl-reusable-&#x21D2;-this" class="plugin-anchor" href="#responderimageimageurl-reusable-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.image(imageUrl, [reusable]) &#x21D2; <code>this</code></h3>
 <p>Sends image as response. Requires appUrl option to send images from server</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>imageUrl</td>
-<td><code>string</code></td>
-<td></td>
-<td>relative or absolute url</td>
-</tr>
-<tr>
-<td>[reusable]</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>force facebook to cache image</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>imageUrl <code>string</code> - relative or absolute url</li>
+<li>[reusable] <code>boolean</code> <code> = false</code> - force facebook to cache image</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// image on same server (appUrl option)</span>
 res.image(<span class="hljs-string">&apos;/img/foo.png&apos;</span>);
@@ -1142,31 +1006,11 @@ res.image(<span class="hljs-string">&apos;https://google.com/img/foo.png&apos;</
 
 <h3 id="respondervideovideourl-reusable-&#x21D2;-this"><a name="respondervideovideourl-reusable-&#x21D2;-this" class="plugin-anchor" href="#respondervideovideourl-reusable-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.video(videoUrl, [reusable]) &#x21D2; <code>this</code></h3>
 <p>Sends video as response. Requires appUrl option to send videos from server</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>videoUrl</td>
-<td><code>string</code></td>
-<td></td>
-<td>relative or absolute url</td>
-</tr>
-<tr>
-<td>[reusable]</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>force facebook to cache asset</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>videoUrl <code>string</code> - relative or absolute url</li>
+<li>[reusable] <code>boolean</code> <code> = false</code> - force facebook to cache asset</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// file on same server (appUrl option)</span>
 res.video(<span class="hljs-string">&apos;/img/foo.mp4&apos;</span>);
@@ -1178,31 +1022,11 @@ res.video(<span class="hljs-string">&apos;https://google.com/img/foo.mp4&apos;</
 
 <h3 id="responderfilefileurl-reusable-&#x21D2;-this"><a name="responderfilefileurl-reusable-&#x21D2;-this" class="plugin-anchor" href="#responderfilefileurl-reusable-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.file(fileUrl, [reusable]) &#x21D2; <code>this</code></h3>
 <p>Sends file as response. Requires appUrl option to send files from server</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>fileUrl</td>
-<td><code>string</code></td>
-<td></td>
-<td>relative or absolute url</td>
-</tr>
-<tr>
-<td>[reusable]</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>force facebook to cache asset</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>fileUrl <code>string</code> - relative or absolute url</li>
+<li>[reusable] <code>boolean</code> <code> = false</code> - force facebook to cache asset</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// file on same server (appUrl option)</span>
 res.file(<span class="hljs-string">&apos;/img/foo.pdf&apos;</span>);
@@ -1214,23 +1038,10 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="responderwaitms-&#x21D2;-this"><a name="responderwaitms-&#x21D2;-this" class="plugin-anchor" href="#responderwaitms-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.wait([ms]) &#x21D2; <code>this</code></h3>
 <p>Sets delay between two responses</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>[ms]</td>
-<td><code>number</code></td>
-<td><code>600</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>[ms] <code>number</code> <code> = 600</code></li>
+</ul>
 <div id="Responder_typingOn">&#xA0;</div>
 
 <h3 id="respondertypingon-&#x21D2;-this"><a name="respondertypingon-&#x21D2;-this" class="plugin-anchor" href="#respondertypingon-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.typingOn() &#x21D2; <code>this</code></h3>
@@ -1250,70 +1061,22 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="responderpassthreadtargetappid-data-&#x21D2;-this"><a name="responderpassthreadtargetappid-data-&#x21D2;-this" class="plugin-anchor" href="#responderpassthreadtargetappid-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.passThread(targetAppId, [data]) &#x21D2; <code>this</code></h3>
 <p>Pass thread to another app</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>targetAppId</td>
-<td><code>string</code></td>
-<td></td>
-</tr>
-<tr>
-<td>[data]</td>
-<td><code>string</code> \</td>
-<td><code>Object</code></td>
-<td><code>null</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>targetAppId <code>string</code></li>
+<li>[data] <code>string</code> | <code>Object</code> <code> = null</code></li>
+</ul>
 <div id="Responder_receipt">&#xA0;</div>
 
 <h3 id="responderreceiptrecipientname-paymentmethod-currency-uniquecode-&#x21D2;-receipttemplate"><a name="responderreceiptrecipientname-paymentmethod-currency-uniquecode-&#x21D2;-receipttemplate" class="plugin-anchor" href="#responderreceiptrecipientname-paymentmethod-currency-uniquecode-&#x21D2;-receipttemplate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.receipt(recipientName, [paymentMethod], [currency], [uniqueCode]) &#x21D2; <code>ReceiptTemplate</code></h3>
 <p>Sends Receipt template</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>recipientName</td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>[paymentMethod]</td>
-<td><code>string</code></td>
-<td><code>&quot;&apos;Cash&apos;&quot;</code></td>
-<td>should not contain more then 4 numbers</td>
-</tr>
-<tr>
-<td>[currency]</td>
-<td><code>string</code></td>
-<td><code>&quot;&apos;USD&apos;&quot;</code></td>
-<td>sets right currency</td>
-</tr>
-<tr>
-<td>[uniqueCode]</td>
-<td><code>string</code></td>
-<td><code>null</code></td>
-<td>when omitted, will be generated randomly</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>recipientName <code>string</code></li>
+<li>[paymentMethod] <code>string</code> <code> = &quot;&apos;Cash&apos;&quot;</code> - should not contain more then 4 numbers</li>
+<li>[currency] <code>string</code> <code> = &quot;&apos;USD&apos;&quot;</code> - sets right currency</li>
+<li>[uniqueCode] <code>string</code> <code> = null</code> - when omitted, will be generated randomly</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">res.receipt(<span class="hljs-string">&apos;Name&apos;</span>, <span class="hljs-string">&apos;Cash&apos;</span>, <span class="hljs-string">&apos;CZK&apos;</span>, <span class="hljs-string">&apos;1&apos;</span>)
     .addElement(<span class="hljs-string">&apos;Element name&apos;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-string">&apos;/inside.png&apos;</span>, <span class="hljs-string">&apos;text&apos;</span>)
@@ -1323,21 +1086,10 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="responderbuttontext-&#x21D2;-buttontemplate"><a name="responderbuttontext-&#x21D2;-buttontemplate" class="plugin-anchor" href="#responderbuttontext-&#x21D2;-buttontemplate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.button(text) &#x21D2; <code>ButtonTemplate</code></h3>
 <p>Sends nice button template. It can redirect user to server with token in url</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>text</td>
-<td><code>string</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>text <code>string</code></li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">res.button(<span class="hljs-string">&apos;Hello&apos;</span>)
     .postBackButton(<span class="hljs-string">&apos;Text&apos;</span>, <span class="hljs-string">&apos;action&apos;</span>)
@@ -1349,31 +1101,11 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="respondergenerictemplateshareable-issquare-&#x21D2;-generictemplate"><a name="respondergenerictemplateshareable-issquare-&#x21D2;-generictemplate" class="plugin-anchor" href="#respondergenerictemplateshareable-issquare-&#x21D2;-generictemplate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.genericTemplate([shareable], [isSquare]) &#x21D2; <code>GenericTemplate</code></h3>
 <p>Creates a generic template</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>[shareable]</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>ability to share template</td>
-</tr>
-<tr>
-<td>[isSquare]</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>use square aspect ratio for images</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>[shareable] <code>boolean</code> <code> = false</code> - ability to share template</li>
+<li>[isSquare] <code>boolean</code> <code> = false</code> - use square aspect ratio for images</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">res.genericTemplate()
     .addElement(<span class="hljs-string">&apos;title&apos;</span>, <span class="hljs-string">&apos;subtitle&apos;</span>)
@@ -1390,24 +1122,10 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="responderlisttopelementstyle-&#x21D2;-listtemplate"><a name="responderlisttopelementstyle-&#x21D2;-listtemplate" class="plugin-anchor" href="#responderlisttopelementstyle-&#x21D2;-listtemplate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.list([topElementStyle]) &#x21D2; <code>ListTemplate</code></h3>
 <p>Creates a generic template</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>[topElementStyle]</td>
-<td><code>&apos;large&apos;</code> \</td>
-<td><code>&apos;compact&apos;</code></td>
-<td><code>&apos;large&apos;</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>[topElementStyle] <code>&apos;large&apos;</code> | <code>&apos;compact&apos;</code> <code> = &apos;large&apos;</code></li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">res.list(<span class="hljs-string">&apos;compact&apos;</span>)
     .postBackButton(<span class="hljs-string">&apos;Main button&apos;</span>, <span class="hljs-string">&apos;action&apos;</span>, { actionData: <span class="hljs-number">1</span> })
@@ -1464,7 +1182,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-06-03T18:47:59.039Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-03T18:48:08.923Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-06-12T18:01:08.625Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-12T18:01:14.266Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

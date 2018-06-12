@@ -1,3 +1,17 @@
+## Classes
+
+<dl>
+<dt><a href="#Router">Router</a> ⇐ <code>ReducerWrapper</code></dt>
+<dd></dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#Resolver">Resolver</a> : <code>function</code></dt>
+<dd></dd>
+</dl>
+
 {% raw %}<div id="Router">&nbsp;</div>{% endraw %}
 
 ## Router ⇐ <code>ReducerWrapper</code>
@@ -7,7 +21,7 @@
 * [Router](#Router) ⇐ <code>ReducerWrapper</code>
     * [new Router()](#new_Router_new)
     * _instance_
-        * [.use([action], [matcher], ...reducers)](#Router_use) ⇒ <code>Object</code>
+        * [.use(...resolvers)](#Router_use) ⇒ <code>Object</code>
     * _static_
         * [.CONTINUE](#Router_CONTINUE)
         * [.BREAK](#Router_BREAK)
@@ -21,16 +35,13 @@ Cascading router
 
 {% raw %}<div id="Router_use">&nbsp;</div>{% endraw %}
 
-### router.use([action], [matcher], ...reducers) ⇒ <code>Object</code>
+### router.use(...resolvers) ⇒ <code>Object</code>
 Appends middleware, action handler or another router
 
 **Kind**: instance method of [<code>Router</code>](#Router)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| [action] | <code>string</code> | name of the action |
-| [matcher] | <code>RegExp</code> \| <code>string</code> \| <code>function</code> | The function can be async |
-| ...reducers | <code>function</code> \| [<code>Router</code>](#Router) |  |
+- ...resolvers <code>string</code> | [<code>Resolver</code>](#Resolver) | <code>RegExp</code> | [<code>Router</code>](#Router) - list of resolvers
 
 **Example**  
 ```javascript
@@ -106,11 +117,10 @@ Create the exit point
 Its same as returning `['action', { data }]`
 
 **Kind**: static method of [<code>Router</code>](#Router)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| action | <code>string</code> | the exit action |
-| [data] | <code>Object</code> | the data |
+- action <code>string</code> - the exit action
+- [data] <code>Object</code> - the data
 
 **Example**  
 ```javascript
@@ -118,3 +128,13 @@ router.use((req, res) => {
     return Router.exit('exitName');
 });
 ```
+{% raw %}<div id="Resolver">&nbsp;</div>{% endraw %}
+
+## Resolver : <code>function</code>
+**Kind**: global typedef  
+**Params**
+
+- req <code>Request</code>
+- res <code>Responder</code>
+- postBack <code>function</code>
+

@@ -15,6 +15,8 @@
 <dl>
 <dt><a href="#ConfigStorage">ConfigStorage</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Plugin">Plugin</a> : <code>function</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="BuildRouter">&nbsp;</div>{% endraw %}
@@ -40,20 +42,19 @@ Build bot from Wingbot configuration file or snapshot url
 ### new BuildRouter(block, plugins, context, [request])
 Create new router from configuration
 
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| block | <code>Object</code> |  |
-| [block.botId] | <code>string</code> | the ID of bot |
-| [block.snapshot] | <code>string</code> | snapshot stage of bot |
-| [block.token] | <code>string</code> | authorization token for bot |
-| [block.routes] | <code>Object</code> | list of routes for direct bot build |
-| [block.url] | <code>string</code> | specify alternative configuration resource |
-| plugins | [<code>Plugins</code>](#Plugins) | custom code blocks resource |
-| context | <code>Object</code> | the building context |
-| [context.linksTranslator] | <code>Object</code> | function, that translates links globally |
-| [context.configStorage] | [<code>ConfigStorage</code>](#ConfigStorage) | function, that translates links globally |
-| [request] | <code>function</code> | the building context |
+- block <code>Object</code>
+    - [.botId] <code>string</code> - the ID of bot
+    - [.snapshot] <code>string</code> - snapshot stage of bot
+    - [.token] <code>string</code> - authorization token for bot
+    - [.routes] <code>Object</code> - list of routes for direct bot build
+    - [.url] <code>string</code> - specify alternative configuration resource
+- plugins [<code>Plugins</code>](#Plugins) - custom code blocks resource
+- context <code>Object</code> - the building context
+    - [.linksTranslator] <code>Object</code> - function, that translates links globally
+    - [.configStorage] [<code>ConfigStorage</code>](#ConfigStorage) - function, that translates links globally
+- [request] <code>function</code> - the building context
 
 **Example**  
 ```javascript
@@ -112,11 +113,10 @@ Timeout, when the router is not checking for new configuration
 
 ### BuildRouter.fromData(blocks, plugins)
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| blocks | <code>Array.&lt;Object&gt;</code> | blocks list |
-| plugins | [<code>Plugins</code>](#Plugins) |  |
+- blocks <code>Array.&lt;Object&gt;</code> - blocks list
+- plugins [<code>Plugins</code>](#Plugins)
 
 {% raw %}<div id="BuildRouter">&nbsp;</div>{% endraw %}
 
@@ -141,20 +141,19 @@ Build bot from Wingbot configuration file or snapshot url
 ### new BuildRouter(block, plugins, context, [request])
 Create new router from configuration
 
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| block | <code>Object</code> |  |
-| [block.botId] | <code>string</code> | the ID of bot |
-| [block.snapshot] | <code>string</code> | snapshot stage of bot |
-| [block.token] | <code>string</code> | authorization token for bot |
-| [block.routes] | <code>Object</code> | list of routes for direct bot build |
-| [block.url] | <code>string</code> | specify alternative configuration resource |
-| plugins | [<code>Plugins</code>](#Plugins) | custom code blocks resource |
-| context | <code>Object</code> | the building context |
-| [context.linksTranslator] | <code>Object</code> | function, that translates links globally |
-| [context.configStorage] | [<code>ConfigStorage</code>](#ConfigStorage) | function, that translates links globally |
-| [request] | <code>function</code> | the building context |
+- block <code>Object</code>
+    - [.botId] <code>string</code> - the ID of bot
+    - [.snapshot] <code>string</code> - snapshot stage of bot
+    - [.token] <code>string</code> - authorization token for bot
+    - [.routes] <code>Object</code> - list of routes for direct bot build
+    - [.url] <code>string</code> - specify alternative configuration resource
+- plugins [<code>Plugins</code>](#Plugins) - custom code blocks resource
+- context <code>Object</code> - the building context
+    - [.linksTranslator] <code>Object</code> - function, that translates links globally
+    - [.configStorage] [<code>ConfigStorage</code>](#ConfigStorage) - function, that translates links globally
+- [request] <code>function</code> - the building context
 
 **Example**  
 ```javascript
@@ -213,11 +212,10 @@ Timeout, when the router is not checking for new configuration
 
 ### BuildRouter.fromData(blocks, plugins)
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| blocks | <code>Array.&lt;Object&gt;</code> | blocks list |
-| plugins | [<code>Plugins</code>](#Plugins) |  |
+- blocks <code>Array.&lt;Object&gt;</code> - blocks list
+- plugins [<code>Plugins</code>](#Plugins)
 
 {% raw %}<div id="Plugins">&nbsp;</div>{% endraw %}
 
@@ -227,15 +225,14 @@ Custom code plugins for BuildRouter and wingbot.ai
 **Kind**: global class  
 {% raw %}<div id="Plugins_register">&nbsp;</div>{% endraw %}
 
-### plugins.register(name, [factoryFn])
+### plugins.register(name, [plugin])
 Register plugin
 
 **Kind**: instance method of [<code>Plugins</code>](#Plugins)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> \| [<code>Plugins</code>](#Plugins) | plugin name or plugins object to include |
-| [factoryFn] | <code>function</code> | plugin factory - optional when including plugin object |
+- name <code>string</code> | [<code>Plugins</code>](#Plugins) - plugin name or plugins object to include
+- [plugin] [<code>Plugin</code>](#Plugin) - plugin - optional when including plugin object
 
 {% raw %}<div id="ConfigStorage">&nbsp;</div>{% endraw %}
 
@@ -249,4 +246,16 @@ Register plugin
 | getConfigTimestamp | <code>Object</code> | 
 | updateConfig | <code>Object</code> | 
 | getConfig | <code>Object</code> | 
+
+{% raw %}<div id="Plugin">&nbsp;</div>{% endraw %}
+
+## Plugin : <code>function</code>
+**Kind**: global typedef  
+**Params**
+
+- req <code>Request</code>
+- res <code>Responder</code>
+- [postBack] <code>function</code>
+- [context] <code>Object</code>
+- [paramsData] <code>Object</code>
 

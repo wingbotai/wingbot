@@ -50,11 +50,10 @@ The logger (console by default)
 The prefix translator - for request-specific prefixes
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| prefix | <code>string</code> | 
-| req | <code>Request</code> | 
+- prefix <code>string</code>
+- req <code>Request</code>
 
 {% raw %}<div id="Ai_mockIntent">&nbsp;</div>{% endraw %}
 
@@ -62,11 +61,10 @@ The prefix translator - for request-specific prefixes
 Usefull method for testing AI routes
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [intent] | <code>string</code> | <code>null</code> | intent name |
-| [confidence] | <code>number</code> | <code></code> | the confidence of the top intent |
+- [intent] <code>string</code> <code> = null</code> - intent name
+- [confidence] <code>number</code> <code> = </code> - the confidence of the top intent
 
 **Example**  
 ```javascript
@@ -101,11 +99,10 @@ Registers Wingbot AI model
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 **Template**: T  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| model | <code>string</code> \| [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code> |  | wingbot model name or AI plugin |
-| prefix | <code>string</code> | <code>&quot;default&quot;</code> | model prefix |
+- model <code>string</code> | [<code>WingbotModel</code>](#WingbotModel) | <code>T</code> - wingbot model name or AI plugin
+- prefix <code>string</code> <code> = &quot;default&quot;</code> - model prefix
 
 {% raw %}<div id="Ai_load">&nbsp;</div>{% endraw %}
 
@@ -113,10 +110,9 @@ Registers Wingbot AI model
 Middleware, which ensures, that AI data are properly loaded in Request
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| prefix | <code>string</code> | AI model prefix |
+- prefix <code>string</code> - AI model prefix
 
 **Example**  
 ```javascript
@@ -133,12 +129,11 @@ Returns matching middleware
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 **Returns**: <code>function</code> - - the middleware  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| intent | <code>string</code> \| <code>Array</code> |  | 
-| [confidence] | <code>number</code> | <code></code> | 
-| [prefix] | <code>string</code> |  | 
+- intent <code>string</code> | <code>Array</code>
+- [confidence] <code>number</code> <code> = </code>
+- [prefix] <code>string</code>
 
 **Example**  
 ```javascript
@@ -164,24 +159,22 @@ bot.use(ai.match('intent1'), (req, res) => {
 {% raw %}<div id="new_WingbotModel_new">&nbsp;</div>{% endraw %}
 
 ### new WingbotModel(options, [log])
+**Params**
 
-| Param | Type |
-| --- | --- |
-| options | <code>Object</code> | 
-| [options.serviceUrl] | <code>string</code> | 
-| options.model | <code>string</code> | 
-| [options.cacheSize] | <code>number</code> | 
-| [options.matches] | <code>number</code> | 
-| [log] | <code>Object</code> | 
+- options <code>Object</code>
+    - [.serviceUrl] <code>string</code>
+    - .model <code>string</code>
+    - [.cacheSize] <code>number</code>
+    - [.matches] <code>number</code>
+- [log] <code>Object</code>
 
 {% raw %}<div id="WingbotModel__queryModel">&nbsp;</div>{% endraw %}
 
 ### wingbotModel._queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
 **Kind**: instance method of [<code>WingbotModel</code>](#WingbotModel)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| text | <code>string</code> | 
+- text <code>string</code>
 
 {% raw %}<div id="CachedModel">&nbsp;</div>{% endraw %}
 
@@ -196,50 +189,45 @@ bot.use(ai.match('intent1'), (req, res) => {
 {% raw %}<div id="new_CachedModel_new">&nbsp;</div>{% endraw %}
 
 ### new CachedModel(options, [log])
+**Params**
 
-| Param | Type |
-| --- | --- |
-| options | <code>Object</code> | 
-| [options.cacheSize] | <code>number</code> | 
-| [log] | <code>Object</code> | 
+- options <code>Object</code>
+    - [.cacheSize] <code>number</code>
+- [log] <code>Object</code>
 
 {% raw %}<div id="CachedModel_resolve">&nbsp;</div>{% endraw %}
 
 ### cachedModel.resolve(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| text | <code>string</code> | the user input |
+- text <code>string</code> - the user input
 
 {% raw %}<div id="CachedModel__queryModel">&nbsp;</div>{% endraw %}
 
 ### cachedModel._queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| text | <code>string</code> | 
-
-{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
-
-## Intent : <code>Object</code>
-**Kind**: global typedef  
-
-| Param | Type |
-| --- | --- |
-| intent | <code>string</code> | 
-| score | <code>number</code> | 
-| [entities] | <code>Array.&lt;Object&gt;</code> | 
+- text <code>string</code>
 
 {% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
 
 ## Intent : <code>Object</code>
 **Kind**: global typedef  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| intent | <code>string</code> | 
-| score | <code>number</code> | 
-| [entities] | <code>Array.&lt;Object&gt;</code> | 
+- intent <code>string</code>
+- score <code>number</code>
+- [entities] <code>Array.&lt;Object&gt;</code>
+
+{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+
+## Intent : <code>Object</code>
+**Kind**: global typedef  
+**Params**
+
+- intent <code>string</code>
+- score <code>number</code>
+- [entities] <code>Array.&lt;Object&gt;</code>
 

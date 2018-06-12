@@ -31,7 +31,7 @@
         * [.postBack(action, [data], [refAction], [refData])](#Tester_postBack) ⇒ <code>Promise</code>
     * _static_
         * [.Tester](#Tester_Tester)
-            * [new Tester(reducer, [senderId], [processorOptions], [storage])](#new_Tester_Tester_new)
+            * [new Tester(reducer, [senderId], [pageId], [processorOptions], [storage])](#new_Tester_Tester_new)
 
 {% raw %}<div id="new_Tester_new">&nbsp;</div>{% endraw %}
 
@@ -44,10 +44,9 @@ Utility for testing requests
 Returns single response asserter
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [index] | <code>number</code> | <code>0</code> | response index |
+- [index] <code>number</code> <code> = 0</code> - response index
 
 {% raw %}<div id="Tester_any">&nbsp;</div>{% endraw %}
 
@@ -67,10 +66,9 @@ Returns last response asserter
 Checks, that app past the action
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| path | <code>string</code> | 
+- path <code>string</code>
 
 {% raw %}<div id="Tester_getState">&nbsp;</div>{% endraw %}
 
@@ -84,10 +82,9 @@ Returns state
 Sets state with `Object.assign()`
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [state] | <code>Object</code> | <code>{}</code> | 
+- [state] <code>Object</code> <code> = {}</code>
 
 {% raw %}<div id="Tester_text">&nbsp;</div>{% endraw %}
 
@@ -95,10 +92,9 @@ Sets state with `Object.assign()`
 Makes text request
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| text | <code>string</code> | 
+- text <code>string</code>
 
 {% raw %}<div id="Tester_intent">&nbsp;</div>{% endraw %}
 
@@ -106,11 +102,10 @@ Makes text request
 Makes recognised AI intent request
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| intent | <code>string</code> | 
-| text | <code>string</code> | 
+- intent <code>string</code>
+- text <code>string</code>
 
 {% raw %}<div id="Tester_passThread">&nbsp;</div>{% endraw %}
 
@@ -118,11 +113,10 @@ Makes recognised AI intent request
 Makes pass thread control request
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [data] | <code>string</code> \| <code>Object</code> | <code>null</code> | action |
-| [appId] | <code>string</code> | <code>&quot;random-app&quot;</code> | specific app id |
+- [data] <code>string</code> | <code>Object</code> <code> = null</code> - action
+- [appId] <code>string</code> <code> = &quot;random-app&quot;</code> - specific app id
 
 {% raw %}<div id="Tester_optin">&nbsp;</div>{% endraw %}
 
@@ -130,12 +124,11 @@ Makes pass thread control request
 Make optin call
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| action | <code>string</code> |  |  |
-| [data] | <code>Object</code> | <code>{}</code> |  |
-| [userRef] | <code>string</code> | <code>null</code> | specific ref string |
+- action <code>string</code>
+- [data] <code>Object</code> <code> = {}</code>
+- [userRef] <code>string</code> <code> = null</code> - specific ref string
 
 {% raw %}<div id="Tester_quickReply">&nbsp;</div>{% endraw %}
 
@@ -143,11 +136,10 @@ Make optin call
 Send quick reply
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| action | <code>string</code> |  | 
-| [data] | <code>Object</code> | <code>{}</code> | 
+- action <code>string</code>
+- [data] <code>Object</code> <code> = {}</code>
 
 {% raw %}<div id="Tester_postBack">&nbsp;</div>{% endraw %}
 
@@ -155,13 +147,12 @@ Send quick reply
 Sends postback, optionally with referrer action
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| action | <code>string</code> |  |  |
-| [data] | <code>Object</code> | <code>{}</code> |  |
-| [refAction] | <code>string</code> | <code>null</code> | referred action |
-| [refData] | <code>Object</code> | <code>{}</code> | referred action data |
+- action <code>string</code>
+- [data] <code>Object</code> <code> = {}</code>
+- [refAction] <code>string</code> <code> = null</code> - referred action
+- [refData] <code>Object</code> <code> = {}</code> - referred action data
 
 {% raw %}<div id="Tester_Tester">&nbsp;</div>{% endraw %}
 
@@ -169,16 +160,16 @@ Sends postback, optionally with referrer action
 **Kind**: static class of [<code>Tester</code>](#Tester)  
 {% raw %}<div id="new_Tester_Tester_new">&nbsp;</div>{% endraw %}
 
-#### new Tester(reducer, [senderId], [processorOptions], [storage])
+#### new Tester(reducer, [senderId], [pageId], [processorOptions], [storage])
 Creates an instance of Tester.
 
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| reducer | <code>Router</code> \| <code>ReducerWrapper</code> \| <code>function</code> |  |  |
-| [senderId] | <code>string</code> | <code>null</code> |  |
-| [processorOptions] | <code>Object</code> | <code>{}</code> | options for Processor |
-| [storage] | <code>MemoryStateStorage</code> |  | place to override the storage |
+- reducer <code>Router</code> | <code>ReducerWrapper</code> | <code>function</code>
+- [senderId] <code>string</code> <code> = null</code>
+- [pageId] <code>string</code> <code> = null</code>
+- [processorOptions] <code>Object</code> <code> = {}</code> - options for Processor
+- [storage] <code>MemoryStateStorage</code> - place to override the storage
 
 {% raw %}<div id="ResponseAssert">&nbsp;</div>{% endraw %}
 
@@ -213,10 +204,9 @@ Utility for asserting single response
 Checks, that response contains text
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| search | <code>string</code> | 
+- search <code>string</code>
 
 {% raw %}<div id="ResponseAssert_quickReplyAction">&nbsp;</div>{% endraw %}
 
@@ -224,10 +214,9 @@ Checks, that response contains text
 Checks quick response action
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| action | <code>string</code> | 
+- action <code>string</code>
 
 {% raw %}<div id="ResponseAssert_templateType">&nbsp;</div>{% endraw %}
 
@@ -235,10 +224,9 @@ Checks quick response action
 Checks template type
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| type | <code>string</code> | 
+- type <code>string</code>
 
 {% raw %}<div id="ResponseAssert_passThread">&nbsp;</div>{% endraw %}
 
@@ -246,10 +234,9 @@ Checks template type
 Checks pass thread control
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [appId] | <code>string</code> | <code>null</code> | 
+- [appId] <code>string</code> <code> = null</code>
 
 {% raw %}<div id="ResponseAssert_attachmentType">&nbsp;</div>{% endraw %}
 
@@ -257,10 +244,9 @@ Checks pass thread control
 Checks attachment type
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| type | <code>string</code> | 
+- type <code>string</code>
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_contains">&nbsp;</div>{% endraw %}
 
@@ -268,10 +254,9 @@ Checks attachment type
 Checks, that response contains text
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| search | <code>string</code> | 
+- search <code>string</code>
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_quickReplyAction">&nbsp;</div>{% endraw %}
 
@@ -279,10 +264,9 @@ Checks, that response contains text
 Checks quick response action
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| action | <code>string</code> | 
+- action <code>string</code>
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_templateType">&nbsp;</div>{% endraw %}
 
@@ -290,10 +274,9 @@ Checks quick response action
 Checks template type
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| type | <code>string</code> | 
+- type <code>string</code>
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_genericTemplate">&nbsp;</div>{% endraw %}
 
@@ -301,10 +284,9 @@ Checks template type
 Checks for generic template
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| itemCount | <code>number</code> | <code></code> | specified item count |
+- itemCount <code>number</code> <code> = </code> - specified item count
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_buttonTemplate">&nbsp;</div>{% endraw %}
 
@@ -312,11 +294,10 @@ Checks for generic template
 Checks for button template
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| search | <code>string</code> |  |  |
-| buttonCount | <code>number</code> | <code></code> | specified button count |
+- search <code>string</code>
+- buttonCount <code>number</code> <code> = </code> - specified button count
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_passThread">&nbsp;</div>{% endraw %}
 
@@ -324,10 +305,9 @@ Checks for button template
 Checks pass thread control
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [appId] | <code>string</code> | <code>null</code> | 
+- [appId] <code>string</code> <code> = null</code>
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_attachmentType">&nbsp;</div>{% endraw %}
 
@@ -335,10 +315,9 @@ Checks pass thread control
 Checks attachment type
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| type | <code>string</code> | 
+- type <code>string</code>
 
 {% raw %}<div id="AnyResponseAssert">&nbsp;</div>{% endraw %}
 

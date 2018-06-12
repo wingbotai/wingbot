@@ -106,10 +106,9 @@ Instance of {Request} class is passed as first parameter of handler (req)
 Returns intent, when using AI
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| getDataOrScore | <code>boolean</code> \| <code>number</code> | <code>false</code> | score limit or true for getting intent data |
+- getDataOrScore <code>boolean</code> | <code>number</code> <code> = false</code> - score limit or true for getting intent data
 
 {% raw %}<div id="Request_isAttachment">&nbsp;</div>{% endraw %}
 
@@ -123,10 +122,9 @@ Checks, when message contains an attachment (file, image or location)
 Checks, when the attachment is an image
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
+- [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
 
 {% raw %}<div id="Request_isFile">&nbsp;</div>{% endraw %}
 
@@ -134,10 +132,9 @@ Checks, when the attachment is an image
 Checks, when the attachment is a file
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
+- [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
 
 {% raw %}<div id="Request_hasLocation">&nbsp;</div>{% endraw %}
 
@@ -179,10 +176,9 @@ bot.use('locAction', (req, res) => {
 Returns whole attachment or null
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
+- [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
 
 {% raw %}<div id="Request_attachmentUrl">&nbsp;</div>{% endraw %}
 
@@ -190,10 +186,9 @@ Returns whole attachment or null
 Returns attachment URL
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
+- [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
 
 {% raw %}<div id="Request_isMessage">&nbsp;</div>{% endraw %}
 
@@ -219,10 +214,9 @@ Check, that message is PURE text
 Returns text of the message
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [tokenized] | <code>boolean</code> | <code>false</code> | when true, message is normalized to lowercase with `-` |
+- [tokenized] <code>boolean</code> <code> = false</code> - when true, message is normalized to lowercase with `-`
 
 **Example**  
 ```javascript
@@ -241,10 +235,9 @@ Returns action or data of quick reply
 When `getData` is `true`, object will be returned. Otherwise string or null.
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [getData] | <code>boolean</code> | <code>false</code> | 
+- [getData] <code>boolean</code> <code> = false</code>
 
 **Example**  
 ```javascript
@@ -288,10 +281,9 @@ When `getData` is `true`, object will be returned. Otherwise string or null.
 5. expected state is checked
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [getData] | <code>boolean</code> | <code>false</code> | 
+- [getData] <code>boolean</code> <code> = false</code>
 
 **Example**  
 ```javascript
@@ -305,10 +297,9 @@ Returns action or data of postback
 When `getData` is `true`, object will be returned. Otherwise string or null.
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [getData] | <code>boolean</code> | <code>false</code> | 
+- [getData] <code>boolean</code> <code> = false</code>
 
 **Example**  
 ```javascript
@@ -319,10 +310,9 @@ typeof res.postBack(true) === 'object';
 
 ## Intent : <code>Object</code>
 **Kind**: global typedef  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| intent | <code>string</code> | 
-| score | <code>number</code> | 
-| [entities] | <code>Array.&lt;Object&gt;</code> | 
+- intent <code>string</code>
+- score <code>number</code>
+- [entities] <code>Array.&lt;Object&gt;</code>
 

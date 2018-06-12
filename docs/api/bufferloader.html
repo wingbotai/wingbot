@@ -839,6 +839,12 @@
 </dd>
 </dl>
 
+<h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
+<dl>
+<dt><a href="#State">State</a> : <code>Object</code></dt>
+<dd></dd>
+</dl>
+
 <div id="MemoryStateStorage">&#xA0;</div>
 
 <h2 id="memorystatestorage"><a name="memorystatestorage" class="plugin-anchor" href="#memorystatestorage"><i class="fa fa-link" aria-hidden="true"></i></a>MemoryStateStorage</h2>
@@ -846,65 +852,37 @@
 <p><strong>Kind</strong>: global class  </p>
 <ul>
 <li><a href="#MemoryStateStorage">MemoryStateStorage</a><ul>
-<li><a href="#MemoryStateStorage_getOrCreateAndLock">.getOrCreateAndLock(senderId, defaultState, lockTimeout)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
+<li><a href="#MemoryStateStorage_getState">.getState(senderId, pageId)</a> &#x21D2; <code>Promise.&lt;(State|null)&gt;</code></li>
+<li><a href="#MemoryStateStorage_getOrCreateAndLock">.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout)</a> &#x21D2; <a href="#State"><code>Promise.&lt;State&gt;</code></a></li>
 <li><a href="#MemoryStateStorage_saveState">.saveState(state)</a> &#x21D2; <code>Promise</code></li>
 </ul>
 </li>
 </ul>
+<div id="MemoryStateStorage_getState">&#xA0;</div>
+
+<h3 id="memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull"><a name="memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull" class="plugin-anchor" href="#memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getState(senderId, pageId) &#x21D2; <code>Promise.&lt;(State|null)&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
+<ul>
+<li>senderId <code>string</code></li>
+<li>pageId <code>string</code></li>
+</ul>
 <div id="MemoryStateStorage_getOrCreateAndLock">&#xA0;</div>
 
-<h3 id="memorystatestoragegetorcreateandlocksenderid-defaultstate-locktimeout-&#x21D2;-promiseobject"><a name="memorystatestoragegetorcreateandlocksenderid-defaultstate-locktimeout-&#x21D2;-promiseobject" class="plugin-anchor" href="#memorystatestoragegetorcreateandlocksenderid-defaultstate-locktimeout-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getOrCreateAndLock(senderId, defaultState, lockTimeout) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Returns</strong>: <code>Promise.&lt;Object&gt;</code> - - conversation state  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>senderId</td>
-<td><code>any</code></td>
-<td></td>
-<td>sender identifier</td>
-</tr>
-<tr>
-<td>defaultState</td>
-<td><code>Object</code></td>
-<td></td>
-<td>default state of the conversation</td>
-</tr>
-<tr>
-<td>lockTimeout</td>
-<td><code>number</code></td>
-<td><code>300</code></td>
-<td>duration of lock</td>
-</tr>
-</tbody>
-</table>
+<h3 id="memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate"><a name="memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate" class="plugin-anchor" href="#memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout) &#x21D2; <a href="#State"><code>Promise.&lt;State&gt;</code></a></h3>
+<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Returns</strong>: <a href="#State"><code>Promise.&lt;State&gt;</code></a> - - conversation state<br><strong>Params</strong></p>
+<ul>
+<li>senderId <code>string</code> - sender identifier</li>
+<li>pageId <code>string</code> - page or channel identifier</li>
+<li>defaultState <code>Object</code> - default state of the conversation</li>
+<li>lockTimeout <code>number</code> <code> = 300</code> - duration of lock</li>
+</ul>
 <div id="MemoryStateStorage_saveState">&#xA0;</div>
 
 <h3 id="memorystatestoragesavestatestate-&#x21D2;-promise"><a name="memorystatestoragesavestatestate-&#x21D2;-promise" class="plugin-anchor" href="#memorystatestoragesavestatestate-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.saveState(state) &#x21D2; <code>Promise</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>state</td>
-<td><code>Object</code></td>
-<td>conversation state</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
+<ul>
+<li>state <code>Object</code> - conversation state</li>
+</ul>
 <div id="Translate">&#xA0;</div>
 
 <h2 id="translate"><a name="translate" class="plugin-anchor" href="#translate"><i class="fa fa-link" aria-hidden="true"></i></a>Translate</h2>
@@ -925,53 +903,22 @@
 <div id="new_Translate_new">&#xA0;</div>
 
 <h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>[options]</td>
-<td><code>Object</code></td>
-<td></td>
-</tr>
-<tr>
-<td>[options.sourcePath]</td>
-<td><code>string</code></td>
-<td>optional source path of translation folder</td>
-</tr>
-<tr>
-<td>[options.fileSuffix]</td>
-<td><code>string</code></td>
-<td>by default <code>.locale.po</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Params</strong></p>
+<ul>
+<li>[options] <code>Object</code><ul>
+<li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
+<li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
+</ul>
+</li>
+</ul>
 <div id="Translate_translator">&#xA0;</div>
 
 <h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
 <p>Creates static translator for static settings</p>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>languages</td>
-<td><code>Array.&lt;string&gt;</code></td>
-<td>list of required languages</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
+<ul>
+<li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
 
@@ -992,21 +939,10 @@ t.en.t(&apos;requested text&apos;);
 <ul>
 <li>will be looking for <code>&lt;lang&gt;.locale.po</code> by default</li>
 </ul>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>languageResolver</td>
-<td><code>function</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
+<ul>
+<li>languageResolver <code>function</code></li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
 
@@ -1038,53 +974,22 @@ bot.use((req, res) =&gt; {
 <div id="new_Translate_new">&#xA0;</div>
 
 <h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>[options]</td>
-<td><code>Object</code></td>
-<td></td>
-</tr>
-<tr>
-<td>[options.sourcePath]</td>
-<td><code>string</code></td>
-<td>optional source path of translation folder</td>
-</tr>
-<tr>
-<td>[options.fileSuffix]</td>
-<td><code>string</code></td>
-<td>by default <code>.locale.po</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Params</strong></p>
+<ul>
+<li>[options] <code>Object</code><ul>
+<li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
+<li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
+</ul>
+</li>
+</ul>
 <div id="Translate_translator">&#xA0;</div>
 
 <h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
 <p>Creates static translator for static settings</p>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>languages</td>
-<td><code>Array.&lt;string&gt;</code></td>
-<td>list of required languages</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
+<ul>
+<li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
 
@@ -1105,21 +1010,10 @@ t.en.t(&apos;requested text&apos;);
 <ul>
 <li>will be looking for <code>&lt;lang&gt;.locale.po</code> by default</li>
 </ul>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>languageResolver</td>
-<td><code>function</code></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
+<ul>
+<li>languageResolver <code>function</code></li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
 
@@ -1138,94 +1032,35 @@ bot.use((req, res) =&gt; {
 <ul>
 <li><a href="#ReturnSender">ReturnSender</a><ul>
 <li><a href="#new_ReturnSender_new">new ReturnSender(options, userId, incommingMessage, logger)</a></li>
-<li><a href="#ReturnSender_modifyStateBeforeStore">.modifyStateBeforeStore()</a> &#x21D2; <code>Promise.&lt;({senderId:string}|null)&gt;</code></li>
+<li><a href="#ReturnSender_modifyStateBeforeStore">.modifyStateBeforeStore()</a> &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></li>
 </ul>
 </li>
 </ul>
 <div id="new_ReturnSender_new">&#xA0;</div>
 
 <h3 id="new-returnsenderoptions-userid-incommingmessage-logger"><a name="new-returnsenderoptions-userid-incommingmessage-logger" class="plugin-anchor" href="#new-returnsenderoptions-userid-incommingmessage-logger"><i class="fa fa-link" aria-hidden="true"></i></a>new ReturnSender(options, userId, incommingMessage, logger)</h3>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>options</td>
-<td><code>Object</code></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>userId</td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>incommingMessage</td>
-<td><code>Object</code></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>logger</td>
-<td><code>console</code></td>
-<td><code></code></td>
-<td>console like logger</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Params</strong></p>
+<ul>
+<li>options <code>Object</code></li>
+<li>userId <code>string</code></li>
+<li>incommingMessage <code>Object</code></li>
+<li>logger <code>console</code> <code> = </code> - console like logger</li>
+</ul>
 <div id="ReturnSender_modifyStateBeforeStore">&#xA0;</div>
 
-<h3 id="returnsendermodifystatebeforestore-&#x21D2;-promisesenderidstringnull"><a name="returnsendermodifystatebeforestore-&#x21D2;-promisesenderidstringnull" class="plugin-anchor" href="#returnsendermodifystatebeforestore-&#x21D2;-promisesenderidstringnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateBeforeStore() &#x21D2; <code>Promise.&lt;({senderId:string}|null)&gt;</code></h3>
+<h3 id="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateBeforeStore() &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></h3>
 <p><strong>Kind</strong>: instance method of <a href="#ReturnSender"><code>ReturnSender</code></a>  </p>
 <div id="bufferloader">&#xA0;</div>
 
 <h2 id="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><a name="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer" class="plugin-anchor" href="#bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><i class="fa fa-link" aria-hidden="true"></i></a>bufferloader(url, [limit], [limitJustByBody], [redirCount]) &#x21D2; <code>Promise.&lt;Buffer&gt;</code></h2>
 <p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
-<p><strong>Kind</strong>: global function  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>url</td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>[limit]</td>
-<td><code>number</code></td>
-<td><code>0</code></td>
-<td>limit in bytes</td>
-</tr>
-<tr>
-<td>[limitJustByBody]</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>when true, content size in header is ignored</td>
-</tr>
-<tr>
-<td>[redirCount]</td>
-<td><code>number</code></td>
-<td><code>3</code></td>
-<td>maximmum amount of redirects</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
+<ul>
+<li>url <code>string</code></li>
+<li>[limit] <code>number</code> <code> = 0</code> - limit in bytes</li>
+<li>[limitJustByBody] <code>boolean</code> <code> = false</code> - when true, content size in header is ignored</li>
+<li>[redirCount] <code>number</code> <code> = 3</code> - maximmum amount of redirects</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">router.use(<span class="hljs-string">&apos;*&apos;</span>, (req, res, postBack) =&gt; {
     <span class="hljs-keyword">if</span> (req.isFile()) {
@@ -1235,6 +1070,32 @@ bot.use((req, res) =&gt; {
     }
 });
 </code></pre>
+<div id="State">&#xA0;</div>
+
+<h2 id="state--object"><a name="state--object" class="plugin-anchor" href="#state--object"><i class="fa fa-link" aria-hidden="true"></i></a>State : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>senderId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>pageId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>state</td>
+<td><code>Object</code></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1278,7 +1139,7 @@ bot.use((req, res) =&gt; {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2018-06-03T18:47:59.928Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-03T18:48:08.923Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2018-06-12T18:01:09.039Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-12T18:01:14.266Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

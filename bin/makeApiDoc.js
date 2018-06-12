@@ -36,6 +36,7 @@ docs.forEach((doc) => {
 
     apiDoc = jsdoc2md.renderSync({
         'example-lang': 'javascript',
+        'param-list-format': 'list',
         files
     }).replace(/<a\sname="([^"]+)"><\/a>/g, (a, r) => `{% raw %}<div id="${r.replace(/[+.]/g, '_')}">&nbsp;</div>{% endraw %}`)
         .replace(/<a\shref="#([^"]+)">/g, (a, r) => `<a href="#${r.replace(/[+.]/g, '_')}">`)

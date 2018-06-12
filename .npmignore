@@ -10,3 +10,7 @@ typings
 
 doc
 docs
+
+.nyc_output
+.circleci
+mocha.opts

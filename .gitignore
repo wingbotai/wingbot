@@ -23,3 +23,5 @@ node_modules
 # Dont remove, because it's used in tests
 
 !/public/assets/img/minify/fb-share.jpg
+
+.nyc_output

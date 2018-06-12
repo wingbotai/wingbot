@@ -832,6 +832,8 @@
 <dl>
 <dt><a href="#ConfigStorage">ConfigStorage</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Plugin">Plugin</a> : <code>function</code></dt>
+<dd></dd>
 </dl>
 
 <div id="BuildRouter">&#xA0;</div>
@@ -861,72 +863,24 @@
 
 <h3 id="new-buildrouterblock-plugins-context-request"><a name="new-buildrouterblock-plugins-context-request" class="plugin-anchor" href="#new-buildrouterblock-plugins-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, plugins, context, [request])</h3>
 <p>Create new router from configuration</p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>block</td>
-<td><code>Object</code></td>
-<td></td>
-</tr>
-<tr>
-<td>[block.botId]</td>
-<td><code>string</code></td>
-<td>the ID of bot</td>
-</tr>
-<tr>
-<td>[block.snapshot]</td>
-<td><code>string</code></td>
-<td>snapshot stage of bot</td>
-</tr>
-<tr>
-<td>[block.token]</td>
-<td><code>string</code></td>
-<td>authorization token for bot</td>
-</tr>
-<tr>
-<td>[block.routes]</td>
-<td><code>Object</code></td>
-<td>list of routes for direct bot build</td>
-</tr>
-<tr>
-<td>[block.url]</td>
-<td><code>string</code></td>
-<td>specify alternative configuration resource</td>
-</tr>
-<tr>
-<td>plugins</td>
-<td><a href="#Plugins"><code>Plugins</code></a></td>
-<td>custom code blocks resource</td>
-</tr>
-<tr>
-<td>context</td>
-<td><code>Object</code></td>
-<td>the building context</td>
-</tr>
-<tr>
-<td>[context.linksTranslator]</td>
-<td><code>Object</code></td>
-<td>function, that translates links globally</td>
-</tr>
-<tr>
-<td>[context.configStorage]</td>
-<td><a href="#ConfigStorage"><code>ConfigStorage</code></a></td>
-<td>function, that translates links globally</td>
-</tr>
-<tr>
-<td>[request]</td>
-<td><code>function</code></td>
-<td>the building context</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Params</strong></p>
+<ul>
+<li>block <code>Object</code><ul>
+<li>[.botId] <code>string</code> - the ID of bot</li>
+<li>[.snapshot] <code>string</code> - snapshot stage of bot</li>
+<li>[.token] <code>string</code> - authorization token for bot</li>
+<li>[.routes] <code>Object</code> - list of routes for direct bot build</li>
+<li>[.url] <code>string</code> - specify alternative configuration resource</li>
+</ul>
+</li>
+<li>plugins <a href="#Plugins"><code>Plugins</code></a> - custom code blocks resource</li>
+<li>context <code>Object</code> - the building context<ul>
+<li>[.linksTranslator] <code>Object</code> - function, that translates links globally</li>
+<li>[.configStorage] <a href="#ConfigStorage"><code>ConfigStorage</code></a> - function, that translates links globally</li>
+</ul>
+</li>
+<li>[request] <code>function</code> - the building context</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">// usage under serverless environment
 
@@ -987,27 +941,11 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <div id="BuildRouter_fromData">&#xA0;</div>
 
 <h3 id="buildrouterfromdatablocks-plugins"><a name="buildrouterfromdatablocks-plugins" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, plugins)</h3>
-<p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>blocks</td>
-<td><code>Array.&lt;Object&gt;</code></td>
-<td>blocks list</td>
-</tr>
-<tr>
-<td>plugins</td>
-<td><a href="#Plugins"><code>Plugins</code></a></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a><br><strong>Params</strong></p>
+<ul>
+<li>blocks <code>Array.&lt;Object&gt;</code> - blocks list</li>
+<li>plugins <a href="#Plugins"><code>Plugins</code></a></li>
+</ul>
 <div id="BuildRouter">&#xA0;</div>
 
 <h2 id="buildrouter"><a name="buildrouter" class="plugin-anchor" href="#buildrouter"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter</h2>
@@ -1035,72 +973,24 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 
 <h3 id="new-buildrouterblock-plugins-context-request"><a name="new-buildrouterblock-plugins-context-request" class="plugin-anchor" href="#new-buildrouterblock-plugins-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, plugins, context, [request])</h3>
 <p>Create new router from configuration</p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>block</td>
-<td><code>Object</code></td>
-<td></td>
-</tr>
-<tr>
-<td>[block.botId]</td>
-<td><code>string</code></td>
-<td>the ID of bot</td>
-</tr>
-<tr>
-<td>[block.snapshot]</td>
-<td><code>string</code></td>
-<td>snapshot stage of bot</td>
-</tr>
-<tr>
-<td>[block.token]</td>
-<td><code>string</code></td>
-<td>authorization token for bot</td>
-</tr>
-<tr>
-<td>[block.routes]</td>
-<td><code>Object</code></td>
-<td>list of routes for direct bot build</td>
-</tr>
-<tr>
-<td>[block.url]</td>
-<td><code>string</code></td>
-<td>specify alternative configuration resource</td>
-</tr>
-<tr>
-<td>plugins</td>
-<td><a href="#Plugins"><code>Plugins</code></a></td>
-<td>custom code blocks resource</td>
-</tr>
-<tr>
-<td>context</td>
-<td><code>Object</code></td>
-<td>the building context</td>
-</tr>
-<tr>
-<td>[context.linksTranslator]</td>
-<td><code>Object</code></td>
-<td>function, that translates links globally</td>
-</tr>
-<tr>
-<td>[context.configStorage]</td>
-<td><a href="#ConfigStorage"><code>ConfigStorage</code></a></td>
-<td>function, that translates links globally</td>
-</tr>
-<tr>
-<td>[request]</td>
-<td><code>function</code></td>
-<td>the building context</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Params</strong></p>
+<ul>
+<li>block <code>Object</code><ul>
+<li>[.botId] <code>string</code> - the ID of bot</li>
+<li>[.snapshot] <code>string</code> - snapshot stage of bot</li>
+<li>[.token] <code>string</code> - authorization token for bot</li>
+<li>[.routes] <code>Object</code> - list of routes for direct bot build</li>
+<li>[.url] <code>string</code> - specify alternative configuration resource</li>
+</ul>
+</li>
+<li>plugins <a href="#Plugins"><code>Plugins</code></a> - custom code blocks resource</li>
+<li>context <code>Object</code> - the building context<ul>
+<li>[.linksTranslator] <code>Object</code> - function, that translates links globally</li>
+<li>[.configStorage] <a href="#ConfigStorage"><code>ConfigStorage</code></a> - function, that translates links globally</li>
+</ul>
+</li>
+<li>[request] <code>function</code> - the building context</li>
+</ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">// usage under serverless environment
 
@@ -1161,27 +1051,11 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <div id="BuildRouter_fromData">&#xA0;</div>
 
 <h3 id="buildrouterfromdatablocks-plugins"><a name="buildrouterfromdatablocks-plugins" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, plugins)</h3>
-<p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>blocks</td>
-<td><code>Array.&lt;Object&gt;</code></td>
-<td>blocks list</td>
-</tr>
-<tr>
-<td>plugins</td>
-<td><a href="#Plugins"><code>Plugins</code></a></td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a><br><strong>Params</strong></p>
+<ul>
+<li>blocks <code>Array.&lt;Object&gt;</code> - blocks list</li>
+<li>plugins <a href="#Plugins"><code>Plugins</code></a></li>
+</ul>
 <div id="Plugins">&#xA0;</div>
 
 <h2 id="plugins"><a name="plugins" class="plugin-anchor" href="#plugins"><i class="fa fa-link" aria-hidden="true"></i></a>Plugins</h2>
@@ -1189,31 +1063,13 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <p><strong>Kind</strong>: global class  </p>
 <div id="Plugins_register">&#xA0;</div>
 
-<h3 id="pluginsregistername-factoryfn"><a name="pluginsregistername-factoryfn" class="plugin-anchor" href="#pluginsregistername-factoryfn"><i class="fa fa-link" aria-hidden="true"></i></a>plugins.register(name, [factoryFn])</h3>
+<h3 id="pluginsregistername-plugin"><a name="pluginsregistername-plugin" class="plugin-anchor" href="#pluginsregistername-plugin"><i class="fa fa-link" aria-hidden="true"></i></a>plugins.register(name, [plugin])</h3>
 <p>Register plugin</p>
-<p><strong>Kind</strong>: instance method of <a href="#Plugins"><code>Plugins</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td><code>string</code> \</td>
-<td><a href="#Plugins"><code>Plugins</code></a></td>
-<td>plugin name or plugins object to include</td>
-</tr>
-<tr>
-<td>[factoryFn]</td>
-<td><code>function</code></td>
-<td>plugin factory - optional when including plugin object</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Kind</strong>: instance method of <a href="#Plugins"><code>Plugins</code></a><br><strong>Params</strong></p>
+<ul>
+<li>name <code>string</code> | <a href="#Plugins"><code>Plugins</code></a> - plugin name or plugins object to include</li>
+<li>[plugin] <a href="#Plugin"><code>Plugin</code></a> - plugin - optional when including plugin object</li>
+</ul>
 <div id="ConfigStorage">&#xA0;</div>
 
 <h2 id="configstorage--object"><a name="configstorage--object" class="plugin-anchor" href="#configstorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>ConfigStorage : <code>Object</code></h2>
@@ -1244,6 +1100,17 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 </tr>
 </tbody>
 </table>
+<div id="Plugin">&#xA0;</div>
+
+<h2 id="plugin--function"><a name="plugin--function" class="plugin-anchor" href="#plugin--function"><i class="fa fa-link" aria-hidden="true"></i></a>Plugin : <code>function</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
+<ul>
+<li>req <code>Request</code></li>
+<li>res <code>Responder</code></li>
+<li>[postBack] <code>function</code></li>
+<li>[context] <code>Object</code></li>
+<li>[paramsData] <code>Object</code></li>
+</ul>
 
                                 
                                 </section>
@@ -1283,7 +1150,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"3.8","depth":1,"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2018-06-03T18:48:00.805Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-03T18:48:08.923Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"3.8","depth":1,"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2018-06-12T18:01:09.205Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-12T18:01:14.266Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

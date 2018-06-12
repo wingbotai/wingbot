@@ -55,11 +55,10 @@ into the conversation state.
 
 ### responder.setMessgingType(messagingType, [tag]) ⇒ <code>this</code>
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| messagingType | <code>string</code> |  | 
-| [tag] | <code>string</code> | <code>null</code> | 
+- messagingType <code>string</code>
+- [tag] <code>string</code> <code> = null</code>
 
 {% raw %}<div id="Responder_isResponseType">&nbsp;</div>{% endraw %}
 
@@ -73,10 +72,9 @@ Returns true, when responder is not sending an update (notification) message
 Set temporary data to responder, which are persisted through single event
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| data | <code>Object</code> | 
+- data <code>Object</code>
 
 **Example**  
 ```javascript
@@ -95,11 +93,10 @@ bot.use('bar', (req, res) => {
 Send text as a response
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| text | <code>string</code> | text to send to user, can contain placeholders (%s) |
-| [quickReplies] | <code>Object.&lt;string, string&gt;</code> \| <code>Array.&lt;Object&gt;</code> |  |
+- text <code>string</code> - text to send to user, can contain placeholders (%s)
+- [quickReplies] <code>Object.&lt;string, string&gt;</code> | <code>Array.&lt;Object&gt;</code>
 
 **Example**  
 ```javascript
@@ -126,10 +123,9 @@ res.text('Hello %s', name, [
 Sets new attributes to state (with Object.assign())
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| object | <code>Object</code> | 
+- object <code>Object</code>
 
 **Example**  
 ```javascript
@@ -141,13 +137,12 @@ res.setState({ visited: true });
 Appends quick reply, to be sent with following text method
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| action | <code>string</code> |  | relative or absolute action |
-| title | <code>string</code> |  | quick reply title |
-| [data] | <code>Object</code> |  | additional data |
-| [prepend] | <code>boolean</code> | <code>false</code> | set true to add reply at the beginning |
+- action <code>string</code> - relative or absolute action
+- title <code>string</code> - quick reply title
+- [data] <code>Object</code> - additional data
+- [prepend] <code>boolean</code> <code> = false</code> - set true to add reply at the beginning
 
 **Example**  
 ```javascript
@@ -167,11 +162,10 @@ bot.use((req, res) => {
 When user writes some text as reply, it will be processed as action
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| action | <code>string</code> | desired action |
-| data | <code>Object</code> | desired action data |
+- action <code>string</code> - desired action
+- data <code>Object</code> - desired action data
 
 {% raw %}<div id="Responder_toAbsoluteAction">&nbsp;</div>{% endraw %}
 
@@ -180,10 +174,9 @@ Converts relative action to absolute action path
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 **Returns**: <code>string</code> - absolute action path  
+**Params**
 
-| Param | Type | Description |
-| --- | --- | --- |
-| action | <code>string</code> | relative action to covert to absolute |
+- action <code>string</code> - relative action to covert to absolute
 
 {% raw %}<div id="Responder_image">&nbsp;</div>{% endraw %}
 
@@ -191,11 +184,10 @@ Converts relative action to absolute action path
 Sends image as response. Requires appUrl option to send images from server
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| imageUrl | <code>string</code> |  | relative or absolute url |
-| [reusable] | <code>boolean</code> | <code>false</code> | force facebook to cache image |
+- imageUrl <code>string</code> - relative or absolute url
+- [reusable] <code>boolean</code> <code> = false</code> - force facebook to cache image
 
 **Example**  
 ```javascript
@@ -211,11 +203,10 @@ res.image('https://google.com/img/foo.png');
 Sends video as response. Requires appUrl option to send videos from server
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| videoUrl | <code>string</code> |  | relative or absolute url |
-| [reusable] | <code>boolean</code> | <code>false</code> | force facebook to cache asset |
+- videoUrl <code>string</code> - relative or absolute url
+- [reusable] <code>boolean</code> <code> = false</code> - force facebook to cache asset
 
 **Example**  
 ```javascript
@@ -231,11 +222,10 @@ res.video('https://google.com/img/foo.mp4');
 Sends file as response. Requires appUrl option to send files from server
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| fileUrl | <code>string</code> |  | relative or absolute url |
-| [reusable] | <code>boolean</code> | <code>false</code> | force facebook to cache asset |
+- fileUrl <code>string</code> - relative or absolute url
+- [reusable] <code>boolean</code> <code> = false</code> - force facebook to cache asset
 
 **Example**  
 ```javascript
@@ -251,10 +241,9 @@ res.file('https://google.com/img/foo.pdf');
 Sets delay between two responses
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [ms] | <code>number</code> | <code>600</code> | 
+- [ms] <code>number</code> <code> = 600</code>
 
 {% raw %}<div id="Responder_typingOn">&nbsp;</div>{% endraw %}
 
@@ -280,11 +269,10 @@ Reports last message from user as seen
 Pass thread to another app
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| targetAppId | <code>string</code> |  | 
-| [data] | <code>string</code> \| <code>Object</code> | <code>null</code> | 
+- targetAppId <code>string</code>
+- [data] <code>string</code> | <code>Object</code> <code> = null</code>
 
 {% raw %}<div id="Responder_receipt">&nbsp;</div>{% endraw %}
 
@@ -292,13 +280,12 @@ Pass thread to another app
 Sends Receipt template
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| recipientName | <code>string</code> |  |  |
-| [paymentMethod] | <code>string</code> | <code>&quot;&#x27;Cash&#x27;&quot;</code> | should not contain more then 4 numbers |
-| [currency] | <code>string</code> | <code>&quot;&#x27;USD&#x27;&quot;</code> | sets right currency |
-| [uniqueCode] | <code>string</code> | <code>null</code> | when omitted, will be generated randomly |
+- recipientName <code>string</code>
+- [paymentMethod] <code>string</code> <code> = &quot;&#x27;Cash&#x27;&quot;</code> - should not contain more then 4 numbers
+- [currency] <code>string</code> <code> = &quot;&#x27;USD&#x27;&quot;</code> - sets right currency
+- [uniqueCode] <code>string</code> <code> = null</code> - when omitted, will be generated randomly
 
 **Example**  
 ```javascript
@@ -312,10 +299,9 @@ res.receipt('Name', 'Cash', 'CZK', '1')
 Sends nice button template. It can redirect user to server with token in url
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type |
-| --- | --- |
-| text | <code>string</code> | 
+- text <code>string</code>
 
 **Example**  
 ```javascript
@@ -331,11 +317,10 @@ res.button('Hello')
 Creates a generic template
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [shareable] | <code>boolean</code> | <code>false</code> | ability to share template |
-| [isSquare] | <code>boolean</code> | <code>false</code> | use square aspect ratio for images |
+- [shareable] <code>boolean</code> <code> = false</code> - ability to share template
+- [isSquare] <code>boolean</code> <code> = false</code> - use square aspect ratio for images
 
 **Example**  
 ```javascript
@@ -356,10 +341,9 @@ res.genericTemplate()
 Creates a generic template
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
 
-| Param | Type | Default |
-| --- | --- | --- |
-| [topElementStyle] | <code>&#x27;large&#x27;</code> \| <code>&#x27;compact&#x27;</code> | <code>&#x27;large&#x27;</code> | 
+- [topElementStyle] <code>&#x27;large&#x27;</code> | <code>&#x27;compact&#x27;</code> <code> = &#x27;large&#x27;</code>
 
 **Example**  
 ```javascript
