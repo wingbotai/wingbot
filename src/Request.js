@@ -9,15 +9,15 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
 
 /**
  * @typedef {Object} Intent
- * @param {string} intent
- * @param {number} score
- * @param {Object[]} [entities]
+ * @prop {string} intent
+ * @prop {number} score
+ * @prop {Object[]} [entities]
  */
 
 /**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
- * @class Request
+ * @class
  */
 class Request {
 
@@ -57,7 +57,7 @@ class Request {
         this.pageId = pageId;
 
         /**
-         * @prop {object} state current state of the conversation
+         * @prop {Object} state current state of the conversation
          */
         this.state = state;
 
@@ -91,8 +91,6 @@ class Request {
      * Checks, when message contains an attachment (file, image or location)
      *
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isAttachment () {
         return this.attachments.length > 0;
@@ -110,8 +108,6 @@ class Request {
      *
      * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isImage (attachmentIndex = 0) {
         return this._checkAttachmentType('image', attachmentIndex);
@@ -122,8 +118,6 @@ class Request {
      *
      * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isFile (attachmentIndex = 0) {
         return this._checkAttachmentType('file', attachmentIndex);
@@ -133,8 +127,6 @@ class Request {
      * Checks for location in attachments
      *
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     hasLocation () {
         return this.attachments.some(at => at.type === 'location');
@@ -181,8 +173,6 @@ class Request {
      *
      * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
      * @returns {Object|null}
-     *
-     * @memberOf Request
      */
     attachment (attachmentIndex = 0) {
         if (this.attachments.length <= attachmentIndex) {
@@ -196,8 +186,6 @@ class Request {
      *
      * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
      * @returns {string|null}
-     *
-     * @memberOf Request
      */
     attachmentUrl (attachmentIndex = 0) {
         if (this.attachments.length <= attachmentIndex) {
@@ -214,8 +202,6 @@ class Request {
      * Returns true, when the request is text message, quick reply or attachment
      *
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isMessage () {
         return this.message !== null;
@@ -225,8 +211,6 @@ class Request {
      * Check, that message is a quick reply
      *
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isQuickReply () {
         return this.message !== null && this.message.quick_reply;
@@ -251,8 +235,6 @@ class Request {
      *
      * @example
      * console.log(req.text(true)) // "can-you-help-me"
-     *
-     * @memberOf Request
      */
     text (tokenized = false) {
         if (this.message === null) {
@@ -270,8 +252,6 @@ class Request {
      * Returns the request expected handler in case have been set last response
      *
      * @returns {string|null}
-     *
-     * @memberOf Request
      */
     expected () {
         return this.state._expected || null;
@@ -287,8 +267,6 @@ class Request {
      * @example
      * typeof res.quickReply() === 'string' || res.quickReply() === null;
      * typeof res.quickReply(true) === 'object';
-     *
-     * @memberOf Request
      */
     quickReply (getData = false) {
         if (this.message === null
@@ -303,8 +281,6 @@ class Request {
      * Returns true, if request is the postback
      *
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isPostBack () {
         return this._postback !== null;
@@ -314,8 +290,6 @@ class Request {
      * Returns true, if request is the referral
      *
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isReferral () {
         return this._referral !== null;
@@ -325,8 +299,6 @@ class Request {
      * Returns true, if request pass thread control
      *
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isPassThread () {
         return this.data.target_app_id || this.data.pass_thread_control;
@@ -336,8 +308,6 @@ class Request {
      * Returns true, if request is the optin
      *
      * @returns {boolean}
-     *
-     * @memberOf Request
      */
     isOptin () {
         return this._optin !== null;
@@ -359,8 +329,6 @@ class Request {
      * @example
      * typeof res.action() === 'string' || res.action() === null;
      * typeof res.action(true) === 'object';
-     *
-     * @memberOf Request
      */
     action (getData = false) {
         let res = null;
@@ -423,8 +391,6 @@ class Request {
      * @example
      * typeof res.postBack() === 'string' || res.postBack() === null;
      * typeof res.postBack(true) === 'object';
-     *
-     * @memberOf Request
      */
     postBack (getData = false) {
         if (this._postback === null) {
@@ -642,5 +608,6 @@ Request.fileAttachment = function (senderId, url, type = 'file', timestamp = Req
         }
     };
 };
+
 
 module.exports = Request;

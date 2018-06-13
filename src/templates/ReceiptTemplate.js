@@ -9,8 +9,8 @@ const BaseTemplate = require('./BaseTemplate');
  * Provides fluent interface to make nice Receipts
  * Instance of button template is returned by {Responder}
  *
- * @class ReceiptTemplate
- * @extends {BaseTemplate}
+ * @class
+ * @extends BaseTemplate
  */
 class ReceiptTemplate extends BaseTemplate {
 

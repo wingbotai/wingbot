@@ -3,15 +3,24 @@
  */
 'use strict';
 
+/**
+ * @typedef {Object} TemplateContext
+ * @prop {string} [appUrl]
+ * @prop {string} [token]
+ * @prop {string} [senderId]
+ * @prop {Function} [translator]
+ */
+
+/**
+ * @class
+ */
 class BaseTemplate {
 
     /**
      * Creates an instance of BaseTemplate.
      *
      * @param {Function} onDone
-     * @param {{appUrl:string, token:string, senderId:string, translator:Function}} [context]
-     *
-     * @memberOf BaseTemplate
+     * @param {TemplateContext} [context]
      */
     constructor (onDone, context = {}) {
         this.onDone = onDone;

@@ -8,11 +8,9 @@ const ButtonTemplate = require('./ButtonTemplate');
 /**
  * Generic template utility
  *
- * @method urlButton
- * @method postBackButton
  *
- * @class ListTemplate
- * @extends {ButtonTemplate}
+ * @class
+ * @extends ButtonTemplate
  */
 class ListTemplate extends ButtonTemplate {
 
@@ -103,8 +101,7 @@ class ListTemplate extends ButtonTemplate {
      * @param {string} url - button url
      * @param {boolean} hasExtension - includes token in url
      * @param {string} [webviewHeight=null] - compact|tall|full
-     *
-     * @memberOf ListTemplate
+     * @returns {this}
      */
     setElementAction (url, hasExtension = false, webviewHeight = null) {
         Object.assign(this._element, {

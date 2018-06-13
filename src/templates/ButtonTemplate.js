@@ -10,8 +10,8 @@ const { makeAbsolute } = require('../utils');
  * Helps with creating of button template
  * Instance of button template is returned by {Responder}
  *
- * @class ButtonTemplate
- * @extends {BaseTemplate}
+ * @class
+ * @extends BaseTemplate
  */
 class ButtonTemplate extends BaseTemplate {
 

@@ -17,7 +17,7 @@ const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
 /**
  * Instance of responder is passed as second parameter of handler (res)
  *
- * @class Responder
+ * @class
  */
 class Responder {
 
@@ -31,7 +31,7 @@ class Responder {
          * and saved (with Object.assign) at the end of event processing
          * into the conversation state.
          *
-         * @prop {object}
+         * @prop {Object}
          */
         this.newState = {};
 
@@ -87,8 +87,6 @@ class Responder {
      * @param {string} messagingType
      * @param {string} [tag]
      * @returns {this}
-     *
-     * @memberOf Responder
      */
     setMessgingType (messagingType, tag = null) {
         this._messagingType = messagingType;
@@ -100,8 +98,6 @@ class Responder {
      * Returns true, when responder is not sending an update (notification) message
      *
      * @returns {boolean}
-     *
-     * @memberOf Responder
      */
     isResponseType () {
         return this._messagingType === TYPE_RESPONSE;
@@ -145,7 +141,7 @@ class Responder {
      * Send text as a response
      *
      * @param {string} text - text to send to user, can contain placeholders (%s)
-     * @param {Object.<string, string>|Object[]} [quickReplies]
+     * @param {...Object.<string, string>|Object[]} [quickReplies] - quick replies object
      * @returns {this}
      *
      * @example
@@ -165,10 +161,8 @@ class Responder {
      *         someData: 'Will be included in payload data' // optional
      *     }
      * ]);
-     *
-     * @memberOf Responder
      */
-    text (text, ...args) {
+    text (text, ...quickReplies) {
         const messageData = {
             recipient: {
                 id: this._senderId
@@ -179,17 +173,21 @@ class Responder {
         };
 
         let replies = null;
-        if (args.length > 0 && typeof args[args.length - 1] === 'object' && args[args.length - 1] !== null) {
-            replies = args.pop();
+
+        if (quickReplies.length > 0
+            && typeof quickReplies[quickReplies.length - 1] === 'object'
+            && quickReplies[quickReplies.length - 1] !== null) {
+
+            replies = quickReplies.pop();
         }
 
         const translatedText = this._t(text);
 
-        if (args.length > 0) {
+        if (quickReplies.length > 0) {
             messageData.message.text = util.format(
                 translatedText,
                 // filter undefined and null values
-                ...args.map(a => (a !== null && typeof a !== 'undefined' ? a : ''))
+                ...quickReplies.map(a => (a !== null && typeof a !== 'undefined' ? a : ''))
             );
         } else {
             messageData.message.text = translatedText;
@@ -197,12 +195,12 @@ class Responder {
 
         if (replies) {
 
-            const { quickReplies, expectedKeywords }
+            const { quickReplies: qrs, expectedKeywords }
                 = makeQuickReplies(replies || [], this.path, this._t, this._quickReplyCollector);
 
             this._quickReplyCollector = [];
 
-            messageData.message.quick_replies = quickReplies;
+            messageData.message.quick_replies = qrs;
             this.setState({ _expectedKeywords: expectedKeywords });
         }
 
@@ -220,8 +218,6 @@ class Responder {
      *
      * @example
      * res.setState({ visited: true });
-     *
-     * @memberOf Responder
      */
     setState (object) {
         Object.assign(this.newState, object);
@@ -265,8 +261,6 @@ class Responder {
      * @param {string} action - desired action
      * @param {Object} data - desired action data
      * @returns {this}
-     *
-     * @memberOf Responder
      */
     expected (action, data = {}) {
         if (!action) {
@@ -303,8 +297,6 @@ class Responder {
      *
      * // image at url
      * res.image('https://google.com/img/foo.png');
-     *
-     * @memberOf Responder
      */
     image (imageUrl, reusable = false) {
         this._attachment(imageUrl, 'image', reusable);
@@ -324,8 +316,6 @@ class Responder {
      *
      * // file at url
      * res.video('https://google.com/img/foo.mp4');
-     *
-     * @memberOf Responder
      */
     video (videoUrl, reusable = false) {
         this._attachment(videoUrl, 'video', reusable);
@@ -345,8 +335,6 @@ class Responder {
      *
      * // file at url
      * res.file('https://google.com/img/foo.pdf');
-     *
-     * @memberOf Responder
      */
     file (fileUrl, reusable = false) {
         this._attachment(fileUrl, 'file', reusable);
@@ -407,8 +395,6 @@ class Responder {
      *
      * @param {number} [ms=600]
      * @returns {this}
-     *
-     * @memberOf Responder
      */
     wait (ms = 600) {
         this._send({ wait: ms });
@@ -419,8 +405,6 @@ class Responder {
      * Sends "typing..." information
      *
      * @returns {this}
-     *
-     * @memberOf Responder
      */
     typingOn () {
         this._senderAction('typing_on');
@@ -431,8 +415,6 @@ class Responder {
      * Stops "typing..." information
      *
      * @returns {this}
-     *
-     * @memberOf Responder
      */
     typingOff () {
         this._senderAction('typing_off');
@@ -443,8 +425,6 @@ class Responder {
      * Reports last message from user as seen
      *
      * @returns {this}
-     *
-     * @memberOf Responder
      */
     seen () {
         this._senderAction('mark_seen');
@@ -487,8 +467,6 @@ class Responder {
      * res.receipt('Name', 'Cash', 'CZK', '1')
      *     .addElement('Element name', 1, 2, '/inside.png', 'text')
      *     .send();
-     *
-     * @memberOf Responder
      */
     receipt (recipientName, paymentMethod = 'Cash', currency = 'USD', uniqueCode = null) {
         return new ReceiptTemplate(
@@ -513,8 +491,6 @@ class Responder {
      *     .urlButton('Url button', '/internal', true) // opens webview with token
      *     .urlButton('Other button', 'https://goo.gl') // opens in internal browser
      *     .send();
-     *
-     * @memberOf Responder
      */
     button (text) {
         const btn = new ButtonTemplate(
@@ -544,7 +520,6 @@ class Responder {
      *
      * @returns {GenericTemplate}
      *
-     * @memberOf Responder
      */
     genericTemplate (shareable = false, isSquare = false) {
         return new GenericTemplate(
@@ -573,8 +548,6 @@ class Responder {
      *
      * @param {'large'|'compact'} [topElementStyle='large']
      * @returns {ListTemplate}
-     *
-     * @memberOf Responder
      */
     list (topElementStyle = 'large') {
         return new ListTemplate(

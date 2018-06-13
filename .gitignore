@@ -25,3 +25,4 @@ node_modules
 !/public/assets/img/minify/fb-share.jpg
 
 .nyc_output
+out

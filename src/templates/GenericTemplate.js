@@ -9,11 +9,8 @@ const { makeAbsolute } = require('../utils');
 /**
  * Generic template utility
  *
- * @method urlButton
- * @method postBackButton
- *
- * @class GenericTemplate
- * @extends {ButtonTemplate}
+ * @class
+ * @extends ButtonTemplate
  */
 class GenericTemplate extends ButtonTemplate {
 
