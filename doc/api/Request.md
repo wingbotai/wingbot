@@ -2,7 +2,8 @@
 
 <dl>
 <dt><a href="#Request">Request</a></dt>
-<dd></dd>
+<dd><p>Instance of {Request} class is passed as first parameter of handler (req)</p>
+</dd>
 </dl>
 
 ## Typedefs
@@ -15,10 +16,11 @@
 {% raw %}<div id="Request">&nbsp;</div>{% endraw %}
 
 ## Request
+Instance of {Request} class is passed as first parameter of handler (req)
+
 **Kind**: global class  
 
 * [Request](#Request)
-    * [new Request()](#new_Request_new)
     * [.timestamp](#Request_timestamp)
     * [.senderId](#Request_senderId)
     * [.recipientId](#Request_recipientId)
@@ -44,11 +46,6 @@
     * [.isOptin()](#Request_isOptin) ⇒ <code>boolean</code>
     * [.action([getData])](#Request_action) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
     * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
-
-{% raw %}<div id="new_Request_new">&nbsp;</div>{% endraw %}
-
-### new Request()
-Instance of {Request} class is passed as first parameter of handler (req)
 
 {% raw %}<div id="Request_timestamp">&nbsp;</div>{% endraw %}
 
@@ -98,7 +95,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| state | <code>object</code> | current state of the conversation |
+| state | <code>Object</code> | current state of the conversation |
 
 {% raw %}<div id="Request_intent">&nbsp;</div>{% endraw %}
 
@@ -310,9 +307,11 @@ typeof res.postBack(true) === 'object';
 
 ## Intent : <code>Object</code>
 **Kind**: global typedef  
-**Params**
+**Properties**
 
-- intent <code>string</code>
-- score <code>number</code>
-- [entities] <code>Array.&lt;Object&gt;</code>
+| Name | Type |
+| --- | --- |
+| intent | <code>string</code> | 
+| score | <code>number</code> | 
+| [entities] | <code>Array.&lt;Object&gt;</code> | 
 

@@ -2,30 +2,31 @@
 
 <dl>
 <dt><a href="#ButtonTemplate">ButtonTemplate</a> ⇐ <code>BaseTemplate</code></dt>
-<dd></dd>
+<dd><p>Helps with creating of button template
+Instance of button template is returned by {Responder}</p>
+</dd>
 <dt><a href="#GenericTemplate">GenericTemplate</a> ⇐ <code><a href="#ButtonTemplate">ButtonTemplate</a></code></dt>
-<dd></dd>
+<dd><p>Generic template utility</p>
+</dd>
 <dt><a href="#ReceiptTemplate">ReceiptTemplate</a> ⇐ <code>BaseTemplate</code></dt>
-<dd></dd>
+<dd><p>Provides fluent interface to make nice Receipts
+Instance of button template is returned by {Responder}</p>
+</dd>
 </dl>
 
 {% raw %}<div id="ButtonTemplate">&nbsp;</div>{% endraw %}
 
 ## ButtonTemplate ⇐ <code>BaseTemplate</code>
+Helps with creating of button template
+Instance of button template is returned by {Responder}
+
 **Kind**: global class  
 **Extends**: <code>BaseTemplate</code>  
 
 * [ButtonTemplate](#ButtonTemplate) ⇐ <code>BaseTemplate</code>
-    * [new ButtonTemplate()](#new_ButtonTemplate_new)
     * [.urlButton(title, linkUrl, hasExtension, [webviewHeight])](#ButtonTemplate_urlButton) ⇒ <code>this</code>
     * [.postBackButton(title, action, [data])](#ButtonTemplate_postBackButton) ⇒ <code>this</code>
     * [.shareButton()](#ButtonTemplate_shareButton) ⇒ <code>this</code>
-
-{% raw %}<div id="new_ButtonTemplate_new">&nbsp;</div>{% endraw %}
-
-### new ButtonTemplate()
-Helps with creating of button template
-Instance of button template is returned by {Responder}
 
 {% raw %}<div id="ButtonTemplate_urlButton">&nbsp;</div>{% endraw %}
 
@@ -60,11 +61,12 @@ Adds button, which makes another action
 {% raw %}<div id="GenericTemplate">&nbsp;</div>{% endraw %}
 
 ## GenericTemplate ⇐ [<code>ButtonTemplate</code>](#ButtonTemplate)
+Generic template utility
+
 **Kind**: global class  
 **Extends**: [<code>ButtonTemplate</code>](#ButtonTemplate)  
 
 * [GenericTemplate](#GenericTemplate) ⇐ [<code>ButtonTemplate</code>](#ButtonTemplate)
-    * [new GenericTemplate()](#new_GenericTemplate_new)
     * [.addElement(title, [subtitle], [dontTranslate])](#GenericTemplate_addElement) ⇒ <code>this</code>
     * [.setElementActionShare()](#GenericTemplate_setElementActionShare) ⇒ <code>this</code>
     * [.setElementActionPostback(action, [data])](#GenericTemplate_setElementActionPostback) ⇒ <code>this</code>
@@ -73,11 +75,6 @@ Adds button, which makes another action
     * [.urlButton(title, linkUrl, hasExtension, [webviewHeight])](#ButtonTemplate_urlButton) ⇒ <code>this</code>
     * [.postBackButton(title, action, [data])](#ButtonTemplate_postBackButton) ⇒ <code>this</code>
     * [.shareButton()](#ButtonTemplate_shareButton) ⇒ <code>this</code>
-
-{% raw %}<div id="new_GenericTemplate_new">&nbsp;</div>{% endraw %}
-
-### new GenericTemplate()
-Generic template utility
 
 {% raw %}<div id="GenericTemplate_addElement">&nbsp;</div>{% endraw %}
 
@@ -163,19 +160,11 @@ Adds button, which makes another action
 {% raw %}<div id="ReceiptTemplate">&nbsp;</div>{% endraw %}
 
 ## ReceiptTemplate ⇐ <code>BaseTemplate</code>
-**Kind**: global class  
-**Extends**: <code>BaseTemplate</code>  
-
-* [ReceiptTemplate](#ReceiptTemplate) ⇐ <code>BaseTemplate</code>
-    * [new ReceiptTemplate()](#new_ReceiptTemplate_new)
-    * [.addElement(title, [price], [quantity], [image], [subtitle])](#ReceiptTemplate_addElement) ⇒ <code>this</code>
-
-{% raw %}<div id="new_ReceiptTemplate_new">&nbsp;</div>{% endraw %}
-
-### new ReceiptTemplate()
 Provides fluent interface to make nice Receipts
 Instance of button template is returned by {Responder}
 
+**Kind**: global class  
+**Extends**: <code>BaseTemplate</code>  
 {% raw %}<div id="ReceiptTemplate_addElement">&nbsp;</div>{% endraw %}
 
 ### receiptTemplate.addElement(title, [price], [quantity], [image], [subtitle]) ⇒ <code>this</code>

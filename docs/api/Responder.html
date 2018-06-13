@@ -822,16 +822,16 @@
                                 <div id="Responder">&#xA0;</div>
 
 <h2 id="responder"><a name="responder" class="plugin-anchor" href="#responder"><i class="fa fa-link" aria-hidden="true"></i></a>Responder</h2>
+<p>Instance of responder is passed as second parameter of handler (res)</p>
 <p><strong>Kind</strong>: global class  </p>
 <ul>
 <li><a href="#Responder">Responder</a><ul>
-<li><a href="#new_Responder_new">new Responder()</a></li>
 <li><a href="#Responder_newState">.newState</a></li>
 <li><a href="#Responder_data">.data</a> : <code>Object</code></li>
 <li><a href="#Responder_setMessgingType">.setMessgingType(messagingType, [tag])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_isResponseType">.isResponseType()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Responder_setData">.setData(data)</a> &#x21D2; <code>this</code></li>
-<li><a href="#Responder_text">.text(text, [quickReplies])</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_text">.text(text, [...quickReplies])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_setState">.setState(object)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_addQuickReply">.addQuickReply(action, title, [data], [prepend])</a></li>
 <li><a href="#Responder_expected">.expected(action, data)</a> &#x21D2; <code>this</code></li>
@@ -851,10 +851,6 @@
 </ul>
 </li>
 </ul>
-<div id="new_Responder_new">&#xA0;</div>
-
-<h3 id="new-responder"><a name="new-responder" class="plugin-anchor" href="#new-responder"><i class="fa fa-link" aria-hidden="true"></i></a>new Responder()</h3>
-<p>Instance of responder is passed as second parameter of handler (res)</p>
 <div id="Responder_newState">&#xA0;</div>
 
 <h3 id="respondernewstate"><a name="respondernewstate" class="plugin-anchor" href="#respondernewstate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.newState</h3>
@@ -870,7 +866,7 @@ into the conversation state.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>object</code></td>
+<td><code>Object</code></td>
 </tr>
 </tbody>
 </table>
@@ -911,12 +907,12 @@ bot.use(<span class="hljs-string">&apos;bar&apos;</span>, (req, res) =&gt; {
 </code></pre>
 <div id="Responder_text">&#xA0;</div>
 
-<h3 id="respondertexttext-quickreplies-&#x21D2;-this"><a name="respondertexttext-quickreplies-&#x21D2;-this" class="plugin-anchor" href="#respondertexttext-quickreplies-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.text(text, [quickReplies]) &#x21D2; <code>this</code></h3>
+<h3 id="respondertexttext-quickreplies-&#x21D2;-this"><a name="respondertexttext-quickreplies-&#x21D2;-this" class="plugin-anchor" href="#respondertexttext-quickreplies-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.text(text, [...quickReplies]) &#x21D2; <code>this</code></h3>
 <p>Send text as a response</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>text <code>string</code> - text to send to user, can contain placeholders (%s)</li>
-<li>[quickReplies] <code>Object.&lt;string, string&gt;</code> | <code>Array.&lt;Object&gt;</code></li>
+<li>[...quickReplies] <code>...Object.&lt;string, string&gt;</code> | <code>Array.&lt;Object&gt;</code> - quick replies object</li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// simply</span>
@@ -1182,7 +1178,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-06-12T18:01:08.625Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-12T18:01:14.266Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-06-13T07:33:22.622Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-13T07:33:30.577Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

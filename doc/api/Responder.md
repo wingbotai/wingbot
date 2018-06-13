@@ -1,16 +1,17 @@
 {% raw %}<div id="Responder">&nbsp;</div>{% endraw %}
 
 ## Responder
+Instance of responder is passed as second parameter of handler (res)
+
 **Kind**: global class  
 
 * [Responder](#Responder)
-    * [new Responder()](#new_Responder_new)
     * [.newState](#Responder_newState)
     * [.data](#Responder_data) : <code>Object</code>
     * [.setMessgingType(messagingType, [tag])](#Responder_setMessgingType) ⇒ <code>this</code>
     * [.isResponseType()](#Responder_isResponseType) ⇒ <code>boolean</code>
     * [.setData(data)](#Responder_setData) ⇒ <code>this</code>
-    * [.text(text, [quickReplies])](#Responder_text) ⇒ <code>this</code>
+    * [.text(text, [...quickReplies])](#Responder_text) ⇒ <code>this</code>
     * [.setState(object)](#Responder_setState) ⇒ <code>this</code>
     * [.addQuickReply(action, title, [data], [prepend])](#Responder_addQuickReply)
     * [.expected(action, data)](#Responder_expected) ⇒ <code>this</code>
@@ -28,11 +29,6 @@
     * [.genericTemplate([shareable], [isSquare])](#Responder_genericTemplate) ⇒ <code>GenericTemplate</code>
     * [.list([topElementStyle])](#Responder_list) ⇒ <code>ListTemplate</code>
 
-{% raw %}<div id="new_Responder_new">&nbsp;</div>{% endraw %}
-
-### new Responder()
-Instance of responder is passed as second parameter of handler (res)
-
 {% raw %}<div id="Responder_newState">&nbsp;</div>{% endraw %}
 
 ### responder.newState
@@ -45,7 +41,7 @@ into the conversation state.
 
 | Type |
 | --- |
-| <code>object</code> | 
+| <code>Object</code> | 
 
 {% raw %}<div id="Responder_data">&nbsp;</div>{% endraw %}
 
@@ -89,14 +85,14 @@ bot.use('bar', (req, res) => {
 ```
 {% raw %}<div id="Responder_text">&nbsp;</div>{% endraw %}
 
-### responder.text(text, [quickReplies]) ⇒ <code>this</code>
+### responder.text(text, [...quickReplies]) ⇒ <code>this</code>
 Send text as a response
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 **Params**
 
 - text <code>string</code> - text to send to user, can contain placeholders (%s)
-- [quickReplies] <code>Object.&lt;string, string&gt;</code> | <code>Array.&lt;Object&gt;</code>
+- [...quickReplies] <code>...Object.&lt;string, string&gt;</code> | <code>Array.&lt;Object&gt;</code> - quick replies object
 
 **Example**  
 ```javascript
