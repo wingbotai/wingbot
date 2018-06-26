@@ -227,7 +227,12 @@ class Processor {
         return postbackAcumulator.reduce((promise, postback) => promise
             .then(() => postback)
             .then(({ action, data = {} }) => {
-                const request = Request.postBack(senderId, action, data);
+                let request;
+                if (typeof action === 'object') {
+                    request = action;
+                } else {
+                    request = Request.postBack(senderId, action, data);
+                }
                 return this._processMessage(request, pageId, messageSender, responderData);
             }), Promise.resolve());
     }

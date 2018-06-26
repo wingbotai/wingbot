@@ -245,8 +245,8 @@ describe('Processor', function () {
 
             const reducer = sinon.spy((req, res, postBack) => {
                 if (!req.action()) {
-                    const action = new Promise(r => setTimeout(() => r('actionName'), 50));
-                    postBack(action);
+                    const data = new Promise(r => setTimeout(() => r({ some: 1 }), 50));
+                    postBack('actionName', data);
                 }
             });
 
@@ -312,6 +312,32 @@ describe('Processor', function () {
 
                     assert(actionSpy.calledOnce);
                 });
+        });
+
+        it('makes requests as postback', async () => {
+            const bot = new Router();
+
+            bot.use('start', (req, res, postBack) => {
+                postBack({
+                    timestamp: Date.now(),
+                    sender: {
+                        id: req.senderId
+                    },
+                    message: {
+                        text: 'hello'
+                    }
+                });
+            });
+
+            bot.use((req, res) => {
+                res.text(`result is ${req.text()}`);
+            });
+
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            t.res(0).contains('result is hello');
         });
 
         it('makes async postbacks', async () => {

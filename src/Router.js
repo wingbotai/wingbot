@@ -191,6 +191,10 @@ class Router extends ReducerWrapper {
 
     _relativePostBack (origPostBack, path) {
         return function postBack (action, data = {}) {
+            if (typeof action === 'object') {
+                return origPostBack(action, data);
+            }
+
             return origPostBack(makeAbsolute(action, path), data);
         };
     }
