@@ -193,7 +193,7 @@ class Responder {
             messageData.message.text = translatedText;
         }
 
-        if (replies) {
+        if (replies || this._quickReplyCollector.length !== 0) {
 
             const { quickReplies: qrs, expectedKeywords }
                 = makeQuickReplies(replies || [], this.path, this._t, this._quickReplyCollector);

@@ -319,7 +319,7 @@ describe('Processor', function () {
 
             bot.use('start', (req, res, postBack) => {
                 postBack({
-                    timestamp: Date.now(),
+                    timestamp: Date.now() + 1,
                     sender: {
                         id: req.senderId
                     },
