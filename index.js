@@ -6,6 +6,7 @@
 const Processor = require('./src/Processor');
 const Router = require('./src/Router');
 const Request = require('./src/Request');
+const Responder = require('./src/Responder');
 const ReducerWrapper = require('./src/ReducerWrapper');
 const Tester = require('./src/Tester');
 const Ai = require('./src/Ai');
@@ -30,6 +31,7 @@ module.exports = {
     Processor,
     Router,
     Request,
+    Responder,
     ReducerWrapper,
 
     // utilities
