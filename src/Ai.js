@@ -156,7 +156,8 @@ class Ai {
         const intents = Array.isArray(intent) ? intent : [intent];
 
         return async (req) => {
-            if (!req.isText()) {
+            if (!req.isText()
+                || (req._actionByExpectedKeywords && req._actionByExpectedKeywords())) {
                 return Router.BREAK;
             }
 

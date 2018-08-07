@@ -360,14 +360,7 @@ class Request {
         }
 
         if (!res && this.state._expectedKeywords) {
-            const payload = quickReplyAction(
-                this.state._expectedKeywords,
-                this.text(true),
-                this.text()
-            );
-            if (payload) {
-                res = this._processPayload(payload, getData);
-            }
+            res = this._actionByExpectedKeywords(getData);
         }
 
         if (!res && this.state._expected) {
@@ -379,6 +372,23 @@ class Request {
         }
 
         return res || null;
+    }
+
+    _actionByExpectedKeywords (getData = false) {
+        let res = null;
+
+        if (!res && this.state._expectedKeywords) {
+            const payload = quickReplyAction(
+                this.state._expectedKeywords,
+                this.text(true),
+                this.text()
+            );
+            if (payload) {
+                res = this._processPayload(payload, getData);
+            }
+        }
+
+        return res;
     }
 
     /**
