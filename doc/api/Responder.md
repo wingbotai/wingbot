@@ -24,6 +24,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.typingOff()](#Responder_typingOff) ⇒ <code>this</code>
     * [.seen()](#Responder_seen) ⇒ <code>this</code>
     * [.passThread(targetAppId, [data])](#Responder_passThread) ⇒ <code>this</code>
+    * [.takeThead([data])](#Responder_takeThead) ⇒ <code>this</code>
     * [.receipt(recipientName, [paymentMethod], [currency], [uniqueCode])](#Responder_receipt) ⇒ <code>ReceiptTemplate</code>
     * [.button(text)](#Responder_button) ⇒ <code>ButtonTemplate</code>
     * [.genericTemplate([shareable], [isSquare])](#Responder_genericTemplate) ⇒ <code>GenericTemplate</code>
@@ -268,6 +269,16 @@ Pass thread to another app
 **Params**
 
 - targetAppId <code>string</code>
+- [data] <code>string</code> | <code>Object</code> <code> = null</code>
+
+{% raw %}<div id="Responder_takeThead">&nbsp;</div>{% endraw %}
+
+### responder.takeThead([data]) ⇒ <code>this</code>
+Take thread from another app
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
 - [data] <code>string</code> | <code>Object</code> <code> = null</code>
 
 {% raw %}<div id="Responder_receipt">&nbsp;</div>{% endraw %}
