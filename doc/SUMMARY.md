@@ -2,6 +2,7 @@
 
 ## Building a chatbot with designer
 
+* [Getting Started](README.md)
 * [Deploying a bot application](designerBot/deployingBot.md)
     * [Principle](designerBot/deployingBot.md#principle)
     * [Starting a new project](designerBot/deployingBot.md#starting-a-new-chatbot-project)
@@ -11,11 +12,12 @@
     * [Conversation state and data](designerBot/scripting.md#conversation-state-and-data)
     * [Using data in designer](designerBot/scripting.md#using-data-in-designer)
     * [Loading data from APIs](designerBot/scripting.md#loading-data-from-apis)
+* [Testing](tutorial/testing.md)
+* [Analytics](tutorial/analytics.md)
 
-## Chatbots withot designer
+## Understanding the core
 
-* [Getting Started](README.md)
-* [Building a Conversation](tutorial/buildingConversation.md)
+* [Building a Bot programmatically](tutorial/buildingConversation.md)
     * [Asking a question](tutorial/buildingConversation.md#asking-a-question)
     * [Using quick replies](tutorial/buildingConversation.md#using-quick-replies-for-controlling-conversation)
     * [Postbacks](tutorial/buildingConversation.md#post-back-is-also-an-action)
@@ -39,8 +41,6 @@
     * [Generic Template](tutorial/templates.md#generic-template)
     * [Receipt Template](tutorial/templates.md#receipt-template)
     * [Webviews](tutorial/templates.md#working-with-webviews)
-* [Testing](tutorial/testing.md)
-* [Analytics](tutorial/analytics.md)
 
 ## API
 

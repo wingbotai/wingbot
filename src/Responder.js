@@ -363,10 +363,7 @@ class Responder {
             }
         };
 
-        let autoTyping = null;
-        if (`${url}`.match(/\.gif$/i)) {
-            autoTyping = false;
-        }
+        const autoTyping = reusable ? null : false;
         this._autoTypingIfEnabled(autoTyping);
         this._send(messageData);
         return this;
@@ -449,6 +446,29 @@ class Responder {
             },
             target_app_id: targetAppId,
             metadata
+        };
+        this._send(messageData);
+        return this;
+    }
+
+    /**
+     * Take thread from another app
+     *
+     * @param {string|Object} [data]
+     * @returns {this}
+     */
+    takeThead (data = null) {
+        let metadata = data;
+        if (data !== null && typeof data !== 'string') {
+            metadata = JSON.stringify(data);
+        }
+        const messageData = {
+            recipient: {
+                id: this._senderId
+            },
+            take_thread_control: {
+                metadata
+            }
         };
         this._send(messageData);
         return this;

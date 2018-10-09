@@ -475,4 +475,86 @@ describe('Responder', function () {
 
     });
 
+    describe('#passThread()', function () {
+
+        it('creates pass thread event', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.passThread('123');
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
+                metadata: null
+            });
+        });
+
+        it('creates pass thread event with metadata', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.passThread('123', { a: 1 });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
+                metadata: '{"a":1}'
+            });
+        });
+
+    });
+
+    describe('#takeThread()', function () {
+
+        it('creates take thread event', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.takeThead('random');
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                take_thread_control: {
+                    metadata: 'random'
+                }
+            });
+        });
+
+        it('creates take thread event with metadata', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.takeThead({ a: 1 });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                take_thread_control: {
+                    metadata: '{"a":1}'
+                }
+            });
+        });
+
+    });
+
 });

@@ -1,13 +1,13 @@
 {
   "name": "wingbot",
-  "version": "1.2.2-alpha.1",
+  "version": "1.3.0",
   "description": "Facebook Messenger Chatbot Framework",
   "main": "index.js",
   "scripts": {
     "doc": "node ./bin/makeApiDoc.js && gitbook install ./doc && gitbook build ./doc && rm -rf ./docs && mv ./doc/_book ./docs",
     "test": "npm run test:lint && npm run test:coverage && npm run test:coverage:threshold",
     "test:coverage": "nyc --reporter=html mocha --opts ./mocha.opts ./test && nyc report",
-    "test:coverage:threshold": "nyc check-coverage --lines 80 --functions 80 --branches 74",
+    "test:coverage:threshold": "nyc check-coverage --lines 85 --functions 85 --branches 76",
     "test:backend": "mocha --opts ./mocha.opts ./test ./src",
     "test:lint": "eslint --ext .js src test *.js"
   },
@@ -43,10 +43,10 @@
     "gitbook-cli": "^2.3.2",
     "handlebars": "^4.0.11",
     "jsdoc-to-markdown": "^4.0.1",
-    "mocha": "^5.1.0",
-    "nyc": "^11.6.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
     "po2json": "^0.4.5",
-    "sinon": "^4.5.0"
+    "sinon": "^6.3.5"
   },
   "dependencies": {
     "path-to-regexp": "^2.2.0",
