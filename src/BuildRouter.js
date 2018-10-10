@@ -253,6 +253,9 @@ class BuildRouter extends Router {
         this._buildRoutes(block.routes);
 
         this._configTs = setConfigTimestamp;
+
+        // this event should not be propagated to the parent
+        this.emit('rebuild');
     }
 
     _setExpectedFromResponderRoutes (routes) {
