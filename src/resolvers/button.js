@@ -7,23 +7,42 @@ const Router = require('../Router');
 const {
     stateData,
     cachedTranslatedCompilator,
-    processButtons
+    processButtons,
+    customFn
 } = require('./utils');
-
-function end (isLastIndex) {
-    return isLastIndex ? Router.END : Router.CONTINUE;
-}
 
 function button ({
     buttons = [],
-    text = null
+    text = null,
+    hasCondition,
+    conditionFn
 }, { isLastIndex, linksMap, linksTranslator }) {
 
     const compiledText = cachedTranslatedCompilator(text);
 
-    return (req, res) => {
+    let condition = null;
+
+    if (hasCondition) {
+        condition = customFn(conditionFn);
+    }
+
+    const ret = isLastIndex ? Router.END : Router.CONTINUE;
+
+    return async (req, res) => {
         if (buttons.length === 0) {
-            return end(isLastIndex);
+            return ret;
+        }
+
+        if (condition !== null) {
+            let condRes = condition(req, res);
+
+            if (condRes instanceof Promise) {
+                condRes = await condRes;
+            }
+
+            if (!condRes) {
+                return ret;
+            }
         }
 
         const state = stateData(req, res);
@@ -33,7 +52,7 @@ function button ({
 
         tpl.send();
 
-        return end(isLastIndex);
+        return ret;
     };
 }
 

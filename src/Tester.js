@@ -250,7 +250,7 @@ class Tester {
 
             const res = quickReplys
                 .map(reply => parseActionPayload(reply))
-                .filter(({ action: route }) => actionMatches(route, action));
+                .filter(({ action: route }) => route && actionMatches(route, action));
 
             if (res[0]) {
                 usedAction = res[0].action;

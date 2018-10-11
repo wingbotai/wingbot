@@ -103,7 +103,9 @@ describe('<BuildRouter>', async () => {
         t.passedAction('start');
 
         t.any()
-            .contains('To je poprvé');
+            .contains('To je poprvé')
+            .contains('This is fallback response')
+            .contains('Správná odpověď');
 
     });
 

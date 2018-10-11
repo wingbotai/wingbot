@@ -10,6 +10,18 @@ const {
 
 function parseReplies (replies, linksMap) {
     return replies.map((reply) => {
+
+        const condition = reply.hasCondition
+            ? eval(reply.conditionFn) // eslint-disable-line no-eval
+            : () => true;
+
+        if (reply.isLocation) {
+            return {
+                isLocation: true,
+                condition
+            };
+        }
+
         let { action } = reply;
 
         const replyData = Object.assign({}, reply);
@@ -24,10 +36,6 @@ function parseReplies (replies, linksMap) {
                 action = './';
             }
         }
-
-        const condition = reply.hasCondition
-            ? eval(reply.conditionFn) // eslint-disable-line no-eval
-            : () => true;
 
         return Object.assign(replyData, {
             action,

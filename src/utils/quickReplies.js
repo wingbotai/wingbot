@@ -69,6 +69,13 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
             const {
                 title, action, match, isLocation = false
             } = reply;
+
+            if (isLocation) {
+                return {
+                    content_type: 'location'
+                };
+            }
+
             const absoluteAction = makeAbsolute(action, path);
 
             let payload = absoluteAction;
@@ -91,7 +98,7 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
             expectedKeywords.push(expect);
 
             return {
-                content_type: isLocation ? 'location' : 'text',
+                content_type: 'text',
                 title: translatedTitle,
                 payload
             };

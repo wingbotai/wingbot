@@ -51,6 +51,16 @@ function isArrayOfObjects (translations) {
         && translations[0] !== null;
 }
 
+function isTextObjectEmpty (text) {
+    if (!text || !text.t) {
+        return true;
+    }
+    if (Array.isArray(text.t)) {
+        return !text.t.some(t => !!t);
+    }
+    return false;
+}
+
 /**
  *
  * @param {{t:string,l:string}[]|string} translations
@@ -63,12 +73,19 @@ function getLanguageText (translations, lang = null) {
         if (lang) {
             foundText = translations.find(t => t.l === lang);
         }
-        if (!foundText) {
-            [foundText] = translations;
+        if (isTextObjectEmpty(foundText)) {
+            foundText = translations.find(t => !isTextObjectEmpty(t));
         }
         foundText = foundText ? foundText.t : null;
     } else {
         foundText = translations;
+    }
+    if (Array.isArray(foundText)) {
+        foundText = foundText.filter(f => !!f);
+
+        if (foundText.length === 0) {
+            return '';
+        }
     }
     return foundText || '';
 }
@@ -78,6 +95,9 @@ function randomizedCompiler (text, lang) {
 
     if (!Array.isArray(texts)) {
         return hbs.compile(texts);
+    }
+    if (texts.length === 1) {
+        return hbs.compile(texts[0]);
     }
 
     return (...args) => {
