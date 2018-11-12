@@ -1,10 +1,11 @@
 {
   "name": "wingbot",
-  "version": "2.0.0-alpha.12",
+  "version": "2.0.0",
   "description": "Facebook Messenger Chatbot Framework",
   "main": "index.js",
   "scripts": {
-    "doc": "node ./bin/makeApiDoc.js && gitbook install ./doc && gitbook build ./doc && rm -rf ./docs && mv ./doc/_book ./docs",
+    "doc:gql": "graphql-markdown ./src/graphApi/schema.gql > doc/api/graphqlSchema.md",
+    "doc": "npm run doc:gql && node ./bin/makeApiDoc.js && gitbook install ./doc && gitbook build ./doc && rm -rf ./docs && mv ./doc/_book ./docs",
     "test": "npm run test:lint && npm run test:coverage && npm run test:coverage:threshold",
     "test:coverage": "nyc --reporter=html mocha --opts ./mocha.opts ./test && nyc report",
     "test:coverage:threshold": "nyc check-coverage --lines 85 --functions 85 --branches 76",
@@ -41,6 +42,7 @@
     "eslint-plugin-mocha": "^5.0.0",
     "eslint-plugin-react": "^7.7.0",
     "gitbook-cli": "^2.3.2",
+    "graphql-markdown": "^5.0.1",
     "handlebars": "^4.0.11",
     "jsdoc-to-markdown": "^4.0.1",
     "mocha": "^5.2.0",

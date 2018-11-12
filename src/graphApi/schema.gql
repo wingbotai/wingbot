@@ -132,6 +132,7 @@ type Query {
         lastKey: String
     ): Subscribtions
 
+    "get a campaign by ID"
     campaign (
         campaignId: String!
     ): Campaign
@@ -148,11 +149,24 @@ type Query {
 }
 
 type Mutation {
+    "validate conversation data"
     validateBot(bot:Any!): ValidationResult
+
+    "invalidate a conversation cache in the chatbot"
     updateBot: Boolean
+
+    "send a message to any user"
     postBack(pageId:String!,senderId:String!,action:String!,data:Any): PostBackResult
+
+    "create a new campaign"
     createCampaign(campaign: CreateCampaignInput!): Campaign
+
+    "update a campaign"
     updateCampaign(campaignId: String!, update: UpdateCampaignInput!): Campaign
+
+    "remove a campaign"
     removeCampaign(campaignId: String!): Boolean
+
+    "run a campaign"
     runCampaign(campaignId: String!): QueuingResult
 }

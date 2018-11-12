@@ -11,6 +11,8 @@
 <dl>
 <dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="Request">&nbsp;</div>{% endraw %}
@@ -26,6 +28,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.recipientId](#Request_recipientId)
     * [.pageId](#Request_pageId)
     * [.state](#Request_state)
+    * [.subscribtions](#Request_subscribtions)
     * [.intent(getDataOrScore)](#Request_intent) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
     * [.isImage([attachmentIndex])](#Request_isImage) ⇒ <code>boolean</code>
@@ -96,6 +99,16 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | Name | Type | Description |
 | --- | --- | --- |
 | state | <code>Object</code> | current state of the conversation |
+
+{% raw %}<div id="Request_subscribtions">&nbsp;</div>{% endraw %}
+
+### request.subscribtions
+**Kind**: instance property of [<code>Request</code>](#Request)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| state | [<code>Array.&lt;Subscribtion&gt;</code>](#Subscribtion) | current state of the conversation |
 
 {% raw %}<div id="Request_intent">&nbsp;</div>{% endraw %}
 
@@ -314,4 +327,15 @@ typeof res.postBack(true) === 'object';
 | intent | <code>string</code> | 
 | score | <code>number</code> | 
 | [entities] | <code>Array.&lt;Object&gt;</code> | 
+
+{% raw %}<div id="Subscribtion">&nbsp;</div>{% endraw %}
+
+## Subscribtion : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| tag | <code>string</code> | 
+| ts | <code>number</code> | 
 

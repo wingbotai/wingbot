@@ -4,14 +4,26 @@
 'use strict';
 
 /**
- * If API call is authorized
+ * If API call is authorized - use for own implementations of API endpoints
  *
  * @param {Object} args - gql request
  * @param {{groups:string[],token:Object}} ctx - request context
  * @param {string[]|null|Function} acl - custom acl settings
  * @returns {boolean}
+ * @example
+ * const { apiAuthorizer } = require('wingbot');
+ *
+ * function createApi (acl = null) {
+ *     return {
+ *          gqlEndpoint (args, ctx) {
+ *              if (!apiAuthorizer(args, ctx, acl)) {
+ *                  return null;
+ *              }
+ *          }
+ *     }
+ * }
  */
-function isAuthorized (args, ctx, acl) {
+function apiAuthorizer (args, ctx, acl) {
     const { token = {}, groups } = ctx;
     const { groups: tokenGroups = [] } = token;
 
@@ -27,4 +39,4 @@ function isAuthorized (args, ctx, acl) {
     return tokenGroups.some(g => check.includes(g.group));
 }
 
-module.exports = isAuthorized;
+module.exports = apiAuthorizer;

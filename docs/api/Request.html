@@ -263,6 +263,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.6" data-path="../tutorial/chatbotApi.html">
+            
+                <a href="../tutorial/chatbotApi.html">
+            
+                    
+                    Chatbot API
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -774,6 +787,45 @@
             
         </li>
     
+        <li class="chapter " data-level="3.9" data-path="Notifications.html">
+            
+                <a href="Notifications.html">
+            
+                    
+                    Notifications
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.10" data-path="GraphApi.html">
+            
+                <a href="GraphApi.html">
+            
+                    
+                    GraphApi
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.11" data-path="graphqlSchema.html">
+            
+                <a href="graphqlSchema.html">
+            
+                    
+                    Chatbot API GraphQL schema
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -830,6 +882,8 @@
 <dl>
 <dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 <div id="Request">&#xA0;</div>
@@ -844,6 +898,7 @@
 <li><a href="#Request_recipientId">.recipientId</a></li>
 <li><a href="#Request_pageId">.pageId</a></li>
 <li><a href="#Request_state">.state</a></li>
+<li><a href="#Request_subscribtions">.subscribtions</a></li>
 <li><a href="#Request_intent">.intent(getDataOrScore)</a> &#x21D2; <code>null</code> | <code>string</code> | <a href="#Intent"><code>Intent</code></a></li>
 <li><a href="#Request_isAttachment">.isAttachment()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isImage">.isImage([attachmentIndex])</a> &#x21D2; <code>boolean</code></li>
@@ -960,6 +1015,26 @@
 <tr>
 <td>state</td>
 <td><code>Object</code></td>
+<td>current state of the conversation</td>
+</tr>
+</tbody>
+</table>
+<div id="Request_subscribtions">&#xA0;</div>
+
+<h3 id="requestsubscribtions"><a name="requestsubscribtions" class="plugin-anchor" href="#requestsubscribtions"><i class="fa fa-link" aria-hidden="true"></i></a>request.subscribtions</h3>
+<p><strong>Kind</strong>: instance property of <a href="#Request"><code>Request</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>state</td>
+<td><a href="#Subscribtion"><code>Array.&lt;Subscribtion&gt;</code></a></td>
 <td>current state of the conversation</td>
 </tr>
 </tbody>
@@ -1162,6 +1237,28 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </tr>
 </tbody>
 </table>
+<div id="Subscribtion">&#xA0;</div>
+
+<h2 id="subscribtion--object"><a name="subscribtion--object" class="plugin-anchor" href="#subscribtion--object"><i class="fa fa-link" aria-hidden="true"></i></a>Subscribtion : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tag</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>ts</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1205,7 +1302,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Webviews","level":"2.6.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2018-10-09T16:53:57.413Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-10-09T16:54:08.082Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Webviews","level":"2.6.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2018-11-12T14:08:20.001Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

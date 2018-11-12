@@ -16,7 +16,9 @@ const Plugins = require('../../src/Plugins');
 // @ts-ignore
 const simpleTestbot = require('../simple-testbot.json');
 
-describe('<GraphApi>', () => {
+describe('<GraphApi>', function () {
+
+    this.timeout(10000);
 
     /** @type {GraphApi} */
     let api;

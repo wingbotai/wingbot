@@ -17,6 +17,8 @@
 * [Tester](#Tester)
     * [new Tester()](#new_Tester_new)
     * _instance_
+        * [.cleanup()](#Tester_cleanup)
+        * [.processMessage(message, senderId, pageId)](#Tester_processMessage) ⇒ <code>Promise.&lt;any&gt;</code>
         * [.res([index])](#Tester_res) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
         * [.any()](#Tester_any) ⇒ [<code>AnyResponseAssert</code>](#AnyResponseAssert)
         * [.lastRes()](#Tester_lastRes) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
@@ -37,6 +39,24 @@
 
 ### new Tester()
 Utility for testing requests
+
+{% raw %}<div id="Tester_cleanup">&nbsp;</div>{% endraw %}
+
+### tester.cleanup()
+Clear acquired responses and data
+
+**Kind**: instance method of [<code>Tester</code>](#Tester)  
+{% raw %}<div id="Tester_processMessage">&nbsp;</div>{% endraw %}
+
+### tester.processMessage(message, senderId, pageId) ⇒ <code>Promise.&lt;any&gt;</code>
+Use tester as a connector :)
+
+**Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
+
+- message <code>Object</code> - wingbot chat event
+- senderId <code>string</code> - chat event sender identifier
+- pageId <code>string</code> - channel/page identifier
 
 {% raw %}<div id="Tester_res">&nbsp;</div>{% endraw %}
 

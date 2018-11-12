@@ -14,6 +14,12 @@ const KEYS_URL = 'https://api.wingbot.ai/keys';
 const DEFAULT_CACHE = 5 * 86400000;
 
 /**
+ * @typedef {Object} GraphQlResponse
+ * @param {*} [data]
+ * @param {Object[]} [errors]
+ */
+
+/**
  * Experimental chatbot API
  */
 class GraphApi {
@@ -64,7 +70,7 @@ class GraphApi {
      * @param {string} [body.operationName]
      * @param {Object} headers
      * @param {string} [headers.Authorization]
-     * @returns {Promise<{data:any?,error:any?}>}
+     * @returns {Promise<GraphQlResponse>}
      */
     async request (body, headers) {
         assert.ok(body && typeof body === 'object', 'GraphQL request should be an object with a request property');

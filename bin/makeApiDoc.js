@@ -15,7 +15,7 @@ const docs = [
     ['src/Ai.js', 'src/wingbot/WingbotModel.js', 'src/wingbot/CachedModel.js'],
     ['src/BuildRouter.js', 'src/Plugins.js'],
     ['src/notifications/Notifications.js', 'src/notifications/NotificationsStorage.js'],
-    'src/graphApi/GraphApi.js'
+    ['src/graphApi/GraphApi.js', 'src/graphApi/postBackApi.js', 'src/graphApi/validateBotApi.js', 'src/graphApi/apiAuthorizer.js']
 ];
 
 let srcFile;
@@ -25,7 +25,7 @@ let apiDoc;
 
 docs.forEach((doc) => {
     if (Array.isArray(doc)) {
-        srcFile = doc[0];
+        [srcFile] = doc;
         files = doc;
     } else {
         srcFile = doc;
@@ -34,15 +34,22 @@ docs.forEach((doc) => {
 
     docFile = path.join(process.cwd(), 'doc', 'api', srcFile
         .replace(/jsx?$/, 'md')
-        .replace(/^src\/(templates\/|mongodb\/|tools\/|middlewares\/)?/, ''));
+        .replace(/^src\/(templates\/|mongodb\/|tools\/|middlewares\/|notifications\/|graphApi\/)?/, ''));
 
     apiDoc = jsdoc2md.renderSync({
         'example-lang': 'javascript',
         'param-list-format': 'list',
         files
-    }).replace(/<a\sname="([^"]+)"><\/a>/g, (a, r) => `{% raw %}<div id="${r.replace(/[+.]/g, '_')}">&nbsp;</div>{% endraw %}`)
+    })
+        .replace(/<a\sname="([^"]+)"><\/a>/g, (a, r) => `{% raw %}<div id="${r.replace(/[+.]/g, '_')}">&nbsp;</div>{% endraw %}`)
         .replace(/<a\shref="#([^"]+)">/g, (a, r) => `<a href="#${r.replace(/[+.]/g, '_')}">`)
         .replace(/]\(#([a-z+0-9_.]+)\)/ig, (a, r) => `](#${r.replace(/[+.]/g, '_')})`);
 
     fs.writeFileSync(docFile, apiDoc);
 });
+
+const file = path.resolve(process.cwd(), 'doc', 'api', 'graphqlSchema.md');
+let data = fs.readFileSync(file, { encoding: 'utf8' });
+data = data.replace(/<\/?details>/g, '');
+fs.writeFileSync(file, data);
+

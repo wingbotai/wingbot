@@ -1,0 +1,1757 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Chatbot API GraphQL schema · Wingbot</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="wingbot.ai">
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-anchors/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="GraphApi.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">Building a chatbot with designer</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../designerBot/deployingBot.html">
+            
+                <a href="../designerBot/deployingBot.html">
+            
+                    
+                    Deploying a bot application
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../designerBot/deployingBot.html">
+            
+                <a href="../designerBot/deployingBot.html#principle">
+            
+                    
+                    Principle
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../designerBot/deployingBot.html">
+            
+                <a href="../designerBot/deployingBot.html#starting-a-new-chatbot-project">
+            
+                    
+                    Starting a new project
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../designerBot/deployingBot.html">
+            
+                <a href="../designerBot/deployingBot.html#wingbot-project-structure">
+            
+                    
+                    Wingbot project structure
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../designerBot/scripting.html">
+            
+                <a href="../designerBot/scripting.html">
+            
+                    
+                    Scripting: Snippets and conditions
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../designerBot/scripting.html">
+            
+                <a href="../designerBot/scripting.html#snippet-concept">
+            
+                    
+                    Snippet concept
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../designerBot/scripting.html">
+            
+                <a href="../designerBot/scripting.html#conversation-state-and-data">
+            
+                    
+                    Conversation state and data
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../designerBot/scripting.html">
+            
+                <a href="../designerBot/scripting.html#using-data-in-designer">
+            
+                    
+                    Using data in designer
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../designerBot/scripting.html">
+            
+                <a href="../designerBot/scripting.html#loading-data-from-apis">
+            
+                    
+                    Loading data from APIs
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../tutorial/testing.html">
+            
+                <a href="../tutorial/testing.html">
+            
+                    
+                    Testing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../tutorial/analytics.html">
+            
+                <a href="../tutorial/analytics.html">
+            
+                    
+                    Analytics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../tutorial/chatbotApi.html">
+            
+                <a href="../tutorial/chatbotApi.html">
+            
+                    
+                    Chatbot API
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Understanding the core</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../tutorial/buildingConversation.html">
+            
+                <a href="../tutorial/buildingConversation.html">
+            
+                    
+                    Building a Bot programmatically
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.1.1" data-path="../tutorial/buildingConversation.html">
+            
+                <a href="../tutorial/buildingConversation.html#asking-a-question">
+            
+                    
+                    Asking a question
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.2" data-path="../tutorial/buildingConversation.html">
+            
+                <a href="../tutorial/buildingConversation.html#using-quick-replies-for-controlling-conversation">
+            
+                    
+                    Using quick replies
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.3" data-path="../tutorial/buildingConversation.html">
+            
+                <a href="../tutorial/buildingConversation.html#post-back-is-also-an-action">
+            
+                    
+                    Postbacks
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" data-path="../tutorial/conversationState.html">
+            
+                <a href="../tutorial/conversationState.html">
+            
+                    
+                    Conversation State
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.2.1" data-path="../tutorial/conversationState.html">
+            
+                <a href="../tutorial/conversationState.html#using-the-state-in-navigation">
+            
+                    
+                    Using state in navigation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.2" data-path="../tutorial/conversationState.html">
+            
+                <a href="../tutorial/conversationState.html#reading-and-modifiing-user-state">
+            
+                    
+                    Reading and writing state
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3" data-path="../tutorial/asyncActions.html">
+            
+                <a href="../tutorial/asyncActions.html">
+            
+                    
+                    Asynchronous Actions
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.3.1" data-path="../tutorial/asyncActions.html">
+            
+                <a href="../tutorial/asyncActions.html#blocking-asynchronous-actions">
+            
+                    
+                    Blocking Actions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3.2" data-path="../tutorial/asyncActions.html">
+            
+                <a href="../tutorial/asyncActions.html#non-blocking-asynchronous-actions">
+            
+                    
+                    Non Blocking Actions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3.3" data-path="../tutorial/asyncActions.html">
+            
+                <a href="../tutorial/asyncActions.html#loading-attachments-to-buffer">
+            
+                    
+                    Loading Attachments
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4" data-path="../tutorial/advancedRouting.html">
+            
+                <a href="../tutorial/advancedRouting.html">
+            
+                    
+                    Advanced Routing
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.4.1" data-path="../tutorial/advancedRouting.html">
+            
+                <a href="../tutorial/advancedRouting.html#resolving-actions">
+            
+                    
+                    Resolving Actions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.2" data-path="../tutorial/advancedRouting.html">
+            
+                <a href="../tutorial/advancedRouting.html#simple-text-actions">
+            
+                    
+                    Text Actions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.3" data-path="../tutorial/advancedRouting.html">
+            
+                <a href="../tutorial/advancedRouting.html#integrating-with-ai-prediction">
+            
+                    
+                    Integrating AI
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.4" data-path="../tutorial/advancedRouting.html">
+            
+                <a href="../tutorial/advancedRouting.html#redirecting-flow-with-post-back">
+            
+                    
+                    Redirecting with Postback
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5" data-path="../tutorial/nestingRouters.html">
+            
+                <a href="../tutorial/nestingRouters.html">
+            
+                    
+                    Nesting - Reusable Blocks
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.5.1" data-path="../tutorial/nestingRouters.html">
+            
+                <a href="../tutorial/nestingRouters.html#basic-concept">
+            
+                    
+                    Concept
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.2" data-path="../tutorial/nestingRouters.html">
+            
+                <a href="../tutorial/nestingRouters.html#example">
+            
+                    
+                    Example
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6" data-path="../tutorial/templates.html">
+            
+                <a href="../tutorial/templates.html">
+            
+                    
+                    Sending Templates
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.6.1" data-path="../tutorial/templates.html">
+            
+                <a href="../tutorial/templates.html#button-template">
+            
+                    
+                    Button Template
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.2" data-path="../tutorial/templates.html">
+            
+                <a href="../tutorial/templates.html#generic-template">
+            
+                    
+                    Generic Template
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.3" data-path="../tutorial/templates.html">
+            
+                <a href="../tutorial/templates.html#receipt-template">
+            
+                    
+                    Receipt Template
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.4" data-path="../tutorial/templates.html">
+            
+                <a href="../tutorial/templates.html#working-with-webviews">
+            
+                    
+                    Webviews
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">API</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="Request.html">
+            
+                <a href="Request.html">
+            
+                    
+                    Request
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="Responder.html">
+            
+                <a href="Responder.html">
+            
+                    
+                    Responder
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="Router.html">
+            
+                <a href="Router.html">
+            
+                    
+                    Router
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4" data-path="Tester.html">
+            
+                <a href="Tester.html">
+            
+                    
+                    Tester
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.5" data-path="ButtonTemplate.html">
+            
+                <a href="ButtonTemplate.html">
+            
+                    
+                    Template Builders
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.5.1" data-path="ButtonTemplate.html">
+            
+                <a href="ButtonTemplate.html#ButtonTemplate">
+            
+                    
+                    ButtonTemplate
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.5.2" data-path="ButtonTemplate.html">
+            
+                <a href="ButtonTemplate.html#GenericTemplate">
+            
+                    
+                    GenericTemplate
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.5.3" data-path="ButtonTemplate.html">
+            
+                <a href="ButtonTemplate.html#ReceiptTemplate">
+            
+                    
+                    ReceiptTemplate
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6" data-path="bufferloader.html">
+            
+                <a href="bufferloader.html">
+            
+                    
+                    Utils
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7" data-path="Ai.html">
+            
+                <a href="Ai.html">
+            
+                    
+                    Ai
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" data-path="BuildRouter.html">
+            
+                <a href="BuildRouter.html">
+            
+                    
+                    Wingbot.ai
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.9" data-path="Notifications.html">
+            
+                <a href="Notifications.html">
+            
+                    
+                    Notifications
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.10" data-path="GraphApi.html">
+            
+                <a href="GraphApi.html">
+            
+                    
+                    GraphApi
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="3.11" data-path="graphqlSchema.html">
+            
+                <a href="graphqlSchema.html">
+            
+                    
+                    Chatbot API GraphQL schema
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Chatbot API GraphQL schema</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="schema-types"><a name="schema-types" class="plugin-anchor" href="#schema-types"><i class="fa fa-link" aria-hidden="true"></i></a>Schema Types</h1>
+  <summary><strong>Table of Contents</strong></summary>
+
+<ul>
+<li><a href="#query">Query</a></li>
+<li><a href="#mutation">Mutation</a></li>
+<li><a href="#objects">Objects</a><ul>
+<li><a href="#campaign">Campaign</a></li>
+<li><a href="#campaigns">Campaigns</a></li>
+<li><a href="#postbackresult">PostBackResult</a></li>
+<li><a href="#queuingresult">QueuingResult</a></li>
+<li><a href="#subscribtion">Subscribtion</a></li>
+<li><a href="#subscribtions">Subscribtions</a></li>
+<li><a href="#tag">Tag</a></li>
+<li><a href="#tags">Tags</a></li>
+<li><a href="#validationresult">ValidationResult</a></li>
+</ul>
+</li>
+<li><a href="#inputs">Inputs</a><ul>
+<li><a href="#campaignscondition">CampaignsCondition</a></li>
+<li><a href="#createcampaigninput">CreateCampaignInput</a></li>
+<li><a href="#updatecampaigninput">UpdateCampaignInput</a></li>
+</ul>
+</li>
+<li><a href="#scalars">Scalars</a><ul>
+<li><a href="#any">Any</a></li>
+<li><a href="#boolean">Boolean</a></li>
+<li><a href="#float">Float</a></li>
+<li><a href="#int">Int</a></li>
+<li><a href="#string">String</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="query"><a name="query" class="plugin-anchor" href="#query"><i class="fa fa-link" aria-hidden="true"></i></a>Query</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>tags</strong></td>
+<td valign="top"><a href="#tags">Tags</a></td>
+<td>
+
+list tags statistics
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">pageId</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>subscribtions</strong></td>
+<td valign="top"><a href="#subscribtions">Subscribtions</a></td>
+<td>
+
+fetch user ids for selected tag
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">include</td>
+<td valign="top">[<a href="#string">String</a>!]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">exclude</td>
+<td valign="top">[<a href="#string">String</a>!]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">pageId</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">limit</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">lastKey</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>campaign</strong></td>
+<td valign="top"><a href="#campaign">Campaign</a></td>
+<td>
+
+get a campaign by ID
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">campaignId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>campaigns</strong></td>
+<td valign="top"><a href="#campaigns">Campaigns</a></td>
+<td>
+
+list of user defined campaigns
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">limit</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">lastKey</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">condition</td>
+<td valign="top"><a href="#campaignscondition">CampaignsCondition</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>version</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td>
+
+returns the API version
+
+</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="mutation"><a name="mutation" class="plugin-anchor" href="#mutation"><i class="fa fa-link" aria-hidden="true"></i></a>Mutation</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>validateBot</strong></td>
+<td valign="top"><a href="#validationresult">ValidationResult</a></td>
+<td>
+
+validate conversation data
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">bot</td>
+<td valign="top"><a href="#any">Any</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>updateBot</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td>
+
+invalidate a conversation cache in the chatbot
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>postBack</strong></td>
+<td valign="top"><a href="#postbackresult">PostBackResult</a></td>
+<td>
+
+send a message to any user
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">pageId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">senderId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">action</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">data</td>
+<td valign="top"><a href="#any">Any</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>createCampaign</strong></td>
+<td valign="top"><a href="#campaign">Campaign</a></td>
+<td>
+
+create a new campaign
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">campaign</td>
+<td valign="top"><a href="#createcampaigninput">CreateCampaignInput</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>updateCampaign</strong></td>
+<td valign="top"><a href="#campaign">Campaign</a></td>
+<td>
+
+update a campaign
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">campaignId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">update</td>
+<td valign="top"><a href="#updatecampaigninput">UpdateCampaignInput</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>removeCampaign</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td>
+
+remove a campaign
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">campaignId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>runCampaign</strong></td>
+<td valign="top"><a href="#queuingresult">QueuingResult</a></td>
+<td>
+
+run a campaign
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">campaignId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="objects"><a name="objects" class="plugin-anchor" href="#objects"><i class="fa fa-link" aria-hidden="true"></i></a>Objects</h2>
+<h3 id="campaign"><a name="campaign" class="plugin-anchor" href="#campaign"><i class="fa fa-link" aria-hidden="true"></i></a>Campaign</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>id</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>name</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>action</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>data</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>include</strong></td>
+<td valign="top">[<a href="#string">String</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>exclude</strong></td>
+<td valign="top">[<a href="#string">String</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>pageId</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>sliding</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>slide</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>active</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>in24hourWindow</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>startAt</strong></td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>allowRepeat</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>type</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>sent</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>failed</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>delivery</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>read</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>notSent</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>leaved</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>queued</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>negative</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>positive</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>hasCondition</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>condition</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="campaigns"><a name="campaigns" class="plugin-anchor" href="#campaigns"><i class="fa fa-link" aria-hidden="true"></i></a>Campaigns</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>data</strong></td>
+<td valign="top">[<a href="#campaign">Campaign</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>lastKey</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="postbackresult"><a name="postbackresult" class="plugin-anchor" href="#postbackresult"><i class="fa fa-link" aria-hidden="true"></i></a>PostBackResult</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>status</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="queuingresult"><a name="queuingresult" class="plugin-anchor" href="#queuingresult"><i class="fa fa-link" aria-hidden="true"></i></a>QueuingResult</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>queued</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="subscribtion"><a name="subscribtion" class="plugin-anchor" href="#subscribtion"><i class="fa fa-link" aria-hidden="true"></i></a>Subscribtion</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>pageId</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>senderId</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="subscribtions"><a name="subscribtions" class="plugin-anchor" href="#subscribtions"><i class="fa fa-link" aria-hidden="true"></i></a>Subscribtions</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>data</strong></td>
+<td valign="top">[<a href="#subscribtion">Subscribtion</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>lastKey</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>count</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="tag"><a name="tag" class="plugin-anchor" href="#tag"><i class="fa fa-link" aria-hidden="true"></i></a>Tag</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>tag</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>subscribtions</strong></td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="tags"><a name="tags" class="plugin-anchor" href="#tags"><i class="fa fa-link" aria-hidden="true"></i></a>Tags</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>data</strong></td>
+<td valign="top">[<a href="#tag">Tag</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>lastKey</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="validationresult"><a name="validationresult" class="plugin-anchor" href="#validationresult"><i class="fa fa-link" aria-hidden="true"></i></a>ValidationResult</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>ok</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>error</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="inputs"><a name="inputs" class="plugin-anchor" href="#inputs"><i class="fa fa-link" aria-hidden="true"></i></a>Inputs</h2>
+<h3 id="campaignscondition"><a name="campaignscondition" class="plugin-anchor" href="#campaignscondition"><i class="fa fa-link" aria-hidden="true"></i></a>CampaignsCondition</h3>
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>active</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>sliding</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="createcampaigninput"><a name="createcampaigninput" class="plugin-anchor" href="#createcampaigninput"><i class="fa fa-link" aria-hidden="true"></i></a>CreateCampaignInput</h3>
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>name</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>action</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>data</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>include</strong></td>
+<td valign="top">[<a href="#string">String</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>exclude</strong></td>
+<td valign="top">[<a href="#string">String</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>pageId</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>sliding</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>slide</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>active</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>in24hourWindow</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>startAt</strong></td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>allowRepeat</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>type</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>hasCondition</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>condition</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="updatecampaigninput"><a name="updatecampaigninput" class="plugin-anchor" href="#updatecampaigninput"><i class="fa fa-link" aria-hidden="true"></i></a>UpdateCampaignInput</h3>
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>name</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>action</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>data</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>include</strong></td>
+<td valign="top">[<a href="#string">String</a>]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>exclude</strong></td>
+<td valign="top">[<a href="#string">String</a>]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>pageId</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>sliding</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>slide</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>active</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>in24hourWindow</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>startAt</strong></td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>allowRepeat</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>type</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>hasCondition</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>condition</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="scalars"><a name="scalars" class="plugin-anchor" href="#scalars"><i class="fa fa-link" aria-hidden="true"></i></a>Scalars</h2>
+<h3 id="any"><a name="any" class="plugin-anchor" href="#any"><i class="fa fa-link" aria-hidden="true"></i></a>Any</h3>
+<h3 id="boolean"><a name="boolean" class="plugin-anchor" href="#boolean"><i class="fa fa-link" aria-hidden="true"></i></a>Boolean</h3>
+<p>The <code>Boolean</code> scalar type represents <code>true</code> or <code>false</code>.</p>
+<h3 id="float"><a name="float" class="plugin-anchor" href="#float"><i class="fa fa-link" aria-hidden="true"></i></a>Float</h3>
+<p>The <code>Float</code> scalar type represents signed double-precision fractional values as specified by <a href="http://en.wikipedia.org/wiki/IEEE_floating_point" target="_blank">IEEE 754</a>. </p>
+<h3 id="int"><a name="int" class="plugin-anchor" href="#int"><i class="fa fa-link" aria-hidden="true"></i></a>Int</h3>
+<p>The <code>Int</code> scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. </p>
+<h3 id="string"><a name="string" class="plugin-anchor" href="#string"><i class="fa fa-link" aria-hidden="true"></i></a>String</h3>
+<p>The <code>String</code> scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="GraphApi.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: GraphApi">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Chatbot API GraphQL schema","level":"3.11","depth":1,"previous":{"title":"GraphApi","level":"3.10","depth":1,"path":"api/GraphApi.md","ref":"api/GraphApi.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/graphqlSchema.md","mtime":"2018-11-12T14:08:20.033Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-collapsible-menu/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

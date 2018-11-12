@@ -6,6 +6,12 @@
 const Tester = require('../Tester');
 const apiAuthorizer = require('./apiAuthorizer');
 
+
+/**
+ * @typedef {Object} ValidateBotAPI
+ * @typedef {Function} validateBot
+ */
+
 async function validate (bot, validationRequestBody, postBackTest = 'start', textTest = 'hello') {
     try {
         bot.buildWithSnapshot(validationRequestBody.blocks, Number.MAX_SAFE_INTEGER);
@@ -38,10 +44,19 @@ async function validate (bot, validationRequestBody, postBackTest = 'start', tex
 /**
  * Test the bot configuration
  *
- * @param {Function} botFactory
- * @param {string|null} [postBackTest]
- * @param {string|null} [textTest]
+ * @param {Function} botFactory - function, which returns a bot
+ * @param {string|null} [postBackTest] - postback action to test
+ * @param {string|null} [textTest] - random text to test
  * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
+ * @returns {ValidateBotAPI}
+ * @example
+ * const { GraphApi, validateBotApi } = require('wingbot');
+ *
+ * const api = new GraphApi([
+ *     validateBotApi(botFactory, 'start', 'hello')
+ * ], {
+ *     token: 'wingbot-token'
+ * })
  */
 function validateBotApi (botFactory, postBackTest, textTest, acl) {
     /** @deprecated way to validate bot */

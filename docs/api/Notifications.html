@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Utils · Wingbot</title>
+        <title>Notifications · Wingbot</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -61,10 +61,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="Ai.html" />
+    <link rel="next" href="GraphApi.html" />
     
     
-    <link rel="prev" href="ButtonTemplate.html" />
+    <link rel="prev" href="BuildRouter.html" />
     
 
     </head>
@@ -748,7 +748,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="3.6" data-path="bufferloader.html">
+        <li class="chapter " data-level="3.6" data-path="bufferloader.html">
             
                 <a href="bufferloader.html">
             
@@ -787,7 +787,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.9" data-path="Notifications.html">
+        <li class="chapter active" data-level="3.9" data-path="Notifications.html">
             
                 <a href="Notifications.html">
             
@@ -856,7 +856,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Utils</a>
+        <a href=".." >Notifications</a>
     </h1>
 </div>
 
@@ -873,258 +873,145 @@
                                 
                                 <h2 id="classes"><a name="classes" class="plugin-anchor" href="#classes"><i class="fa fa-link" aria-hidden="true"></i></a>Classes</h2>
 <dl>
-<dt><a href="#MemoryStateStorage">MemoryStateStorage</a></dt>
-<dd><p>Memory conversation state storage for testing purposes</p>
-</dd>
-<dt><a href="#Translate">Translate</a></dt>
-<dd></dd>
-<dt><a href="#Translate">Translate</a></dt>
-<dd></dd>
-<dt><a href="#ReturnSender">ReturnSender</a></dt>
-<dd></dd>
-</dl>
-
-<h2 id="functions"><a name="functions" class="plugin-anchor" href="#functions"><i class="fa fa-link" aria-hidden="true"></i></a>Functions</h2>
-<dl>
-<dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> &#x21D2; <code>Promise.&lt;Buffer&gt;</code></dt>
-<dd><p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
+<dt><a href="#Notifications">Notifications</a></dt>
+<dd><p>Experimental notifications service</p>
 </dd>
 </dl>
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#State">State</a> : <code>Object</code></dt>
+<dt><a href="#Tag">Tag</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Target">Target</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Campaign">Campaign</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Task">Task</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 
-<div id="MemoryStateStorage">&#xA0;</div>
+<div id="Notifications">&#xA0;</div>
 
-<h2 id="memorystatestorage"><a name="memorystatestorage" class="plugin-anchor" href="#memorystatestorage"><i class="fa fa-link" aria-hidden="true"></i></a>MemoryStateStorage</h2>
-<p>Memory conversation state storage for testing purposes</p>
+<h2 id="notifications"><a name="notifications" class="plugin-anchor" href="#notifications"><i class="fa fa-link" aria-hidden="true"></i></a>Notifications</h2>
+<p>Experimental notifications service</p>
 <p><strong>Kind</strong>: global class  </p>
 <ul>
-<li><a href="#MemoryStateStorage">MemoryStateStorage</a><ul>
-<li><a href="#MemoryStateStorage_getState">.getState(senderId, pageId)</a> &#x21D2; <code>Promise.&lt;(State|null)&gt;</code></li>
-<li><a href="#MemoryStateStorage_getOrCreateAndLock">.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout)</a> &#x21D2; <a href="#State"><code>Promise.&lt;State&gt;</code></a></li>
-<li><a href="#MemoryStateStorage_saveState">.saveState(state)</a> &#x21D2; <code>Promise</code></li>
+<li><a href="#Notifications">Notifications</a><ul>
+<li><a href="#new_Notifications_new">new Notifications(notificationStorage, options)</a></li>
+<li><a href="#Notifications_api">.api([acl])</a> &#x21D2; <code>Object</code></li>
+<li><a href="#Notifications_subscribe">.subscribe(senderId, pageId, tag)</a></li>
+<li><a href="#Notifications_unsubscribe">.unsubscribe(senderId, pageId, [tag])</a></li>
+<li><a href="#Notifications_processMessage">.processMessage(event, pageId)</a> &#x21D2; <code>Promise.&lt;{status:number}&gt;</code></li>
+<li><a href="#Notifications_runCampaign">.runCampaign(campaign)</a> &#x21D2; <code>Promise.&lt;{queued:number}&gt;</code></li>
 </ul>
 </li>
 </ul>
-<div id="MemoryStateStorage_getState">&#xA0;</div>
+<div id="new_Notifications_new">&#xA0;</div>
 
-<h3 id="memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull"><a name="memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull" class="plugin-anchor" href="#memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getState(senderId, pageId) &#x21D2; <code>Promise.&lt;(State|null)&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
+<h3 id="new-notificationsnotificationstorage-options"><a name="new-notificationsnotificationstorage-options" class="plugin-anchor" href="#new-notificationsnotificationstorage-options"><i class="fa fa-link" aria-hidden="true"></i></a>new Notifications(notificationStorage, options)</h3>
+<p><strong>Params</strong></p>
+<ul>
+<li>notificationStorage <code>NotificationsStorage</code></li>
+<li>options <code>Object</code><ul>
+<li>[.log] <code>console</code></li>
+<li>[.sendMoreMessagesOver24] <code>boolean</code></li>
+</ul>
+</li>
+</ul>
+<div id="Notifications_api">&#xA0;</div>
+
+<h3 id="notificationsapiacl-&#x21D2;-object"><a name="notificationsapiacl-&#x21D2;-object" class="plugin-anchor" href="#notificationsapiacl-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>notifications.api([acl]) &#x21D2; <code>Object</code></h3>
+<p>API Factory</p>
+<p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Returns</strong>: <code>Object</code> - - the graphql api object<br><strong>Params</strong></p>
+<ul>
+<li>[acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function</li>
+</ul>
+<div id="Notifications_subscribe">&#xA0;</div>
+
+<h3 id="notificationssubscribesenderid-pageid-tag"><a name="notificationssubscribesenderid-pageid-tag" class="plugin-anchor" href="#notificationssubscribesenderid-pageid-tag"><i class="fa fa-link" aria-hidden="true"></i></a>notifications.subscribe(senderId, pageId, tag)</h3>
+<p>Subscribe user under certain tag</p>
+<p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
 <ul>
 <li>senderId <code>string</code></li>
 <li>pageId <code>string</code></li>
+<li>tag <code>string</code></li>
 </ul>
-<div id="MemoryStateStorage_getOrCreateAndLock">&#xA0;</div>
+<div id="Notifications_unsubscribe">&#xA0;</div>
 
-<h3 id="memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate"><a name="memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate" class="plugin-anchor" href="#memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout) &#x21D2; <a href="#State"><code>Promise.&lt;State&gt;</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Returns</strong>: <a href="#State"><code>Promise.&lt;State&gt;</code></a> - - conversation state<br><strong>Params</strong></p>
+<h3 id="notificationsunsubscribesenderid-pageid-tag"><a name="notificationsunsubscribesenderid-pageid-tag" class="plugin-anchor" href="#notificationsunsubscribesenderid-pageid-tag"><i class="fa fa-link" aria-hidden="true"></i></a>notifications.unsubscribe(senderId, pageId, [tag])</h3>
+<p>Unsubscribe user from certain tag or from all tags</p>
+<p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
 <ul>
-<li>senderId <code>string</code> - sender identifier</li>
-<li>pageId <code>string</code> - page or channel identifier</li>
-<li>defaultState <code>Object</code> - default state of the conversation</li>
-<li>lockTimeout <code>number</code> <code> = 300</code> - duration of lock</li>
+<li>senderId <code>string</code></li>
+<li>pageId <code>string</code></li>
+<li>[tag] <code>string</code> <code> = null</code></li>
 </ul>
-<div id="MemoryStateStorage_saveState">&#xA0;</div>
+<div id="Notifications_processMessage">&#xA0;</div>
 
-<h3 id="memorystatestoragesavestatestate-&#x21D2;-promise"><a name="memorystatestoragesavestatestate-&#x21D2;-promise" class="plugin-anchor" href="#memorystatestoragesavestatestate-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.saveState(state) &#x21D2; <code>Promise</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
+<h3 id="notificationsprocessmessageevent-pageid-&#x21D2;-promisestatusnumber"><a name="notificationsprocessmessageevent-pageid-&#x21D2;-promisestatusnumber" class="plugin-anchor" href="#notificationsprocessmessageevent-pageid-&#x21D2;-promisestatusnumber"><i class="fa fa-link" aria-hidden="true"></i></a>notifications.processMessage(event, pageId) &#x21D2; <code>Promise.&lt;{status:number}&gt;</code></h3>
+<p>Preprocess message - for read and delivery</p>
+<p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
 <ul>
-<li>state <code>Object</code> - conversation state</li>
+<li>event <code>Object</code></li>
+<li>pageId <code>string</code></li>
 </ul>
-<div id="Translate">&#xA0;</div>
+<div id="Notifications_runCampaign">&#xA0;</div>
 
-<h2 id="translate"><a name="translate" class="plugin-anchor" href="#translate"><i class="fa fa-link" aria-hidden="true"></i></a>Translate</h2>
-<p><strong>Kind</strong>: global class  </p>
+<h3 id="notificationsruncampaigncampaign-&#x21D2;-promisequeuednumber"><a name="notificationsruncampaigncampaign-&#x21D2;-promisequeuednumber" class="plugin-anchor" href="#notificationsruncampaigncampaign-&#x21D2;-promisequeuednumber"><i class="fa fa-link" aria-hidden="true"></i></a>notifications.runCampaign(campaign) &#x21D2; <code>Promise.&lt;{queued:number}&gt;</code></h3>
+<p>Run the campaign now (push tasks into the queue)</p>
+<p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
 <ul>
-<li><a href="#Translate">Translate</a><ul>
-<li><a href="#new_Translate_new">new Translate()</a></li>
-<li><a href="#new_Translate_new">new Translate([options])</a></li>
-<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
-<li><a href="#Translate_middleware">.middleware(languageResolver)</a> &#x21D2; <code>function</code></li>
+<li>campaign <code>Object</code></li>
 </ul>
-</li>
-</ul>
-<div id="new_Translate_new">&#xA0;</div>
+<div id="Tag">&#xA0;</div>
 
-<h3 id="new-translate"><a name="new-translate" class="plugin-anchor" href="#new-translate"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate()</h3>
-<p>Tool for text translation</p>
-<div id="new_Translate_new">&#xA0;</div>
+<h2 id="tag--object"><a name="tag--object" class="plugin-anchor" href="#tag--object"><i class="fa fa-link" aria-hidden="true"></i></a>Tag : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tag</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>subscribtions</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
+<div id="Target">&#xA0;</div>
 
-<h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>[options] <code>Object</code><ul>
-<li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
-<li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
-</ul>
-</li>
-</ul>
-<div id="Translate_translator">&#xA0;</div>
+<h2 id="target--object"><a name="target--object" class="plugin-anchor" href="#target--object"><i class="fa fa-link" aria-hidden="true"></i></a>Target : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>senderId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>pageId</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="Subscribtion">&#xA0;</div>
 
-<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
-<p>Creates static translator for static settings</p>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
-
-const translate = new Translate({ sourcePath: __dirname });
-
-const t = translate.translator([&apos;cs&apos;, &apos;en&apos;]);
-
-// czech
-t.cs.t(&apos;requested text&apos;);
-
-// english
-t.en.t(&apos;requested text&apos;);
-</code></pre>
-<div id="Translate_middleware">&#xA0;</div>
-
-<h3 id="translatemiddlewarelanguageresolver-&#x21D2;-function"><a name="translatemiddlewarelanguageresolver-&#x21D2;-function" class="plugin-anchor" href="#translatemiddlewarelanguageresolver-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>translate.middleware(languageResolver) &#x21D2; <code>function</code></h3>
-<p>Bots middleware for text translations</p>
-<ul>
-<li>will be looking for <code>&lt;lang&gt;.locale.po</code> by default</li>
-</ul>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languageResolver <code>function</code></li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
-
-const translate = new Translate({ sourcePath: __dirname });
-
-bot.use(translate.middleware((req, res) =&gt; &apos;cs&apos;));
-
-bot.use((req, res) =&gt; {
-   res.text(res.t(&apos;Translated text&apos;));
-});
-</code></pre>
-<div id="Translate">&#xA0;</div>
-
-<h2 id="translate"><a name="translate" class="plugin-anchor" href="#translate"><i class="fa fa-link" aria-hidden="true"></i></a>Translate</h2>
-<p><strong>Kind</strong>: global class  </p>
-<ul>
-<li><a href="#Translate">Translate</a><ul>
-<li><a href="#new_Translate_new">new Translate()</a></li>
-<li><a href="#new_Translate_new">new Translate([options])</a></li>
-<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
-<li><a href="#Translate_middleware">.middleware(languageResolver)</a> &#x21D2; <code>function</code></li>
-</ul>
-</li>
-</ul>
-<div id="new_Translate_new">&#xA0;</div>
-
-<h3 id="new-translate"><a name="new-translate" class="plugin-anchor" href="#new-translate"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate()</h3>
-<p>Tool for text translation</p>
-<div id="new_Translate_new">&#xA0;</div>
-
-<h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>[options] <code>Object</code><ul>
-<li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
-<li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
-</ul>
-</li>
-</ul>
-<div id="Translate_translator">&#xA0;</div>
-
-<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
-<p>Creates static translator for static settings</p>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
-
-const translate = new Translate({ sourcePath: __dirname });
-
-const t = translate.translator([&apos;cs&apos;, &apos;en&apos;]);
-
-// czech
-t.cs.t(&apos;requested text&apos;);
-
-// english
-t.en.t(&apos;requested text&apos;);
-</code></pre>
-<div id="Translate_middleware">&#xA0;</div>
-
-<h3 id="translatemiddlewarelanguageresolver-&#x21D2;-function"><a name="translatemiddlewarelanguageresolver-&#x21D2;-function" class="plugin-anchor" href="#translatemiddlewarelanguageresolver-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>translate.middleware(languageResolver) &#x21D2; <code>function</code></h3>
-<p>Bots middleware for text translations</p>
-<ul>
-<li>will be looking for <code>&lt;lang&gt;.locale.po</code> by default</li>
-</ul>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languageResolver <code>function</code></li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
-
-const translate = new Translate({ sourcePath: __dirname });
-
-bot.use(translate.middleware((req, res) =&gt; &apos;cs&apos;));
-
-bot.use((req, res) =&gt; {
-   res.text(res.t(&apos;Translated text&apos;));
-});
-</code></pre>
-<div id="ReturnSender">&#xA0;</div>
-
-<h2 id="returnsender"><a name="returnsender" class="plugin-anchor" href="#returnsender"><i class="fa fa-link" aria-hidden="true"></i></a>ReturnSender</h2>
-<p><strong>Kind</strong>: global class  </p>
-<ul>
-<li><a href="#ReturnSender">ReturnSender</a><ul>
-<li><a href="#new_ReturnSender_new">new ReturnSender(options, userId, incommingMessage, logger)</a></li>
-<li><a href="#ReturnSender_modifyStateBeforeStore">.modifyStateBeforeStore()</a> &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></li>
-</ul>
-</li>
-</ul>
-<div id="new_ReturnSender_new">&#xA0;</div>
-
-<h3 id="new-returnsenderoptions-userid-incommingmessage-logger"><a name="new-returnsenderoptions-userid-incommingmessage-logger" class="plugin-anchor" href="#new-returnsenderoptions-userid-incommingmessage-logger"><i class="fa fa-link" aria-hidden="true"></i></a>new ReturnSender(options, userId, incommingMessage, logger)</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>options <code>Object</code></li>
-<li>userId <code>string</code></li>
-<li>incommingMessage <code>Object</code></li>
-<li>logger <code>console</code> <code> = </code> - console like logger</li>
-</ul>
-<div id="ReturnSender_modifyStateBeforeStore">&#xA0;</div>
-
-<h3 id="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateBeforeStore() &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#ReturnSender"><code>ReturnSender</code></a>  </p>
-<div id="bufferloader">&#xA0;</div>
-
-<h2 id="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><a name="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer" class="plugin-anchor" href="#bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><i class="fa fa-link" aria-hidden="true"></i></a>bufferloader(url, [limit], [limitJustByBody], [redirCount]) &#x21D2; <code>Promise.&lt;Buffer&gt;</code></h2>
-<p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
-<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
-<ul>
-<li>url <code>string</code></li>
-<li>[limit] <code>number</code> <code> = 0</code> - limit in bytes</li>
-<li>[limitJustByBody] <code>boolean</code> <code> = false</code> - when true, content size in header is ignored</li>
-<li>[redirCount] <code>number</code> <code> = 3</code> - maximmum amount of redirects</li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">router.use(<span class="hljs-string">&apos;*&apos;</span>, (req, res, postBack) =&gt; {
-    <span class="hljs-keyword">if</span> (req.isFile()) {
-        bufferloader(req.attachmentUrl())
-            .then(buffer =&gt; postBack(<span class="hljs-string">&apos;downloaded&apos;</span>, { data: buffer }))
-            .catch(err =&gt; postBack(<span class="hljs-string">&apos;donwloaded&apos;</span>, { err }))
-    }
-});
-</code></pre>
-<div id="State">&#xA0;</div>
-
-<h2 id="state--object"><a name="state--object" class="plugin-anchor" href="#state--object"><i class="fa fa-link" aria-hidden="true"></i></a>State : <code>Object</code></h2>
+<h2 id="subscribtion--object"><a name="subscribtion--object" class="plugin-anchor" href="#subscribtion--object"><i class="fa fa-link" aria-hidden="true"></i></a>Subscribtion : <code>Object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1143,8 +1030,163 @@ bot.use((req, res) =&gt; {
 <td><code>string</code></td>
 </tr>
 <tr>
-<td>state</td>
+<td>subs</td>
+<td><code>Array.&lt;string&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<div id="Campaign">&#xA0;</div>
+
+<h2 id="campaign--object"><a name="campaign--object" class="plugin-anchor" href="#campaign--object"><i class="fa fa-link" aria-hidden="true"></i></a>Campaign : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+<td>Tatgeting</td>
+</tr>
+<tr>
+<td>include</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td>exclude</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td>pageId</td>
+<td><code>string</code></td>
+<td>Stats</td>
+</tr>
+<tr>
+<td>sent</td>
+<td><code>number</code></td>
+<td></td>
+</tr>
+<tr>
+<td>failed</td>
+<td><code>number</code></td>
+<td></td>
+</tr>
+<tr>
+<td>delivery</td>
+<td><code>number</code></td>
+<td></td>
+</tr>
+<tr>
+<td>read</td>
+<td><code>number</code></td>
+<td></td>
+</tr>
+<tr>
+<td>notSent</td>
+<td><code>number</code></td>
+<td></td>
+</tr>
+<tr>
+<td>leaved</td>
+<td><code>number</code></td>
+<td></td>
+</tr>
+<tr>
+<td>queued</td>
+<td><code>number</code></td>
+<td>Interaction</td>
+</tr>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[data]</td>
 <td><code>Object</code></td>
+<td>Setup</td>
+</tr>
+<tr>
+<td>sliding</td>
+<td><code>boolean</code></td>
+<td></td>
+</tr>
+<tr>
+<td>slide</td>
+<td><code>number</code></td>
+<td></td>
+</tr>
+<tr>
+<td>active</td>
+<td><code>boolean</code></td>
+<td></td>
+</tr>
+<tr>
+<td>in24hourWindow</td>
+<td><code>boolean</code></td>
+<td></td>
+</tr>
+<tr>
+<td>startAt</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
+<div id="Task">&#xA0;</div>
+
+<h2 id="task--object"><a name="task--object" class="plugin-anchor" href="#task--object"><i class="fa fa-link" aria-hidden="true"></i></a>Task : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>pageId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>senderId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>campaignId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>enqueue</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[read]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[delivery]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[sent]</td>
+<td><code>number</code></td>
 </tr>
 </tbody>
 </table>
@@ -1175,12 +1217,12 @@ bot.use((req, res) =&gt; {
 
             
                 
-                <a href="ButtonTemplate.html#ReceiptTemplate" class="navigation navigation-prev " aria-label="Previous page: ReceiptTemplate">
+                <a href="BuildRouter.html" class="navigation navigation-prev " aria-label="Previous page: Wingbot.ai">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="Ai.html" class="navigation navigation-next " aria-label="Next page: Ai">
+                <a href="GraphApi.html" class="navigation navigation-next " aria-label="Next page: GraphApi">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1191,7 +1233,7 @@ bot.use((req, res) =&gt; {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2018-11-12T14:08:20.019Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Notifications","level":"3.9","depth":1,"next":{"title":"GraphApi","level":"3.10","depth":1,"path":"api/GraphApi.md","ref":"api/GraphApi.md","articles":[]},"previous":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Notifications.md","mtime":"2018-11-12T14:08:20.030Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

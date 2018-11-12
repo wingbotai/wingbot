@@ -250,7 +250,7 @@ class NotificationsStorage {
      *
      * @param {string} campaignId
      * @param {Object} increment
-     * @returns {Promise<>}
+     * @returns {Promise}
      */
     incrementCampaign (campaignId, increment = {}) {
         let campaign = this._campaigns.get(campaignId) || null;

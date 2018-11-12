@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Utils · Wingbot</title>
+        <title>GraphApi · Wingbot</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -61,10 +61,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="Ai.html" />
+    <link rel="next" href="graphqlSchema.html" />
     
     
-    <link rel="prev" href="ButtonTemplate.html" />
+    <link rel="prev" href="Notifications.html" />
     
 
     </head>
@@ -748,7 +748,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="3.6" data-path="bufferloader.html">
+        <li class="chapter " data-level="3.6" data-path="bufferloader.html">
             
                 <a href="bufferloader.html">
             
@@ -800,7 +800,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.10" data-path="GraphApi.html">
+        <li class="chapter active" data-level="3.10" data-path="GraphApi.html">
             
                 <a href="GraphApi.html">
             
@@ -856,7 +856,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Utils</a>
+        <a href=".." >GraphApi</a>
     </h1>
 </div>
 
@@ -873,281 +873,152 @@
                                 
                                 <h2 id="classes"><a name="classes" class="plugin-anchor" href="#classes"><i class="fa fa-link" aria-hidden="true"></i></a>Classes</h2>
 <dl>
-<dt><a href="#MemoryStateStorage">MemoryStateStorage</a></dt>
-<dd><p>Memory conversation state storage for testing purposes</p>
+<dt><a href="#GraphApi">GraphApi</a></dt>
+<dd><p>Experimental chatbot API</p>
 </dd>
-<dt><a href="#Translate">Translate</a></dt>
-<dd></dd>
-<dt><a href="#Translate">Translate</a></dt>
-<dd></dd>
-<dt><a href="#ReturnSender">ReturnSender</a></dt>
-<dd></dd>
 </dl>
 
 <h2 id="functions"><a name="functions" class="plugin-anchor" href="#functions"><i class="fa fa-link" aria-hidden="true"></i></a>Functions</h2>
 <dl>
-<dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> &#x21D2; <code>Promise.&lt;Buffer&gt;</code></dt>
-<dd><p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
+<dt><a href="#postBackApi">postBackApi(processor, [acl])</a> &#x21D2; <code>PostBackAPI</code></dt>
+<dd><p>Create a postback API</p>
+</dd>
+<dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> &#x21D2; <code>ValidateBotAPI</code></dt>
+<dd><p>Test the bot configuration</p>
+</dd>
+<dt><a href="#apiAuthorizer">apiAuthorizer(args, ctx, acl)</a> &#x21D2; <code>boolean</code></dt>
+<dd><p>If API call is authorized - use for own implementations of API endpoints</p>
 </dd>
 </dl>
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#State">State</a> : <code>Object</code></dt>
+<dt><a href="#GraphQlResponse">GraphQlResponse</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#postBack">postBack</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#validateBot">validateBot</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 
-<div id="MemoryStateStorage">&#xA0;</div>
+<div id="GraphApi">&#xA0;</div>
 
-<h2 id="memorystatestorage"><a name="memorystatestorage" class="plugin-anchor" href="#memorystatestorage"><i class="fa fa-link" aria-hidden="true"></i></a>MemoryStateStorage</h2>
-<p>Memory conversation state storage for testing purposes</p>
+<h2 id="graphapi"><a name="graphapi" class="plugin-anchor" href="#graphapi"><i class="fa fa-link" aria-hidden="true"></i></a>GraphApi</h2>
+<p>Experimental chatbot API</p>
 <p><strong>Kind</strong>: global class  </p>
 <ul>
-<li><a href="#MemoryStateStorage">MemoryStateStorage</a><ul>
-<li><a href="#MemoryStateStorage_getState">.getState(senderId, pageId)</a> &#x21D2; <code>Promise.&lt;(State|null)&gt;</code></li>
-<li><a href="#MemoryStateStorage_getOrCreateAndLock">.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout)</a> &#x21D2; <a href="#State"><code>Promise.&lt;State&gt;</code></a></li>
-<li><a href="#MemoryStateStorage_saveState">.saveState(state)</a> &#x21D2; <code>Promise</code></li>
+<li><a href="#GraphApi">GraphApi</a><ul>
+<li><a href="#new_GraphApi_new">new GraphApi(apis, options)</a></li>
+<li><a href="#GraphApi_request">.request(body, headers)</a> &#x21D2; <a href="#GraphQlResponse"><code>Promise.&lt;GraphQlResponse&gt;</code></a></li>
 </ul>
 </li>
 </ul>
-<div id="MemoryStateStorage_getState">&#xA0;</div>
+<div id="new_GraphApi_new">&#xA0;</div>
 
-<h3 id="memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull"><a name="memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull" class="plugin-anchor" href="#memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getState(senderId, pageId) &#x21D2; <code>Promise.&lt;(State|null)&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
-<ul>
-<li>senderId <code>string</code></li>
-<li>pageId <code>string</code></li>
-</ul>
-<div id="MemoryStateStorage_getOrCreateAndLock">&#xA0;</div>
-
-<h3 id="memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate"><a name="memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate" class="plugin-anchor" href="#memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout) &#x21D2; <a href="#State"><code>Promise.&lt;State&gt;</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Returns</strong>: <a href="#State"><code>Promise.&lt;State&gt;</code></a> - - conversation state<br><strong>Params</strong></p>
-<ul>
-<li>senderId <code>string</code> - sender identifier</li>
-<li>pageId <code>string</code> - page or channel identifier</li>
-<li>defaultState <code>Object</code> - default state of the conversation</li>
-<li>lockTimeout <code>number</code> <code> = 300</code> - duration of lock</li>
-</ul>
-<div id="MemoryStateStorage_saveState">&#xA0;</div>
-
-<h3 id="memorystatestoragesavestatestate-&#x21D2;-promise"><a name="memorystatestoragesavestatestate-&#x21D2;-promise" class="plugin-anchor" href="#memorystatestoragesavestatestate-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.saveState(state) &#x21D2; <code>Promise</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
-<ul>
-<li>state <code>Object</code> - conversation state</li>
-</ul>
-<div id="Translate">&#xA0;</div>
-
-<h2 id="translate"><a name="translate" class="plugin-anchor" href="#translate"><i class="fa fa-link" aria-hidden="true"></i></a>Translate</h2>
-<p><strong>Kind</strong>: global class  </p>
-<ul>
-<li><a href="#Translate">Translate</a><ul>
-<li><a href="#new_Translate_new">new Translate()</a></li>
-<li><a href="#new_Translate_new">new Translate([options])</a></li>
-<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
-<li><a href="#Translate_middleware">.middleware(languageResolver)</a> &#x21D2; <code>function</code></li>
-</ul>
-</li>
-</ul>
-<div id="new_Translate_new">&#xA0;</div>
-
-<h3 id="new-translate"><a name="new-translate" class="plugin-anchor" href="#new-translate"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate()</h3>
-<p>Tool for text translation</p>
-<div id="new_Translate_new">&#xA0;</div>
-
-<h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
+<h3 id="new-graphapiapis-options"><a name="new-graphapiapis-options" class="plugin-anchor" href="#new-graphapiapis-options"><i class="fa fa-link" aria-hidden="true"></i></a>new GraphApi(apis, options)</h3>
 <p><strong>Params</strong></p>
 <ul>
-<li>[options] <code>Object</code><ul>
-<li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
-<li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
+<li>apis <code>Array.&lt;Object&gt;</code> - list of connected APIs</li>
+<li>options <code>Object</code> - API options<ul>
+<li>.token <code>string</code> - wingbot token</li>
+<li>[.appToken] <code>string</code> - public token</li>
+<li>[.groups] <code>Array.&lt;string&gt;</code> - list of allowed bot groups</li>
 </ul>
 </li>
 </ul>
-<div id="Translate_translator">&#xA0;</div>
+<div id="GraphApi_request">&#xA0;</div>
 
-<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
-<p>Creates static translator for static settings</p>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
+<h3 id="graphapirequestbody-headers-&#x21D2;-promisegraphqlresponse"><a name="graphapirequestbody-headers-&#x21D2;-promisegraphqlresponse" class="plugin-anchor" href="#graphapirequestbody-headers-&#x21D2;-promisegraphqlresponse"><i class="fa fa-link" aria-hidden="true"></i></a>graphApi.request(body, headers) &#x21D2; <a href="#GraphQlResponse"><code>Promise.&lt;GraphQlResponse&gt;</code></a></h3>
+<p><strong>Kind</strong>: instance method of <a href="#GraphApi"><code>GraphApi</code></a><br><strong>Params</strong></p>
 <ul>
-<li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
+<li>body <code>Object</code><ul>
+<li>.query <code>Object</code></li>
+<li>[.variables] <code>Object</code></li>
+<li>[.operationName] <code>string</code></li>
 </ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
-
-const translate = new Translate({ sourcePath: __dirname });
-
-const t = translate.translator([&apos;cs&apos;, &apos;en&apos;]);
-
-// czech
-t.cs.t(&apos;requested text&apos;);
-
-// english
-t.en.t(&apos;requested text&apos;);
-</code></pre>
-<div id="Translate_middleware">&#xA0;</div>
-
-<h3 id="translatemiddlewarelanguageresolver-&#x21D2;-function"><a name="translatemiddlewarelanguageresolver-&#x21D2;-function" class="plugin-anchor" href="#translatemiddlewarelanguageresolver-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>translate.middleware(languageResolver) &#x21D2; <code>function</code></h3>
-<p>Bots middleware for text translations</p>
-<ul>
-<li>will be looking for <code>&lt;lang&gt;.locale.po</code> by default</li>
-</ul>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languageResolver <code>function</code></li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
-
-const translate = new Translate({ sourcePath: __dirname });
-
-bot.use(translate.middleware((req, res) =&gt; &apos;cs&apos;));
-
-bot.use((req, res) =&gt; {
-   res.text(res.t(&apos;Translated text&apos;));
-});
-</code></pre>
-<div id="Translate">&#xA0;</div>
-
-<h2 id="translate"><a name="translate" class="plugin-anchor" href="#translate"><i class="fa fa-link" aria-hidden="true"></i></a>Translate</h2>
-<p><strong>Kind</strong>: global class  </p>
-<ul>
-<li><a href="#Translate">Translate</a><ul>
-<li><a href="#new_Translate_new">new Translate()</a></li>
-<li><a href="#new_Translate_new">new Translate([options])</a></li>
-<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
-<li><a href="#Translate_middleware">.middleware(languageResolver)</a> &#x21D2; <code>function</code></li>
+</li>
+<li>headers <code>Object</code><ul>
+<li>[.Authorization] <code>string</code></li>
 </ul>
 </li>
 </ul>
-<div id="new_Translate_new">&#xA0;</div>
+<div id="postBackApi">&#xA0;</div>
 
-<h3 id="new-translate"><a name="new-translate" class="plugin-anchor" href="#new-translate"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate()</h3>
-<p>Tool for text translation</p>
-<div id="new_Translate_new">&#xA0;</div>
-
-<h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>[options] <code>Object</code><ul>
-<li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
-<li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
-</ul>
-</li>
-</ul>
-<div id="Translate_translator">&#xA0;</div>
-
-<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
-<p>Creates static translator for static settings</p>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
-
-const translate = new Translate({ sourcePath: __dirname });
-
-const t = translate.translator([&apos;cs&apos;, &apos;en&apos;]);
-
-// czech
-t.cs.t(&apos;requested text&apos;);
-
-// english
-t.en.t(&apos;requested text&apos;);
-</code></pre>
-<div id="Translate_middleware">&#xA0;</div>
-
-<h3 id="translatemiddlewarelanguageresolver-&#x21D2;-function"><a name="translatemiddlewarelanguageresolver-&#x21D2;-function" class="plugin-anchor" href="#translatemiddlewarelanguageresolver-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>translate.middleware(languageResolver) &#x21D2; <code>function</code></h3>
-<p>Bots middleware for text translations</p>
-<ul>
-<li>will be looking for <code>&lt;lang&gt;.locale.po</code> by default</li>
-</ul>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languageResolver <code>function</code></li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
-
-const translate = new Translate({ sourcePath: __dirname });
-
-bot.use(translate.middleware((req, res) =&gt; &apos;cs&apos;));
-
-bot.use((req, res) =&gt; {
-   res.text(res.t(&apos;Translated text&apos;));
-});
-</code></pre>
-<div id="ReturnSender">&#xA0;</div>
-
-<h2 id="returnsender"><a name="returnsender" class="plugin-anchor" href="#returnsender"><i class="fa fa-link" aria-hidden="true"></i></a>ReturnSender</h2>
-<p><strong>Kind</strong>: global class  </p>
-<ul>
-<li><a href="#ReturnSender">ReturnSender</a><ul>
-<li><a href="#new_ReturnSender_new">new ReturnSender(options, userId, incommingMessage, logger)</a></li>
-<li><a href="#ReturnSender_modifyStateBeforeStore">.modifyStateBeforeStore()</a> &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></li>
-</ul>
-</li>
-</ul>
-<div id="new_ReturnSender_new">&#xA0;</div>
-
-<h3 id="new-returnsenderoptions-userid-incommingmessage-logger"><a name="new-returnsenderoptions-userid-incommingmessage-logger" class="plugin-anchor" href="#new-returnsenderoptions-userid-incommingmessage-logger"><i class="fa fa-link" aria-hidden="true"></i></a>new ReturnSender(options, userId, incommingMessage, logger)</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>options <code>Object</code></li>
-<li>userId <code>string</code></li>
-<li>incommingMessage <code>Object</code></li>
-<li>logger <code>console</code> <code> = </code> - console like logger</li>
-</ul>
-<div id="ReturnSender_modifyStateBeforeStore">&#xA0;</div>
-
-<h3 id="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateBeforeStore() &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#ReturnSender"><code>ReturnSender</code></a>  </p>
-<div id="bufferloader">&#xA0;</div>
-
-<h2 id="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><a name="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer" class="plugin-anchor" href="#bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><i class="fa fa-link" aria-hidden="true"></i></a>bufferloader(url, [limit], [limitJustByBody], [redirCount]) &#x21D2; <code>Promise.&lt;Buffer&gt;</code></h2>
-<p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
+<h2 id="postbackapiprocessor-acl-&#x21D2;-postbackapi"><a name="postbackapiprocessor-acl-&#x21D2;-postbackapi" class="plugin-anchor" href="#postbackapiprocessor-acl-&#x21D2;-postbackapi"><i class="fa fa-link" aria-hidden="true"></i></a>postBackApi(processor, [acl]) &#x21D2; <code>PostBackAPI</code></h2>
+<p>Create a postback API</p>
 <p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
 <ul>
-<li>url <code>string</code></li>
-<li>[limit] <code>number</code> <code> = 0</code> - limit in bytes</li>
-<li>[limitJustByBody] <code>boolean</code> <code> = false</code> - when true, content size in header is ignored</li>
-<li>[redirCount] <code>number</code> <code> = 3</code> - maximmum amount of redirects</li>
+<li>processor <code>Object</code> - running messaging channel, like Facebook</li>
+<li>[acl] <code>Array.&lt;string&gt;</code> | <code>function</code> - limit api to array of groups or use auth function</li>
 </ul>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">router.use(<span class="hljs-string">&apos;*&apos;</span>, (req, res, postBack) =&gt; {
-    <span class="hljs-keyword">if</span> (req.isFile()) {
-        bufferloader(req.attachmentUrl())
-            .then(buffer =&gt; postBack(<span class="hljs-string">&apos;downloaded&apos;</span>, { data: buffer }))
-            .catch(err =&gt; postBack(<span class="hljs-string">&apos;donwloaded&apos;</span>, { err }))
-    }
-});
-</code></pre>
-<div id="State">&#xA0;</div>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { GraphApi, postBackApi } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-<h2 id="state--object"><a name="state--object" class="plugin-anchor" href="#state--object"><i class="fa fa-link" aria-hidden="true"></i></a>State : <code>Object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>senderId</td>
-<td><code>string</code></td>
-</tr>
-<tr>
-<td>pageId</td>
-<td><code>string</code></td>
-</tr>
-<tr>
-<td>state</td>
-<td><code>Object</code></td>
-</tr>
-</tbody>
-</table>
+<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
+    postBackApi(channel)
+], {
+    appToken: <span class="hljs-string">&apos;API-will-be-accessible-with-this-token-in-Authorization-header&apos;</span>
+})
+</code></pre>
+<div id="validateBotApi">&#xA0;</div>
+
+<h2 id="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><a name="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi" class="plugin-anchor" href="#validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><i class="fa fa-link" aria-hidden="true"></i></a>validateBotApi(botFactory, [postBackTest], [textTest], [acl]) &#x21D2; <code>ValidateBotAPI</code></h2>
+<p>Test the bot configuration</p>
+<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
+<ul>
+<li>botFactory <code>function</code> - function, which returns a bot</li>
+<li>[postBackTest] <code>string</code> | <code>null</code> - postback action to test</li>
+<li>[textTest] <code>string</code> | <code>null</code> - random text to test</li>
+<li>[acl] <code>Array.&lt;string&gt;</code> | <code>function</code> - limit api to array of groups or use auth function</li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { GraphApi, validateBotApi } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+
+<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
+    validateBotApi(botFactory, <span class="hljs-string">&apos;start&apos;</span>, <span class="hljs-string">&apos;hello&apos;</span>)
+], {
+    token: <span class="hljs-string">&apos;wingbot-token&apos;</span>
+})
+</code></pre>
+<div id="apiAuthorizer">&#xA0;</div>
+
+<h2 id="apiauthorizerargs-ctx-acl-&#x21D2;-boolean"><a name="apiauthorizerargs-ctx-acl-&#x21D2;-boolean" class="plugin-anchor" href="#apiauthorizerargs-ctx-acl-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>apiAuthorizer(args, ctx, acl) &#x21D2; <code>boolean</code></h2>
+<p>If API call is authorized - use for own implementations of API endpoints</p>
+<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
+<ul>
+<li>args <code>Object</code> - gql request</li>
+<li>ctx <code>Object</code> - request context</li>
+<li>acl <code>Array.&lt;string&gt;</code> | <code>null</code> | <code>function</code> - custom acl settings</li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { apiAuthorizer } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createApi</span> (<span class="hljs-params">acl = null</span>) </span>{
+    <span class="hljs-keyword">return</span> {
+         gqlEndpoint (args, ctx) {
+             <span class="hljs-keyword">if</span> (!apiAuthorizer(args, ctx, acl)) {
+                 <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+             }
+         }
+    }
+}
+</code></pre>
+<div id="GraphQlResponse">&#xA0;</div>
+
+<h2 id="graphqlresponse--object"><a name="graphqlresponse--object" class="plugin-anchor" href="#graphqlresponse--object"><i class="fa fa-link" aria-hidden="true"></i></a>GraphQlResponse : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
+<ul>
+<li>[data] <code>*</code></li>
+<li>[errors] <code>Array.&lt;Object&gt;</code></li>
+</ul>
+<div id="postBack">&#xA0;</div>
+
+<h2 id="postback--object"><a name="postback--object" class="plugin-anchor" href="#postback--object"><i class="fa fa-link" aria-hidden="true"></i></a>postBack : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<div id="validateBot">&#xA0;</div>
+
+<h2 id="validatebot--object"><a name="validatebot--object" class="plugin-anchor" href="#validatebot--object"><i class="fa fa-link" aria-hidden="true"></i></a>validateBot : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
 
                                 
                                 </section>
@@ -1175,12 +1046,12 @@ bot.use((req, res) =&gt; {
 
             
                 
-                <a href="ButtonTemplate.html#ReceiptTemplate" class="navigation navigation-prev " aria-label="Previous page: ReceiptTemplate">
+                <a href="Notifications.html" class="navigation navigation-prev " aria-label="Previous page: Notifications">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="Ai.html" class="navigation navigation-next " aria-label="Next page: Ai">
+                <a href="graphqlSchema.html" class="navigation navigation-next " aria-label="Next page: Chatbot API GraphQL schema">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1191,7 +1062,7 @@ bot.use((req, res) =&gt; {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2018-11-12T14:08:20.019Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"GraphApi","level":"3.10","depth":1,"next":{"title":"Chatbot API GraphQL schema","level":"3.11","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"previous":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/GraphApi.md","mtime":"2018-11-12T14:08:20.032Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

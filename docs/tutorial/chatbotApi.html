@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Conversation State · Wingbot</title>
+        <title>Chatbot API · Wingbot</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -61,10 +61,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="conversationState.html" />
+    <link rel="next" href="buildingConversation.html" />
     
     
-    <link rel="prev" href="buildingConversation.html" />
+    <link rel="prev" href="analytics.html" />
     
 
     </head>
@@ -263,7 +263,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6" data-path="chatbotApi.html">
+        <li class="chapter active" data-level="1.6" data-path="chatbotApi.html">
             
                 <a href="chatbotApi.html">
             
@@ -341,7 +341,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="2.2" data-path="conversationState.html">
+        <li class="chapter " data-level="2.2" data-path="conversationState.html">
             
                 <a href="conversationState.html">
             
@@ -856,7 +856,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Conversation State</a>
+        <a href=".." >Chatbot API</a>
     </h1>
 </div>
 
@@ -871,80 +871,115 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="working-with-conversation-state"><a name="working-with-conversation-state" class="plugin-anchor" href="#working-with-conversation-state"><i class="fa fa-link" aria-hidden="true"></i></a>Working with conversation state</h1>
-<p>Stateless conversation is annoying. Noone wants to repeat, what was said. So <strong>each user has own state object</strong>.</p>
-<h2 id="using-the-state-in-navigation"><a name="using-the-state-in-navigation" class="plugin-anchor" href="#using-the-state-in-navigation"><i class="fa fa-link" aria-hidden="true"></i></a>Using the state in navigation</h2>
-<p>Request object contains <code>.state</code> attribute, which represents state before the event, Responder updates new state with <code>Object.assign()</code> approach.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+                                <h1 id="chatbot-api"><a name="chatbot-api" class="plugin-anchor" href="#chatbot-api"><i class="fa fa-link" aria-hidden="true"></i></a>Chatbot API</h1>
+<p>You can communicate with your chatbot through its <strong>GraphQL API</strong>. These basic tasks can be done by API:</p>
+<ul>
+<li>sending messages (with <a href="../api/GraphApi.html#postBackApi">postBackApi()</a>)</li>
+<li>validating a conversation data (with <a href="../api/GraphApi.html#validateBotApi">validateBotApi()</a>)</li>
+<li>managing campaigns and querying target audience (with <a href="../api/Notifications.html#Notifications_api">Notifications#api()</a>)</li>
+<li>or updating a conversation data</li>
+</ul>
+<h2 id="sending-a-request-to-the-chatbot-postback"><a name="sending-a-request-to-the-chatbot-postback" class="plugin-anchor" href="#sending-a-request-to-the-chatbot-postback"><i class="fa fa-link" aria-hidden="true"></i></a>Sending a request to the chatbot (postback)</h2>
+<p>This example illustrates, how to send a request with CURL</p>
+<pre><code>curl -X POST https://yourbot.com/api \
+  -H &quot;Authorization: &lt;custom static token for other applications&gt;&quot; \
+  -H &quot;Content-Type: application/json; charset=utf-8&quot; \
+  -d @- &lt;&lt; EOF
 
-bot.use(<span class="hljs-string">&apos;/rename&apos;</span>, (req, res) =&gt; {
-    res.text(<span class="hljs-string">&apos;So, how will you call me?&apos;</span>)
-        .expected(<span class="hljs-string">&apos;setName&apos;</span>);
-});
+{
+    &quot;variables&quot;: {
+        &quot;pageId&quot;:&quot;webchat&quot;,
+        &quot;senderId&quot;:&quot;id-of-user&quot;,
+        &quot;action&quot;: &quot;action-path&quot;
+    },
+    &quot;query&quot;:&quot;mutation SendPostBack ($pageId:String!,$senderId:String!,$action:String!,$data:Any) { postBack (pageId:$pageId,senderId:$senderId,action:$action,data:$data) { status } }&quot;
+}
+EOF
+</code></pre><p>Or with plain javascript</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> request = <span class="hljs-keyword">new</span> XMLHttpRequest();
 
-bot.use(<span class="hljs-string">&apos;/setName&apos;</span>, (req, res) =&gt; {
-    <span class="hljs-keyword">const</span> name = req.text();
+request.open(<span class="hljs-string">&apos;POST&apos;</span>, <span class="hljs-string">&apos;https://my-bot.com/api&apos;</span>, <span class="hljs-literal">true</span>);
 
-    res.text(<span class="hljs-string">`Now, I&apos;am <span class="hljs-subst">${name}</span>.`</span>)
-        .setState({ name });
-});
+request.setRequestHeader(<span class="hljs-string">&apos;Content-Type&apos;</span>, <span class="hljs-string">&apos;application/json; charset=utf-8&apos;</span>);
+request.setRequestHeader(<span class="hljs-string">&apos;Authorization&apos;</span>, <span class="hljs-string">&apos;&lt;custom static token for other applications&gt;&apos;</span>);
 
-bot.use((req, res) =&gt; {
-    <span class="hljs-keyword">const</span> { name } = req.state;
-    <span class="hljs-keyword">if</span> (name) {
-        res.text(<span class="hljs-string">`Call me <span class="hljs-subst">${name}</span>, ok?`</span>, {
-            rename: <span class="hljs-string">&apos;It\&apos;s not ok&apos;</span>
-        });
+request.onload = () =&gt; {
+    <span class="hljs-keyword">let</span> err = <span class="hljs-literal">null</span>;
+    <span class="hljs-keyword">if</span> (request.status &gt;= <span class="hljs-number">200</span> &amp;&amp; request.status &lt; <span class="hljs-number">400</span>) {
+        <span class="hljs-keyword">const</span> res = <span class="hljs-built_in">JSON</span>.parse(request.response);
+        <span class="hljs-keyword">if</span> (res.data &amp;&amp; (!res.errors || res.errors.length === <span class="hljs-number">0</span>)) {
+            <span class="hljs-comment">// success</span>
+        } <span class="hljs-keyword">else</span> {
+            err = res.errors &amp;&amp; res.errors[<span class="hljs-number">0</span>];
+            <span class="hljs-comment">// graphql error</span>
+        }
     } <span class="hljs-keyword">else</span> {
-        res.text(<span class="hljs-string">&apos;I have no name, give me one!&apos;</span>)
-            .expected(<span class="hljs-string">&apos;setName&apos;</span>);
+        <span class="hljs-comment">// error status</span>
     }
+};
+
+request.onerror = () =&gt; {
+    <span class="hljs-comment">// request failed</span>
+};
+
+request.send(<span class="hljs-built_in">JSON</span>.stringify({
+    query: <span class="hljs-string">`mutation SendPostBack (
+        $pageId:String!,
+        $senderId:String!,
+        $action:String!,
+        $data:Any
+    ) {
+        postBack (
+            pageId:$pageId,
+            senderId:$senderId,
+            action:$action,
+            data:$data
+        ) {
+            status
+        }
+    }`</span>,
+    variables: {
+        pageId: <span class="hljs-string">&apos;webchat&apos;</span>,
+        senderId: <span class="hljs-string">&apos;id-of-user&apos;</span>,
+        action: <span class="hljs-string">&apos;action-path&apos;</span>
+    }
+}));
+</code></pre>
+<h2 id="setting-up-the-api"><a name="setting-up-the-api" class="plugin-anchor" href="#setting-up-the-api"><i class="fa fa-link" aria-hidden="true"></i></a>Setting up the API</h2>
+<p>Each chatbot should have the <code>/api</code> endpoint, which listens to the
+<strong>GraphQL requests</strong> authorized with <strong>JWT token</strong> or <strong>Static token</strong>.</p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { GraphApi, validateBotApi, postBackApi } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> espress = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;express&apos;</span>);
+<span class="hljs-keyword">const</span> channel = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;./instance-of-facebook-or-botservice&apos;</span>);
+<span class="hljs-keyword">const</span> botFactory = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;./function-which-returns-instance-of-router&apos;</span>);
+
+<span class="hljs-keyword">const</span> app = express();
+
+<span class="hljs-comment">// attach API&apos;s</span>
+<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
+    postBackApi(channel),
+    validateBotApi(botFactory, <span class="hljs-string">&apos;start&apos;</span>, <span class="hljs-string">&apos;foobar&apos;</span>)
+], {
+    token: <span class="hljs-string">&apos;&lt;wingbot token&gt;&apos;</span>,
+    appToken: <span class="hljs-string">&apos;&lt;custom static token for other applications&gt;&apos;</span>
 });
 
-<span class="hljs-built_in">module</span>.exports = bot;
+app.post(
+    <span class="hljs-string">&apos;/api&apos;</span>,
+    express.json(),
+    (req, res, next) =&gt; {
+        <span class="hljs-keyword">const</span> { body } = req;
+        api.request(body, req.headers)
+            .then((response) =&gt; {
+                res.set({
+                    <span class="hljs-string">&apos;Content-Type&apos;</span>: <span class="hljs-string">&apos;application/json&apos;</span>
+                })
+                    .send(response);
+            })
+            .catch(next);
+    })
+);
 </code></pre>
-<p>This example makes conversation flow like this:</p>
-<pre><code>*-----------------------------------*
-|                             Hello |
-| I have no name, give me one!      |
-|                                   |
-|                            Albert |
-| Now, I&apos;am Albert.                 |
-|                                   |
-|                             Hello |
-| Call me Albert, ok?               |
-|                                   |
-|                       It&apos;s not ok |
-| So, how will you call me?         |
-|                                   |
-|                            Alfred |
-| Now, I&apos;am Alfred.                 |
-*-----------------------------------*
-</code></pre><h2 id="reading-and-modifiing-user-state"><a name="reading-and-modifiing-user-state" class="plugin-anchor" href="#reading-and-modifiing-user-state"><i class="fa fa-link" aria-hidden="true"></i></a>Reading and modifiing user state</h2>
-<p>It&apos;s good to know, that request state is not modified, when <code>res.setState()</code> is called. It will be modified after dispatching process.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-
-bot.use((req, res) =&gt; {
-    <span class="hljs-comment">// let&apos;s give two options to user</span>
-    <span class="hljs-keyword">if</span> (req.state.odd) {
-        res.setState({ odd: <span class="hljs-literal">false</span> });
-        <span class="hljs-comment">// still req.state.odd === true</span>
-        <span class="hljs-keyword">this</span>.text(<span class="hljs-string">&apos;Odd&apos;</span>);
-    } <span class="hljs-keyword">else</span> {
-        res.setState({ odd: <span class="hljs-literal">true</span> });
-        <span class="hljs-comment">// still req.state.odd === false || req.state.odd === undefined</span>
-        <span class="hljs-keyword">this</span>.text(<span class="hljs-string">&apos;Even&apos;</span>);
-    }
-});
-
-<span class="hljs-built_in">module</span>.exports = bot;
-</code></pre>
-<blockquote>
-<p>It&apos;s better to avoid using &quot;default state&quot;, because when you need to change default state in future updates,
-you should also migrate current users states to new structure.</p>
-</blockquote>
 
                                 
                                 </section>
@@ -972,12 +1007,12 @@ you should also migrate current users states to new structure.</p>
 
             
                 
-                <a href="buildingConversation.html#post-back-is-also-an-action" class="navigation navigation-prev " aria-label="Previous page: Postbacks">
+                <a href="analytics.html" class="navigation navigation-prev " aria-label="Previous page: Analytics">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="conversationState.html#using-the-state-in-navigation" class="navigation navigation-next " aria-label="Next page: Using state in navigation">
+                <a href="buildingConversation.html" class="navigation navigation-next " aria-label="Next page: Building a Bot programmatically">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -988,7 +1023,7 @@ you should also migrate current users states to new structure.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Conversation State","level":"2.2","depth":1,"next":{"title":"Using state in navigation","level":"2.2.1","depth":2,"anchor":"#using-the-state-in-navigation","path":"tutorial/conversationState.md","ref":"tutorial/conversationState.md#using-the-state-in-navigation","articles":[]},"previous":{"title":"Postbacks","level":"2.1.3","depth":2,"anchor":"#post-back-is-also-an-action","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#post-back-is-also-an-action","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/conversationState.md","mtime":"2018-06-03T18:40:34.949Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Chatbot API","level":"1.6","depth":1,"next":{"title":"Building a Bot programmatically","level":"2.1","depth":1,"path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md","articles":[{"title":"Asking a question","level":"2.1.1","depth":2,"anchor":"#asking-a-question","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#asking-a-question","articles":[]},{"title":"Using quick replies","level":"2.1.2","depth":2,"anchor":"#using-quick-replies-for-controlling-conversation","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#using-quick-replies-for-controlling-conversation","articles":[]},{"title":"Postbacks","level":"2.1.3","depth":2,"anchor":"#post-back-is-also-an-action","path":"tutorial/buildingConversation.md","ref":"tutorial/buildingConversation.md#post-back-is-also-an-action","articles":[]}]},"previous":{"title":"Analytics","level":"1.5","depth":1,"path":"tutorial/analytics.md","ref":"tutorial/analytics.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/chatbotApi.md","mtime":"2018-11-12T13:57:15.588Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

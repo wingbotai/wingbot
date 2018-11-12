@@ -14,6 +14,7 @@
     * [Loading data from APIs](designerBot/scripting.md#loading-data-from-apis)
 * [Testing](tutorial/testing.md)
 * [Analytics](tutorial/analytics.md)
+* [Chatbot API](tutorial/chatbotApi.md)
 
 ## Understanding the core
 
@@ -55,3 +56,6 @@
 * [Utils](api/bufferloader.md)
 * [Ai](api/Ai.md)
 * [Wingbot.ai](api/BuildRouter.md)
+* [Notifications](api/Notifications.md)
+* [GraphApi](api/GraphApi.md)
+* [Chatbot API GraphQL schema](api/graphqlSchema.md)
