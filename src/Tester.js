@@ -49,7 +49,8 @@ class Tester {
         const log = {
             error: (e) => { throw e; },
             warn: e => console.warn(e), // eslint-disable-line
-            log: e => console.log(e) // eslint-disable-line
+            log: e => console.log(e), // eslint-disable-line
+            info: e => console.info(e) // eslint-disable-line
         };
 
         let wrappedReducer = reducer;
@@ -72,12 +73,31 @@ class Tester {
         this.actions = [];
     }
 
-    _request (data) {
-        const messageSender = new ReturnSender({}, this.senderId, data);
+    /**
+     * Clear acquired responses and data
+     */
+    cleanup () {
+        this.responses = [];
+        this.actions = [];
+        this._actionsCollector = [];
+        this._responsesMock = [];
+    }
+
+    /**
+     * Use tester as a connector :)
+     *
+     * @param {Object} message - wingbot chat event
+     * @param {string} senderId - chat event sender identifier
+     * @param {string} pageId - channel/page identifier
+     * @returns {Promise<any>}
+     */
+    async processMessage (message, senderId = this.senderId, pageId = this.pageId) {
+        const messageSender = new ReturnSender({}, senderId, message);
         messageSender.simulatesOptIn = true;
 
-        return this.processor.processMessage(data, this.pageId, messageSender)
-            .then(res => this._acquireResponseActions(res, messageSender));
+        const res = await this.processor.processMessage(message, pageId, messageSender);
+        this._acquireResponseActions(res, messageSender);
+        return res;
     }
 
     _acquireResponseActions (res, messageSender) {
@@ -184,7 +204,7 @@ class Tester {
      * @memberOf Tester
      */
     text (text) {
-        return this._request(Request.text(this.senderId, text));
+        return this.processMessage(Request.text(this.senderId, text));
     }
 
     /**
@@ -197,7 +217,7 @@ class Tester {
      * @memberOf Tester
      */
     intent (intent, text = intent) {
-        return this._request(Request.intent(this.senderId, text, intent));
+        return this.processMessage(Request.intent(this.senderId, text, intent));
     }
 
     /**
@@ -210,7 +230,7 @@ class Tester {
      * @memberOf Tester
      */
     passThread (data = null, appId = 'random-app') {
-        return this._request(Request.passThread(this.senderId, appId, data));
+        return this.processMessage(Request.passThread(this.senderId, appId, data));
     }
 
     /**
@@ -228,7 +248,7 @@ class Tester {
         if (useRef === null) {
             useRef = `${Date.now()}${Math.floor(Date.now() * Math.random())}`;
         }
-        return this._request(Request.optin(useRef, action, data));
+        return this.processMessage(Request.optin(useRef, action, data));
     }
 
     /**
@@ -258,7 +278,7 @@ class Tester {
             }
         }
 
-        return this._request(Request.quickReply(this.senderId, usedAction, usedData));
+        return this.processMessage(Request.quickReply(this.senderId, usedAction, usedData));
     }
 
     /**
@@ -273,7 +293,7 @@ class Tester {
      * @memberOf Tester
      */
     postBack (action, data = {}, refAction = null, refData = {}) {
-        return this._request(Request
+        return this.processMessage(Request
             .postBack(this.senderId, action, data, refAction, refData));
     }
 

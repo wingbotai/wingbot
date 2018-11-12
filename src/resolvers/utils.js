@@ -3,7 +3,6 @@
  */
 'use strict';
 
-const Router = require('../Router'); // eslint-disable-line
 const hbs = require('./hbs');
 
 const ASPECT_SQUARE = 'square';
@@ -17,33 +16,6 @@ const TYPE_POSTBACK = 'postback';
 const WEBVIEW_FULL = 'full';
 const WEBVIEW_TALL = 'tall';
 const WEBVIEW_COMPACT = 'compact';
-
-let request; // eslint-disable-line
-try {
-    request = module.require('request-promise-native');
-} catch (e) {
-    // do nothing
-    request = () => Promise.reject(new Error('plugin is missing'));
-}
-
-function customFn (code, description) {
-    if (typeof code !== 'string') {
-        throw new Error(`Inline code '${description}' has empty code`);
-    }
-    let resolver;
-
-    try {
-        resolver = eval(code); // eslint-disable-line
-    } catch (e) {
-        throw new Error(`Invalid inline code '${description}': ${e.message}`);
-    }
-
-    if (typeof resolver !== 'function') {
-        throw new Error(`Invalid inline code '${description}': must be a function`);
-    }
-
-    return resolver;
-}
 
 function isArrayOfObjects (translations) {
     return Array.isArray(translations)
@@ -188,7 +160,6 @@ function processButtons (
 }
 
 module.exports = {
-    customFn,
     getLanguageText,
     cachedTranslatedCompilator,
     getText,

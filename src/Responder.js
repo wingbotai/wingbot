@@ -404,8 +404,7 @@ class Responder {
      * @returns {this}
      */
     typingOn () {
-        this._senderAction('typing_on');
-        return this;
+        return this._senderAction('typing_on');
     }
 
     /**
@@ -414,8 +413,7 @@ class Responder {
      * @returns {this}
      */
     typingOff () {
-        this._senderAction('typing_off');
-        return this;
+        return this._senderAction('typing_off');
     }
 
     /**
@@ -424,8 +422,7 @@ class Responder {
      * @returns {this}
      */
     seen () {
-        this._senderAction('mark_seen');
-        return this;
+        return this._senderAction('mark_seen');
     }
 
     /**

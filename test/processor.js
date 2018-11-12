@@ -9,6 +9,7 @@ const Processor = require('../src/Processor');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const ReducerWrapper = require('../src/ReducerWrapper');
+const { readEvent, deliveryEvent } = require('../src/utils/requestFactories');
 
 const EMPTY_STATE = { user: {} };
 
@@ -40,6 +41,7 @@ function createLogger (errFn = (m, e) => {
     throw e;
 }) {
     return {
+        info: sinon.spy(),
         log: sinon.spy(),
         warn: sinon.spy(),
         error: sinon.spy(errFn)
@@ -87,7 +89,7 @@ describe('Processor', function () {
 
             const stateStorage = createStateStorage();
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(reducer, Object.assign(opts, { autoSeen: true }));
 
             return proc.processMessage({
                 sender: {
@@ -107,7 +109,7 @@ describe('Processor', function () {
                 });
 
                 assert(stateStorage.saveState.called);
-                assert.strictEqual(res.responses.length, 1);
+                assert.strictEqual(res.responses.length, 2);
                 assert.deepEqual(stateStorage.getOrCreateAndLock.firstCall.args, [
                     1,
                     10,
@@ -214,6 +216,27 @@ describe('Processor', function () {
 
                 });
             });
+        });
+
+        it('should not process reads and deliveries', async () => {
+
+            const reducer = sinon.spy((req, res) => {
+                res.setState({ final: 1 });
+                res.text('Hello');
+                assert.strictEqual(req.pageId, 10);
+            });
+
+            const stateStorage = createStateStorage();
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
+
+            const readMessage = readEvent(1, 2);
+            const deliveryMessage = deliveryEvent(1, 2);
+
+            await proc.processMessage(readMessage, 10);
+            await proc.processMessage(deliveryMessage, 10);
+
+            assert.strictEqual(reducer.callCount, 0);
         });
 
         it('invalid messages should be logged', function () {
@@ -360,57 +383,93 @@ describe('Processor', function () {
             t.res(0).contains('result is 2');
         });
 
-        /* it('should accept optins and save them in state', function () {
+    });
 
-            let callNo = 0;
+    describe('#plugin()', () => {
 
-            const reducer = sinon.spy((req, res, postBack) => {
-                callNo++;
-                if (callNo === 1) {
-                    res.text('Hello');
-                    res.setState({ final: 1 });
-                    assert.strictEqual(req.senderId, null);
-                    res.text('Hello');
-                    postBack('action');
-                } else {
-                    res.setState({ final: 2 });
-                    assert.strictEqual(req.senderId, 'senderid');
-                    res.text('Hello');
+        let middleware;
+        let mockPlugin;
+        let mockReducer;
+        let p;
+
+        beforeEach(() => {
+            middleware = sinon.spy((req) => {
+                const text = req.text();
+
+                if (text === 'stop') {
+                    return null;
                 }
+                return true;
             });
 
-            const stateStorage = createStateStorage();
-            const opts = makeOptions(stateStorage);
-            const sender = sinon.spy(() => Promise.resolve({ recipient_id: 'senderid' }));
+            mockPlugin = {
+                processMessage: sinon.spy(message => ({ status: message.sender.id })),
+                middleware: sinon.spy(() => middleware)
+            };
 
-            opts.senderFnFactory = senderFactory('a', { log: () => {} }, () => {}, sender);
-
-            const proc = new Processor(reducer, opts);
-
-            return proc.processMessage(Request.optin('optinid', 'action'), 10).then(() => {
-                assert(reducer.calledTwice);
-
-                assert(stateStorage.saveState.called);
-
-                assert.equal(sender.callCount, 3);
-
-                // check the response
-                assert.deepEqual(sender.firstCall.args[0].recipient, { user_ref: 'optinid' });
-                assert.deepEqual(sender.secondCall.args[0].recipient, { id: 'senderid' });
-
-                assert.deepEqual(stateStorage.getOrCreateAndLock.firstCall.args, [
-                    'senderid',
-                    {},
-                    100
-                ]);
-
-                assert.deepEqual(stateStorage.model.state, {
-                    final: 2,
-                    _expected: null,
-                    _expectedKeywords: null
-                });
+            mockReducer = sinon.spy((req, res) => {
+                res.text('1');
             });
-        }); */
+
+            p = new Processor(mockReducer);
+
+            p.plugin(mockPlugin);
+        });
+
+        it('just works', async () => {
+            const res = await p.processMessage({
+                sender: { id: 200 }
+            });
+
+            assert.equal(mockPlugin.processMessage.calledOnce, true, 'plugin process method should  be called');
+            assert.equal(middleware.called, false, 'middleware should not be called');
+            assert.equal(mockReducer.called, false, 'mockReducer should not be called');
+            assert.deepEqual(res, { status: 200 }, 'response should be ok');
+        });
+
+        it('throws error when the plugin does not return status', async () => {
+            mockPlugin = {
+                processMessage: sinon.spy(() => {}),
+                middleware: sinon.spy(() => () => middleware)
+            };
+
+            p = new Processor(mockReducer);
+
+            p.plugin(mockPlugin);
+
+            const res = await p.processMessage({
+                sender: { id: 1 }
+            });
+
+            assert.equal(middleware.called, false, 'middleware should not be called');
+            assert.equal(mockReducer.called, false, 'mockReducer should not be called');
+            assert.deepEqual(res, { status: 500 }, 'response should be error');
+        });
+
+        it('makes plugin middleware able to stop the event processing', async () => {
+            const res = await p.processMessage({
+                sender: { id: 204 },
+                message: { text: 'stop' }
+            });
+
+            assert.equal(middleware.called, true, 'middleware should be called');
+            assert.equal(mockReducer.called, false, 'mockReducer should not be called');
+            assert.equal(mockPlugin.processMessage.calledOnce, true, 'plugin process method should  be called');
+            assert.deepEqual(res, { status: 204, responses: [] }, 'response should be ok');
+        });
+
+        it('allows middleware to pass the request', async () => {
+            const res = await p.processMessage({
+                sender: { id: 204 },
+                message: { text: 'continue' }
+            });
+
+            assert.equal(middleware.called, true, 'middleware should be called');
+            assert.equal(mockReducer.called, true, 'mockReducer should be called');
+            assert.equal(mockPlugin.processMessage.calledOnce, true, 'plugin process method should  be called');
+            assert.equal(res.status, 200, 'response should be ok');
+        });
+
     });
 
 });

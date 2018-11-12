@@ -8,6 +8,7 @@ const assert = require('assert');
 const { Tester, ai } = require('../index');
 const BuildRouter = require('../src/BuildRouter');
 const Plugins = require('../src/Plugins');
+// @ts-ignore
 const testbot = require('./testbot.json');
 
 describe('<BuildRouter>', async () => {

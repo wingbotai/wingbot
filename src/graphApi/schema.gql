@@ -1,0 +1,158 @@
+scalar Any
+
+type Tag {
+    tag: String!,
+    subscribtions: Int!
+}
+
+type Tags {
+    data: [Tag]!
+    lastKey: String
+}
+
+type Subscribtion {
+    pageId: String
+    senderId: String
+}
+
+type Subscribtions {
+    data: [Subscribtion]!
+    lastKey: String
+    count: Int!
+}
+
+type Campaign {
+    id: String!,
+    name: String!
+
+    action: String!
+    data: String,
+
+    include: [String]!
+    exclude: [String]!
+    pageId: String
+
+    sliding: Boolean
+    slide: Int
+    active: Boolean!
+    in24hourWindow: Boolean!
+    startAt: Float
+    allowRepeat: Boolean!
+    type: String
+
+    sent: Int!
+    failed: Int!
+    delivery: Int!
+    read: Int!
+    notSent: Int!
+    leaved: Int!
+    queued: Int!
+    negative: Int!
+    positive: Int!
+
+    hasCondition: Boolean!
+    condition: String
+}
+
+type Campaigns {
+    data: [Campaign]!
+    lastKey: String
+}
+
+input CampaignsCondition {
+    active: Boolean
+    sliding: Boolean
+}
+
+type QueuingResult {
+    queued: Int!
+}
+
+type PostBackResult {
+    status: Int
+}
+
+type ValidationResult {
+    ok: Boolean!
+    error: String
+}
+
+input CreateCampaignInput {
+    name: String!
+    action: String!
+    data: String = "{}"
+
+    include: [String]! = []
+    exclude: [String]! = []
+    pageId: String
+
+    sliding: Boolean = false
+    slide: Int
+    active: Boolean! = false
+    in24hourWindow: Boolean! = true
+    startAt: Float
+    allowRepeat: Boolean! = false
+    type: String
+
+    hasCondition: Boolean! = false
+    condition: String
+}
+
+input UpdateCampaignInput {
+    name: String
+    action: String
+    data: String
+
+    include: [String]
+    exclude: [String]
+    pageId: String
+
+    sliding: Boolean
+    slide: Int
+    active: Boolean
+    in24hourWindow: Boolean
+    startAt: Float
+    allowRepeat: Boolean
+    type: String
+
+    hasCondition: Boolean
+    condition: String
+}
+
+type Query {
+    "list tags statistics"
+    tags(pageId:String): Tags
+
+    "fetch user ids for selected tag"
+    subscribtions (
+        include: [String!] = []
+        exclude: [String!] = []
+        pageId: String
+        limit: Int = 100
+        lastKey: String
+    ): Subscribtions
+
+    campaign (
+        campaignId: String!
+    ): Campaign
+
+    "list of user defined campaigns"
+    campaigns(
+        limit: Int
+        lastKey: String
+        condition: CampaignsCondition
+    ): Campaigns
+
+    "returns the API version"
+    version: String!
+}
+
+type Mutation {
+    validateBot(bot:Any!): ValidationResult
+    updateBot: Boolean
+    postBack(pageId:String!,senderId:String!,action:String!,data:Any): PostBackResult
+    createCampaign(campaign: CreateCampaignInput!): Campaign
+    updateCampaign(campaignId: String!, update: UpdateCampaignInput!): Campaign
+    removeCampaign(campaignId: String!): Boolean
+    runCampaign(campaignId: String!): QueuingResult
+}

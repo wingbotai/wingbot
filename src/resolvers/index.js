@@ -15,6 +15,7 @@ const exit = require('./exit');
 const passThread = require('./passThread');
 const media = require('./media');
 const button = require('./button');
+const subscribtions = require('./subscribtions');
 
 module.exports = {
     path,
@@ -28,5 +29,6 @@ module.exports = {
     passThread,
     media,
     carousel,
-    button
+    button,
+    subscribtions
 };

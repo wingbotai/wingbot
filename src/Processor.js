@@ -16,6 +16,12 @@ const ReturnSender = require('./ReturnSender');
  * @prop {number} maxTime - maximum writing time
  */
 
+/**
+ * @typedef {Object} Plugin
+ * @prop {Function} middleware
+ * @prop {Function} processMessage
+ */
+
 class Processor {
 
     /**
@@ -31,6 +37,7 @@ class Processor {
      * @param {boolean|AutoTypingConfig} [options.autoTyping] - enable or disable automatic typing
      * @param {Function} [options.log] - console like error logger
      * @param {Object} [options.defaultState] - default chat state
+     * @param {boolean} [options.autoSeen] - send seen automatically
      *
      * @memberOf Processor
      */
@@ -43,7 +50,8 @@ class Processor {
             timeout: 30000,
             log: console,
             defaultState: {},
-            autoTyping: false
+            autoTyping: false,
+            autoSeen: false
         };
 
         Object.assign(this.options, options);
@@ -56,6 +64,22 @@ class Processor {
         this.stateStorage = this.options.stateStorage;
 
         this.tokenStorage = this.options.tokenStorage;
+
+        /**
+         * @type {Plugin[]}
+         * @private
+         */
+        this._plugins = [];
+        this._middlewares = [];
+    }
+
+    /**
+     *
+     * @param {Plugin} plugin
+     */
+    plugin (plugin) {
+        this._plugins.push(plugin);
+        this._middlewares.push(plugin.middleware());
     }
 
     _createPostBack (postbackAcumulator) {
@@ -76,11 +100,15 @@ class Processor {
     }
 
     reportSendError (err, message, pageId) {
-        if (!message || !message.sender || !message.sender.id) {
+        if (err.code === 204) {
+            this.options.log.info('nothing sent', message);
             return;
         }
         if (err.code !== 403) {
             this.options.log.error(err, message);
+        }
+        if (!message || !message.sender || !message.sender.id) {
+            return;
         }
         const senderId = message.sender.id;
 
@@ -108,11 +136,31 @@ class Processor {
         ),
         responderData = {}
     ) {
-        if (typeof message !== 'object' || message === null ||
-            !((message.sender && message.sender.id) || message.optin)) {
+
+        try {
+            for (const plugin of this._plugins) {
+                const res = await plugin.processMessage(message, pageId, messageSender);
+                if (typeof res !== 'object' || typeof res.status !== 'number') {
+                    throw new Error('The plugin should always return the status code');
+                }
+                if (res.status === 200) {
+                    return res;
+                }
+            }
+        } catch (e) {
+            const { code = 500 } = e;
+            this.reportSendError(e, message, pageId);
+            return { status: code };
+        }
+
+        if (typeof message !== 'object' || message === null
+            || !((message.sender && message.sender.id) || message.optin)
+            || !(message.message || message.referral || message.optin
+                || message.pass_thread_control || message.postback
+                || message.take_thread_control)) {
 
             this.options.log.warn('message should be an object', message);
-            return { status: 500 };
+            return { status: 400 };
         }
 
         const senderId = message.sender && message.sender.id;
@@ -124,20 +172,17 @@ class Processor {
 
         let result;
         try {
-            await this._processMessage(message, pageId, messageSender, responderData);
+            await this._processMessage(message, pageId, messageSender, responderData, true);
             result = await messageSender.finished();
         } catch (e) {
             const { code = 500 } = e;
-            if (code !== 403) {
-                this.reportSendError(e, message, pageId);
-            }
-            this.options.log.error(e);
+            this.reportSendError(e, message, pageId);
             result = { status: code };
         }
         return result;
     }
 
-    async _processMessage (message, pageId, messageSender, responderData) {
+    async _processMessage (message, pageId, messageSender, responderData, fromEvent = false) {
         let senderId = message.sender && message.sender.id;
 
         const postbackAcumulator = [];
@@ -153,8 +198,7 @@ class Processor {
             // ensure the request was not processed
             if (stateObject.lastTimestamps && message.timestamp
                     && stateObject.lastTimestamps.indexOf(message.timestamp) !== -1) {
-
-                throw Object.assign(new Error('Message has been already processed'), { code: 403 });
+                throw Object.assign(new Error('Message has been already processed'), { code: 204 });
             }
 
             // prepare request and responder
@@ -164,15 +208,33 @@ class Processor {
             const res = new Responder(senderId, messageSender, token, this.options, responderData);
             const postBack = this._createPostBack(postbackAcumulator);
 
-            // process the event
-            let reduceResult;
-            if (typeof this.reducer === 'function') {
-                reduceResult = this.reducer(req, res, postBack);
-            } else {
-                reduceResult = this.reducer.reduce(req, res, postBack);
+            let continueToReducer = true;
+            // process plugin middlewares
+            for (const middleware of this._middlewares) {
+                let middlewareRes = middleware(req, res, postBack);
+                if (middlewareRes instanceof Promise) {
+                    middlewareRes = await middlewareRes;
+                }
+                if (middlewareRes === null) { // end
+                    continueToReducer = false;
+                    break;
+                }
             }
-            if (reduceResult instanceof Promise) { // note the result can be undefined
-                await reduceResult;
+
+            if (continueToReducer) {
+                if (this.options.autoSeen && fromEvent) {
+                    res.seen();
+                }
+                // process the event
+                let reduceResult;
+                if (typeof this.reducer === 'function') {
+                    reduceResult = this.reducer(req, res, postBack);
+                } else {
+                    reduceResult = this.reducer.reduce(req, res, postBack);
+                }
+                if (reduceResult instanceof Promise) { // note the result can be undefined
+                    await reduceResult;
+                }
             }
 
             // update state

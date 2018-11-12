@@ -4,6 +4,7 @@
 'use strict';
 
 const { tokenize, quickReplyAction, parseActionPayload } = require('./utils');
+const requestFactories = require('./utils/requestFactories');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
@@ -15,6 +16,12 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  */
 
 /**
+ * @typedef {Object} Subscribtion
+ * @prop {string} tag
+ * @prop {number} ts
+ */
+
+/**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
  * @class
@@ -22,6 +29,8 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
 class Request {
 
     constructor (data, state, pageId) {
+        this.campaign = data.campaign || null;
+
         this.data = data;
 
         this.message = data.message || null;
@@ -60,6 +69,11 @@ class Request {
          * @prop {Object} state current state of the conversation
          */
         this.state = state;
+
+        /**
+         * @prop {Subscribtion[]} state current state of the conversation
+         */
+        this.subscribtions = [];
 
         this._intents = null;
     }
@@ -437,187 +451,19 @@ class Request {
 
 }
 
-function createReferral (action, data = {}, timestamp = Request.timestamp()) {
-    return {
-        timestamp,
-        ref: JSON.stringify({
-            action,
-            data
-        }),
-        source: 'SHORTLINK',
-        type: 'OPEN_THREAD'
-    };
-}
-
-Request._t = 0;
-Request._d = 0;
-
-Request.timestamp = function () {
-    let now = Date.now();
-    if (now > Request._d) {
-        Request._t = 0;
-    } else {
-        now += ++Request._t;
-    }
-    Request._d = now;
-    return now;
-};
-
-Request.postBack = function (
-    senderId,
-    action,
-    data = {},
-    refAction = null,
-    refData = {},
-    timestamp = Request.timestamp()
-) {
-    const postback = {
-        payload: {
-            action,
-            data
-        }
-    };
-    if (refAction) {
-        Object.assign(postback, {
-            referral: createReferral(refAction, refData, timestamp)
-        });
-    }
-    return {
-        timestamp,
-        sender: {
-            id: senderId
-        },
-        postback
-    };
-};
-
-Request.text = function (senderId, text, timestamp = Request.timestamp()) {
-    return {
-        timestamp,
-        sender: {
-            id: senderId
-        },
-        message: {
-            text
-        }
-    };
-};
-
-Request.passThread = function (senderId, newAppId, data = null, timestamp = Request.timestamp()) {
-    let metadata = data;
-    if (data !== null && typeof data !== 'string') {
-        metadata = JSON.stringify(data);
-    }
-    return {
-        timestamp,
-        sender: {
-            id: senderId
-        },
-        pass_thread_control: {
-            new_owner_app_id: newAppId,
-            metadata
-        }
-    };
-};
-
-Request.intent = function (senderId, text, intent, timestamp = Request.timestamp()) {
-    const res = Request.text(senderId, text, timestamp);
-
-    Object.assign(res, { intent });
-
-    return res;
-};
-
-Request.quickReply = function (senderId, action, data = {}, timestamp = Request.timestamp()) {
-    return {
-        timestamp,
-        sender: {
-            id: senderId
-        },
-        message: {
-            text: action,
-            quick_reply: {
-                payload: JSON.stringify({
-                    action,
-                    data
-                })
-            }
-        }
-    };
-};
-
-Request.quickReplyText = function (senderId, text, payload, timestamp = Request.timestamp()) {
-    return {
-        timestamp,
-        sender: {
-            id: senderId
-        },
-        message: {
-            text,
-            quick_reply: {
-                payload
-            }
-        }
-    };
-};
-
-Request.location = function (senderId, lat, long, timestamp = Request.timestamp()) {
-    return {
-        timestamp,
-        sender: {
-            id: senderId
-        },
-        message: {
-            attachments: [{
-                type: 'location',
-                payload: {
-                    coordinates: { lat, long }
-                }
-            }]
-        }
-    };
-};
-
-Request.referral = function (senderId, action, data = {}, timestamp = Request.timestamp()) {
-    return {
-        timestamp,
-        sender: {
-            id: senderId
-        },
-        referral: createReferral(action, data, timestamp)
-    };
-};
-
-Request.optin = function (userRef, action, data = {}, timestamp = Request.timestamp()) {
-    const ref = Buffer.from(JSON.stringify({
-        action,
-        data
-    }));
-    return {
-        timestamp,
-        optin: {
-            ref: ref.toString('base64'),
-            user_ref: userRef
-        }
-    };
-};
-
-Request.fileAttachment = function (senderId, url, type = 'file', timestamp = Request.timestamp()) {
-    return {
-        timestamp,
-        sender: {
-            id: senderId
-        },
-        message: {
-            attachments: [{
-                type,
-                payload: {
-                    url
-                }
-            }]
-        }
-    };
-};
-
+Request.timestamp = requestFactories.timestamp;
+Request.postBack = requestFactories.postBack;
+Request.campaignPostBack = requestFactories.campaignPostBack;
+Request.text = requestFactories.text;
+Request.passThread = requestFactories.passThread;
+Request.intent = requestFactories.intent;
+Request.quickReply = requestFactories.quickReply;
+Request.quickReplyText = requestFactories.quickReplyText;
+Request.location = requestFactories.location;
+Request.referral = requestFactories.referral;
+Request.optin = requestFactories.optin;
+Request.fileAttachment = requestFactories.fileAttachment;
+Request.readEvent = requestFactories.readEvent;
+Request.deliveryEvent = requestFactories.deliveryEvent;
 
 module.exports = Request;

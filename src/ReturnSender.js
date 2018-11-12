@@ -111,8 +111,10 @@ class ReturnSender {
                 this._logger.log(this._userId, this._sent, this._incommingMessage);
             }
 
+            const somethingSent = this._responses.length > 0;
+
             return {
-                status: 200,
+                status: somethingSent ? 200 : 204,
                 responses: this._responses
             };
         } catch (e) {

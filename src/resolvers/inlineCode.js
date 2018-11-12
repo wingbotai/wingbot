@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const { customFn } = require('./utils');
+const customFn = require('../utils/customFn');
 
 function inlineCode (params, { isLastIndex }) {
     const fn = customFn(params.code, params.description);

@@ -4,8 +4,9 @@
 'use strict';
 
 const Router = require('../Router');
+const customFn = require('../utils/customFn');
 const {
-    customFn, getLanguageText, cachedTranslatedCompilator, stateData
+    getLanguageText, cachedTranslatedCompilator, stateData
 } = require('./utils');
 
 function parseReplies (replies, linksMap) {
@@ -35,6 +36,10 @@ function parseReplies (replies, linksMap) {
             if (action === '/') {
                 action = './';
             }
+        }
+
+        if (reply.trackAsNegative) {
+            Object.assign(replyData, { _trackAsNegative: true });
         }
 
         return Object.assign(replyData, {

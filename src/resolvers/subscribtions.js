@@ -5,20 +5,14 @@
 
 const Router = require('../Router');
 const customFn = require('../utils/customFn');
-const {
-    stateData,
-    cachedTranslatedCompilator,
-    processButtons
-} = require('./utils');
 
-function button ({
-    buttons = [],
-    text = null,
-    hasCondition,
-    conditionFn
-}, { isLastIndex, linksMap, linksTranslator }) {
-
-    const compiledText = cachedTranslatedCompilator(text);
+function subscribtions (params, { isLastIndex }) {
+    const {
+        tags = [],
+        unsetTags = false,
+        hasCondition = false,
+        conditionFn = '() => true'
+    } = params;
 
     let condition = null;
 
@@ -27,12 +21,9 @@ function button ({
     }
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
+    const method = unsetTags ? 'unsubscribe' : 'subscribe';
 
     return async (req, res) => {
-        if (buttons.length === 0) {
-            return ret;
-        }
-
         if (condition !== null) {
             let condRes = condition(req, res);
 
@@ -45,15 +36,18 @@ function button ({
             }
         }
 
-        const state = stateData(req, res);
-        const tpl = res.button(compiledText(state));
+        if (typeof res[method] !== 'function') {
+            return ret;
+        }
 
-        processButtons(buttons, state, tpl, linksMap, req.senderId, linksTranslator);
+        if (tags.length === 0 && unsetTags) {
+            res.unsubscribe();
+        }
 
-        tpl.send();
+        tags.forEach(tag => res[method](tag));
 
         return ret;
     };
 }
 
-module.exports = button;
+module.exports = subscribtions;
