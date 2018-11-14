@@ -5,9 +5,7 @@
 
 const Router = require('../Router');
 const customFn = require('../utils/customFn');
-const {
-    getLanguageText, cachedTranslatedCompilator, stateData
-} = require('./utils');
+const { cachedTranslatedCompilator, stateData } = require('./utils');
 
 function parseReplies (replies, linksMap) {
     return replies.map((reply) => {
@@ -42,9 +40,12 @@ function parseReplies (replies, linksMap) {
             Object.assign(replyData, { _trackAsNegative: true });
         }
 
+        const title = cachedTranslatedCompilator(replyData.title);
+
         return Object.assign(replyData, {
             action,
-            condition
+            condition,
+            title
         });
     });
 }
@@ -92,9 +93,19 @@ function message (params, { isLastIndex, linksMap }) {
         if (replies) {
             res.text(text, replies
                 .filter(reply => reply.condition(req, res))
-                .map(reply => Object.assign({}, reply, {
-                    title: getLanguageText(reply.title, req.state.lang)
-                })));
+                .map((reply) => {
+                    const rep = reply.isLocation
+                        ? Object.assign({}, reply)
+                        : Object.assign({}, reply, {
+                            title: reply.title(req.state)
+                        });
+
+                    if (typeof rep.condition === 'function') {
+                        delete rep.condition;
+                    }
+
+                    return rep;
+                }));
         } else {
             res.text(text);
         }

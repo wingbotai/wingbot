@@ -363,6 +363,7 @@ class Request {
             res = this._processPayload(this.message.quick_reply, getData);
         }
 
+        // @deprecated
         if (!res && this.isPassThread()) {
             if (this.data.pass_thread_control.metadata) {
                 const payload = this.data.pass_thread_control.metadata;
