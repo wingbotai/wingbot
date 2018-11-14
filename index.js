@@ -21,7 +21,7 @@ const { Notifications, NotificationsStorage } = require('./src/notifications');
 const {
     GraphApi, validateBotApi, postBackApi, apiAuthorizer
 } = require('./src/graphApi');
-
+const { parseActionPayload } = require('./src/utils');
 const {
     bufferloader,
     MemoryStateStorage,
@@ -44,6 +44,7 @@ module.exports = {
     MemoryStateStorage,
     Translate,
     CachedModel,
+    parseActionPayload,
 
     // Wingbot
     ai: Ai.ai,
