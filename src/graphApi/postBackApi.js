@@ -35,7 +35,7 @@ function postBackApi (processor, acl) {
 
             const event = postBack(args.senderId, args.action, args.data);
 
-            return processor.processMessage(event, args.pageId);
+            return processor.processMessage(event, args.senderId, args.pageId);
         }
     };
 }

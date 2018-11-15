@@ -70,13 +70,15 @@ class GraphApi {
      * @param {string} [body.operationName]
      * @param {Object} headers
      * @param {string} [headers.Authorization]
+     * @param {string} [headers.authorization]
      * @returns {Promise<GraphQlResponse>}
      */
     async request (body, headers) {
         assert.ok(body && typeof body === 'object', 'GraphQL request should be an object with a request property');
         assert.equal(typeof body.query, 'string', 'GraphQL request should contain a query property');
 
-        const token = await this._apiConnector.verifyToken(headers.Authorization);
+        const authHeader = headers.Authorization || headers.authorization;
+        const token = await this._apiConnector.verifyToken(authHeader);
 
         const schema = await this._schema();
 
