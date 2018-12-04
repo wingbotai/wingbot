@@ -4,6 +4,7 @@
 'use strict';
 
 const Router = require('../Router'); // eslint-disable-line
+const ai = require('../Ai'); // eslint-disable-line
 const request = require('request-promise-native'); // eslint-disable-line
 
 function customFn (code, description) {

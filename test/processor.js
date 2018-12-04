@@ -152,6 +152,46 @@ describe('Processor', function () {
             });
         });
 
+        it('should be able to make "synchronous" postbacks', function () {
+            const reducer = sinon.spy(async (req, res, postBack) => {
+                const action = req.action();
+
+                if (action === 'action') {
+                    await postBack('hello', {}, true);
+                } else if (action === 'hello') {
+                    res.setState({ calledAction: action });
+                }
+            });
+
+            const stateStorage = createStateStorage({
+                user: {},
+                _expected: { action: 'expect' }
+            });
+
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
+
+            return proc.processMessage({
+                sender: {
+                    id: 1
+                },
+                postback: {
+                    payload: {
+                        action: 'action'
+                    }
+                }
+            }, 10).then(() => {
+                assert(reducer.calledTwice);
+
+                assert.deepEqual(stateStorage.model.state, {
+                    user: {},
+                    calledAction: 'hello',
+                    _expected: null,
+                    _expectedKeywords: null
+                });
+            });
+        });
+
         it('should pass error to default error handler', function () {
             let responder;
 

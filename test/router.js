@@ -311,7 +311,7 @@ describe('Router', function () {
             assert(!noRoute.called, 'route should not be called');
             shouldBeCalled(route, req, res);
             assert(postBack.calledOnce);
-            assert.deepEqual(postBack.firstCall.args, ['/prefix/relative', { data: 1 }]);
+            assert.deepEqual(postBack.firstCall.args, ['/prefix/relative', { data: 1 }, false]);
         });
 
         it('should make relative paths absolute and call wait postBack methods', async function () {
@@ -335,7 +335,7 @@ describe('Router', function () {
             assert(!noRoute.called, 'route should not be called');
             shouldBeCalled(route, req, res);
             assert(postBack.calledOnce);
-            assert.deepEqual(postBack.firstCall.args, ['/prefix/relative', Promise.resolve({ data: 1 })]);
+            assert.deepEqual(postBack.firstCall.args, ['/prefix/relative', Promise.resolve({ data: 1 }), false]);
         });
 
     });
@@ -362,7 +362,7 @@ describe('Router', function () {
             await wrapRouter.reduce(req, res, postBack);
 
             assert(postBack.calledOnce, 'postback should be called');
-            assert.deepEqual(postBack.firstCall.args, ['/inner/someAction', {}]);
+            assert.deepEqual(postBack.firstCall.args, ['/inner/someAction', {}, false]);
             shouldBeCalled(route, req, res);
         });
     });

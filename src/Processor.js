@@ -82,13 +82,34 @@ class Processor {
         this._middlewares.push(plugin.middleware());
     }
 
-    _createPostBack (postbackAcumulator) {
-        return (action, inputData = {}) => {
+    _createPostBack (postbackAcumulator, req, res) {
+        const postBack = (action, inputData = {}, dontWaitTillEndOfLoop = false) => {
             let data = inputData;
             if (typeof data === 'function') {
                 // @ts-ignore
                 data = data();
             }
+
+            if (dontWaitTillEndOfLoop) {
+                let previousAction;
+                return Promise.resolve(data)
+                    .then((resolvedData) => {
+                        let reduceResult;
+                        previousAction = req.setAction(action, resolvedData);
+                        if (typeof this.reducer === 'function') {
+                            reduceResult = this.reducer(req, res, postBack);
+                        } else {
+                            reduceResult = this.reducer.reduce(req, res, postBack);
+                        }
+                        return reduceResult;
+                    })
+                    .then((reduceResult) => {
+                        req.setAction(previousAction);
+                        return reduceResult;
+                    });
+            }
+
+            res.finalMessageSent = true;
 
             if (data instanceof Promise) {
                 postbackAcumulator.push(data
@@ -96,7 +117,11 @@ class Processor {
             } else {
                 postbackAcumulator.push({ action, data });
             }
+
+            return Promise.resolve();
         };
+
+        return postBack;
     }
 
     reportSendError (err, message, pageId) {
@@ -206,7 +231,7 @@ class Processor {
 
             const req = new Request(message, state, pageId);
             const res = new Responder(senderId, messageSender, token, this.options, responderData);
-            const postBack = this._createPostBack(postbackAcumulator);
+            const postBack = this._createPostBack(postbackAcumulator, req, res);
 
             let continueToReducer = true;
             // process plugin middlewares

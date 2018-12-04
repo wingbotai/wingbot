@@ -74,15 +74,9 @@ function message (params, { isLastIndex, linksMap }) {
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
-    return async (req, res) => {
+    return (req, res) => {
         if (condition !== null) {
-            let condRes = condition(req, res);
-
-            if (condRes instanceof Promise) {
-                condRes = await condRes;
-            }
-
-            if (!condRes) {
+            if (!condition(req, res)) {
                 return ret;
             }
         }

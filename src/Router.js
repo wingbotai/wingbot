@@ -47,7 +47,7 @@ class Router extends ReducerWrapper {
     /**
      * Appends middleware, action handler or another router
      *
-     * @param {...string|Resolver|RegExp|Router} resolvers - list of resolvers
+     * @param {...string|Resolver|RegExp|Router|Resolver[]|string[]} resolvers - list of resolvers
      * @returns {{onExit:Function}}
      *
      * @example
@@ -190,12 +190,12 @@ class Router extends ReducerWrapper {
     }
 
     _relativePostBack (origPostBack, path) {
-        return function postBack (action, data = {}) {
+        return function postBack (action, data = {}, dontWaitTillEndOfLoop = false) {
             if (typeof action === 'object') {
-                return origPostBack(action, data);
+                return origPostBack(action, data, dontWaitTillEndOfLoop);
             }
 
-            return origPostBack(makeAbsolute(action, path), data);
+            return origPostBack(makeAbsolute(action, path), data, dontWaitTillEndOfLoop);
         };
     }
 

@@ -7,6 +7,7 @@ const assert = require('assert');
 const sinon = require('sinon');
 const Ai = require('../src/Ai');
 const Router = require('../src/Router');
+const Tester = require('../src/Tester');
 const Request = require('../src/Request');
 const WingbotModel = require('../src/wingbot/WingbotModel');
 
@@ -19,6 +20,7 @@ function createResponse (tag = 'hello', score = 0.96) {
 function fakeReq (text = 'text') {
     return [
         {
+            action () { return null; },
             data: { timestamp: Date.now() },
             text () { return text; },
             isText () { return !!text; },
@@ -119,6 +121,46 @@ describe('<Ai>', function () {
             assert.deepStrictEqual(args[0]._intents, []);
         });
 
+        it('makes able to dispath previously matched intent, when there is an "expected" action', async () => {
+
+            const bot = new Router();
+
+            const steps = [];
+
+            // @ts-ignore
+            bot.use(['action-name', ai.match('test-intent')], (req, res) => {
+                steps.push(3);
+                res.text('Bar');
+            });
+
+            bot.use('start', (req, res) => {
+                steps.push(1);
+                res.text('Started');
+                res.expected('expect');
+            });
+
+            bot.use('expect', async (req, res, postBack) => {
+                if (res.bookmark()) {
+                    steps.push(2);
+                    await res.runBookmark(postBack);
+                    steps.push(4);
+                }
+                res.text('Foo');
+            });
+
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            await t.intent('test-intent', 'Text');
+
+            t.any()
+                .contains('Bar')
+                .contains('Foo');
+
+            assert.deepEqual(steps, [1, 2, 3, 4]);
+        });
+
     });
 
     describe('mockIntent', function () {
@@ -130,7 +172,7 @@ describe('<Ai>', function () {
 
             const match = testAi.match('testIntent');
 
-            const req = { isText: () => true, data: { timestamp: Date.now() } };
+            const req = { isText: () => true, action: () => null, data: { timestamp: Date.now() } };
 
             return match(req, {})
                 .then((res) => {
@@ -150,7 +192,7 @@ describe('<Ai>', function () {
             const match = testAi.match('testIntent');
 
             const data = Request.intent('any', 'hoho', 'testIntent');
-            const req = { isText: () => true, data };
+            const req = { isText: () => true, data, action: () => null };
 
             return match(req, {})
                 .then((res) => {

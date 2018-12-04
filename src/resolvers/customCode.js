@@ -6,6 +6,10 @@
 function customCode (params, context, blocks) {
     const customFn = blocks.getPluginFactory(params.codeBlockId);
 
+    if (typeof customFn === 'object') {
+        return customFn;
+    }
+
     const { router, isLastIndex } = context;
 
     const items = Object.keys(params.items)

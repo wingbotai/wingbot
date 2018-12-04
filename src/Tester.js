@@ -267,9 +267,8 @@ class Tester {
         if (this.responses.length !== 0) {
             const last = this.responses[this.responses.length - 1];
             const quickReplys = asserts.getQuickReplies(last);
-
             const res = quickReplys
-                .map(reply => parseActionPayload(reply))
+                .map(reply => parseActionPayload(reply, true))
                 .filter(({ action: route }) => route && actionMatches(route, action));
 
             if (res[0]) {

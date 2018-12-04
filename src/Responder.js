@@ -37,6 +37,7 @@ class Responder {
 
         this.path = '';
         this.routePath = '';
+        this._bookmark = null;
 
         this.options = {
             translator: w => w,
@@ -64,6 +65,13 @@ class Responder {
         this._tag = null;
 
         this._firstTypingSkipped = false;
+
+        /**
+         * Is true, when a final message (the quick replies by default) has been sent
+         *
+         * @prop {boolean}
+         */
+        this.finalMessageSent = false;
     }
 
     _send (data) {
@@ -80,6 +88,73 @@ class Responder {
         }
 
         this._messageSender.send(data);
+    }
+
+    /**
+     * Stores current action to be able to all it again
+     *
+     * @param {string} [action]
+     * @returns {this}
+     * @example
+     * bot.use(['action-name', /keyword/], (req, res) => {
+     *     if (req.action() !== res.currentAction()) {
+     *         // only for routes with action name (action-name)
+     *         res.setBookmark();
+     *         return Router.BREAK;
+     *     }
+     *     res.text('Keyword reaction');
+     * });
+     *
+     * // check out the res.runBookmark() method
+     */
+    setBookmark (action = this.currentAction()) {
+        this._bookmark = makeAbsolute(action, this.path);
+        return this;
+    }
+
+    /**
+     * Returns the action of bookmark
+     *
+     * @returns {string|null}
+     */
+    bookmark () {
+        return this._bookmark;
+    }
+
+    /**
+     *
+     *
+     * @param {Function} postBack - the postback func
+     * @param {Object} [data] - data for bookmark action
+     * @returns {Promise<null|boolean>}
+     * @example
+     * // there should be a named intent intent matcher (ai.match() and 'action-name')
+     *
+     * bot.use('action', (req, res) => {
+     *     res.text('tell me your name');
+     *     res.expected('onName');
+     * });
+     *
+     * bot.use('onName', (req, res, postBack) => {
+     *     if (res.bookmark()) {
+     *          await res.runBookmark(postBack);
+     *
+     *          res.text('But I'll need your name')
+     *              .expected('onName');
+     *          return;
+     *     }
+     *
+     *     res.text(`Your name is: ${res.text()}`);
+     * })
+     */
+    async runBookmark (postBack, data = {}) {
+        if (!this._bookmark) {
+            return true;
+        }
+        const bookmark = this._bookmark;
+        const res = await postBack(bookmark, Object.assign({ bookmark }, data), true);
+        this._bookmark = null;
+        return res;
     }
 
     /**
@@ -200,6 +275,7 @@ class Responder {
 
             this._quickReplyCollector = [];
 
+            this.finalMessageSent = true;
             messageData.message.quick_replies = qrs;
             this.setState({ _expectedKeywords: expectedKeywords });
         }
@@ -266,6 +342,7 @@ class Responder {
         if (!action) {
             return this.setState({ _expected: null });
         }
+        this.finalMessageSent = true;
         return this.setState({
             _expected: {
                 action: makeAbsolute(action, this.path),
@@ -282,6 +359,19 @@ class Responder {
      */
     toAbsoluteAction (action) {
         return makeAbsolute(action, this.path);
+    }
+
+    /**
+     * Returns current action path
+     *
+     * @returns {string}
+     */
+    currentAction () {
+        const ret = makeAbsolute(this.routePath.replace(/^\//, ''), this.path);
+        if (!ret.match(/^\//)) {
+            return `/${ret}`;
+        }
+        return ret;
     }
 
     /**
@@ -455,6 +545,7 @@ class Responder {
      * @returns {this}
      */
     takeThead (data = null) {
+        this.finalMessageSent = true;
         let metadata = data;
         if (data !== null && typeof data !== 'string') {
             metadata = JSON.stringify(data);

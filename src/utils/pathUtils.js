@@ -20,7 +20,7 @@ function actionMatches (route, requestedPath) {
     return route.lastIndexOf(requestedPath) === expectedPos && expectedPos !== -1;
 }
 
-function parseActionPayload (object) {
+function parseActionPayload (object, needRawData = false) {
     let action;
     let data = {};
     if (typeof object === 'string') {
@@ -43,6 +43,9 @@ function parseActionPayload (object) {
         } else {
             action = payload;
         }
+    }
+    if (!action && !needRawData) {
+        return null;
     }
     return { action, data };
 }

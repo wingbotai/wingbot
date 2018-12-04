@@ -1,3 +1,4 @@
+
 {
     "data": [
       {
@@ -122,6 +123,14 @@
             "isResponder": true,
             "resolvers": [
               {
+                "type": "botbuild.inlineCode",
+                "params": {
+                  "description": "show the reaction",
+                  "code": "(req, res, postBack) => {\n    return res.runBookmark(postBack);\n}"
+                },
+                "id": 1507627874450
+              },
+              {
                 "type": "botbuild.message",
                 "params": {
                   "replies": [],
@@ -145,6 +154,14 @@
                   "items": {
                     "responseBlockName": {
                       "resolvers": [
+                        {
+                          "type": "botbuild.inlineCode",
+                          "params": {
+                            "description": "test the relative actions",
+                            "code": "(req, res) => {\n    res.setState({ testAbsoluteAction: res.toAbsoluteAction('foo'), testRoutePath: res.routePath, testCurrentAction: res.currentAction() });\n    return Router.CONTINUE;\n}"
+                          },
+                          "id": 1507627874450
+                        },
                         {
                           "type": "botbuild.message",
                           "params": {

@@ -22,6 +22,12 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  */
 
 /**
+ * @typedef {Object} Action
+ * @prop {string} action
+ * @prop {Object} data
+ */
+
+/**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
  * @class
@@ -76,6 +82,12 @@ class Request {
         this.subscribtions = [];
 
         this._intents = null;
+
+        /**
+         * @prop {Action}
+         * @private
+         */
+        this._action = undefined;
     }
 
     /**
@@ -312,6 +324,7 @@ class Request {
     /**
      * Returns true, if request pass thread control
      *
+     * @deprecated use passTreadAction option in Facebook plugin instead
      * @returns {boolean}
      */
     isPassThread () {
@@ -325,6 +338,26 @@ class Request {
      */
     isOptin () {
         return this._optin !== null;
+    }
+
+    /**
+     * Sets the action and returns previous action
+     *
+     * @param {string|Action|null} action
+     * @param {Object} [data]
+     * @returns {Action|null|undefined} - previous action
+     */
+    setAction (action, data = {}) {
+        // fetch previous action
+        const previousAction = this._action;
+
+        if (typeof action === 'object' || typeof action === 'undefined') { // accepts also a null
+            this._action = action;
+        } else {
+            this._action = { action, data };
+        }
+
+        return previousAction;
     }
 
     /**
@@ -345,51 +378,59 @@ class Request {
      * typeof res.action(true) === 'object';
      */
     action (getData = false) {
+        if (typeof this._action === 'undefined') {
+            this._action = this._resolveAction();
+        }
+
+        if (getData) {
+            return this._action ? this._action.data : {};
+        }
+
+        return this._action && this._action.action;
+    }
+
+    _resolveAction () {
         let res = null;
 
         if (this._referral !== null && this._referral.ref) {
-            res = this._processPayload({ payload: this._referral.ref }, getData);
+            res = parseActionPayload({ payload: this._referral.ref });
         }
 
         if (!res && this._postback !== null) {
-            res = this._processPayload(this._postback, getData);
+            res = parseActionPayload(this._postback);
         }
 
         if (!res && this._optin !== null && this._optin.ref) {
-            res = this._base64Ref(this._optin, getData);
+            res = this._base64Ref(this._optin);
         }
 
         if (!res && this.message !== null && this.message.quick_reply) {
-            res = this._processPayload(this.message.quick_reply, getData);
+            res = parseActionPayload(this.message.quick_reply);
         }
 
         // @deprecated
         if (!res && this.isPassThread()) {
             if (this.data.pass_thread_control.metadata) {
                 const payload = this.data.pass_thread_control.metadata;
-                res = this._processPayload({ payload }, getData);
+                res = parseActionPayload({ payload }, true);
             }
-            if (!getData && !res) {
-                res = 'pass-thread';
+            if (!res || !res.action) {
+                res = { action: 'pass-thread', data: res ? res.data : {} };
             }
         }
 
         if (!res && this.state._expectedKeywords) {
-            res = this._actionByExpectedKeywords(getData);
+            res = this._actionByExpectedKeywords();
         }
 
         if (!res && this.state._expected) {
-            res = this._processPayload(this.state._expected, getData);
+            res = parseActionPayload(this.state._expected);
         }
 
-        if (getData) {
-            return res || {};
-        }
-
-        return res || null;
+        return res;
     }
 
-    _actionByExpectedKeywords (getData = false) {
+    _actionByExpectedKeywords () {
         let res = null;
 
         if (!res && this.state._expectedKeywords) {
@@ -399,7 +440,7 @@ class Request {
                 this.text()
             );
             if (payload) {
-                res = this._processPayload(payload, getData);
+                res = parseActionPayload(payload);
             }
         }
 
@@ -424,7 +465,7 @@ class Request {
         return this._processPayload(this._postback, getData);
     }
 
-    _base64Ref (object = {}, getData = false) {
+    _base64Ref (object = {}) {
         let process = {};
 
         if (object && object.ref) {
@@ -437,7 +478,7 @@ class Request {
             process = { payload };
         }
 
-        return this._processPayload(process, getData);
+        return parseActionPayload(process);
     }
 
     _processPayload (object = {}, getData = false) {

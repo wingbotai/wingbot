@@ -62,6 +62,12 @@ describe('<BuildRouter>', async () => {
 
         await t.quickReply('deep-entrypoint');
 
+        const { state } = t.getState();
+
+        assert.equal(state.testAbsoluteAction, '/subblock-include/foo');
+        assert.equal(state.testCurrentAction, '/subblock-include/deep-entrypoint');
+        assert.equal(state.testRoutePath, '/deep-entrypoint');
+
         t.passedAction('deep-entrypoint');
 
         t.any()
@@ -116,15 +122,23 @@ describe('<BuildRouter>', async () => {
                 isRoot: true,
                 routes: [{
                     path: '/start',
-                    resolvers: [{
-                        type: 'botbuild.message',
-                        params: {
-                            conditionFn: '(req, res) => { return new Promise(r => setTimeout(() => r(true), 100)); }',
-                            replies: [],
-                            text,
-                            hasCondition: true
+                    resolvers: [
+                        {
+                            type: 'botbuild.inlineCode',
+                            params: {
+                                description: 'show the reaction',
+                                code: '(req, res) => { return new Promise(r => setTimeout(() => r(true), 100)); }'
+                            },
+                            id: 1507627874450
+                        },
+                        {
+                            type: 'botbuild.message',
+                            params: {
+                                replies: [],
+                                text
+                            }
                         }
-                    }]
+                    ]
                 }]
             }]
         };

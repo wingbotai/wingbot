@@ -26,9 +26,11 @@ function sustainCallback () {
 
 /**
  * Creates callback middleware, which allows to get user back to previous context
+ * deprecated - use res.runBookmark()
  *
  * @returns {Function}
  * @module callbackMiddleware
+ * @deprecated - use res.runBookmark()
  * @example
  * const { Router, callbackMiddleware, ai } = require(''wingbot');
  *
@@ -78,6 +80,7 @@ function callbackMiddleware () {
      * @param {string|null} [callbackText] - custom text response
      * @returns {this}
      * @alias module:callbackMiddleware
+     * @deprecated - use res.runBookmark()
      * @typicalname res
      * @example
      *
@@ -104,6 +107,7 @@ function callbackMiddleware () {
      * @param {string} [callbackContext]
      * @returns {boolean}
      * @alias module:callbackMiddleware
+     * @deprecated - use res.runBookmark()
      * @example
      * bot.use(['fooRoute', /^foo$/], (req, res) => {
      *     // set callback, only when this request does not have one
@@ -130,6 +134,7 @@ function callbackMiddleware () {
      * @param {string} [callbackContext]
      * @returns {boolean}
      * @alias module:callbackMiddleware
+     * @deprecated - use res.runBookmark()
      * @example
      * bot.use(['fooRoute', /^foo$/], (req, res) => {
      *     // set callback, only when this request does not have one
@@ -157,6 +162,7 @@ function callbackMiddleware () {
      * @param {Function} rootPostBack - the root router postback function
      * @returns {boolean}
      * @alias module:callbackMiddleware
+     * @deprecated - use res.runBookmark()
      * @example
      * bot.use(['fooRoute', /^foo$/], (req, res) => {
      *     // set callback, only when this request does not have one
@@ -192,6 +198,7 @@ function callbackMiddleware () {
      * @param {boolean} isText - true if the request is text
      * @returns {this}
      * @alias module:callbackMiddleware
+     * @deprecated - use res.runBookmark()
      * @example
      * bot.use(['fooRoute', /^foo$/], (req, res) => {
      *     // ability get back to previous context

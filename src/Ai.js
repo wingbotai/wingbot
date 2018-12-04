@@ -40,6 +40,13 @@ class Ai {
         this.getPrefix = (prefix, req) => prefix; // eslint-disable-line
 
         this._mockIntent = null;
+
+        /**
+         * Backward compatibility - to be able to use older "callback" middleware
+         *
+         * @type {boolean}
+         */
+        this.disableBookmarking = false;
     }
 
     /**
@@ -155,9 +162,8 @@ class Ai {
     match (intent, confidence = null, prefix = DEFAULT_PREFIX) {
         const intents = Array.isArray(intent) ? intent : [intent];
 
-        return async (req) => {
-            if (!req.isText()
-                || (req._actionByExpectedKeywords && req._actionByExpectedKeywords())) {
+        return async (req, res) => {
+            if (!req.isText()) {
                 return Router.BREAK;
             }
 
@@ -175,13 +181,21 @@ class Ai {
                 ? this.confidence
                 : confidence;
 
-            if (intents.includes(winningIntent.intent)
-                    && winningIntent.score >= useConfidence) {
+            if (!intents.includes(winningIntent.intent)
+                    || winningIntent.score < useConfidence) {
 
-                return Router.CONTINUE;
+                return Router.BREAK;
             }
 
-            return Router.BREAK;
+            const action = req.action();
+
+            // when there's an action, store the current path as a bookmark
+            if (!this.disableBookmarking && action && action !== res.currentAction()) {
+                res.setBookmark();
+                return Router.BREAK;
+            }
+
+            return Router.CONTINUE;
         };
     }
 
