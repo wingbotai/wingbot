@@ -884,6 +884,8 @@
 <dd></dd>
 <dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Action">Action</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 <div id="Request">&#xA0;</div>
@@ -915,8 +917,9 @@
 <li><a href="#Request_quickReply">.quickReply([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></li>
 <li><a href="#Request_isPostBack">.isPostBack()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isReferral">.isReferral()</a> &#x21D2; <code>boolean</code></li>
-<li><a href="#Request_isPassThread">.isPassThread()</a> &#x21D2; <code>boolean</code></li>
+<li><del><a href="#Request_isPassThread">.isPassThread()</a> &#x21D2; <code>boolean</code></del></li>
 <li><a href="#Request_isOptin">.isOptin()</a> &#x21D2; <code>boolean</code></li>
+<li><a href="#Request_setAction">.setAction(action, [data])</a> &#x21D2; <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code></li>
 <li><a href="#Request_action">.action([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></li>
 <li><a href="#Request_postBack">.postBack([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></li>
 </ul>
@@ -1170,7 +1173,8 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_isPassThread">&#xA0;</div>
 
-<h3 id="requestispassthread-&#x21D2;-boolean"><a name="requestispassthread-&#x21D2;-boolean" class="plugin-anchor" href="#requestispassthread-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isPassThread() &#x21D2; <code>boolean</code></h3>
+<h3 id="requestispassthread-&#x21D2;-boolean"><a name="requestispassthread-&#x21D2;-boolean" class="plugin-anchor" href="#requestispassthread-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a><del>request.isPassThread() &#x21D2; <code>boolean</code></del></h3>
+<p><strong><em>Deprecated</em></strong></p>
 <p>Returns true, if request pass thread control</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_isOptin">&#xA0;</div>
@@ -1178,6 +1182,15 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <h3 id="requestisoptin-&#x21D2;-boolean"><a name="requestisoptin-&#x21D2;-boolean" class="plugin-anchor" href="#requestisoptin-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isOptin() &#x21D2; <code>boolean</code></h3>
 <p>Returns true, if request is the optin</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<div id="Request_setAction">&#xA0;</div>
+
+<h3 id="requestsetactionaction-data-&#x21D2;-action--null--undefined"><a name="requestsetactionaction-data-&#x21D2;-action--null--undefined" class="plugin-anchor" href="#requestsetactionaction-data-&#x21D2;-action--null--undefined"><i class="fa fa-link" aria-hidden="true"></i></a>request.setAction(action, [data]) &#x21D2; <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code></h3>
+<p>Sets the action and returns previous action</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Returns</strong>: <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code> - - previous action<br><strong>Params</strong></p>
+<ul>
+<li>action <code>string</code> | <a href="#Action"><code>Action</code></a> | <code>null</code></li>
+<li>[data] <code>Object</code></li>
+</ul>
 <div id="Request_action">&#xA0;</div>
 
 <h3 id="requestactiongetdata-&#x21D2;-null--string--object"><a name="requestactiongetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestactiongetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.action([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></h3>
@@ -1259,6 +1272,28 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </tr>
 </tbody>
 </table>
+<div id="Action">&#xA0;</div>
+
+<h2 id="action--object"><a name="action--object" class="plugin-anchor" href="#action--object"><i class="fa fa-link" aria-hidden="true"></i></a>Action : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>data</td>
+<td><code>Object</code></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1302,7 +1337,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Webviews","level":"2.6.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2018-11-12T14:08:20.001Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Webviews","level":"2.6.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2018-12-04T08:05:09.753Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-04T08:05:22.331Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

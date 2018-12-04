@@ -41,7 +41,7 @@ Appends middleware, action handler or another router
 **Kind**: instance method of [<code>Router</code>](#Router)  
 **Params**
 
-- ...resolvers <code>string</code> | [<code>Resolver</code>](#Resolver) | <code>RegExp</code> | [<code>Router</code>](#Router) - list of resolvers
+- ...resolvers <code>string</code> | [<code>Resolver</code>](#Resolver) | <code>RegExp</code> | [<code>Router</code>](#Router) | [<code>Array.&lt;Resolver&gt;</code>](#Resolver) | <code>Array.&lt;string&gt;</code> - list of resolvers
 
 **Example**  
 ```javascript

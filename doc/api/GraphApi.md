@@ -65,6 +65,7 @@ Experimental chatbot API
     - [.operationName] <code>string</code>
 - headers <code>Object</code>
     - [.Authorization] <code>string</code>
+    - [.authorization] <code>string</code>
 
 {% raw %}<div id="postBackApi">&nbsp;</div>{% endraw %}
 

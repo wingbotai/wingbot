@@ -7,7 +7,11 @@ Instance of responder is passed as second parameter of handler (res)
 
 * [Responder](#Responder)
     * [.newState](#Responder_newState)
+    * [.finalMessageSent](#Responder_finalMessageSent)
     * [.data](#Responder_data) : <code>Object</code>
+    * [.setBookmark([action])](#Responder_setBookmark) ⇒ <code>this</code>
+    * [.bookmark()](#Responder_bookmark) ⇒ <code>string</code> \| <code>null</code>
+    * [.runBookmark(postBack, [data])](#Responder_runBookmark) ⇒ <code>Promise.&lt;(null\|boolean)&gt;</code>
     * [.setMessgingType(messagingType, [tag])](#Responder_setMessgingType) ⇒ <code>this</code>
     * [.isResponseType()](#Responder_isResponseType) ⇒ <code>boolean</code>
     * [.setData(data)](#Responder_setData) ⇒ <code>this</code>
@@ -16,6 +20,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.addQuickReply(action, title, [data], [prepend])](#Responder_addQuickReply)
     * [.expected(action, data)](#Responder_expected) ⇒ <code>this</code>
     * [.toAbsoluteAction(action)](#Responder_toAbsoluteAction) ⇒ <code>string</code>
+    * [.currentAction()](#Responder_currentAction) ⇒ <code>string</code>
     * [.image(imageUrl, [reusable])](#Responder_image) ⇒ <code>this</code>
     * [.video(videoUrl, [reusable])](#Responder_video) ⇒ <code>this</code>
     * [.file(fileUrl, [reusable])](#Responder_file) ⇒ <code>this</code>
@@ -44,10 +49,81 @@ into the conversation state.
 | --- |
 | <code>Object</code> | 
 
+{% raw %}<div id="Responder_finalMessageSent">&nbsp;</div>{% endraw %}
+
+### responder.finalMessageSent
+Is true, when a final message (the quick replies by default) has been sent
+
+**Kind**: instance property of [<code>Responder</code>](#Responder)  
+**Properties**
+
+| Type |
+| --- |
+| <code>boolean</code> | 
+
 {% raw %}<div id="Responder_data">&nbsp;</div>{% endraw %}
 
 ### responder.data : <code>Object</code>
 **Kind**: instance property of [<code>Responder</code>](#Responder)  
+{% raw %}<div id="Responder_setBookmark">&nbsp;</div>{% endraw %}
+
+### responder.setBookmark([action]) ⇒ <code>this</code>
+Stores current action to be able to all it again
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
+- [action] <code>string</code>
+
+**Example**  
+```javascript
+bot.use(['action-name', /keyword/], (req, res) => {
+    if (req.action() !== res.currentAction()) {
+        // only for routes with action name (action-name)
+        res.setBookmark();
+        return Router.BREAK;
+    }
+    res.text('Keyword reaction');
+});
+
+// check out the res.runBookmark() method
+```
+{% raw %}<div id="Responder_bookmark">&nbsp;</div>{% endraw %}
+
+### responder.bookmark() ⇒ <code>string</code> \| <code>null</code>
+Returns the action of bookmark
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+{% raw %}<div id="Responder_runBookmark">&nbsp;</div>{% endraw %}
+
+### responder.runBookmark(postBack, [data]) ⇒ <code>Promise.&lt;(null\|boolean)&gt;</code>
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
+- postBack <code>function</code> - the postback func
+- [data] <code>Object</code> - data for bookmark action
+
+**Example**  
+```javascript
+// there should be a named intent intent matcher (ai.match() and 'action-name')
+
+bot.use('action', (req, res) => {
+    res.text('tell me your name');
+    res.expected('onName');
+});
+
+bot.use('onName', (req, res, postBack) => {
+    if (res.bookmark()) {
+         await res.runBookmark(postBack);
+
+         res.text('But I'll need your name')
+             .expected('onName');
+         return;
+    }
+
+    res.text(`Your name is: ${res.text()}`);
+})
+```
 {% raw %}<div id="Responder_setMessgingType">&nbsp;</div>{% endraw %}
 
 ### responder.setMessgingType(messagingType, [tag]) ⇒ <code>this</code>
@@ -175,6 +251,12 @@ Converts relative action to absolute action path
 
 - action <code>string</code> - relative action to covert to absolute
 
+{% raw %}<div id="Responder_currentAction">&nbsp;</div>{% endraw %}
+
+### responder.currentAction() ⇒ <code>string</code>
+Returns current action path
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
 {% raw %}<div id="Responder_image">&nbsp;</div>{% endraw %}
 
 ### responder.image(imageUrl, [reusable]) ⇒ <code>this</code>

@@ -13,6 +13,8 @@
 <dd></dd>
 <dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Action">Action</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="Request">&nbsp;</div>{% endraw %}
@@ -45,8 +47,9 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.quickReply([getData])](#Request_quickReply) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
     * [.isPostBack()](#Request_isPostBack) ⇒ <code>boolean</code>
     * [.isReferral()](#Request_isReferral) ⇒ <code>boolean</code>
-    * [.isPassThread()](#Request_isPassThread) ⇒ <code>boolean</code>
+    * ~~[.isPassThread()](#Request_isPassThread) ⇒ <code>boolean</code>~~
     * [.isOptin()](#Request_isOptin) ⇒ <code>boolean</code>
+    * [.setAction(action, [data])](#Request_setAction) ⇒ [<code>Action</code>](#Action) \| <code>null</code> \| <code>undefined</code>
     * [.action([getData])](#Request_action) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
     * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
 
@@ -268,7 +271,9 @@ Returns true, if request is the referral
 **Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_isPassThread">&nbsp;</div>{% endraw %}
 
-### request.isPassThread() ⇒ <code>boolean</code>
+### ~~request.isPassThread() ⇒ <code>boolean</code>~~
+***Deprecated***
+
 Returns true, if request pass thread control
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
@@ -278,6 +283,18 @@ Returns true, if request pass thread control
 Returns true, if request is the optin
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+{% raw %}<div id="Request_setAction">&nbsp;</div>{% endraw %}
+
+### request.setAction(action, [data]) ⇒ [<code>Action</code>](#Action) \| <code>null</code> \| <code>undefined</code>
+Sets the action and returns previous action
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Returns**: [<code>Action</code>](#Action) \| <code>null</code> \| <code>undefined</code> - - previous action  
+**Params**
+
+- action <code>string</code> | [<code>Action</code>](#Action) | <code>null</code>
+- [data] <code>Object</code>
+
 {% raw %}<div id="Request_action">&nbsp;</div>{% endraw %}
 
 ### request.action([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
@@ -338,4 +355,15 @@ typeof res.postBack(true) === 'object';
 | --- | --- |
 | tag | <code>string</code> | 
 | ts | <code>number</code> | 
+
+{% raw %}<div id="Action">&nbsp;</div>{% endraw %}
+
+## Action : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| action | <code>string</code> | 
+| data | <code>Object</code> | 
 

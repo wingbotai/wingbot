@@ -26,6 +26,7 @@
 * [Ai](#Ai)
     * [.confidence](#Ai_confidence) : <code>number</code>
     * [.logger](#Ai_logger) : <code>Object</code>
+    * [.disableBookmarking](#Ai_disableBookmarking) : <code>boolean</code>
     * [.getPrefix(prefix, req)](#Ai_getPrefix)
     * [.mockIntent([intent], [confidence])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
@@ -42,6 +43,12 @@ Upper threshold - for match method and for navigate method
 
 ### ai.logger : <code>Object</code>
 The logger (console by default)
+
+**Kind**: instance property of [<code>Ai</code>](#Ai)  
+{% raw %}<div id="Ai_disableBookmarking">&nbsp;</div>{% endraw %}
+
+### ai.disableBookmarking : <code>boolean</code>
+Backward compatibility - to be able to use older "callback" middleware
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
 {% raw %}<div id="Ai_getPrefix">&nbsp;</div>{% endraw %}

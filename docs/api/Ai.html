@@ -897,6 +897,7 @@
 <li><a href="#Ai">Ai</a><ul>
 <li><a href="#Ai_confidence">.confidence</a> : <code>number</code></li>
 <li><a href="#Ai_logger">.logger</a> : <code>Object</code></li>
+<li><a href="#Ai_disableBookmarking">.disableBookmarking</a> : <code>boolean</code></li>
 <li><a href="#Ai_getPrefix">.getPrefix(prefix, req)</a></li>
 <li><a href="#Ai_mockIntent">.mockIntent([intent], [confidence])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Ai_register">.register(model, prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></li>
@@ -914,6 +915,11 @@
 
 <h3 id="ailogger--object"><a name="ailogger--object" class="plugin-anchor" href="#ailogger--object"><i class="fa fa-link" aria-hidden="true"></i></a>ai.logger : <code>Object</code></h3>
 <p>The logger (console by default)</p>
+<p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
+<div id="Ai_disableBookmarking">&#xA0;</div>
+
+<h3 id="aidisablebookmarking--boolean"><a name="aidisablebookmarking--boolean" class="plugin-anchor" href="#aidisablebookmarking--boolean"><i class="fa fa-link" aria-hidden="true"></i></a>ai.disableBookmarking : <code>boolean</code></h3>
+<p>Backward compatibility - to be able to use older &quot;callback&quot; middleware</p>
 <p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
 <div id="Ai_getPrefix">&#xA0;</div>
 
@@ -1133,7 +1139,7 @@ bot.use(ai.match(&apos;intent1&apos;), (req, res) =&gt; {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2018-11-12T14:08:20.023Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2018-12-04T08:05:12.207Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-04T08:05:22.331Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

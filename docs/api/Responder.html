@@ -879,7 +879,11 @@
 <ul>
 <li><a href="#Responder">Responder</a><ul>
 <li><a href="#Responder_newState">.newState</a></li>
+<li><a href="#Responder_finalMessageSent">.finalMessageSent</a></li>
 <li><a href="#Responder_data">.data</a> : <code>Object</code></li>
+<li><a href="#Responder_setBookmark">.setBookmark([action])</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_bookmark">.bookmark()</a> &#x21D2; <code>string</code> | <code>null</code></li>
+<li><a href="#Responder_runBookmark">.runBookmark(postBack, [data])</a> &#x21D2; <code>Promise.&lt;(null|boolean)&gt;</code></li>
 <li><a href="#Responder_setMessgingType">.setMessgingType(messagingType, [tag])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_isResponseType">.isResponseType()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Responder_setData">.setData(data)</a> &#x21D2; <code>this</code></li>
@@ -888,6 +892,7 @@
 <li><a href="#Responder_addQuickReply">.addQuickReply(action, title, [data], [prepend])</a></li>
 <li><a href="#Responder_expected">.expected(action, data)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_toAbsoluteAction">.toAbsoluteAction(action)</a> &#x21D2; <code>string</code></li>
+<li><a href="#Responder_currentAction">.currentAction()</a> &#x21D2; <code>string</code></li>
 <li><a href="#Responder_image">.image(imageUrl, [reusable])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_video">.video(videoUrl, [reusable])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_file">.file(fileUrl, [reusable])</a> &#x21D2; <code>this</code></li>
@@ -923,10 +928,80 @@ into the conversation state.</p>
 </tr>
 </tbody>
 </table>
+<div id="Responder_finalMessageSent">&#xA0;</div>
+
+<h3 id="responderfinalmessagesent"><a name="responderfinalmessagesent" class="plugin-anchor" href="#responderfinalmessagesent"><i class="fa fa-link" aria-hidden="true"></i></a>responder.finalMessageSent</h3>
+<p>Is true, when a final message (the quick replies by default) has been sent</p>
+<p><strong>Kind</strong>: instance property of <a href="#Responder"><code>Responder</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boolean</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_data">&#xA0;</div>
 
 <h3 id="responderdata--object"><a name="responderdata--object" class="plugin-anchor" href="#responderdata--object"><i class="fa fa-link" aria-hidden="true"></i></a>responder.data : <code>Object</code></h3>
 <p><strong>Kind</strong>: instance property of <a href="#Responder"><code>Responder</code></a>  </p>
+<div id="Responder_setBookmark">&#xA0;</div>
+
+<h3 id="respondersetbookmarkaction-&#x21D2;-this"><a name="respondersetbookmarkaction-&#x21D2;-this" class="plugin-anchor" href="#respondersetbookmarkaction-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setBookmark([action]) &#x21D2; <code>this</code></h3>
+<p>Stores current action to be able to all it again</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>[action] <code>string</code></li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript">bot.use([<span class="hljs-string">&apos;action-name&apos;</span>, <span class="hljs-regexp">/keyword/</span>], (req, res) =&gt; {
+    <span class="hljs-keyword">if</span> (req.action() !== res.currentAction()) {
+        <span class="hljs-comment">// only for routes with action name (action-name)</span>
+        res.setBookmark();
+        <span class="hljs-keyword">return</span> Router.BREAK;
+    }
+    res.text(<span class="hljs-string">&apos;Keyword reaction&apos;</span>);
+});
+
+<span class="hljs-comment">// check out the res.runBookmark() method</span>
+</code></pre>
+<div id="Responder_bookmark">&#xA0;</div>
+
+<h3 id="responderbookmark-&#x21D2;-string--null"><a name="responderbookmark-&#x21D2;-string--null" class="plugin-anchor" href="#responderbookmark-&#x21D2;-string--null"><i class="fa fa-link" aria-hidden="true"></i></a>responder.bookmark() &#x21D2; <code>string</code> | <code>null</code></h3>
+<p>Returns the action of bookmark</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<div id="Responder_runBookmark">&#xA0;</div>
+
+<h3 id="responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean"><a name="responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean" class="plugin-anchor" href="#responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean"><i class="fa fa-link" aria-hidden="true"></i></a>responder.runBookmark(postBack, [data]) &#x21D2; <code>Promise.&lt;(null|boolean)&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>postBack <code>function</code> - the postback func</li>
+<li>[data] <code>Object</code> - data for bookmark action</li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript">// there should be a named intent intent matcher (ai.match() and &apos;action-name&apos;)
+
+bot.use(&apos;action&apos;, (req, res) =&gt; {
+    res.text(&apos;tell me your name&apos;);
+    res.expected(&apos;onName&apos;);
+});
+
+bot.use(&apos;onName&apos;, (req, res, postBack) =&gt; {
+    if (res.bookmark()) {
+         await res.runBookmark(postBack);
+
+         res.text(&apos;But I&apos;ll need your name&apos;)
+             .expected(&apos;onName&apos;);
+         return;
+    }
+
+    res.text(`Your name is: ${res.text()}`);
+})
+</code></pre>
 <div id="Responder_setMessgingType">&#xA0;</div>
 
 <h3 id="respondersetmessgingtypemessagingtype-tag-&#x21D2;-this"><a name="respondersetmessgingtypemessagingtype-tag-&#x21D2;-this" class="plugin-anchor" href="#respondersetmessgingtypemessagingtype-tag-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setMessgingType(messagingType, [tag]) &#x21D2; <code>this</code></h3>
@@ -1035,6 +1110,11 @@ res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
 <ul>
 <li>action <code>string</code> - relative action to covert to absolute</li>
 </ul>
+<div id="Responder_currentAction">&#xA0;</div>
+
+<h3 id="respondercurrentaction-&#x21D2;-string"><a name="respondercurrentaction-&#x21D2;-string" class="plugin-anchor" href="#respondercurrentaction-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>responder.currentAction() &#x21D2; <code>string</code></h3>
+<p>Returns current action path</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
 <div id="Responder_image">&#xA0;</div>
 
 <h3 id="responderimageimageurl-reusable-&#x21D2;-this"><a name="responderimageimageurl-reusable-&#x21D2;-this" class="plugin-anchor" href="#responderimageimageurl-reusable-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.image(imageUrl, [reusable]) &#x21D2; <code>this</code></h3>
@@ -1239,7 +1319,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-11-12T14:08:20.005Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-11-12T14:08:22.555Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-12-04T08:05:10.159Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-04T08:05:22.331Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
