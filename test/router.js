@@ -13,6 +13,7 @@ function createMockReq (text = '', action = 'action') {
         state: {},
         action (isData) { return isData ? {} : action; },
         text () { return text; },
+        intent () { return null; },
         isText () { return !!text; }
     };
     return req;

@@ -5,7 +5,6 @@
 
 const assert = require('assert');
 const { WingbotModel } = require('./wingbot');
-const Router = require('./Router');
 
 const DEFAULT_PREFIX = 'default';
 
@@ -129,14 +128,14 @@ class Ai {
     load (prefix = DEFAULT_PREFIX) {
         return async (req) => {
             if (!req.isText()) {
-                return Router.CONTINUE;
+                return true;
             }
 
             if (!req._intents) {
                 req._intents = await this._queryModel(prefix, req);
             }
 
-            return Router.CONTINUE;
+            return true;
         };
     }
 
@@ -154,7 +153,7 @@ class Ai {
      * ai.register('app-model');
      *
      * bot.use(ai.match('intent1'), (req, res) => {
-     *     console.log(req.intent()); // { intent: 'intent1', score: 0.9604 }
+     *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
      *
      *     res.text('Oh, intent 1 :)');
      * });
@@ -164,7 +163,7 @@ class Ai {
 
         return async (req, res) => {
             if (!req.isText()) {
-                return Router.BREAK;
+                return false;
             }
 
             if (!req._intents) {
@@ -172,7 +171,7 @@ class Ai {
             }
 
             if (req._intents.length === 0) {
-                return Router.BREAK;
+                return false;
             }
 
             const [winningIntent] = req._intents;
@@ -184,7 +183,7 @@ class Ai {
             if (!intents.includes(winningIntent.intent)
                     || winningIntent.score < useConfidence) {
 
-                return Router.BREAK;
+                return false;
             }
 
             const action = req.action();
@@ -192,29 +191,94 @@ class Ai {
             // when there's an action, store the current path as a bookmark
             if (!this.disableBookmarking && action && action !== res.currentAction()) {
                 res.setBookmark();
-                return Router.BREAK;
+                return false;
             }
 
-            return Router.CONTINUE;
+            return true;
         };
     }
 
-    async _queryModel (prefix, req) {
+    /**
+     * Returns matching middleware, that will export the intent to the root router
+     * so the intent will be matched in a global context
+     *
+     * @param {string|Array} intent
+     * @param {number} [confidence]
+     * @returns {Function} - the middleware
+     * @memberOf Ai
+     * @example
+     * const { Router, ai } = require(''wingbot');
+     *
+     * ai.register('app-model');
+     *
+     * bot.use(ai.match('intent1'), (req, res) => {
+     *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
+     *
+     *     res.text('Oh, intent 1 :)');
+     * });
+     */
+    globalMatch (intent, confidence = null) {
+        const resolver = this.match(intent, confidence);
+        const intents = Array.isArray(intent)
+            ? intent
+            : [intent];
+        // @ts-ignore
+        resolver.globalIntents = intents.map(i => ({
+            intent: i,
+            path: '/*'
+        }));
+
+        // @todo same interface as a router to be able to scale the feature
+
+        return resolver;
+    }
+
+    _getModelForRequest (req, prefix = DEFAULT_PREFIX) {
+        const prefixForRequest = this.getPrefix(prefix, req);
+        return this._keyworders.get(prefixForRequest);
+    }
+
+    _getMockIntent (req) {
         if (this._mockIntent !== null) {
             return [{
                 intent: this._mockIntent.intent,
                 score: this._mockIntent.confidence || this.confidence
             }];
-        } else if (req.data.intent) {
+        } else if (req.data && req.data.intent) {
             return [{
                 intent: req.data.intent,
                 score: this.confidence
             }];
         }
-        const prefixForRequest = this.getPrefix(prefix, req);
-        const model = this._keyworders.get(prefixForRequest);
-        assert.ok(!!model, 'The AI model should be registered!');
+        return null;
+    }
 
+    async preloadIntent (req) {
+        if (req._intents || !req.isText()) {
+            return;
+        }
+        const mockIntent = this._getMockIntent(req);
+        if (mockIntent) {
+            req._intents = mockIntent;
+        } else if (!req._intents && this._keyworders.size !== 0 && req.isText()) {
+            const model = this._getModelForRequest(req);
+            if (!model) {
+                return;
+            }
+            req._intents = await this._queryModel(DEFAULT_PREFIX, req, model);
+        }
+    }
+
+    async _queryModel (prefix, req, useModel = null) {
+        const mockIntent = this._getMockIntent(req);
+        if (mockIntent) {
+            return mockIntent;
+        }
+        let model = useModel;
+        if (!model) {
+            model = this._getModelForRequest(req, prefix);
+            assert.ok(!!model, 'The AI model should be registered!');
+        }
         return model.resolve(req.text(), req);
     }
 

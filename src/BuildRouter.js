@@ -341,7 +341,11 @@ class BuildRouter extends Router {
             let aiResolver = null;
 
             if (route.aiTags && route.aiTags.length) {
-                aiResolver = Ai.ai.match(route.aiTags);
+                if (route.aiGlobal) {
+                    aiResolver = Ai.ai.globalMatch(route.aiTags);
+                } else {
+                    aiResolver = Ai.ai.match(route.aiTags);
+                }
             }
 
             if (aiResolver && route.isResponder) {

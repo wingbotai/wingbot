@@ -27,7 +27,7 @@ class Plugins {
 
     getPluginFactory (name) {
         if (!this._plugins.has(name)) {
-            throw new Error(`Unknown Resolver: ${name}. Ensure its registration.`);
+            throw new Error(`Unknown Plugin: ${name}. Ensure its registration.`);
         }
         return this._plugins.get(name);
     }
