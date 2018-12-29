@@ -32,6 +32,7 @@
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
     * [.load(prefix)](#Ai_load)
     * [.match(intent, [confidence], [prefix])](#Ai_match) ⇒ <code>function</code>
+    * [.globalMatch(intent, [confidence])](#Ai_globalMatch) ⇒ <code>function</code>
 
 {% raw %}<div id="Ai_confidence">&nbsp;</div>{% endraw %}
 
@@ -149,7 +150,32 @@ const { Router, ai } = require(''wingbot');
 ai.register('app-model');
 
 bot.use(ai.match('intent1'), (req, res) => {
-    console.log(req.intent()); // { intent: 'intent1', score: 0.9604 }
+    console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
+
+    res.text('Oh, intent 1 :)');
+});
+```
+{% raw %}<div id="Ai_globalMatch">&nbsp;</div>{% endraw %}
+
+### ai.globalMatch(intent, [confidence]) ⇒ <code>function</code>
+Returns matching middleware, that will export the intent to the root router
+so the intent will be matched in a global context
+
+**Kind**: instance method of [<code>Ai</code>](#Ai)  
+**Returns**: <code>function</code> - - the middleware  
+**Params**
+
+- intent <code>string</code> | <code>Array</code>
+- [confidence] <code>number</code> <code> = </code>
+
+**Example**  
+```javascript
+const { Router, ai } = require(''wingbot');
+
+ai.register('app-model');
+
+bot.use(ai.match('intent1'), (req, res) => {
+    console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
 
     res.text('Oh, intent 1 :)');
 });

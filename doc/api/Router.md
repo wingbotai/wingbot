@@ -134,7 +134,7 @@ router.use((req, res) => {
 **Kind**: global typedef  
 **Params**
 
-- req <code>Request</code>
-- res <code>Responder</code>
-- postBack <code>function</code>
+- [req] <code>Request</code>
+- [res] <code>Responder</code>
+- [postBack] <code>function</code>
 
