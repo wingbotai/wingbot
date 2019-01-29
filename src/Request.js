@@ -112,7 +112,9 @@ class Request {
             return intent.score >= getDataOrScore
                 ? intent.intent
                 : null;
-        } else if (getDataOrScore) {
+        }
+
+        if (getDataOrScore) {
             return intent;
         }
         return intent.intent;

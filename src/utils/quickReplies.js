@@ -142,7 +142,9 @@ function quickReplyAction (expectedKeywords, normalizedText, text) {
 
     if (exactMatch.length === 1) {
         return exactMatch[0];
-    } else if (!normalizedText) {
+    }
+
+    if (!normalizedText) {
         return null;
     }
 

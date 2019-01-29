@@ -163,7 +163,9 @@ class BuildRouter extends Router {
         if (this._configTs > Date.now() - this.keepConfigFor) {
             // do not update recently updated of fixed configurations
             return;
-        } else if (!this._configStorage) {
+        }
+
+        if (!this._configStorage) {
             // not need to wait for existing requests, there are no existing ones
             const snapshot = await this._loadBot();
             this.buildWithSnapshot(snapshot.blocks);

@@ -279,8 +279,9 @@ class Responder {
 
         if (replies || this._quickReplyCollector.length !== 0) {
 
-            const { quickReplies: qrs, expectedKeywords }
-                = makeQuickReplies(replies || [], this.path, this._t, this._quickReplyCollector);
+            const {
+                quickReplies: qrs, expectedKeywords
+            } = makeQuickReplies(replies || [], this.path, this._t, this._quickReplyCollector);
 
             this._quickReplyCollector = [];
 

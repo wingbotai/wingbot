@@ -515,8 +515,8 @@ class NotificationsStorage {
                     hasNext = true;
                 }
 
-                keyReached = keyReached ||
-                    (key.pageId === sub.pageId && key.senderId === sub.senderId);
+                keyReached = keyReached
+                    || (key.pageId === sub.pageId && key.senderId === sub.senderId);
 
                 return false;
             });

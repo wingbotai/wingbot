@@ -333,7 +333,8 @@ class Ai {
                 intent: this._mockIntent.intent,
                 score: this._mockIntent.confidence || this.confidence
             }];
-        } else if (req.data && req.data.intent) {
+        }
+        if (req.data && req.data.intent) {
             return [{
                 intent: req.data.intent,
                 score: req.data.score || this.confidence

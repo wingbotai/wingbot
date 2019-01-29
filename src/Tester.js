@@ -4,8 +4,6 @@
 'use strict';
 
 
-const Router = require('./Router'); // eslint-disable-line no-unused-vars
-
 const assert = require('assert');
 const Processor = require('./Processor');
 const Request = require('./Request');
@@ -16,6 +14,8 @@ const { actionMatches, parseActionPayload } = require('./utils');
 const { asserts } = require('./testTools');
 const AnyResponseAssert = require('./testTools/AnyResponseAssert');
 const ResponseAssert = require('./testTools/ResponseAssert');
+
+const Router = require('./Router'); // eslint-disable-line no-unused-vars
 
 /**
  * Utility for testing requests

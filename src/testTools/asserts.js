@@ -281,7 +281,8 @@ function genericTemplate (response, count = null, message = 'Should contain gene
     const isGeneric = templateType(response, 'generic', message);
     if (!isGeneric) {
         return false;
-    } else if (count === null) {
+    }
+    if (count === null) {
         return true;
     }
     const elements = genericTemplateItems(response, message);

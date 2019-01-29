@@ -3,13 +3,14 @@
  */
 'use strict';
 
-const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
-const Request = require('./Request'); // eslint-disable-line no-unused-vars
 
-const Ai = require('./Ai');
 const pathToRegexp = require('path-to-regexp');
+const Ai = require('./Ai');
 const ReducerWrapper = require('./ReducerWrapper');
 const { makeAbsolute } = require('./utils');
+
+const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
+const Request = require('./Request'); // eslint-disable-line no-unused-vars
 
 /**
  * @callback Resolver
@@ -199,10 +200,9 @@ class Router extends ReducerWrapper {
             };
 
         } else if (reducer instanceof RegExp) {
-            reduce = req =>
-                (req.isText() && req.text(true).match(reducer)
-                    ? Router.CONTINUE
-                    : Router.BREAK);
+            reduce = req => (req.isText() && req.text(true).match(reducer)
+                ? Router.CONTINUE
+                : Router.BREAK);
 
         } else if (typeof reduce === 'object' && reduce.reduce) {
             isReducer = true;
@@ -301,7 +301,8 @@ class Router extends ReducerWrapper {
             );
             if (typeof iterationResult === 'string' || Array.isArray(iterationResult)) {
                 return iterationResult;
-            } else if (iterationResult !== Router.CONTINUE) {
+            }
+            if (iterationResult !== Router.CONTINUE) {
                 return Router.END;
             }
         }

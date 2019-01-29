@@ -94,7 +94,9 @@ class SecurityMiddleware {
         if (match) {
             // previously verified by middleware getSignatureVerifier()
             return Promise.resolve(null);
-        } else if (this.tokenStorage && req.cookies && req.cookies[this.cookieName]) {
+        }
+
+        if (this.tokenStorage && req.cookies && req.cookies[this.cookieName]) {
 
             // examine senderId
             let senderId;

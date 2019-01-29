@@ -1,8 +1,8 @@
 'use strict';
 
 const request = require('request-promise-native');
-const { tokenize } = require('../utils');
 const assert = require('assert');
+const { tokenize } = require('../utils');
 const CachedModel = require('./CachedModel');
 
 const DEFAULT_MATCHES = 1;

@@ -85,8 +85,8 @@ class Translate {
         }
 
         return Promise.all(languages.map(lang => this._getTranslator(lang)))
-            .then(translatorsArray => languages.reduce((obj, lang, index) =>
-                Object.assign(obj, {
+            .then(translatorsArray => languages
+                .reduce((obj, lang, index) => Object.assign(obj, {
                     [lang]: {
                         t: translatorsArray[index]
                     }

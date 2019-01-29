@@ -47,7 +47,9 @@ function bufferloader (url, limit = 0, limitJustByBody = false, redirCount = 3) 
                 req.removeAllListeners();
                 resolve(bufferloader(res.headers.location, limit, limitJustByBody, redirCount - 1));
                 return;
-            } else if (res.statusCode !== 200) {
+            }
+
+            if (res.statusCode !== 200) {
                 req.removeAllListeners();
                 reject(new Error(res.statusMessage || 'Cant load'));
                 return;
