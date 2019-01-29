@@ -145,6 +145,13 @@ class Ai {
     /**
      * Returns matching middleware
      *
+     * **supports:**
+     *
+     * - intents (`intentName`)
+     * - wildcard keywords (`#keyword#`)
+     * - phrases (`#first-phrase|second-phrase`)
+     * - emojis (`#😄🙃😛`)
+     *
      * @param {string|Array} intent
      * @param {number} [confidence]
      * @returns {Function} - the middleware
@@ -189,7 +196,7 @@ class Ai {
      *
      * ai.register('app-model');
      *
-     * bot.use(ai.match('intent1'), (req, res) => {
+     * bot.use(ai.globalMatch('intent1'), (req, res) => {
      *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
      *
      *     res.text('Oh, intent 1 :)');

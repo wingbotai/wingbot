@@ -232,7 +232,7 @@ Register plugin
 **Params**
 
 - name <code>string</code> | [<code>Plugins</code>](#Plugins) - plugin name or plugins object to include
-- [plugin] [<code>Plugin</code>](#Plugin) - plugin - optional when including plugin object
+- [plugin] [<code>Plugin</code>](#Plugin) | <code>Router</code> - plugin - optional when including plugin object
 
 {% raw %}<div id="ConfigStorage">&nbsp;</div>{% endraw %}
 

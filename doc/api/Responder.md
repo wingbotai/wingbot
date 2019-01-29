@@ -9,6 +9,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.newState](#Responder_newState)
     * [.finalMessageSent](#Responder_finalMessageSent)
     * [.data](#Responder_data) : <code>Object</code>
+    * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
     * [.setBookmark([action])](#Responder_setBookmark) ⇒ <code>this</code>
     * [.bookmark()](#Responder_bookmark) ⇒ <code>string</code> \| <code>null</code>
     * [.runBookmark(postBack, [data])](#Responder_runBookmark) ⇒ <code>Promise.&lt;(null\|boolean)&gt;</code>
@@ -29,6 +30,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.typingOff()](#Responder_typingOff) ⇒ <code>this</code>
     * [.seen()](#Responder_seen) ⇒ <code>this</code>
     * [.passThread(targetAppId, [data])](#Responder_passThread) ⇒ <code>this</code>
+    * [.requestThread([data])](#Responder_requestThread) ⇒ <code>this</code>
     * [.takeThead([data])](#Responder_takeThead) ⇒ <code>this</code>
     * [.receipt(recipientName, [paymentMethod], [currency], [uniqueCode])](#Responder_receipt) ⇒ <code>ReceiptTemplate</code>
     * [.button(text)](#Responder_button) ⇒ <code>ButtonTemplate</code>
@@ -65,6 +67,22 @@ Is true, when a final message (the quick replies by default) has been sent
 
 ### responder.data : <code>Object</code>
 **Kind**: instance property of [<code>Responder</code>](#Responder)  
+{% raw %}<div id="Responder_run">&nbsp;</div>{% endraw %}
+
+### responder.run(blockName) ⇒ <code>Promise</code>
+Run a code block defined by a plugin
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
+- blockName <code>string</code>
+
+**Properties**
+
+| Type |
+| --- |
+| <code>function</code> | 
+
 {% raw %}<div id="Responder_setBookmark">&nbsp;</div>{% endraw %}
 
 ### responder.setBookmark([action]) ⇒ <code>this</code>
@@ -351,6 +369,16 @@ Pass thread to another app
 **Params**
 
 - targetAppId <code>string</code>
+- [data] <code>string</code> | <code>Object</code> <code> = null</code>
+
+{% raw %}<div id="Responder_requestThread">&nbsp;</div>{% endraw %}
+
+### responder.requestThread([data]) ⇒ <code>this</code>
+Request thread from Primary Receiver app
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
 - [data] <code>string</code> | <code>Object</code> <code> = null</code>
 
 {% raw %}<div id="Responder_takeThead">&nbsp;</div>{% endraw %}

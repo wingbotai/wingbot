@@ -881,6 +881,7 @@
 <li><a href="#Responder_newState">.newState</a></li>
 <li><a href="#Responder_finalMessageSent">.finalMessageSent</a></li>
 <li><a href="#Responder_data">.data</a> : <code>Object</code></li>
+<li><a href="#Responder_run">.run(blockName)</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Responder_setBookmark">.setBookmark([action])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_bookmark">.bookmark()</a> &#x21D2; <code>string</code> | <code>null</code></li>
 <li><a href="#Responder_runBookmark">.runBookmark(postBack, [data])</a> &#x21D2; <code>Promise.&lt;(null|boolean)&gt;</code></li>
@@ -901,6 +902,7 @@
 <li><a href="#Responder_typingOff">.typingOff()</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_seen">.seen()</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_passThread">.passThread(targetAppId, [data])</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_requestThread">.requestThread([data])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_takeThead">.takeThead([data])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_receipt">.receipt(recipientName, [paymentMethod], [currency], [uniqueCode])</a> &#x21D2; <code>ReceiptTemplate</code></li>
 <li><a href="#Responder_button">.button(text)</a> &#x21D2; <code>ButtonTemplate</code></li>
@@ -949,6 +951,27 @@ into the conversation state.</p>
 
 <h3 id="responderdata--object"><a name="responderdata--object" class="plugin-anchor" href="#responderdata--object"><i class="fa fa-link" aria-hidden="true"></i></a>responder.data : <code>Object</code></h3>
 <p><strong>Kind</strong>: instance property of <a href="#Responder"><code>Responder</code></a>  </p>
+<div id="Responder_run">&#xA0;</div>
+
+<h3 id="responderrunblockname-&#x21D2;-promise"><a name="responderrunblockname-&#x21D2;-promise" class="plugin-anchor" href="#responderrunblockname-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>responder.run(blockName) &#x21D2; <code>Promise</code></h3>
+<p>Run a code block defined by a plugin</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>blockName <code>string</code></li>
+</ul>
+<p><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_setBookmark">&#xA0;</div>
 
 <h3 id="respondersetbookmarkaction-&#x21D2;-this"><a name="respondersetbookmarkaction-&#x21D2;-this" class="plugin-anchor" href="#respondersetbookmarkaction-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setBookmark([action]) &#x21D2; <code>this</code></h3>
@@ -1195,6 +1218,14 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 <li>targetAppId <code>string</code></li>
 <li>[data] <code>string</code> | <code>Object</code> <code> = null</code></li>
 </ul>
+<div id="Responder_requestThread">&#xA0;</div>
+
+<h3 id="responderrequestthreaddata-&#x21D2;-this"><a name="responderrequestthreaddata-&#x21D2;-this" class="plugin-anchor" href="#responderrequestthreaddata-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.requestThread([data]) &#x21D2; <code>this</code></h3>
+<p>Request thread from Primary Receiver app</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>[data] <code>string</code> | <code>Object</code> <code> = null</code></li>
+</ul>
 <div id="Responder_takeThead">&#xA0;</div>
 
 <h3 id="respondertaketheaddata-&#x21D2;-this"><a name="respondertaketheaddata-&#x21D2;-this" class="plugin-anchor" href="#respondertaketheaddata-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.takeThead([data]) &#x21D2; <code>this</code></h3>
@@ -1319,7 +1350,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2018-12-29T12:21:47.441Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-12-29T12:21:58.331Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2019-01-29T17:56:38.704Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-01-29T17:56:41.523Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

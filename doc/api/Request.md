@@ -25,6 +25,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 **Kind**: global class  
 
 * [Request](#Request)
+    * [.params](#Request_params)
     * [.timestamp](#Request_timestamp)
     * [.senderId](#Request_senderId)
     * [.recipientId](#Request_recipientId)
@@ -53,15 +54,25 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.action([getData])](#Request_action) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
     * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
 
+{% raw %}<div id="Request_params">&nbsp;</div>{% endraw %}
+
+### request.params
+**Kind**: instance property of [<code>Request</code>](#Request)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| params | <code>object</code> | plugin configuration |
+
 {% raw %}<div id="Request_timestamp">&nbsp;</div>{% endraw %}
 
 ### request.timestamp
 **Kind**: instance property of [<code>Request</code>](#Request)  
 **Properties**
 
-| Type |
-| --- |
-| <code>number</code> \| <code>null</code> | 
+| Name | Type |
+| --- | --- |
+| timestamp | <code>number</code> \| <code>null</code> | 
 
 {% raw %}<div id="Request_senderId">&nbsp;</div>{% endraw %}
 

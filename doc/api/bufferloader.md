@@ -221,6 +221,7 @@ bot.use((req, res) => {
 
 * [ReturnSender](#ReturnSender)
     * [new ReturnSender(options, userId, incommingMessage, logger)](#new_ReturnSender_new)
+    * [.modifyStateAfterLoad()](#ReturnSender_modifyStateAfterLoad) ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
     * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
 
 {% raw %}<div id="new_ReturnSender_new">&nbsp;</div>{% endraw %}
@@ -233,6 +234,10 @@ bot.use((req, res) => {
 - incommingMessage <code>Object</code>
 - logger <code>console</code> <code> = </code> - console like logger
 
+{% raw %}<div id="ReturnSender_modifyStateAfterLoad">&nbsp;</div>{% endraw %}
+
+### returnSender.modifyStateAfterLoad() ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
 {% raw %}<div id="ReturnSender_modifyStateBeforeStore">&nbsp;</div>{% endraw %}
 
 ### returnSender.modifyStateBeforeStore() ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>

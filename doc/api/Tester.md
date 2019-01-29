@@ -23,10 +23,11 @@
         * [.any()](#Tester_any) ⇒ [<code>AnyResponseAssert</code>](#AnyResponseAssert)
         * [.lastRes()](#Tester_lastRes) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
         * [.passedAction(path)](#Tester_passedAction) ⇒ <code>this</code>
+        * [.respondedWithBlock(blockName)](#Tester_respondedWithBlock) ⇒ <code>this</code>
         * [.getState()](#Tester_getState) ⇒ <code>Object</code>
         * [.setState([state])](#Tester_setState)
         * [.text(text)](#Tester_text) ⇒ <code>Promise</code>
-        * [.intent(intent, text)](#Tester_intent) ⇒ <code>Promise</code>
+        * [.intent(intent, [text], [score])](#Tester_intent) ⇒ <code>Promise</code>
         * [.passThread([data], [appId])](#Tester_passThread) ⇒ <code>Promise</code>
         * [.optin(action, [data], [userRef])](#Tester_optin) ⇒ <code>Promise</code>
         * [.quickReply(action, [data])](#Tester_quickReply) ⇒ <code>Promise</code>
@@ -90,6 +91,16 @@ Checks, that app past the action
 
 - path <code>string</code>
 
+{% raw %}<div id="Tester_respondedWithBlock">&nbsp;</div>{% endraw %}
+
+### tester.respondedWithBlock(blockName) ⇒ <code>this</code>
+Checks, that a plugin used a block as a responde
+
+**Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
+
+- blockName <code>string</code>
+
 {% raw %}<div id="Tester_getState">&nbsp;</div>{% endraw %}
 
 ### tester.getState() ⇒ <code>Object</code>
@@ -118,14 +129,15 @@ Makes text request
 
 {% raw %}<div id="Tester_intent">&nbsp;</div>{% endraw %}
 
-### tester.intent(intent, text) ⇒ <code>Promise</code>
+### tester.intent(intent, [text], [score]) ⇒ <code>Promise</code>
 Makes recognised AI intent request
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
 **Params**
 
 - intent <code>string</code>
-- text <code>string</code>
+- [text] <code>string</code>
+- [score] <code>number</code> <code> = </code>
 
 {% raw %}<div id="Tester_passThread">&nbsp;</div>{% endraw %}
 

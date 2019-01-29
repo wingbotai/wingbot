@@ -30,8 +30,8 @@
     * [.getPrefix(prefix, req)](#Ai_getPrefix)
     * [.mockIntent([intent], [confidence])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
-    * [.load(prefix)](#Ai_load)
-    * [.match(intent, [confidence], [prefix])](#Ai_match) ⇒ <code>function</code>
+    * [.load()](#Ai_load)
+    * [.match(intent, [confidence])](#Ai_match) ⇒ <code>function</code>
     * [.globalMatch(intent, [confidence])](#Ai_globalMatch) ⇒ <code>function</code>
 
 {% raw %}<div id="Ai_confidence">&nbsp;</div>{% endraw %}
@@ -114,14 +114,10 @@ Registers Wingbot AI model
 
 {% raw %}<div id="Ai_load">&nbsp;</div>{% endraw %}
 
-### ai.load(prefix)
+### ai.load()
 Middleware, which ensures, that AI data are properly loaded in Request
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Params**
-
-- prefix <code>string</code> - AI model prefix
-
 **Example**  
 ```javascript
 const { ai, Router } = require('wingbot');
@@ -132,8 +128,15 @@ bot.use(ai.load());
 ```
 {% raw %}<div id="Ai_match">&nbsp;</div>{% endraw %}
 
-### ai.match(intent, [confidence], [prefix]) ⇒ <code>function</code>
+### ai.match(intent, [confidence]) ⇒ <code>function</code>
 Returns matching middleware
+
+**supports:**
+
+- intents (`intentName`)
+- wildcard keywords (`#keyword#`)
+- phrases (`#first-phrase|second-phrase`)
+- emojis (`#😄🙃😛`)
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 **Returns**: <code>function</code> - - the middleware  
@@ -141,7 +144,6 @@ Returns matching middleware
 
 - intent <code>string</code> | <code>Array</code>
 - [confidence] <code>number</code> <code> = </code>
-- [prefix] <code>string</code>
 
 **Example**  
 ```javascript
@@ -174,7 +176,7 @@ const { Router, ai } = require(''wingbot');
 
 ai.register('app-model');
 
-bot.use(ai.match('intent1'), (req, res) => {
+bot.use(ai.globalMatch('intent1'), (req, res) => {
     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
 
     res.text('Oh, intent 1 :)');
