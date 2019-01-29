@@ -67,12 +67,29 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
     const quickReplies = iterate
         .map((reply) => {
             const {
-                title, action, match, isLocation = false
+                title,
+                action,
+                match,
+                isLocation = false,
+                isEmail = false,
+                isPhone = false
             } = reply;
 
             if (isLocation) {
                 return {
                     content_type: 'location'
+                };
+            }
+
+            if (isPhone) {
+                return {
+                    content_type: 'user_phone_number'
+                };
+            }
+
+            if (isEmail) {
+                return {
+                    content_type: 'user_email'
                 };
             }
 

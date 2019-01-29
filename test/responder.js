@@ -490,8 +490,7 @@ describe('Responder', function () {
                 recipient: {
                     id: SENDER_ID
                 },
-                target_app_id: '123',
-                metadata: null
+                target_app_id: '123'
             });
         });
 

@@ -20,6 +20,18 @@ function parseReplies (replies, linksMap) {
                 condition
             };
         }
+        if (reply.isEmail) {
+            return {
+                isEmail: true,
+                condition
+            };
+        }
+        if (reply.isPhone) {
+            return {
+                isPhone: true,
+                condition
+            };
+        }
 
         let { action } = reply;
 
@@ -62,7 +74,7 @@ function message (params, { isLastIndex, linksMap }) {
 
     if (params.replies && !Array.isArray(params.replies)) {
         throw new Error('Replies should be an array');
-    } else if (params.replies.length > 0) {
+    } else if (params.replies && params.replies.length > 0) {
         replies = parseReplies(params.replies, linksMap);
     }
 
@@ -88,7 +100,7 @@ function message (params, { isLastIndex, linksMap }) {
             res.text(text, replies
                 .filter(reply => reply.condition(req, res))
                 .map((reply) => {
-                    const rep = reply.isLocation
+                    const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
                         ? Object.assign({}, reply)
                         : Object.assign({}, reply, {
                             title: reply.title(req.state)

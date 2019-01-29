@@ -67,6 +67,15 @@ class Responder {
         this._firstTypingSkipped = false;
 
         /**
+         * Run a code block defined by a plugin
+         *
+         * @prop {Function}
+         * @param {string} blockName
+         * @returns {Promise}
+         */
+        this.run = blockName => Promise.resolve(blockName && undefined);
+
+        /**
          * Is true, when a final message (the quick replies by default) has been sent
          *
          * @prop {boolean}
@@ -531,9 +540,40 @@ class Responder {
             recipient: {
                 id: this._senderId
             },
-            target_app_id: targetAppId,
-            metadata
+            target_app_id: targetAppId
         };
+        if (metadata) {
+            Object.assign(messageData, { metadata });
+        }
+        this.finalMessageSent = true;
+        this._send(messageData);
+        return this;
+    }
+
+    /**
+     * Request thread from Primary Receiver app
+     *
+     * @param {string|Object} [data]
+     * @returns {this}
+     */
+    requestThread (data = null) {
+        let metadata = {};
+        if (data !== null && typeof data !== 'string') {
+            metadata = {
+                metadata: JSON.stringify(data)
+            };
+        } else if (data) {
+            metadata = {
+                metadata: data
+            };
+        }
+        const messageData = {
+            recipient: {
+                id: this._senderId
+            },
+            request_thread_control: metadata
+        };
+        this.finalMessageSent = true;
         this._send(messageData);
         return this;
     }
@@ -546,17 +586,21 @@ class Responder {
      */
     takeThead (data = null) {
         this.finalMessageSent = true;
-        let metadata = data;
+        let metadata = {};
         if (data !== null && typeof data !== 'string') {
-            metadata = JSON.stringify(data);
+            metadata = {
+                metadata: JSON.stringify(data)
+            };
+        } else if (data) {
+            metadata = {
+                metadata: data
+            };
         }
         const messageData = {
             recipient: {
                 id: this._senderId
             },
-            take_thread_control: {
-                metadata
-            }
+            take_thread_control: metadata
         };
         this._send(messageData);
         return this;

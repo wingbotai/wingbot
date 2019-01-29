@@ -5,7 +5,7 @@
 
 const sinon = require('sinon');
 const assert = require('assert');
-const { Tester, ai } = require('../index');
+const { Tester, ai, Router } = require('../index');
 const BuildRouter = require('../src/BuildRouter');
 const Plugins = require('../src/Plugins');
 // @ts-ignore
@@ -16,9 +16,11 @@ describe('<BuildRouter>', async () => {
     it('should behave as router', async () => {
         const plugins = new Plugins();
 
-        plugins.code('exampleBlock', async (req, res) => {
+        plugins.register('exampleBlock', async (req, res) => {
             await res.run('responseBlockName');
         });
+
+        plugins.register('routerBlock', new Router());
 
         const bot = BuildRouter.fromData(testbot.data, plugins);
 
@@ -92,9 +94,41 @@ describe('<BuildRouter>', async () => {
         ai.mockIntent();
     });
 
+    it('should work with Router plugins', async () => {
+        const plugins = new Plugins();
+
+        plugins.code('exampleBlock', async (req, res) => {
+            await res.run('responseBlockName');
+        });
+
+        const routerBlock = new Router();
+
+        routerBlock.use('/', async (req, res, postBack) => {
+            await res.run('responseBlockName');
+
+            postBack('nextRoute');
+        });
+
+        routerBlock.use('/nextRoute', async (req, res) => {
+            await res.run('anotherBlockName');
+        });
+
+        plugins.register('routerBlock', routerBlock);
+
+        const bot = BuildRouter.fromData(testbot.data, plugins);
+        const t = new Tester(bot);
+
+        await t.postBack('router-plugin');
+
+        t.any()
+            .contains('Yessss')
+            .contains('Another works');
+    });
+
     it('should return translated messages', async () => {
         const plugins = new Plugins();
 
+        plugins.register('routerBlock', new Router());
         plugins.code('exampleBlock', async (req, res) => {
             await res.run('responseBlockName');
         });

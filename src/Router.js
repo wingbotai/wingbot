@@ -31,9 +31,7 @@ class Router extends ReducerWrapper {
 
         this._routes = [];
 
-        this.globalIntents = [];
-
-        this._globIntentMatch = {};
+        this.globalIntents = new Map();
     }
 
     _normalizePath (path) {
@@ -99,25 +97,18 @@ class Router extends ReducerWrapper {
         });
 
         reducers.forEach(({ globalIntents }) => {
-            globalIntents.forEach(({ intent, path: intentPath }) => {
-                if (this._globIntentMatch[intent]) {
-                    return;
-                }
-
+            for (const { id, matcher, path: intentPath } of globalIntents.values()) {
                 const path = intentPath === '/*'
                     ? pathContext.path
                     : `${pathContext.path}${intentPath}`.replace(/^\/\*/, '');
 
-                this._globIntentMatch[intent] = {
-                    localPath: pathContext.path,
-                    path
-                };
-
-                this.globalIntents.push({
-                    intent,
-                    path
+                this.globalIntents.set(id, {
+                    id,
+                    matcher,
+                    path,
+                    localPath: pathContext.path
                 });
-            });
+            }
         });
 
         return {
@@ -136,7 +127,7 @@ class Router extends ReducerWrapper {
             // or condition
             if (Array.isArray(reducer)) {
                 let isAnyReducer = false;
-                const globalIntents = [];
+                const globalIntents = new Map();
 
                 const reducersArray = reducer.map((re) => {
                     const {
@@ -145,7 +136,7 @@ class Router extends ReducerWrapper {
                         re,
                         pathContext.path
                     );
-                    globalIntents.push(...gis);
+                    gis.forEach(g => globalIntents.set(g.id, g));
                     Object.assign(pathContext, { path: resolverPath });
                     isAnyReducer = isAnyReducer || isReducer;
                     return { reduce, isReducer };
@@ -171,26 +162,39 @@ class Router extends ReducerWrapper {
         let resolverPath = thePath;
         let reduce = reducer;
         let isReducer = false;
-        const { globalIntents = [] } = reducer;
+        const router = this;
+        const { globalIntents = new Map() } = reducer;
 
         if (typeof reducer === 'string') {
             resolverPath = this._normalizePath(reducer);
             const pathMatch = pathToRegexp(resolverPath, [], { end: resolverPath === '' });
 
             reduce = (req, res, relativePostBack, pathContext, action) => {
-                if (action && (resolverPath === '/*' || pathMatch.exec(action))) {
+                const act = req.action();
+                const actionMatches = action && (resolverPath === '/*' || pathMatch.exec(action));
+
+                // when the action matches, execute the bookmark
+                if (actionMatches && !act && res.bookmark()) {
+                    return res.runBookmark(relativePostBack);
+                }
+
+                if (actionMatches) {
                     return Router.CONTINUE;
                 }
-                if (action) {
+
+                if (action && act) {
                     return Router.BREAK;
                 }
-                const intent = req.intent();
-                if (intent
-                    && this._globIntentMatch[intent]
-                    && pathMatch.exec(this._globIntentMatch[intent].localPath)) {
+
+                const match = router._getMatchingGlobalIntent(req, res);
+
+                if (match
+                    && pathMatch.exec(match.localPath)
+                    && match.localPath !== match.path) {
 
                     return Router.CONTINUE;
                 }
+
                 return Router.BREAK;
             };
 
@@ -247,6 +251,25 @@ class Router extends ReducerWrapper {
         };
     }
 
+    _getMatchingGlobalIntent (req, res) {
+        if (!req.isText()) {
+            return null;
+        }
+        if (req._matchingGlobalIntents) {
+            const gid = req._matchingGlobalIntents
+                .find(id => this.globalIntents.has(id));
+
+            return gid && this.globalIntents.get(gid);
+        }
+
+        const matching = Array.from(this.globalIntents.values())
+            .filter(i => i.matcher(req, res, true));
+
+        req._matchingGlobalIntents = matching.map(g => g.id);
+
+        return matching[0];
+    }
+
     async reduce (req, res, postBack = () => {}, path = '/') {
         const action = this._action(req, path);
         const relativePostBack = this._relativePostBack(postBack, path);
@@ -255,13 +278,15 @@ class Router extends ReducerWrapper {
         await Ai.ai.preloadIntent(req);
 
         // if there's intent && action = is expected and there'a no bookmark
-        const intent = req.intent();
         if (action
-            && intent
-            && this._globIntentMatch[intent]
+            && req.isText()
             && !res.bookmark()) {
 
-            res.setBookmark(this._globIntentMatch[intent].path);
+            const match = this._getMatchingGlobalIntent(req, res);
+
+            if (match) {
+                res.setBookmark(match.path);
+            }
         }
 
         for (const route of this._routes) {
@@ -340,6 +365,10 @@ class Router extends ReducerWrapper {
             if (!reducer.isReducer
                     && [Router.BREAK, Router.CONTINUE].indexOf(result) === -1) {
                 pathContext = `${path === '/' ? '' : path}${route.path}`;
+
+                // store the last visited path
+                res.setState({ _lastVisitedPath: path === '/' ? null : path });
+
                 this._emitAction(req, pathContext);
             }
 
@@ -375,6 +404,12 @@ class Router extends ReducerWrapper {
     _action (req, path) {
         let action = req.action();
 
+        let pathFallback = '/';
+        if (!action && req.isText() && req.state._lastVisitedPath) {
+            action = req.state._lastVisitedPath;
+            pathFallback = null;
+        }
+
         // try to normalize the action
         if (action) {
             if (!action.match(/^\//)) {
@@ -383,7 +418,7 @@ class Router extends ReducerWrapper {
             if (action.indexOf(path) === 0) {
                 // return relative path with slash at the begining
                 if (path !== '/') {
-                    return action.substr(path.length) || '/';
+                    return action.substr(path.length) || pathFallback;
                 }
 
                 return action;

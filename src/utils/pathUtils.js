@@ -44,6 +44,9 @@ function parseActionPayload (object, needRawData = false) {
             action = payload;
         }
     }
+    if (action && !`${action}`.match(/^[A-Za-z0-9\-/_]+$/)) {
+        action = null;
+    }
     if (!action && !needRawData) {
         return null;
     }

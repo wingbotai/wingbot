@@ -3,10 +3,14 @@
  */
 'use strict';
 
-const assert = require('assert');
 const { WingbotModel } = require('./wingbot');
+const { replaceDiacritics } = require('./utils/tokenizer');
 
 const DEFAULT_PREFIX = 'default';
+const FULL_EMOJI_REGEX = /^#((?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])+)$/;
+const HAS_CLOSING_HASH = /^#(.+)#$/;
+
+let uq = 0;
 
 /**
  * @class Ai
@@ -117,7 +121,6 @@ class Ai {
     /**
      * Middleware, which ensures, that AI data are properly loaded in Request
      *
-     * @param {string} prefix - AI model prefix
      * @example
      * const { ai, Router } = require('wingbot');
      *
@@ -125,14 +128,14 @@ class Ai {
      *
      * bot.use(ai.load());
      */
-    load (prefix = DEFAULT_PREFIX) {
+    load () {
         return async (req) => {
             if (!req.isText()) {
                 return true;
             }
 
             if (!req._intents) {
-                req._intents = await this._queryModel(prefix, req);
+                req._intents = await this._queryModel(req);
             }
 
             return true;
@@ -144,7 +147,6 @@ class Ai {
      *
      * @param {string|Array} intent
      * @param {number} [confidence]
-     * @param {string} [prefix]
      * @returns {Function} - the middleware
      * @memberOf Ai
      * @example
@@ -158,8 +160,8 @@ class Ai {
      *     res.text('Oh, intent 1 :)');
      * });
      */
-    match (intent, confidence = null, prefix = DEFAULT_PREFIX) {
-        const intents = Array.isArray(intent) ? intent : [intent];
+    match (intent, confidence = null) {
+        const matcher = this._createIntentMatcher(intent, confidence);
 
         return async (req, res) => {
             if (!req.isText()) {
@@ -167,34 +169,10 @@ class Ai {
             }
 
             if (!req._intents) {
-                req._intents = await this._queryModel(prefix, req);
+                req._intents = await this._queryModel(req);
             }
 
-            if (req._intents.length === 0) {
-                return false;
-            }
-
-            const [winningIntent] = req._intents;
-
-            const useConfidence = confidence === null
-                ? this.confidence
-                : confidence;
-
-            if (!intents.includes(winningIntent.intent)
-                    || winningIntent.score < useConfidence) {
-
-                return false;
-            }
-
-            const action = req.action();
-
-            // when there's an action, store the current path as a bookmark
-            if (!this.disableBookmarking && action && action !== res.currentAction()) {
-                res.setBookmark();
-                return false;
-            }
-
-            return true;
+            return matcher(req, res);
         };
     }
 
@@ -218,19 +196,130 @@ class Ai {
      * });
      */
     globalMatch (intent, confidence = null) {
-        const resolver = this.match(intent, confidence);
-        const intents = Array.isArray(intent)
-            ? intent
-            : [intent];
-        // @ts-ignore
-        resolver.globalIntents = intents.map(i => ({
-            intent: i,
-            path: '/*'
-        }));
+        const matcher = this._createIntentMatcher(intent, confidence);
 
-        // @todo same interface as a router to be able to scale the feature
+        const resolver = async (req, res) => {
+            if (!req.isText()) {
+                return false;
+            }
+
+            if (!req._intents) {
+                req._intents = await this._queryModel(req);
+            }
+
+            return matcher(req, res);
+        };
+
+        const id = uq++;
+
+        resolver.globalIntents = new Map([[id, {
+            id,
+            matcher,
+            path: '/*'
+        }]]);
 
         return resolver;
+    }
+
+    _createIntentMatcher (intent, confidence = null) {
+        const expressions = Array.isArray(intent) ? intent : [intent];
+
+        const intents = expressions.filter(ex => !ex.match(/^#/));
+
+        /**
+         * 1. Emoji lists
+         *      conversts #😀😃😄 to /^[😀😃😄]+$/ and matches not webalized
+         * 2. Full word lists with a closing hash (opens match)
+         *      convers #abc-123|xyz-34# to /abc-123|xyz-34/
+         * 3. Full word lists without an open tag
+         *      convers #abc-123|xyz-34 to /^abc-123$|^xyz-34$/
+         */
+
+        const regexps = expressions
+            .filter(ex => ex.match(/^#/))
+            .map((rawExp) => {
+                const exp = replaceDiacritics(rawExp);
+                const fullEmoji = exp.match(FULL_EMOJI_REGEX);
+
+                if (fullEmoji) {
+                    return {
+                        r: new RegExp(`^[${fullEmoji[1]}]+$`),
+                        t: false
+                    };
+                }
+
+                let regexText;
+
+                const withClosingHash = exp.match(HAS_CLOSING_HASH);
+
+                if (withClosingHash) {
+                    [, regexText] = withClosingHash;
+                    regexText = regexText.toLowerCase();
+                } else {
+                    regexText = exp.replace(/^#/, '')
+                        .split('|')
+                        .map(s => `^${s}$`.toLowerCase())
+                        .join('|');
+                }
+
+                let r;
+                try {
+                    r = new RegExp(regexText);
+                } catch (e) {
+                    // fail - simply allows to use bad characters
+                    regexText = regexText
+                        .replace(/[a-z0-9|-]+/, '');
+                    r = new RegExp(regexText);
+                }
+
+                return { r, t: true };
+            });
+
+        return (req, res, skipBookmarking = false) => {
+            if (regexps.length !== 0) {
+                const match = regexps.some(({ r, t }) => {
+                    if (t) {
+                        return req.text(true).match(r);
+                    }
+                    return req.text().match(r);
+                });
+
+                if (match) {
+                    return true;
+                }
+            }
+
+            if (!req._intents || req._intents.length === 0) {
+                return false;
+            }
+
+            const [winningIntent] = req._intents;
+
+            const useConfidence = confidence === null
+                ? this.confidence
+                : confidence;
+
+            if (!intents.includes(winningIntent.intent)
+                    || winningIntent.score < useConfidence) {
+
+                return false;
+            }
+
+            const action = req.action();
+
+            // when there's an action, store the current path as a bookmark
+            if (!this.disableBookmarking
+                && !skipBookmarking
+                && action
+                && !res.bookmark()
+                && action !== res.currentAction()) {
+
+                res.setBookmark();
+                return false;
+            }
+
+            return true;
+        };
     }
 
     _getModelForRequest (req, prefix = DEFAULT_PREFIX) {
@@ -247,7 +336,7 @@ class Ai {
         } else if (req.data && req.data.intent) {
             return [{
                 intent: req.data.intent,
-                score: this.confidence
+                score: req.data.score || this.confidence
             }];
         }
         return null;
@@ -263,21 +352,26 @@ class Ai {
         } else if (!req._intents && this._keyworders.size !== 0 && req.isText()) {
             const model = this._getModelForRequest(req);
             if (!model) {
+                req._intents = [];
                 return;
             }
-            req._intents = await this._queryModel(DEFAULT_PREFIX, req, model);
+            req._intents = await this._queryModel(req, model);
+        } else {
+            req._intents = [];
         }
     }
 
-    async _queryModel (prefix, req, useModel = null) {
+    async _queryModel (req, useModel = null) {
         const mockIntent = this._getMockIntent(req);
         if (mockIntent) {
             return mockIntent;
         }
         let model = useModel;
         if (!model) {
-            model = this._getModelForRequest(req, prefix);
-            assert.ok(!!model, 'The AI model should be registered!');
+            model = this._getModelForRequest(req);
+            if (!model) {
+                return [];
+            }
         }
         return model.resolve(req.text(), req);
     }

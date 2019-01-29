@@ -27,6 +27,7 @@ function passThread ({ appId }, { isLastIndex }) {
             data = res.data; // eslint-disable-line prefer-destructuring
         }
 
+        res.setState({ _threadPassed: true });
         res.passThread(toAppId, data);
 
         return isLastIndex ? Router.END : Router.CONTINUE;

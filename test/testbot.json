@@ -219,6 +219,20 @@
                 "id": "responseBlockName"
               }
             ]
+          },
+          {
+            "name": "conversation block name",
+            "description": "example block description text",
+            "id": "routerBlock",
+            "items": [
+              {
+                "description": "optional description",
+                "id": "responseBlockName"
+              },
+              {
+                "id": "anotherBlockName"
+              }
+            ]
           }
         ],
         "routes": [
@@ -430,6 +444,44 @@
               }
             ],
             "id": 1507122998196
+          },
+          {
+            "name": "Router plugin test",
+            "path": "router-plugin",
+            "resolvers": [
+              {
+                "type": "botbuild.customCode",
+                "params": {
+                  "items": {
+                    "responseBlockName": {
+                      "resolvers": [
+                        {
+                          "type": "botbuild.message",
+                          "params": {
+                            "text": "Yessss"
+                          },
+                          "id": 1507123414443
+                        }
+                      ]
+                    },
+                    "anotherBlockName": {
+                      "resolvers": [
+                        {
+                          "type": "botbuild.message",
+                          "params": {
+                            "text": "Another works"
+                          },
+                          "id": 1507123414443
+                        }
+                      ]
+                    }
+                  },
+                  "codeBlockId": "routerBlock"
+                },
+                "id": 1507123408256
+              }
+            ],
+            "id": 1507123395255
           },
           {
             "name": "Continued action",

@@ -38,6 +38,7 @@ class ReturnSender {
         this.simulatesOptIn = false;
 
         this._simulateStateChange = null;
+        this._simulateStateChangeOnLoad = null;
     }
 
     _send (payload) { // eslint-disable-line no-unused-vars
@@ -96,6 +97,13 @@ class ReturnSender {
     /**
      * @returns {Promise<Object|null>}
      */
+    modifyStateAfterLoad () {
+        return Promise.resolve(this._simulateStateChangeOnLoad);
+    }
+
+    /**
+     * @returns {Promise<Object|null>}
+     */
     modifyStateBeforeStore () {
         return Promise.resolve(this._simulateStateChange);
     }
@@ -108,7 +116,8 @@ class ReturnSender {
 
             if (this._sendLogs) {
                 this._sendLogs = false;
-                this._logger.log(this._userId, this._sent, this._incommingMessage);
+                await Promise.resolve(this._logger
+                    .log(this._userId, this._sent, this._incommingMessage));
             }
 
             const somethingSent = this._responses.length > 0;
@@ -119,7 +128,8 @@ class ReturnSender {
             };
         } catch (e) {
             if (this._logger) {
-                this._logger.error(e, this._userId, this._sent, this._incommingMessage);
+                await Promise.resolve(this._logger
+                    .error(e, this._userId, this._sent, this._incommingMessage));
             } else {
                 console.error(e, this._userId, this._sent, this._incommingMessage); // eslint-disable-line
             }

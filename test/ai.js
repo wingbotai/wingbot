@@ -161,6 +161,64 @@ describe('<Ai>', function () {
             assert.deepEqual(steps, [1, 2, 3, 4]);
         });
 
+        it('supports regexes', async () => {
+            const bot = new Router();
+
+            // @ts-ignore
+            bot.use(ai.match('#word-match|foo-match'), (req, res) => {
+                res.text('Full match');
+            });
+
+            // @ts-ignore
+            bot.use(ai.match('#😀😃😄'), (req, res) => {
+                res.text('Emoji match');
+            });
+
+            // @ts-ignore
+            bot.use(ai.match('#keyword#'), (req, res) => {
+                res.text('Keyword match');
+            });
+
+            // @ts-ignore
+            bot.use(ai.match('#f[au]n[ck]y|bar'), (req, res) => {
+                res.text('Fancy funky match');
+            });
+
+            // @ts-ignore
+            bot.use((req, res) => {
+                res.text('nothing');
+            });
+
+            const t = new Tester(bot);
+
+            await t.text('Word matčh');
+            t.res(0).contains('Full match');
+
+            await t.text('Not Word matčh');
+            t.res(0).contains('nothing');
+
+            await t.text('😃😄😃😄😃😄');
+            t.res(0).contains('Emoji match');
+
+            await t.text('😃😄😃😄😃😄.');
+            t.res(0).contains('nothing');
+
+            await t.text('😃😎');
+            t.res(0).contains('nothing');
+
+            await t.text('keyword in between');
+            t.res(0).contains('Keyword match');
+
+            await t.text('funky');
+            t.res(0).contains('Fancy funky match');
+            await t.text('fancy');
+            t.res(0).contains('Fancy funky match');
+            await t.text('bar');
+            t.res(0).contains('Fancy funky match');
+            await t.text('funky bar');
+            t.res(0).contains('nothing');
+        });
+
     });
 
     describe('mockIntent', function () {

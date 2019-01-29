@@ -8,11 +8,11 @@ const Request = require('../src/Request');
 const Ai = require('../src/Ai');
 
 const SENDER_ID = 'abcde';
-const ACTION = 'action ACTION';
+const ACTION = 'action_ACTION';
 const FILE_URL = 'http://goo.gl';
 const DATA = { a: 1 };
 const STATE = {};
-const REF_ACTION = 'action REF_ACTION';
+const REF_ACTION = 'action_REF_ACTION';
 const REF_DATA = { b: 2 };
 
 describe('Request', function () {

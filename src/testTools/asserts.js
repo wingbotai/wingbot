@@ -127,7 +127,7 @@ function quickReplyAction (response, action, message = 'Should contain the actio
     }
     assert.ok(hasItems, m(message, action, 'Theres no quick response'));
     const has = replies.some((reply) => {
-        const { action: route } = parseActionPayload(reply);
+        const { action: route } = parseActionPayload(reply, true);
         return actionMatches(route, action);
     });
     if (message === false) {

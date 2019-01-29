@@ -5,6 +5,7 @@
 
 const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
 const Request = require('./Request'); // eslint-disable-line no-unused-vars
+const Router = require('./Router'); // eslint-disable-line no-unused-vars
 
 
 /**
@@ -41,7 +42,7 @@ class Plugins {
      * Register plugin
      *
      * @param {string|Plugins} name - plugin name or plugins object to include
-     * @param {Plugin} [plugin] - plugin - optional when including plugin object
+     * @param {Plugin|Router} [plugin] - plugin - optional when including plugin object
      */
     register (name, plugin) {
         if (typeof name === 'string') {

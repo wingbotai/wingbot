@@ -226,6 +226,17 @@ class Processor {
                 throw Object.assign(new Error('Message has been already processed'), { code: 204 });
             }
 
+            // update state before run
+            const modState = await messageSender.modifyStateAfterLoad(stateObject, this);
+            if (modState) {
+                const modStateCopy = Object.assign({}, modState);
+                if (modStateCopy.state) {
+                    Object.assign(stateObject.state, modStateCopy.state);
+                    delete modStateCopy.state;
+                }
+                Object.assign(stateObject, modStateCopy);
+            }
+
             // prepare request and responder
             let { state } = stateObject;
 
@@ -263,7 +274,7 @@ class Processor {
             }
 
             // update state
-            const senderUpdate = await messageSender.modifyStateBeforeStore();
+            const senderUpdate = await messageSender.modifyStateBeforeStore(req, res);
 
             if (senderUpdate && senderUpdate.senderId) {
                 senderId = senderUpdate.senderId; // eslint-disable-line prefer-destructuring
@@ -327,10 +338,6 @@ class Processor {
     _mergeState (previousState, req, res, senderStateUpdate) {
         const state = Object.assign({}, previousState, res.newState);
 
-        if (senderStateUpdate && senderStateUpdate.state) {
-            Object.assign(state, senderStateUpdate.state);
-        }
-
         const isUserEvent = req.isMessage() || req.isPostBack()
             || req.isReferral() || req.isAttachment();
 
@@ -342,6 +349,10 @@ class Processor {
         // reset expectated keywords
         if (isUserEvent && !res.newState._expectedKeywords) {
             state._expectedKeywords = null;
+        }
+
+        if (senderStateUpdate && senderStateUpdate.state) {
+            Object.assign(state, senderStateUpdate.state);
         }
 
         return state;

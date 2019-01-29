@@ -176,6 +176,8 @@ describe('Notifications', function () {
             // the message has been queued, so lets unsubscribe the user with responder method
             await t.postBack('unsubscribe');
 
+            await wait(10);
+
             t.passedAction('unsubscribe');
 
             t.cleanup();
@@ -338,6 +340,8 @@ describe('Notifications', function () {
             // subscribe
             await t.postBack('start');
 
+            await wait(10);
+
             // nothing should be sent now
             t.cleanup();
             await notifications.processQueue(t);
@@ -386,6 +390,43 @@ describe('Notifications', function () {
             t.passedAction('testAction');
         });
 
+    });
+
+    describe('#sendCampaignMessage()', () => {
+
+        it('allows to send message directly', async () => {
+            const bot = new Router();
+
+            bot.use('camp-action', (req, res) => {
+                const { a = 'noo' } = req.action(true);
+
+                res.text('yeeesss')
+                    .text(a);
+            });
+
+            const t = new Tester(bot);
+
+            const notifications = new Notifications();
+
+            const campaign = await notifications
+                .createCampaign('Custom campaign', 'camp-action', {}, { id: 'custom-campaign' });
+
+            const res = await notifications.sendCampaignMessage(campaign, t, t.pageId, t.senderId, { a: 'fooo' });
+
+            assert.strictEqual(res.status, 200);
+
+            t.any()
+                .contains('yeeesss')
+                .contains('fooo');
+
+            // queue will not process this task again
+            await wait(10);
+
+            // nothing should be sent now
+            t.cleanup();
+            await notifications.processQueue(t);
+            assert.equal(t.actions.length, 0);
+        });
     });
 
     describe('#_uniqueTs()', () => {

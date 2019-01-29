@@ -19,10 +19,14 @@ function createMockReq (text = '', action = 'action') {
     return req;
 }
 
-function createMockRes () {
+function createMockRes (req) {
     const ret = {
         path: '',
         routePath: '',
+        bookmark () { return null; },
+        setState (s) {
+            Object.assign(req.state, s);
+        },
         setPath (path, routePath) {
             this.path = path;
             this.routePath = routePath;
@@ -52,7 +56,7 @@ describe('Router', function () {
             const route = sinon.spy();
             const noRoute = sinon.spy();
             const req = createMockReq();
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             router.use('/first', noRoute);
             router.use('/*', route);
@@ -69,7 +73,7 @@ describe('Router', function () {
             const route = sinon.spy(() => Promise.resolve());
             const noRoute = sinon.spy();
             const req = createMockReq();
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             router.use('/first', async function (r, s, p) {
                 noRoute(r, s, p);
@@ -90,7 +94,7 @@ describe('Router', function () {
             const route = sinon.spy();
             const noRoute = sinon.spy();
             const req = createMockReq('', 'action');
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             router.use('action', route);
             router.use('*', noRoute);
@@ -108,7 +112,7 @@ describe('Router', function () {
             const route = sinon.spy();
             const noRoute = sinon.spy();
             const req = createMockReq('just a text', null);
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             router.use('*', noRoute);
             router.use(/^just\sa\stext$/, route);
@@ -146,7 +150,7 @@ describe('Router', function () {
             const notCalledAfterLast2 = sinon.spy();
             const last = sinon.spy();
             const req = createMockReq('just a text', null);
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             router.use(/^just\sa\stext$/, first);
             router.use(asyncResolver, third, fourth, notCalledAfterFourth);
@@ -183,7 +187,7 @@ describe('Router', function () {
             const route = sinon.spy();
             const noRoute = sinon.spy();
             const req = createMockReq('', '/nested/inner');
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             const router = new Router();
             const nestedRouter = new Router();
@@ -208,7 +212,7 @@ describe('Router', function () {
             const noExit = sinon.spy();
 
             const req = createMockReq('', '/nested/inner');
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             const router = new Router();
             const nestedRouter = new Router();
@@ -239,7 +243,7 @@ describe('Router', function () {
             const noRoute = sinon.spy();
 
             const req = createMockReq('matching text', '/nested/inner');
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             const router = new Router();
             const nestedRouter = new Router();
@@ -283,7 +287,7 @@ describe('Router', function () {
             const route = sinon.spy();
             const noRoute = sinon.spy();
             const req = createMockReq('action with text', null);
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             router.use(/should-not-match/, noRoute);
             router.use(/action\swith\stext/, route);
@@ -302,7 +306,7 @@ describe('Router', function () {
             const noRoute = sinon.spy();
             const postBack = sinon.spy();
             const req = createMockReq('action with text', 'anotherAction');
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             router.use(route);
             router.use('*', noRoute);
@@ -326,7 +330,7 @@ describe('Router', function () {
 
             const postBack = sinon.spy(() => null);
             const req = createMockReq('action with text', 'anotherAction');
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             router.use(route);
             router.use('*', noRoute);
@@ -350,7 +354,7 @@ describe('Router', function () {
             const route = sinon.spy((r, s, pb) => { pb('someAction'); });
             const postBack = sinon.spy();
             const req = createMockReq(null, '/inner/theAction');
-            const res = createMockRes();
+            const res = createMockRes(req);
 
             const list = router.createReducersArray([route]);
 

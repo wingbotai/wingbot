@@ -60,11 +60,11 @@ function postBack (
     };
 }
 
-function campaignPostBack (senderId, campaign, timestamp = makeTimestamp()) {
+function campaignPostBack (senderId, campaign, timestamp = makeTimestamp(), data = null) {
     const postback = postBack(
         senderId,
         campaign.action,
-        campaign.data,
+        data || campaign.data,
         null,
         {},
         timestamp
@@ -103,10 +103,10 @@ function passThread (senderId, newAppId, data = null, timestamp = makeTimestamp(
     };
 }
 
-function intent (senderId, text, intentName, timestamp = makeTimestamp()) {
+function intent (senderId, text, intentName, score = null, timestamp = makeTimestamp()) {
     const res = textMessage(senderId, text, timestamp);
 
-    Object.assign(res, { intent: intentName });
+    Object.assign(res, { intent: intentName, score });
 
     return res;
 }

@@ -17,7 +17,8 @@ const BuildRouter = require('./src/BuildRouter');
 const ReturnSender = require('./src/ReturnSender');
 const Plugins = require('./src/Plugins');
 const { callbackMiddleware, sustainCallback } = require('./src/middlewares/callback');
-const { Notifications, NotificationsStorage } = require('./src/notifications');
+const NotificationsStorage = require('./src/notifications/NotificationsStorage');
+const Notifications = require('./src/notifications/Notifications');
 const {
     GraphApi, validateBotApi, postBackApi, apiAuthorizer
 } = require('./src/graphApi');

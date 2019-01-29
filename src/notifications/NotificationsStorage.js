@@ -56,6 +56,7 @@ const uuid = require('uuid/v4');
  * @prop {number} slide
  * @prop {boolean} active
  * @prop {boolean} in24hourWindow
+ * @prop {boolean} allowRepeat
  * @prop {number} startAt
  */
 
@@ -69,6 +70,7 @@ const uuid = require('uuid/v4');
  * @prop {number} [read]
  * @prop {number} [delivery]
  * @prop {number} [sent]
+ * @prop {number} [insEnqueue]
  */
 
 
@@ -119,13 +121,14 @@ class NotificationsStorage {
                 }
 
                 let [override] = tasks.splice(overrideIndex, 1);
-                override = Object.assign({}, task, override);
+                override = Object.assign({}, task, override, { insEnqueue: task.insEnqueue });
                 ret.push(override);
                 return override;
             });
 
         const insert = tasks.map(t => Object.assign({}, t, {
-            id: uuid()
+            id: uuid(),
+            insEnqueue: t.enqueue
         }));
 
         ret.push(...insert);
@@ -184,6 +187,24 @@ class NotificationsStorage {
             && t.campaignId === campaignId);
 
         return Promise.resolve(task);
+    }
+
+    /**
+     *
+     * @param {string} pageId
+     * @param {string} senderId
+     * @param {string[]} checkCampaignIds
+     * @returns {Promise<string[]>}
+     */
+    getSentCampagnIds (pageId, senderId, checkCampaignIds) {
+        const res = this._tasks
+            .filter(t => t.sent
+                && t.pageId === pageId
+                && t.senderId === senderId
+                && checkCampaignIds.includes(t.campaignId))
+            .map(t => t.campaignId);
+
+        return Promise.resolve(res);
     }
 
     /**

@@ -31,7 +31,7 @@ async function validate (bot, validationRequestBody, postBackTest = 'start', tex
 
     if (textTest) {
         try {
-            await t.postBack(textTest);
+            await t.text(textTest);
         } catch (e) {
             return { error: `Text message failed: ${e.message}`, ok: false };
         }

@@ -218,7 +218,8 @@ describe('Tester', function () {
         assert.deepEqual(t.getState().state, {
             i: 2,
             _expected: null,
-            _expectedKeywords: null
+            _expectedKeywords: null,
+            _lastVisitedPath: null
         });
 
         t.any()
@@ -232,7 +233,8 @@ describe('Tester', function () {
         assert.deepEqual(t.getState().state, {
             i: 4,
             _expected: null,
-            _expectedKeywords: null
+            _expectedKeywords: null,
+            _lastVisitedPath: null
         });
 
         t.any()
@@ -295,6 +297,29 @@ describe('Tester', function () {
         assert.throws(() => {
             t.passedAction('start');
         }, 'should not pass through start action');
+    });
+
+    it('is able to test router plugins', async () => {
+        const r = new Router();
+
+        r.use('/', async (req, res, postBack) => {
+            assert(typeof req.params === 'object', 'params should be an object');
+
+            await res.run('foo');
+
+            postBack('next');
+        });
+
+        r.use('/next', async (req, res) => {
+            await res.run('bar');
+        });
+
+        const t = new Tester(r);
+
+        await t.postBack('/');
+
+        t.respondedWithBlock('foo')
+            .respondedWithBlock('bar');
     });
 
 });

@@ -51,13 +51,19 @@ describe('<NotificationsStorage>', () => {
                 enqueue: 1
             }]);
 
+            assert.strictEqual(res[0].insEnqueue, 1);
+            assert.strictEqual(res[0].enqueue, 1);
+
             const res2 = await storage.pushTasks([{
                 pageId: '1',
                 senderId: '1',
                 campaignId: '1',
                 sent: null,
-                enqueue: 1
+                enqueue: 2
             }]);
+
+            assert.strictEqual(res2[0].insEnqueue, 1);
+            assert.strictEqual(res2[0].enqueue, 2);
 
             assert.equal(res[0].id, res2[0].id);
         });
@@ -183,6 +189,42 @@ describe('<NotificationsStorage>', () => {
             const updatedTasks = await storage.updateTasksByWatermark('1', '1', 6, 'read', 10);
 
             assert.equal(updatedTasks.length, 2);
+        });
+
+    });
+
+    describe('#getSentCampagnIds()', () => {
+
+        beforeEach(async () => {
+            await storage.pushTasks([{
+                pageId: '1',
+                senderId: '1',
+                campaignId: '1',
+                sent: null,
+                enqueue: 1
+            }, {
+                pageId: '1',
+                senderId: '1',
+                campaignId: '2',
+                sent: null,
+                enqueue: 2
+            }]);
+
+        });
+
+        it('returns list of campaign ids of sent tasks', async () => {
+            let res = await storage.getSentCampagnIds('1', '1', ['1', '2']);
+
+            assert.deepStrictEqual(res, []);
+
+            const [pop, pop2] = await storage.popTasks(2);
+
+            await storage.updateTask(pop.id, { mid: 123, sent: 5 });
+            await storage.updateTask(pop2.id, { mid: 123, sent: 6 });
+
+            res = await storage.getSentCampagnIds('1', '1', ['1', '2']);
+
+            assert.deepStrictEqual(res, ['1', '2']);
         });
 
     });

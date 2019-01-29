@@ -3,6 +3,9 @@
  */
 'use strict';
 
+
+const Router = require('./Router'); // eslint-disable-line no-unused-vars
+
 const assert = require('assert');
 const Processor = require('./Processor');
 const Request = require('./Request');
@@ -10,7 +13,9 @@ const { MemoryStateStorage } = require('./tools');
 const ReducerWrapper = require('./ReducerWrapper');
 const ReturnSender = require('./ReturnSender');
 const { actionMatches, parseActionPayload } = require('./utils');
-const { AnyResponseAssert, ResponseAssert, asserts } = require('./testTools');
+const { asserts } = require('./testTools');
+const AnyResponseAssert = require('./testTools/AnyResponseAssert');
+const ResponseAssert = require('./testTools/ResponseAssert');
 
 /**
  * Utility for testing requests
@@ -39,6 +44,7 @@ class Tester {
     ) {
         this._sequence = 0;
         this._actionsCollector = [];
+        this._pluginBlocksCollector = [];
 
         this.storage = storage;
 
@@ -59,6 +65,7 @@ class Tester {
             wrappedReducer = new ReducerWrapper(reducer);
         }
 
+        // @ts-ignore
         wrappedReducer.on('_action', (senderIdentifier, action, text) => {
             this._actionsCollector.push({ action, text });
         });
@@ -69,6 +76,22 @@ class Tester {
             loadUsers: false
         }, processorOptions));
 
+        // attach the plugin tester
+        this.processor.plugin({
+            processMessage: () => ({ status: 204 }),
+            middleware: () => (req, res) => {
+                req.params = {};
+                Object.assign(res, {
+                    run: (blockName) => {
+                        this._pluginBlocksCollector.push(blockName);
+                        return Promise.resolve();
+                    }
+                });
+                return true;
+            }
+        });
+
+        this.pluginBlocks = [];
         this.responses = [];
         this.actions = [];
     }
@@ -77,9 +100,11 @@ class Tester {
      * Clear acquired responses and data
      */
     cleanup () {
+        this.pluginBlocks = [];
         this.responses = [];
         this.actions = [];
         this._actionsCollector = [];
+        this._pluginBlocksCollector = [];
         this._responsesMock = [];
     }
 
@@ -101,12 +126,16 @@ class Tester {
     }
 
     _acquireResponseActions (res, messageSender) {
-        if (res.status !== 200) {
+        if (res.status !== 200
+            && !(res.status === 204 && this._pluginBlocksCollector.length > 0)) {
+
             throw new Error(`Processor failed with status ${res.status}`);
         }
         this.responses = messageSender._sent;
+        this.pluginBlocks = this._pluginBlocksCollector;
         this.actions = this._actionsCollector;
         this._actionsCollector = [];
+        this._pluginBlocksCollector = [];
         this._responsesMock = [];
         return res;
     }
@@ -168,6 +197,20 @@ class Tester {
     }
 
     /**
+     * Checks, that a plugin used a block as a responde
+     *
+     * @param {string} blockName
+     * @returns {this}
+     *
+     * @memberOf Tester
+     */
+    respondedWithBlock (blockName) {
+        const ok = this.pluginBlocks.includes(blockName);
+        assert.ok(ok, `Block ${blockName} was not used as response`);
+        return this;
+    }
+
+    /**
      * Returns state
      *
      * @returns {Object}
@@ -211,13 +254,14 @@ class Tester {
      * Makes recognised AI intent request
      *
      * @param {string} intent
-     * @param {string} text
+     * @param {string} [text]
+     * @param {number} [score]
      * @returns {Promise}
      *
      * @memberOf Tester
      */
-    intent (intent, text = intent) {
-        return this.processMessage(Request.intent(this.senderId, text, intent));
+    intent (intent, text = intent, score = null) {
+        return this.processMessage(Request.intent(this.senderId, text, intent, score));
     }
 
     /**

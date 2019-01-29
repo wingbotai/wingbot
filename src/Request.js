@@ -39,6 +39,11 @@ class Request {
 
         this.data = data;
 
+        /**
+         * @prop {object} params - plugin configuration
+         */
+        this.params = {};
+
         this.message = data.message || null;
 
         this._postback = data.postback || null;
@@ -52,7 +57,7 @@ class Request {
         this.attachments = (data.message && data.message.attachments) || [];
 
         /**
-         * @prop {number|null}
+         * @prop {number|null} timestamp
          */
         this.timestamp = data.timestamp || Date.now();
 
@@ -483,11 +488,11 @@ class Request {
 
     _processPayload (object = {}, getData = false) {
         if (getData) {
-            const { data } = parseActionPayload(object);
+            const { data } = parseActionPayload(object, true);
             return data;
         }
 
-        const { action } = parseActionPayload(object);
+        const { action } = parseActionPayload(object, true);
         return action;
     }
 

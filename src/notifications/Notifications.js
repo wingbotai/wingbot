@@ -12,6 +12,7 @@ const customFn = require('../utils/customFn');
 const DEFAULT_LIMIT = 20;
 const WINDOW_24_HOURS = 86400000; // 24 hours
 const REMOVED_CAMPAIGN = '<removed campaign>';
+const MAX_TS = 9999999999999;
 
 const DEFAULT_CAMPAIGN_DATA = {
     sent: 0,
@@ -33,11 +34,40 @@ const DEFAULT_CAMPAIGN_DATA = {
 };
 
 /**
+ * @typedef {Object} CampaignTarget
+ * @prop {string} senderId - sender identifier
+ * @prop {string} pageId - page identifier
+ * @prop {string} campaignId - campaign identifier
+ * @prop {Object} [data] - custom action data for specific target
+ * @prop {number} [enqueue] - custom enqueue time, now will be used by default
+ */
+
+
+/**
+ * @typedef Task {Object}
+ * @prop {string} id - task identifier
+ * @prop {string} pageId - page identifier
+ * @prop {string} senderId - user identifier
+ * @prop {string} campaignId - campaign identifer
+ * @prop {number} enqueue - when the task will be processed with queue
+ * @prop {Object} [data] - custom action data for specific target
+ * @prop {number} [read] - time of read
+ * @prop {number} [delivery] - time of delivery
+ * @prop {number} [sent] - time of send
+ */
+
+/**
  * Experimental notifications service
+ *
+ * @class Notifications
  */
 class Notifications extends EventEmitter {
 
     /**
+     *
+     * Creates a new instance on notification service
+     *
+     * @memberof Notifications
      *
      * @param {NotificationsStorage} notificationStorage
      * @param {Object} options
@@ -58,6 +88,8 @@ class Notifications extends EventEmitter {
 
     /**
      * API Factory
+     *
+     * @memberof Notifications
      *
      * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
      * @returns {Object} - the graphql api object
@@ -91,33 +123,47 @@ class Notifications extends EventEmitter {
         return this._storage.upsertCampaign(campaign);
     }
 
-    async _pushTasksToQueue (campaignTargets) {
+    /**
+     * Add tasks to process by queue
+     *
+     * @memberof Notifications
+     *
+     * @param {CampaignTarget[]} campaignTargets
+     * @returns {Promise<Task[]>}
+     */
+    async pushTasksToQueue (campaignTargets) {
         if (campaignTargets.length === 0) {
             return [];
         }
 
         const campaigns = new Map();
+        const defEnqueue = Date.now();
 
         const tasks = campaignTargets
-            .map((target) => {
-                if (!campaigns.has(target.campaignId)) {
-                    campaigns.set(target.campaignId, { i: 1 });
-                } else {
-                    campaigns.get(target.campaignId).i++;
-                }
-
-                return {
-                    campaignId: target.campaignId,
-                    senderId: target.senderId,
-                    pageId: target.pageId,
-                    enqueue: target.enqueue, // time, when campaign should be fired,
-                    sent: null,
-                    read: null,
-                    delivery: null
-                };
-            });
+            .map(target => ({
+                campaignId: target.campaignId,
+                senderId: target.senderId,
+                pageId: target.pageId,
+                data: target.data || null,
+                enqueue: target.enqueue || defEnqueue, // time, when campaign should be fired,
+                sent: null,
+                read: null,
+                delivery: null
+            }));
 
         const ret = await this._storage.pushTasks(tasks);
+
+        ret.forEach((task) => {
+            // has been enqueued previously
+            if (task.insEnqueue !== task.enqueue) {
+                return;
+            }
+            if (!campaigns.has(task.campaignId)) {
+                campaigns.set(task.campaignId, { i: 1 });
+            } else {
+                campaigns.get(task.campaignId).i++;
+            }
+        });
 
         for (const [campaignId, { i }] of campaigns.entries()) {
             await this._storage.incrementCampaign(campaignId, { queued: i });
@@ -126,28 +172,61 @@ class Notifications extends EventEmitter {
         return ret;
     }
 
+    // eslint-disable-next-line jsdoc/require-param
     /**
      * Subscribe user under certain tag
+     *
+     * @memberof Notifications
      *
      * @param {string} senderId
      * @param {string} pageId
      * @param {string} tag
      */
-    async subscribe (senderId, pageId, tag) {
+    async subscribe (senderId, pageId, tag, req = null, res = null, cmps = null) {
+        if (req && !req.subscribtions.includes(tag)) {
+            req.subscribtions.push(tag);
+            this._updateResDataWithSubscribtions(req, res);
+
+            // re-evalutate campaigns
+            await Promise.all([
+                this._storage.subscribe(`${senderId}`, pageId, tag),
+                this._postponeTasksOnInteraction(cmps, req)
+            ]);
+        } else {
+            await this._storage.subscribe(`${senderId}`, pageId, tag);
+        }
+
         this._reportEvent('subscribed', tag, { senderId, pageId });
-        await this._storage.subscribe(`${senderId}`, pageId, tag);
     }
 
+    // eslint-disable-next-line jsdoc/require-param
     /**
      * Unsubscribe user from certain tag or from all tags
+     *
+     * @memberof Notifications
      *
      * @param {string} senderId
      * @param {string} pageId
      * @param {string} [tag]
+     * @param {Object} [req]
+     * @param {Object} [res]
      */
-    async unsubscribe (senderId, pageId, tag = null) {
-        const unsubscibtions = await this._storage
-            .unsubscribe(senderId, pageId, tag);
+    async unsubscribe (senderId, pageId, tag = null, req = null, res = null, cmps = null) {
+        let unsubscibtions;
+
+        if (req && req.subscribtions.includes(tag)) {
+            req.subscribtions = req.subscribtions.filter(s => s !== tag);
+            this._updateResDataWithSubscribtions(req, res);
+
+            // re-evalutate campaigns
+            [unsubscibtions] = await Promise.all([
+                this._storage.unsubscribe(senderId, pageId, tag),
+                this._postponeTasksOnInteraction(cmps, req)
+            ]);
+        } else {
+            unsubscibtions = await this._storage
+                .unsubscribe(senderId, pageId, tag);
+        }
 
         unsubscibtions
             .forEach(sub => this._reportEvent('unsubscribed', sub, { senderId, pageId }));
@@ -156,6 +235,8 @@ class Notifications extends EventEmitter {
 
     /**
      * Preprocess message - for read and delivery
+     *
+     * @memberof Notifications
      *
      * @param {Object} event
      * @param {string} pageId
@@ -199,6 +280,10 @@ class Notifications extends EventEmitter {
         }
 
         req.subscribtions = await this._storage.getSenderSubscribtions(senderId, pageId);
+        this._updateResDataWithSubscribtions(req, res);
+    }
+
+    _updateResDataWithSubscribtions (req, res) {
         const notificationSubscribtions = {};
 
         req.subscribtions.forEach((subscribtion) => {
@@ -213,15 +298,23 @@ class Notifications extends EventEmitter {
     middleware () {
         const notifications = this;
         return async (req, res) => {
+            // load sliding campaigns and postpone/insert their actions
+            const [{ data: slidingCampaigns }] = await Promise.all([
+                this._storage.getCampaigns({
+                    sliding: true, active: true
+                }),
+                this._preloadSubscribtions(req.senderId, req.pageId, req, res)
+            ]);
+
             Object.assign(res, {
                 subscribe (tag) {
                     notifications
-                        .subscribe(req.senderId, req.pageId, tag)
+                        .subscribe(req.senderId, req.pageId, tag, req, res, slidingCampaigns)
                         .catch(e => notifications._log.error(e));
                 },
                 unsubscribe (tag = null) {
                     notifications
-                        .unsubscribe(req.senderId, req.pageId, tag)
+                        .unsubscribe(req.senderId, req.pageId, tag, req, res, slidingCampaigns)
                         .catch(e => notifications._log.error(e));
                 }
             });
@@ -248,21 +341,13 @@ class Notifications extends EventEmitter {
                     );
                 }
 
-                await this._postponeTasksOnInteraction(req, res);
+                await this._postponeTasksOnInteraction(slidingCampaigns, req, res);
 
                 return true;
             }
 
-            await this._preloadSubscribtions(req.senderId, req.pageId, req, res);
-
             // ensure again the user has corresponding tags
-            const isStillTargetGroup = ((campaign.include.length === 0
-                && (!campaign.pageId || campaign.pageId === req.pageId)
-                && req.subscribtions.length !== 0)
-                    || req.subscribtions.some(s => campaign.include.includes(s)))
-                && !req.subscribtions.some(s => campaign.exclude.includes(s));
-
-            if (!isStillTargetGroup) {
+            if (!this._isTargetGroup(campaign, req.subscribtions, req.pageId)) {
                 return null; // Router.END;
             }
 
@@ -311,6 +396,14 @@ class Notifications extends EventEmitter {
         };
     }
 
+    _isTargetGroup (campaign, subscribtions, pageId) {
+        return ((campaign.include.length === 0
+            && (!campaign.pageId || campaign.pageId === pageId)
+            && subscribtions.length !== 0)
+                || subscribtions.some(s => campaign.include.includes(s)))
+            && !subscribtions.some(s => campaign.exclude.includes(s));
+    }
+
     _reportCampaignSuccess (eventName, campaignId, campaignName, meta) {
         this._storage.incrementCampaign(campaignId, { [eventName]: 1 })
             .catch(e => this._log.error('report campaign success store', e));
@@ -324,14 +417,10 @@ class Notifications extends EventEmitter {
         });
     }
 
-    async _postponeTasksOnInteraction (req, res) {
-        // load sliding campaigns and postpone/insert their actions
-        const { data } = await this._storage.getCampaigns({
-            sliding: true, active: true
-        });
+    async _postponeTasksOnInteraction (data, req, res = null) {
 
         const slidingCampaigns = data
-            .filter(c => (!c.pageId || c.pageId === `${req.pageId}`));
+            .filter(c => this._isTargetGroup(c, req.subscribtions, req.pageId));
 
         let { _ntfSlidingCampTasks: cache = [] } = req.state;
 
@@ -351,7 +440,18 @@ class Notifications extends EventEmitter {
         // missing tasks in cache
         const { senderId, pageId } = req;
         const insert = slidingCampaigns
-            .filter(c => !cache.some(t => t.campaignId === c.id))
+            .filter(c => !cache.some(t => t.campaignId === c.id));
+
+        const checkCids = insert
+            .filter(c => !c.allowRepeat)
+            .map(c => c.id);
+
+        // load the sent tasks
+        const sentCampaigns = await this._storage
+            .getSentCampagnIds(req.pageId, req.senderId, checkCids);
+
+        const insertTasks = insert
+            .filter(c => c.allowRepeat || !sentCampaigns.includes(c.id))
             .map(c => ({
                 senderId,
                 pageId,
@@ -360,22 +460,27 @@ class Notifications extends EventEmitter {
             }));
 
         // insert tasks for sliding campaigns
-        const insertedTasks = await this._pushTasksToQueue(insert);
-        cache.push(...insertedTasks.map(t => ({
-            id: t.id,
-            campaignId: t.campaignId,
-            enqueue: t.enqueue
-        })));
+        const insertedTasks = await this.pushTasksToQueue(insertTasks);
 
-        res.setState({
-            _ntfLastInteraction: req.timestamp,
-            _ntfOverMessageSent: false,
-            _ntfSlidingCampTasks: cache
-        });
+        if (res) {
+            cache.push(...insertedTasks.map(t => ({
+                id: t.id,
+                campaignId: t.campaignId,
+                enqueue: t.enqueue
+            })));
+
+            res.setState({
+                _ntfLastInteraction: req.timestamp,
+                _ntfOverMessageSent: false,
+                _ntfSlidingCampTasks: cache
+            });
+        }
     }
 
     /**
      * Run the campaign now (push tasks into the queue)
+     *
+     * @memberof Notifications
      *
      * @param {Object} campaign
      * @returns {Promise<{queued:number}>}
@@ -403,7 +508,7 @@ class Notifications extends EventEmitter {
                 enqueue
             }));
 
-            const actions = await this._pushTasksToQueue(campaignTargets);
+            const actions = await this.pushTasksToQueue(campaignTargets);
 
             queued += actions.length;
 
@@ -474,26 +579,58 @@ class Notifications extends EventEmitter {
         return ts;
     }
 
+    /**
+     * Sends the message directly (without queue)
+     * and records it's delivery status at campaign stats
+     *
+     * @param {Object} campaign - campaign
+     * @param {Object} processor - channel processor instance
+     * @param {string} pageId - page
+     * @param {string} senderId - user
+     * @param {Object} [data] - override the data of campaign
+     * @returns {Promise<{ status: number }>}
+     * @example
+     * const campaign = await notifications
+     *     .createCampaign('Custom campaign', 'camp-action', {}, { id: 'custom-campaign' });
+     *
+     * await notifications.sendCampaignMessage(campaign, channel, pageId, senderId);
+     */
+    async sendCampaignMessage (campaign, processor, pageId, senderId, data = null) {
+        const campaignTarget = {
+            senderId,
+            pageId,
+            campaignId: campaign.id,
+            data,
+            enqueue: MAX_TS // mark as processed
+        };
+
+        const [task] = await this.pushTasksToQueue([campaignTarget]);
+
+        return this._processTask(processor, task, campaign);
+    }
+
     async _processTask (connector, task, campaign) {
         const ts = this._uniqueTs(task.senderId);
 
         if (!campaign || !campaign.active) {
             await this._finishTask('notSent', campaign, task, ts);
-            return;
+            return { status: 204 };
         }
 
-        const message = Request.campaignPostBack(task.senderId, campaign, ts);
+        const message = Request.campaignPostBack(task.senderId, campaign, ts, task.data);
         let status;
         let mid;
 
+        let result;
         try {
-            const result = await connector.processMessage(message, task.senderId, task.pageId);
+            result = await connector.processMessage(message, task.senderId, task.pageId);
             status = result.status; // eslint-disable-line prefer-destructuring
             mid = result.responses && result.responses.length
                 && result.responses[result.responses.length - 1].message_id;
         } catch (e) {
             this._log.error('send notification error', e);
             status = 500;
+            result = { status };
         }
 
         try {
@@ -501,6 +638,8 @@ class Notifications extends EventEmitter {
         } catch (e) {
             this._log.error('store notification state error', e);
         }
+
+        return result;
     }
 
     async _storeSuccess (campaign, status, task, mid, ts) {
@@ -509,6 +648,7 @@ class Notifications extends EventEmitter {
                 await this._finishTask('sent', campaign, task, ts, mid);
                 break;
             case 204:
+            case 400:
                 await this._finishTask('notSent', campaign, task, ts);
                 break;
             case 403:
