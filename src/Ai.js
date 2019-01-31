@@ -10,7 +10,7 @@ const DEFAULT_PREFIX = 'default';
 const FULL_EMOJI_REGEX = /^#((?:[\u2600-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])+)$/;
 const HAS_CLOSING_HASH = /^#(.+)#$/;
 
-let uq = 0;
+let uq = 1;
 
 /**
  * @class Ai
