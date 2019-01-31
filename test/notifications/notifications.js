@@ -337,10 +337,17 @@ describe('Notifications', function () {
                 slide: 50
             });
 
+            assert.equal(slidingCampaign.sent, 0);
+            assert.equal(slidingCampaign.queued, 0);
+
             // subscribe
             await t.postBack('start');
 
             await wait(10);
+
+            slidingCampaign = await notifications._storage.getCampaignById(slidingCampaign.id);
+            assert.equal(slidingCampaign.sent, 0);
+            assert.equal(slidingCampaign.queued, 1);
 
             // nothing should be sent now
             t.cleanup();

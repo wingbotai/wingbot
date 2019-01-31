@@ -68,6 +68,32 @@ describe('<NotificationsStorage>', () => {
             assert.equal(res[0].id, res2[0].id);
         });
 
+        it('should not usert same task again, but it should update it', async () => {
+            const res = await storage.pushTasks([{
+                pageId: '1',
+                senderId: '1',
+                campaignId: '1',
+                sent: null,
+                enqueue: 1
+            }]);
+
+            assert.strictEqual(res[0].insEnqueue, 1);
+            assert.strictEqual(res[0].enqueue, 1);
+
+            const res2 = await storage.pushTasks([{
+                pageId: '1',
+                senderId: '1',
+                campaignId: '1',
+                sent: null,
+                enqueue: 1
+            }]);
+
+            assert.strictEqual(res2[0].insEnqueue, 1);
+            assert.strictEqual(res2[0].enqueue, 2);
+
+            assert.equal(res[0].id, res2[0].id);
+        });
+
     });
 
     describe('#popTasks()', () => {

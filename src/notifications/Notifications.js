@@ -397,12 +397,26 @@ class Notifications extends EventEmitter {
     }
 
     _isTargetGroup (campaign, subscribtions, pageId) {
+        // if there's page id it should match
+        if (campaign.pageId && campaign.pageId !== pageId) {
+            return false;
+        }
+        // if there's exclusion, it should also match
+        if (subscribtions.some(s => campaign.exclude.includes(s))) {
+            return false;
+        }
+
+        return campaign.include.length === 0
+            || subscribtions.some(s => campaign.include.includes(s));
+    }
+
+    /* _isTargetGroup (campaign, subscribtions, pageId) {
         return ((campaign.include.length === 0
             && (!campaign.pageId || campaign.pageId === pageId)
             && subscribtions.length !== 0)
                 || subscribtions.some(s => campaign.include.includes(s)))
             && !subscribtions.some(s => campaign.exclude.includes(s));
-    }
+    } */
 
     _reportCampaignSuccess (eventName, campaignId, campaignName, meta) {
         this._storage.incrementCampaign(campaignId, { [eventName]: 1 })

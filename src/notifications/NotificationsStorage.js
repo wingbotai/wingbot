@@ -121,7 +121,11 @@ class NotificationsStorage {
                 }
 
                 let [override] = tasks.splice(overrideIndex, 1);
-                override = Object.assign({}, task, override, { insEnqueue: task.insEnqueue });
+                override = Object.assign({}, task, override, {
+                    insEnqueue: task.insEnqueue,
+                    enqueue: override.enqueue === task.insEnqueue
+                        ? task.insEnqueue + 1 : override.enqueue
+                });
                 ret.push(override);
                 return override;
             });
