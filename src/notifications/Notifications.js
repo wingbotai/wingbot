@@ -325,13 +325,17 @@ class Notifications extends EventEmitter {
             if (!campaign) {
                 // track campaign success
                 const { _ntfLastCampaignId: lastCampaignId } = req.state;
-                if (lastCampaignId) {
+                const {
+                    _trackAsNegative: isNegative = false,
+                    _localpostback: isLocal = false
+                } = req.action(true);
+
+                if (lastCampaignId && !isLocal) {
                     res.setState({
                         _ntfLastCampaignId: null,
                         _ntfLastCampaignName: null
                     });
 
-                    const { _trackAsNegative: isNegative = false } = req.action(true);
 
                     this._reportCampaignSuccess(
                         isNegative ? 'negative' : 'positive',

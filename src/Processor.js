@@ -95,6 +95,7 @@ class Processor {
                 return Promise.resolve(data)
                     .then((resolvedData) => {
                         let reduceResult;
+                        Object.assign(resolvedData, { _localpostback: true });
                         previousAction = req.setAction(action, resolvedData);
                         if (typeof this.reducer === 'function') {
                             reduceResult = this.reducer(req, res, postBack);
@@ -113,8 +114,12 @@ class Processor {
 
             if (data instanceof Promise) {
                 postbackAcumulator.push(data
-                    .then(result => ({ action, data: result || {} })));
+                    .then(result => ({
+                        action,
+                        data: Object.assign(result || {}, { _localpostback: true })
+                    })));
             } else {
+                Object.assign(data, { _localpostback: true });
                 postbackAcumulator.push({ action, data });
             }
 

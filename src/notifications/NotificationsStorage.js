@@ -122,8 +122,8 @@ class NotificationsStorage {
 
                 let [override] = tasks.splice(overrideIndex, 1);
                 override = Object.assign({}, task, override, {
-                    insEnqueue: task.insEnqueue,
-                    enqueue: override.enqueue === task.insEnqueue
+                    insEnqueue: Math.min(task.insEnqueue, override.enqueue),
+                    enqueue: override.enqueue === task.insEnqueue && task.insEnqueue !== MAX_TS
                         ? task.insEnqueue + 1 : override.enqueue
                 });
                 ret.push(override);
@@ -148,7 +148,8 @@ class NotificationsStorage {
             .map((task) => {
                 if (task.enqueue <= until && pop.length < limit) {
                     const upTask = Object.assign({}, task, {
-                        enqueue: MAX_TS
+                        enqueue: MAX_TS,
+                        insEnqueue: MAX_TS
                     });
                     pop.push(upTask);
                     return upTask;

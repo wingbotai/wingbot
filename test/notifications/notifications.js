@@ -88,7 +88,9 @@ describe('Notifications', function () {
             bot = new Router();
 
             campaign = await notifications
-                .createCampaign('Test', 'testAction', { id: 'identifiedCampaign' });
+                .createCampaign('Test', 'testAction', {}, {
+                    id: 'identifiedCampaign', exclude: ['left']
+                });
 
             bot.use(notifications.middleware());
 
@@ -105,6 +107,8 @@ describe('Notifications', function () {
 
                 // @ts-ignore
                 res.unsubscribe('anyTag');
+                // @ts-ignore
+                res.subscribe('left');
             });
 
             bot.use('start', (req, res) => {

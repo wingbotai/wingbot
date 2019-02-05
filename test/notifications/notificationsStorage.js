@@ -94,6 +94,34 @@ describe('<NotificationsStorage>', () => {
             assert.equal(res[0].id, res2[0].id);
         });
 
+        it('reused task should have a same enqueue', async () => {
+            const res = await storage.pushTasks([{
+                pageId: '1',
+                senderId: '1',
+                campaignId: '1',
+                sent: null,
+                enqueue: 1
+            }]);
+
+            assert.strictEqual(res[0].insEnqueue, 1);
+            assert.strictEqual(res[0].enqueue, 1);
+
+            await storage.popTasks(1, 2);
+
+            const res2 = await storage.pushTasks([{
+                pageId: '1',
+                senderId: '1',
+                campaignId: '1',
+                sent: null,
+                enqueue: 2
+            }]);
+
+            assert.strictEqual(res2[0].insEnqueue, 2);
+            assert.strictEqual(res2[0].enqueue, 2);
+
+            assert.equal(res[0].id, res2[0].id);
+        });
+
     });
 
     describe('#popTasks()', () => {
