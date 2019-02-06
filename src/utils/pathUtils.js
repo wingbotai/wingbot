@@ -32,7 +32,7 @@ function parseActionPayload (object, needRawData = false) {
         let payload = object.payload || object;
         let isObject = typeof payload === 'object' && payload !== null;
 
-        if (typeof payload === 'string' && payload.match(/^\{.*\}$/)) {
+        if (typeof payload === 'string' && payload.match(/^\s*\{.*\}\s*$/)) {
             payload = JSON.parse(payload);
             isObject = true;
         }
