@@ -58,6 +58,7 @@ const uuid = require('uuid/v4');
  * @prop {boolean} in24hourWindow
  * @prop {boolean} allowRepeat
  * @prop {number} startAt
+ * @prop {number} slideRound
  */
 
 /**

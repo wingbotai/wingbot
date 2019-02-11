@@ -19,9 +19,11 @@ const Plugins = require('./src/Plugins');
 const { callbackMiddleware, sustainCallback } = require('./src/middlewares/callback');
 const NotificationsStorage = require('./src/notifications/NotificationsStorage');
 const Notifications = require('./src/notifications/Notifications');
-const {
-    GraphApi, validateBotApi, postBackApi, apiAuthorizer
-} = require('./src/graphApi');
+const MemoryBotConfigStorage = require('./src/tools/MemoryBotConfigStorage');
+const GraphApi = require('./src/graphApi/GraphApi');
+const validateBotApi = require('./src/graphApi/validateBotApi');
+const postBackApi = require('./src/graphApi/postBackApi');
+const apiAuthorizer = require('./src/graphApi/apiAuthorizer');
 const { parseActionPayload } = require('./src/utils');
 const {
     bufferloader,
@@ -43,6 +45,7 @@ module.exports = {
     bufferloader,
     asserts,
     MemoryStateStorage,
+    MemoryBotConfigStorage,
     Translate,
     CachedModel,
     parseActionPayload,

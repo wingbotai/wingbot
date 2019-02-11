@@ -469,4 +469,58 @@ describe('Notifications', function () {
 
     });
 
+    describe('#_calculateSlide()', () => {
+
+        it('just adds a number, when there is no slide round', () => {
+            const notifications = new Notifications();
+
+            const now = Date.now();
+
+            assert.strictEqual(
+                notifications._calculateSlide(now, { slide: 3600 }),
+                now + 3600
+            );
+        });
+
+        it('rounds date to closest one', () => {
+            const notifications = new Notifications();
+
+            let start = new Date('2019-02-07T12:14:00.000Z').getTime();
+            let slideRound = new Date('1970-01-01T18:00:00.000Z').getTime();
+            let slide = 2 * 3600000;
+            let res = notifications
+                ._calculateSlide(start, { slide, slideRound, in24hourWindow: true });
+            assert.strictEqual(new Date(res).toISOString(), '2019-02-07T18:00:00.000Z');
+
+            start = new Date('2019-02-07T17:14:00.000Z').getTime();
+            slideRound = new Date('1970-01-01T18:00:00.000Z').getTime();
+            slide = 2 * 3600000;
+            res = notifications
+                ._calculateSlide(start, { slide, slideRound, in24hourWindow: true });
+            assert.strictEqual(new Date(res).toISOString(), '2019-02-08T17:10:00.000Z');
+
+            start = new Date('2019-02-07T17:14:00.000Z').getTime();
+            slideRound = new Date('1970-01-01T18:00:00.000Z').getTime();
+            slide = 2 * 3600000;
+            res = notifications
+                ._calculateSlide(start, { slide, slideRound, in24hourWindow: false });
+            assert.strictEqual(new Date(res).toISOString(), '2019-02-08T18:00:00.000Z');
+
+            start = new Date('2019-02-07T19:14:00.000Z').getTime();
+            slideRound = new Date('1970-01-01T18:00:00.000Z').getTime();
+            slide = 2 * 3600000;
+            res = notifications
+                ._calculateSlide(start, { slide, slideRound, in24hourWindow: true });
+            assert.strictEqual(new Date(res).toISOString(), '2019-02-08T18:00:00.000Z');
+
+            start = new Date('2019-02-07T14:14:00.000Z').getTime();
+            slideRound = new Date('1970-01-01T15:30:00.000Z').getTime();
+            slide = 1 * 3600000;
+            res = notifications
+                ._calculateSlide(start, { slide, slideRound, in24hourWindow: true });
+            assert.strictEqual(new Date(res).toISOString(), '2019-02-07T15:30:00.000Z');
+
+        });
+    });
+
 });

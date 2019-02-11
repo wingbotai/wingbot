@@ -8,6 +8,7 @@ const assert = require('assert');
 const { Tester, ai, Router } = require('../index');
 const BuildRouter = require('../src/BuildRouter');
 const Plugins = require('../src/Plugins');
+const MemoryBotConfigStorage = require('../src/tools/MemoryBotConfigStorage');
 // @ts-ignore
 const testbot = require('./testbot.json');
 
@@ -189,19 +190,7 @@ describe('<BuildRouter>', async () => {
             const plugins = new Plugins();
 
             // lets mock the storage
-            const configStorage = {
-                ts: 0,
-                cfg: null,
-                async invalidateConfig () { this.ts = 0; this.cfg = null; },
-                async getConfigTimestamp () { return this.ts; },
-                async updateConfig (c) {
-                    this.cfg = c;
-                    const timestamp = Date.now();
-                    this.ts = timestamp;
-                    return Object.assign(c, { timestamp });
-                },
-                async getConfig () { return this.cfg; }
-            };
+            const configStorage = new MemoryBotConfigStorage();
 
             const config = { configStorage };
 

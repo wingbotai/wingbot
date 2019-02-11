@@ -4,14 +4,13 @@
 'use strict';
 
 const Router = require('../Router');
-const hbs = require('./hbs');
-const { stateData } = require('./utils');
+const { stateData, cachedTranslatedCompilator } = require('./utils');
 
 function media ({ type, url }, { isLastIndex }) {
 
     const urlString = url || '';
 
-    const urlTemplate = hbs.compile(urlString);
+    const urlTemplate = cachedTranslatedCompilator(urlString);
 
     if (['image', 'file', 'video'].indexOf(type) === -1) {
         throw new Error(`Unsupported media type: ${type}`);

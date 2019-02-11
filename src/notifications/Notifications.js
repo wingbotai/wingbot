@@ -10,9 +10,11 @@ const api = require('./api');
 const customFn = require('../utils/customFn');
 
 const DEFAULT_LIMIT = 20;
-const WINDOW_24_HOURS = 86400000; // 24 hours
+const DAY = 86400000;
+const WINDOW_24_HOURS = DAY; // 24 hours
 const REMOVED_CAMPAIGN = '<removed campaign>';
 const MAX_TS = 9999999999999;
+const DEFAULT_24_CLEARANCE = 240000; // four minutes
 
 const DEFAULT_CAMPAIGN_DATA = {
     sent: 0,
@@ -27,6 +29,7 @@ const DEFAULT_CAMPAIGN_DATA = {
     startAt: null,
     sliding: false,
     slide: null,
+    slideRound: null,
     allowRepeat: false,
     type: null,
     hasCondition: false,
@@ -71,8 +74,9 @@ class Notifications extends EventEmitter {
      *
      * @param {NotificationsStorage} notificationStorage
      * @param {Object} options
-     * @param {console} [options.log]
-     * @param {boolean} [options.sendMoreMessagesOver24]
+     * @param {console} [options.log] - logger
+     * @param {boolean} [options.sendMoreMessagesOver24] - use true to disable the 24h window check
+     * @param {number} [options.default24Clearance] - use this clearance to ensure delivery in 24h
      */
     constructor (notificationStorage = new NotificationsStorage(), options = {}) {
         super();
@@ -81,6 +85,7 @@ class Notifications extends EventEmitter {
         this._log = options.log || console;
         this.limit = DEFAULT_LIMIT;
         this._sendMoreMessagesOver24 = options.sendMoreMessagesOver24;
+        this._default24Clearance = options.default24Clearance || DEFAULT_24_CLEARANCE;
 
         // ensure unique timestamps for messages
         this._lts = new Map();
@@ -435,6 +440,25 @@ class Notifications extends EventEmitter {
         });
     }
 
+    _calculateSlide (timestamp, { slide, slideRound = null, in24hourWindow = false }) {
+        const time = timestamp + slide;
+
+        if (typeof slideRound !== 'number') {
+            return time;
+        }
+
+        // the next closest matching hour after the slide
+        let zeroDaysTime = time - (time % DAY) + slideRound;
+
+        if (zeroDaysTime < time) zeroDaysTime += DAY;
+
+        if (!in24hourWindow) {
+            return zeroDaysTime;
+        }
+
+        return Math.min(zeroDaysTime, timestamp + DAY - this._default24Clearance);
+    }
+
     async _postponeTasksOnInteraction (data, req, res = null) {
 
         const slidingCampaigns = data
@@ -449,7 +473,7 @@ class Notifications extends EventEmitter {
         // postpone existing
         cache = cache.map((t) => {
             const campaign = slidingCampaigns.find(c => c.id === t.campaignId);
-            const enqueue = req.timestamp + campaign.slide;
+            const enqueue = this._calculateSlide(req.timestamp, campaign);
             return Object.assign({}, t, { enqueue });
         });
         await Promise.all(cache
@@ -474,7 +498,7 @@ class Notifications extends EventEmitter {
                 senderId,
                 pageId,
                 campaignId: c.id,
-                enqueue: req.timestamp + c.slide
+                enqueue: this._calculateSlide(req.timestamp, c)
             }));
 
         // insert tasks for sliding campaigns

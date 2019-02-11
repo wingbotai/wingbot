@@ -34,6 +34,7 @@ type Campaign {
 
     sliding: Boolean
     slide: Int
+    slideRound: Int
     active: Boolean!
     in24hourWindow: Boolean!
     startAt: Float
@@ -88,6 +89,7 @@ input CreateCampaignInput {
 
     sliding: Boolean = false
     slide: Int
+    slideRound: Int
     active: Boolean! = false
     in24hourWindow: Boolean! = true
     startAt: Float
