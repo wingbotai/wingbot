@@ -255,9 +255,26 @@ class Request {
      * @returns {boolean}
      */
     isText () {
-        return this.message !== null
+        return (this.message !== null
             && !this.message.quick_reply
-            && !!this.message.text;
+            && !!this.message.text)
+            || this._stickerToSmile() !== '';
+    }
+
+    _stickerToSmile () {
+        if (this.attachments.length !== 1
+                || this.attachments[0].type !== 'image'
+                || !this.attachments[0].payload
+                || !this.attachments[0].payload.sticker_id) {
+            return '';
+        }
+
+        switch (this.attachments[0].payload.sticker_id) {
+            case 369239263222822:
+                return '👍';
+            default:
+                return '';
+        }
     }
 
     /**
@@ -278,7 +295,7 @@ class Request {
             return tokenize(this.message.text);
         }
 
-        return this.message.text || '';
+        return this.message.text || this._stickerToSmile() || '';
     }
 
     /**
