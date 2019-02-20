@@ -311,7 +311,7 @@ class Router extends ReducerWrapper {
     }
 
     // used as protected method
-    async processReducers (reducers, req, res, postBack, path, action) {
+    async processReducers (reducers, req, res, postBack, path, action, doNotTrack = false) {
         const routeToReduce = {
             reducers,
             path: res.routePath,
@@ -325,11 +325,12 @@ class Router extends ReducerWrapper {
             req,
             res,
             postBack,
-            res.path
+            res.path,
+            doNotTrack
         );
     }
 
-    async _reduceTheArray (route, reducerContainer, action, req, res, relativePostBack, path = '/') {
+    async _reduceTheArray (route, reducerContainer, action, req, res, relativePostBack, path = '/', doNotTrack = false) {
         let breakOn = Router.BREAK;
         let continueOn = Router.CONTINUE;
 
@@ -353,7 +354,8 @@ class Router extends ReducerWrapper {
                     req,
                     res,
                     relativePostBack,
-                    path
+                    path,
+                    true
                 );
             } else {
                 result = reducer.reduce(req, res, relativePostBack, pathContext, action);
@@ -370,7 +372,7 @@ class Router extends ReducerWrapper {
                 // store the last visited path
                 res.setState({ _lastVisitedPath: path === '/' ? null : path });
 
-                this._emitAction(req, pathContext);
+                this._emitAction(req, pathContext, doNotTrack);
             }
 
             if (result === breakOn) {

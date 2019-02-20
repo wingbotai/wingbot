@@ -396,7 +396,7 @@ class BuildRouter extends Router {
         return (data, req, res, postBack) => {
             const { path } = res;
             const action = req.action();
-            return this.processReducers(reducers, req, res, postBack, path, action);
+            return this.processReducers(reducers, req, res, postBack, path, action, true);
         };
     }
 

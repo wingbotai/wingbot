@@ -12,6 +12,10 @@ const MemoryBotConfigStorage = require('../src/tools/MemoryBotConfigStorage');
 // @ts-ignore
 const testbot = require('./testbot.json');
 
+function wait (ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
+
 describe('<BuildRouter>', async () => {
 
     it('should behave as router', async () => {
@@ -117,9 +121,18 @@ describe('<BuildRouter>', async () => {
         plugins.register('routerBlock', routerBlock);
 
         const bot = BuildRouter.fromData(testbot.data, plugins);
+
+        const collect = [];
+
+        bot.on('action', (...args) => {
+            collect.push(args);
+        });
+
         const t = new Tester(bot);
 
         await t.postBack('router-plugin');
+
+        await wait(10);
 
         t.any()
             .contains('Yessss')
@@ -178,8 +191,6 @@ describe('<BuildRouter>', async () => {
             }]
         };
     }
-
-    function wait (ms) { return new Promise(r => setTimeout(r, ms)); }
 
     describe('#reduce()', () => {
 

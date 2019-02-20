@@ -47,7 +47,7 @@ class RouterWrap extends EventEmitter {
 
                 const reducers = items[codeBlockName];
                 const result = await router
-                    .processReducers(reducers, req, res, postBack, path, useAction);
+                    .processReducers(reducers, req, res, postBack, path, useAction, true);
 
                 res.setPath(runPath, runRoutePath);
 
