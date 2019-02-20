@@ -113,7 +113,7 @@ function processButtons (
     linksMap,
     senderId,
     // eslint-disable-next-line no-unused-vars
-    linksTranslator = (sndr, defaultText, urlText, isExtUrl) => urlText
+    linksTranslator = (sndr, defaultText, urlText, isExtUrl, reqState) => urlText
 ) {
     buttons.forEach(({
         title: btnTitle,
@@ -135,7 +135,7 @@ function processButtons (
             case TYPE_URL_WITH_EXT: {
                 const hasExtention = type === TYPE_URL_WITH_EXT;
                 let urlText = getText(url, state);
-                urlText = linksTranslator(senderId, defaultText, urlText, isExtUrl);
+                urlText = linksTranslator(senderId, defaultText, urlText, isExtUrl, state);
                 elem.urlButton(btnTitleText, urlText, hasExtention, webviewHeight);
                 break;
             }

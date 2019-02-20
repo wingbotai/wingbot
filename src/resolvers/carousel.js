@@ -53,6 +53,8 @@ function carousel ({
                 elem.setElementImage(imageUrl);
             }
 
+            const { senderId } = req;
+
             if (action && typeof action === 'object') {
                 const {
                     type, webviewHeight = WEBVIEW_TALL, url, targetRouteId
@@ -66,7 +68,7 @@ function carousel ({
                         const hasExtension = type === TYPE_URL_WITH_EXT;
                         const textLabel = titleText || subtitleText;
                         let urlText = getText(url, state);
-                        urlText = linksTranslator(req.senderId, textLabel, urlText, isExtUrl);
+                        urlText = linksTranslator(senderId, textLabel, urlText, isExtUrl, state);
                         elem.setElementAction(urlText, hasExtension, webviewHeight);
                         break;
                     }
@@ -89,7 +91,7 @@ function carousel ({
                 }
             }
 
-            processButtons(buttons, state, elem, linksMap, req.senderId, linksTranslator);
+            processButtons(buttons, state, elem, linksMap, senderId, linksTranslator);
         });
 
         tpl.send();
