@@ -34,7 +34,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.subscribtions](#Request_subscribtions)
     * [.intent(getDataOrScore)](#Request_intent) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
-    * [.isImage([attachmentIndex])](#Request_isImage) ⇒ <code>boolean</code>
+    * [.isImage([attachmentIndex], [includingStickers])](#Request_isImage) ⇒ <code>boolean</code>
     * [.isFile([attachmentIndex])](#Request_isFile) ⇒ <code>boolean</code>
     * [.hasLocation()](#Request_hasLocation) ⇒ <code>boolean</code>
     * [.getLocation()](#Request_getLocation) ⇒ <code>null</code> \| <code>Object</code>
@@ -43,6 +43,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.isMessage()](#Request_isMessage) ⇒ <code>boolean</code>
     * [.isQuickReply()](#Request_isQuickReply) ⇒ <code>boolean</code>
     * [.isText()](#Request_isText) ⇒ <code>boolean</code>
+    * [.isSticker([includeToTextStickers])](#Request_isSticker) ⇒ <code>boolean</code>
     * [.text([tokenized])](#Request_text) ⇒ <code>string</code>
     * [.expected()](#Request_expected) ⇒ <code>string</code> \| <code>null</code>
     * [.quickReply([getData])](#Request_quickReply) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
@@ -142,13 +143,14 @@ Checks, when message contains an attachment (file, image or location)
 **Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_isImage">&nbsp;</div>{% endraw %}
 
-### request.isImage([attachmentIndex]) ⇒ <code>boolean</code>
-Checks, when the attachment is an image
+### request.isImage([attachmentIndex], [includingStickers]) ⇒ <code>boolean</code>
+Checks, when the attachment is an image, but not a sticker
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 **Params**
 
 - [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
+- [includingStickers] <code>boolean</code> <code> = false</code> - return true, when the image is also a sticker
 
 {% raw %}<div id="Request_isFile">&nbsp;</div>{% endraw %}
 
@@ -232,6 +234,16 @@ Check, that message is a quick reply
 Check, that message is PURE text
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+{% raw %}<div id="Request_isSticker">&nbsp;</div>{% endraw %}
+
+### request.isSticker([includeToTextStickers]) ⇒ <code>boolean</code>
+Returns true, when the attachment is a sticker
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
+
+- [includeToTextStickers] <code>boolean</code> <code> = false</code> - including strickers transformed into a text
+
 {% raw %}<div id="Request_text">&nbsp;</div>{% endraw %}
 
 ### request.text([tokenized]) ⇒ <code>string</code>

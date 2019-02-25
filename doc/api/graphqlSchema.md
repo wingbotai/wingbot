@@ -324,6 +324,11 @@ run a campaign
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>slideRound</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>active</strong></td>
 <td valign="top"><a href="#boolean">Boolean</a>!</td>
 <td></td>
@@ -675,6 +680,11 @@ run a campaign
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>slide</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>slideRound</strong></td>
 <td valign="top"><a href="#int">Int</a></td>
 <td></td>
 </tr>
