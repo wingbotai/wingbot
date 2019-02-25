@@ -4,7 +4,7 @@
 'use strict';
 
 const { tokenize, quickReplyAction, parseActionPayload } = require('./utils');
-const requestFactories = require('./utils/requestFactories');
+const RequestsFactories = require('./utils/RequestsFactories');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
@@ -32,9 +32,11 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  *
  * @class
  */
-class Request {
+class Request extends RequestsFactories {
 
     constructor (data, state, pageId) {
+        super();
+
         this.campaign = data.campaign || null;
 
         this.data = data;
@@ -137,13 +139,16 @@ class Request {
     }
 
     /**
-     * Checks, when the attachment is an image
+     * Checks, when the attachment is an image, but not a sticker
      *
      * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
+     * @param {boolean} [includingStickers] - return true, when the image is also a sticker
      * @returns {boolean}
      */
-    isImage (attachmentIndex = 0) {
-        return this._checkAttachmentType('image', attachmentIndex);
+    isImage (attachmentIndex = 0, includingStickers = false) {
+        return this._checkAttachmentType('image', attachmentIndex)
+            && (includingStickers
+                || !this.isSticker(true));
     }
 
     /**
@@ -261,20 +266,38 @@ class Request {
             || this._stickerToSmile() !== '';
     }
 
-    _stickerToSmile () {
-        if (this.attachments.length !== 1
-                || this.attachments[0].type !== 'image'
-                || !this.attachments[0].payload
-                || !this.attachments[0].payload.sticker_id) {
-            return '';
-        }
+    /**
+     * Returns true, when the attachment is a sticker
+     *
+     * @param {boolean} [includeToTextStickers] - including strickers transformed into a text
+     *
+     * @returns {boolean}
+     */
+    isSticker (includeToTextStickers = false) {
+        return this.attachments.length === 1
+            && this.attachments[0].type === 'image'
+            && typeof this.attachments[0].payload === 'object'
+            && this.attachments[0].payload !== null
+            && typeof this.attachments[0].payload.sticker_id !== 'undefined'
+            && (includeToTextStickers
+                || this._stickerIdToText(this.attachments[0].payload.sticker_id) === null);
+    }
 
-        switch (this.attachments[0].payload.sticker_id) {
+    _stickerIdToText (stickerId) {
+        switch (stickerId) {
             case 369239263222822:
                 return '👍';
             default:
-                return '';
+                return null;
         }
+    }
+
+    _stickerToSmile () {
+        if (!this.isSticker(true)) {
+            return '';
+        }
+
+        return this._stickerIdToText(this.attachments[0].payload.sticker_id) || '';
     }
 
     /**
@@ -516,20 +539,5 @@ class Request {
     }
 
 }
-
-Request.timestamp = requestFactories.timestamp;
-Request.postBack = requestFactories.postBack;
-Request.campaignPostBack = requestFactories.campaignPostBack;
-Request.text = requestFactories.text;
-Request.passThread = requestFactories.passThread;
-Request.intent = requestFactories.intent;
-Request.quickReply = requestFactories.quickReply;
-Request.quickReplyText = requestFactories.quickReplyText;
-Request.location = requestFactories.location;
-Request.referral = requestFactories.referral;
-Request.optin = requestFactories.optin;
-Request.fileAttachment = requestFactories.fileAttachment;
-Request.readEvent = requestFactories.readEvent;
-Request.deliveryEvent = requestFactories.deliveryEvent;
 
 module.exports = Request;

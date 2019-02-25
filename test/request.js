@@ -271,7 +271,7 @@ describe('Request', function () {
 
     });
 
-    describe('#isFile() / #isImage() / #isAttachment()', function () {
+    describe('#isFile() / #isImage() / #isAttachment() / isSticker()', function () {
 
         it('should validate file type', function () {
             const req = new Request(Request.fileAttachment(SENDER_ID, FILE_URL), STATE);
@@ -279,6 +279,8 @@ describe('Request', function () {
             assert.strictEqual(req.isFile(), true);
             assert.strictEqual(req.isImage(), false);
             assert.strictEqual(req.isAttachment(), true);
+            assert.strictEqual(req.isSticker(), false);
+            assert.strictEqual(req.isText(), false);
         });
 
         it('should validate image type', function () {
@@ -287,6 +289,8 @@ describe('Request', function () {
             assert.strictEqual(req.isFile(), false);
             assert.strictEqual(req.isImage(), true);
             assert.strictEqual(req.isAttachment(), true);
+            assert.strictEqual(req.isSticker(), false);
+            assert.strictEqual(req.isText(), false);
         });
 
         it('should return false when theres no message', function () {
@@ -295,6 +299,33 @@ describe('Request', function () {
             assert.strictEqual(req.isFile(), false);
             assert.strictEqual(req.isImage(), false);
             assert.strictEqual(req.isAttachment(), false);
+            assert.strictEqual(req.isSticker(), false);
+            assert.strictEqual(req.isText(), false);
+        });
+
+        it('should recognize a sticker', () => {
+            const req = new Request(Request.sticker(SENDER_ID, 1, ''));
+
+
+            assert.strictEqual(req.isFile(), false);
+            assert.strictEqual(req.isImage(), false);
+            assert.strictEqual(req.isImage(0, true), true);
+            assert.strictEqual(req.isAttachment(), true);
+            assert.strictEqual(req.isSticker(), true);
+            assert.strictEqual(req.isSticker(true), true);
+            assert.strictEqual(req.isText(), false);
+        });
+
+        it('should transfer some stickers to text', () => {
+            const req = new Request(Request.sticker(SENDER_ID, 369239263222822, ''));
+
+            assert.strictEqual(req.isFile(), false);
+            assert.strictEqual(req.isImage(), false);
+            assert.strictEqual(req.isImage(0, true), true);
+            assert.strictEqual(req.isAttachment(), true);
+            assert.strictEqual(req.isSticker(), false);
+            assert.strictEqual(req.isSticker(true), true);
+            assert.strictEqual(req.isText(), true);
         });
 
     });

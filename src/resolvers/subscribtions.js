@@ -9,7 +9,7 @@ const customFn = require('../utils/customFn');
 function subscribtions (params, { isLastIndex }) {
     const {
         tags = [],
-        unsetTags = false,
+        unsetTag = false,
         hasCondition = false,
         conditionFn = '() => true'
     } = params;
@@ -21,7 +21,7 @@ function subscribtions (params, { isLastIndex }) {
     }
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
-    const method = unsetTags ? 'unsubscribe' : 'subscribe';
+    const method = unsetTag ? 'unsubscribe' : 'subscribe';
 
     return async (req, res) => {
         if (condition !== null) {
@@ -40,7 +40,7 @@ function subscribtions (params, { isLastIndex }) {
             return ret;
         }
 
-        if (tags.length === 0 && unsetTags) {
+        if (tags.length === 0 && unsetTag) {
             res.unsubscribe();
         }
 

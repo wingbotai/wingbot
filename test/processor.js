@@ -9,7 +9,7 @@ const Processor = require('../src/Processor');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const ReducerWrapper = require('../src/ReducerWrapper');
-const { readEvent, deliveryEvent } = require('../src/utils/requestFactories');
+const { readEvent, deliveryEvent } = require('../src/utils/RequestsFactories');
 
 const EMPTY_STATE = { user: {} };
 
