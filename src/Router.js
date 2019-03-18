@@ -372,7 +372,7 @@ class Router extends ReducerWrapper {
                 // store the last visited path
                 res.setState({ _lastVisitedPath: path === '/' ? null : path });
 
-                this._emitAction(req, pathContext, doNotTrack);
+                this._emitAction(req, res, pathContext, doNotTrack);
             }
 
             if (result === breakOn) {

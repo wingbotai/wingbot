@@ -18,7 +18,7 @@ const EventEmitter = require('events');
  *     res.text('Hello');
  * });
  *
- * reducer.on('action', (senderId, processedAction, text, req) => {
+ * reducer.on('action', (senderId, processedAction, text, req, lastAction) => {
  *     // log action
  * });
  */
@@ -52,11 +52,16 @@ class ReducerWrapper extends EventEmitter {
      */
     reduce (req, res, postBack) {
         this._reduce(req, res, postBack);
-        this._emitAction(req);
+        this._emitAction(req, res);
     }
 
-    _emitAction (req, action = null, doNotTrack = false) {
-        const params = [req.senderId, action || req.action(), req.text(), req];
+    _emitAction (req, res, action = null, doNotTrack = false) {
+        const { _lastAction: lastAction = null } = req.state;
+        const act = action || req.action();
+        const params = [req.senderId, act, req.text(), req, lastAction];
+        if (act) {
+            res.setState({ _lastAction: act });
+        }
         this.emit('_action', ...params);
         if (!doNotTrack) {
             process.nextTick(() => {

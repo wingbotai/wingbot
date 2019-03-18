@@ -218,6 +218,7 @@ describe('Tester', function () {
         assert.deepEqual(t.getState().state, {
             i: 2,
             _expected: null,
+            _lastAction: '/postBack',
             _expectedKeywords: null,
             _lastVisitedPath: null
         });
@@ -234,6 +235,7 @@ describe('Tester', function () {
             i: 4,
             _expected: null,
             _expectedKeywords: null,
+            _lastAction: '/postBack',
             _lastVisitedPath: null
         });
 

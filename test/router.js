@@ -278,6 +278,7 @@ describe('Router', function () {
                     assert.strictEqual(actionSpy.firstCall.args[1], '/nested/inner');
                     assert.strictEqual(actionSpy.firstCall.args[2], 'matching text');
                     assert.strictEqual(actionSpy.firstCall.args[3], req);
+                    assert.strictEqual(actionSpy.firstCall.args[4], null);
                 });
         });
 
