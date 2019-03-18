@@ -205,7 +205,7 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 {% raw %}<div id="WingbotModel__queryModel">&nbsp;</div>{% endraw %}
 
-### wingbotModel._queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+### wingbotModel.\_queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
 **Kind**: instance method of [<code>WingbotModel</code>](#WingbotModel)  
 **Params**
 
@@ -240,7 +240,7 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 {% raw %}<div id="CachedModel__queryModel">&nbsp;</div>{% endraw %}
 
-### cachedModel._queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+### cachedModel.\_queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
 **Params**
 

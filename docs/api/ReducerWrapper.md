@@ -24,7 +24,7 @@ const reducer = new ReducerWrapper((req, res) => {
     res.text('Hello');
 });
 
-reducer.on('action', (senderId, processedAction, text, req) => {
+reducer.on('action', (senderId, processedAction, text, req, lastAction) => {
     // log action
 });
 ```
