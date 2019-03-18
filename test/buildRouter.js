@@ -220,6 +220,10 @@ describe('<BuildRouter>', async () => {
 
             bot = new BuildRouter({ botId: 'fake-bot-id' }, plugins, config, mockRequest);
 
+            bot.use('xyz', (req, res) => {
+                res.text('hello');
+            });
+
             bot.keepConfigFor = -5000;
         });
 
@@ -245,6 +249,9 @@ describe('<BuildRouter>', async () => {
             const second = new Tester(bot);
             const third = new Tester(bot);
 
+            await third.postBack('xyz');
+            third.res(0).contains('hello');
+
             const firstPromise = first.postBack('/start');
 
             await wait(10);
@@ -267,6 +274,9 @@ describe('<BuildRouter>', async () => {
             first.res(0).contains('first');
             second.res(0).contains('second');
             third.res(0).contains('second');
+
+            await third.postBack('xyz');
+            third.res(0).contains('hello');
 
         });
 

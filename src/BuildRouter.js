@@ -237,7 +237,7 @@ class BuildRouter extends Router {
         if (this._prebuiltRoutesCount === null) {
             this._prebuiltRoutesCount = this._routes.length;
         } else {
-            this._routes = this._routes.slice(0, this._prebuiltRoutesCount - 1);
+            this._routes = this._routes.slice(0, this._prebuiltRoutesCount);
         }
 
         const {
