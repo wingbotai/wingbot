@@ -43,7 +43,7 @@ class BuildRouter extends Router {
      *
      * // usage under serverless environment
      *
-     * const { Settings, BuildRouter, Blocks } = require(''wingbot');
+     * const { Settings, BuildRouter, Blocks } = require('wingbot');
      * const { createHandler, createProcessor } = require(''wingbot/serverlessAWS');
      * const dynamoDb = require('./lib/dynamodb');
      * const config = require('./config');
@@ -345,8 +345,10 @@ class BuildRouter extends Router {
             if (route.aiTags && route.aiTags.length) {
                 if (route.aiGlobal) {
                     aiResolver = Ai.ai.globalMatch(route.aiTags);
-                } else {
+                } else if (route.isResponder) {
                     aiResolver = Ai.ai.match(route.aiTags);
+                } else {
+                    aiResolver = Ai.ai.localMatch(route.aiTags);
                 }
             }
 

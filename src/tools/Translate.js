@@ -67,7 +67,7 @@ class Translate {
      * @param {string[]} languages - list of required languages
      * @returns {Promise<Object>}
      * @example
-     * const { Translate } = require(''wingbot');
+     * const { Translate } = require('wingbot');
      *
      * const translate = new Translate({ sourcePath: __dirname });
      *
@@ -101,7 +101,7 @@ class Translate {
      * @param {Function} languageResolver
      * @returns {function(*, *)}
      * @example
-     * const { Translate } = require(''wingbot');
+     * const { Translate } = require('wingbot');
      *
      * const translate = new Translate({ sourcePath: __dirname });
      *

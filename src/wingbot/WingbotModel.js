@@ -9,10 +9,23 @@ const DEFAULT_MATCHES = 1;
 const SERVICE_URL = 'https://model.wingbot.ai';
 
 /**
+ * @typedef {Object} Entity
+ * @param {string} entity
+ * @param {string} value
+ * @param {number} score
+ */
+
+/**
  * @typedef {Object} Intent
  * @param {string} intent
  * @param {number} score
- * @param {Object[]} [entities]
+ * @param {Entity[]} [entities]
+ */
+
+/**
+ * @typedef {Object} Result
+ * @param {Entity[]} entities
+ * @param {Intent[]} intents
  */
 
 /**
@@ -43,7 +56,7 @@ class WingbotModel extends CachedModel {
     /**
      *
      * @param {string} text
-     * @returns {Promise<Intent[]>}
+     * @returns {Promise<Result>}
      */
     async _queryModel (text) {
         if ((text || '').trim().length === 0) {
@@ -68,8 +81,10 @@ class WingbotModel extends CachedModel {
                 return [];
             }
 
-            return response.tags
-                .map(({ tag, score }) => ({ intent: tag, score }));
+            return {
+                intents: response.tags,
+                entities: response.entities
+            };
         } catch (e) {
             this._log.warn('AI query failed', e);
             return [];

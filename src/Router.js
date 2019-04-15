@@ -13,10 +13,15 @@ const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
 const Request = require('./Request'); // eslint-disable-line no-unused-vars
 
 /**
- * @callback Resolver
+ * @callback Resolver processing function
  * @param {Request} [req]
  * @param {Responder} [res]
  * @param {Function} [postBack]
+ */
+
+
+/**
+ * @typedef {string|Resolver|RegExp|Router} Middleware flow control statement or function
  */
 
 /**
@@ -51,7 +56,7 @@ class Router extends ReducerWrapper {
     /**
      * Appends middleware, action handler or another router
      *
-     * @param {...string|Resolver|RegExp|Router|Resolver[]|string[]} resolvers - list of resolvers
+     * @param {...Middleware|Middleware[]} resolvers - list of resolvers
      * @returns {{onExit:Function}}
      *
      * @example
@@ -98,7 +103,10 @@ class Router extends ReducerWrapper {
         });
 
         reducers.forEach(({ globalIntents }) => {
-            for (const { id, matcher, path: intentPath } of globalIntents.values()) {
+            for (const gi of globalIntents.values()) {
+                const {
+                    id, matcher, path: intentPath, local
+                } = gi;
                 const path = intentPath === '/*'
                     ? pathContext.path
                     : `${pathContext.path}${intentPath}`.replace(/^\/\*/, '');
@@ -107,7 +115,8 @@ class Router extends ReducerWrapper {
                     id,
                     matcher,
                     path,
-                    localPath: pathContext.path
+                    localPath: pathContext.path,
+                    local
                 });
             }
         });
@@ -191,13 +200,16 @@ class Router extends ReducerWrapper {
 
                 if (match
                     && pathMatch.exec(match.localPath)
-                    && match.localPath !== match.path) {
+                    // @todo evaluate in testing
+                    /* && match.localPath !== match.path */) {
 
                     return Router.CONTINUE;
                 }
 
                 return Router.BREAK;
             };
+
+            isReducer = true;
 
         } else if (reducer instanceof RegExp) {
             reduce = req => (req.isText() && req.text(true).match(reducer)
@@ -262,12 +274,41 @@ class Router extends ReducerWrapper {
             return gid && this.globalIntents.get(gid);
         }
 
-        const matching = Array.from(this.globalIntents.values())
-            .filter(i => i.matcher(req, res, true));
+        const winners = [];
 
-        req._matchingGlobalIntents = matching.map(g => g.id);
+        // to match the local context intent
+        let localRegexToMatch = null;
+        if (req.state._lastVisitedPath) {
+            localRegexToMatch = new RegExp(`^${req.state._lastVisitedPath}/[^/]+`);
+        } else {
+            let expected = req.expected();
+            if (expected) {
+                expected = expected.action.replace(/\/?[^/]+$/, '');
+                localRegexToMatch = new RegExp(`^${expected}/[^/]+`);
+            }
+        }
 
-        return matching[0];
+        for (const gi of this.globalIntents.values()) {
+            if (gi.local && (!localRegexToMatch || !localRegexToMatch.exec(gi.path))) {
+                continue;
+            }
+            const wi = gi.matcher(req, res, true);
+            if (wi !== null) {
+                const sort = wi.score + (gi.local ? (1 - Ai.ai.confidence) / 2 : 0);
+                // console.log(sort, wi.intent);
+                winners.push({
+                    ...gi,
+                    wi,
+                    sort
+                });
+            }
+        }
+
+        winners.sort((l, r) => r.sort - l.sort);
+
+        req._matchingGlobalIntents = winners.map(g => g.id);
+
+        return winners[0];
     }
 
     async reduce (req, res, postBack = () => {}, path = '/') {
@@ -285,7 +326,7 @@ class Router extends ReducerWrapper {
             const match = this._getMatchingGlobalIntent(req, res);
 
             if (match) {
-                res.setBookmark(match.path);
+                res.setBookmark(match.path, match.wi);
             }
         }
 
@@ -371,7 +412,7 @@ class Router extends ReducerWrapper {
 
                 // store the last visited path
                 res.setState({ _lastVisitedPath: path === '/' ? null : path });
-
+                // console.log({ action: req.action(), pathContext, path });
                 this._emitAction(req, res, pathContext, doNotTrack);
             }
 

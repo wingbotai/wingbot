@@ -8,11 +8,19 @@ const RequestsFactories = require('./utils/RequestsFactories');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
+
+/**
+ * @typedef {Object} Entity
+ * @param {string} entity
+ * @param {string} value
+ * @param {number} score
+ */
+
 /**
  * @typedef {Object} Intent
  * @prop {string} intent
  * @prop {number} score
- * @prop {Object[]} [entities]
+ * @prop {Entity[]} [entities]
  */
 
 /**
@@ -84,17 +92,27 @@ class Request extends RequestsFactories {
         this.state = state;
 
         /**
-         * @prop {Subscribtion[]} state current state of the conversation
+         * @prop {Subscribtion[]} state list of subscribed tags
          */
         this.subscribtions = [];
 
-        this._intents = null;
+        /**
+         * @prop {Entity[]} entities list of entities
+         */
+        this.entities = [];
+
+        /**
+         * @prop {Intent[]|null} intents list of resolved intents
+         */
+        this.intents = null;
 
         /**
          * @prop {Action}
          * @private
          */
         this._action = undefined;
+
+        this._winningIntent = null;
     }
 
     /**
@@ -104,11 +122,14 @@ class Request extends RequestsFactories {
      * @returns {null|string|Intent}
      */
     intent (getDataOrScore = false) {
-        if (!this._intents || this._intents.length === 0) {
+        if (!this.intents || this.intents.length === 0) {
             return null;
         }
 
-        const [intent] = this._intents;
+        let {
+            _winningIntent: intent = this._winningIntent
+        } = this.action(true);
+        if (!intent) [intent] = this.intents;
 
         if (typeof getDataOrScore === 'number') {
             return intent.score >= getDataOrScore
@@ -120,6 +141,36 @@ class Request extends RequestsFactories {
             return intent;
         }
         return intent.intent;
+    }
+
+    /**
+     * Get matched entity value
+     *
+     * @param {string} name - name of requested entity
+     * @param {number} [sequence] - when there are more then one entity
+     * @returns {number|string|null}
+     */
+    entity (name, sequence = 0) {
+        const cleanName = name.replace(/^@/, '');
+
+        const {
+            _winningIntent: intent = this._winningIntent
+        } = this.action(true);
+        let entities;
+        if (intent && intent.entities) {
+            ({ entities } = intent);
+        } else {
+            ({ entities } = this);
+        }
+
+        const found = entities
+            .filter(e => e.entity === cleanName);
+
+        if (found.length <= sequence) {
+            return null;
+        }
+
+        return found[sequence].value;
     }
 
     /**

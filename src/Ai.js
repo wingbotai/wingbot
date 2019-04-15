@@ -4,20 +4,32 @@
 'use strict';
 
 const { WingbotModel } = require('./wingbot');
-const { replaceDiacritics } = require('./utils/tokenizer');
+const AiMatching = require('./AiMatching');
 
 const DEFAULT_PREFIX = 'default';
-const FULL_EMOJI_REGEX = /^#((?:[\u2600-\u27bf].?|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])+)$/;
-const HAS_CLOSING_HASH = /^#(.+)#$/;
 
 let uq = 1;
+
+
+/**
+ * @typedef {Object} EntityExpression
+ * @prop {string} entity - the requested entity
+ * @prop {boolean} [optional] - entity is optional, can be missing in request
+ * @prop {Compare} [op] - comparison operation (eq|ne|range)
+ * @prop {string[]|number[]} [compare] - value to compare with
+ */
+
+
+/**
+ * @typedef {string|EntityExpression} IntentRule
+ */
 
 /**
  * @class Ai
  */
 class Ai {
 
-    constructor () {
+    constructor (matcher = new AiMatching()) {
         this._keyworders = new Map();
 
         /**
@@ -50,20 +62,22 @@ class Ai {
          * @type {boolean}
          */
         this.disableBookmarking = false;
+
+        this.matcher = matcher;
     }
 
     /**
      * Usefull method for testing AI routes
      *
      * @param {string} [intent] - intent name
-     * @param {number} [confidence] - the confidence of the top intent
+     * @param {number} [score] - the score of the top intent
      * @returns {this}
      * @example
      * const { Tester, ai, Route } = require('bontaut');
      *
      * const bot = new Route();
      *
-     * bot.use(['intentAction', ai.match('intentName')], (req, res) => {
+     * bot.use(['intentAction', ai.localMatch('intentName')], (req, res) => {
      *     res.text('PASSED');
      * });
      *
@@ -83,11 +97,11 @@ class Ai {
      *     });
      * });
      */
-    mockIntent (intent = null, confidence = null) {
+    mockIntent (intent = null, score = null) {
         if (intent === null) {
             this._mockIntent = null;
         } else {
-            this._mockIntent = { intent, confidence };
+            this._mockIntent = { intent, score };
         }
         return this;
     }
@@ -134,8 +148,8 @@ class Ai {
                 return true;
             }
 
-            if (!req._intents) {
-                req._intents = await this._queryModel(req);
+            if (!req.intents) {
+                await this._loadIntents(req);
             }
 
             return true;
@@ -147,17 +161,20 @@ class Ai {
      *
      * **supports:**
      *
-     * - intents (`intentName`)
-     * - wildcard keywords (`#keyword#`)
-     * - phrases (`#first-phrase|second-phrase`)
-     * - emojis (`#😄🙃😛`)
+     * - intents (`'intentName'`)
+     * - entities (`'@entity'`)
+     * - complex entities (`{ entity:'entity', op:'range', compare:[null,1000] }`)
+     * - optional entities (`{ entity:'entity', optional: true }`)
+     * - wildcard keywords (`'#keyword#'`)
+     * - phrases (`'#first-phrase|second-phrase'`)
+     * - emojis (`'#😄🙃😛'`)
      *
-     * @param {string|Array} intent
+     * @param {IntentRule|IntentRule[]} intent
      * @param {number} [confidence]
      * @returns {Function} - the middleware
      * @memberOf Ai
      * @example
-     * const { Router, ai } = require(''wingbot');
+     * const { Router, ai } = require('wingbot');
      *
      * ai.register('app-model');
      *
@@ -175,8 +192,8 @@ class Ai {
                 return false;
             }
 
-            if (!req._intents) {
-                req._intents = await this._queryModel(req);
+            if (!req.intents) {
+                await this._loadIntents(req);
             }
 
             return matcher(req, res);
@@ -185,14 +202,60 @@ class Ai {
 
     /**
      * Returns matching middleware, that will export the intent to the root router
-     * so the intent will be matched in a global context
+     * so the intent will be matched in a local context (nested Router)
      *
-     * @param {string|Array} intent
+     * @param {IntentRule|IntentRule[]} intent
      * @param {number} [confidence]
      * @returns {Function} - the middleware
      * @memberOf Ai
      * @example
-     * const { Router, ai } = require(''wingbot');
+     * const { Router, ai } = require('wingbot');
+     *
+     * ai.register('app-model');
+     *
+     * bot.use(ai.localMatch('intent1'), (req, res) => {
+     *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
+     *
+     *     res.text('Oh, intent 1 :)');
+     * });
+     */
+    localMatch (intent, confidence = null) {
+        const matcher = this._createIntentMatcher(intent, confidence);
+
+        const resolver = async (req, res) => {
+            if (!req.isText()) {
+                return false;
+            }
+
+            if (!req.intents) {
+                await this._loadIntents(req);
+            }
+
+            return matcher(req, res);
+        };
+
+        const id = uq++;
+
+        resolver.globalIntents = new Map([[id, {
+            id,
+            matcher,
+            local: true,
+            path: '/*'
+        }]]);
+
+        return resolver;
+    }
+
+    /**
+     * Returns matching middleware, that will export the intent to the root router
+     * so the intent will be matched in a global context
+     *
+     * @param {IntentRule|IntentRule[]} intent
+     * @param {number} [confidence]
+     * @returns {Function} - the middleware
+     * @memberOf Ai
+     * @example
+     * const { Router, ai } = require('wingbot');
      *
      * ai.register('app-model');
      *
@@ -210,8 +273,8 @@ class Ai {
                 return false;
             }
 
-            if (!req._intents) {
-                req._intents = await this._queryModel(req);
+            if (!req.intents) {
+                await this._loadIntents(req);
             }
 
             return matcher(req, res);
@@ -229,101 +292,36 @@ class Ai {
     }
 
     _createIntentMatcher (intent, confidence = null) {
-        const expressions = Array.isArray(intent) ? intent : [intent];
+        const rules = this.matcher.preprocessRule(intent);
 
-        const intents = expressions.filter(ex => !ex.match(/^#/));
-
-        /**
-         * 1. Emoji lists
-         *      conversts #😀😃😄 to /^[😀😃😄]+$/ and matches not webalized
-         * 2. Full word lists with a closing hash (opens match)
-         *      convers #abc-123|xyz-34# to /abc-123|xyz-34/
-         * 3. Full word lists without an open tag
-         *      convers #abc-123|xyz-34 to /^abc-123$|^xyz-34$/
-         */
-
-        const regexps = expressions
-            .filter(ex => ex.match(/^#/))
-            .map((rawExp) => {
-                const exp = replaceDiacritics(rawExp);
-                const fullEmoji = exp.match(FULL_EMOJI_REGEX);
-
-                if (fullEmoji) {
-                    return {
-                        r: new RegExp(`^[${fullEmoji[1]}]+$`),
-                        t: false
-                    };
-                }
-
-                let regexText;
-
-                const withClosingHash = exp.match(HAS_CLOSING_HASH);
-
-                if (withClosingHash) {
-                    [, regexText] = withClosingHash;
-                    regexText = regexText.toLowerCase();
-                } else {
-                    regexText = exp.replace(/^#/, '')
-                        .split('|')
-                        .map(s => `^${s}$`.toLowerCase())
-                        .join('|');
-                }
-
-                let r;
-                try {
-                    r = new RegExp(regexText);
-                } catch (e) {
-                    // fail - simply allows to use bad characters
-                    regexText = regexText
-                        .replace(/[a-z0-9|-]+/, '');
-                    r = new RegExp(regexText);
-                }
-
-                return { r, t: true };
-            });
-
-        return (req, res, skipBookmarking = false) => {
-            if (regexps.length !== 0) {
-                const match = regexps.some(({ r, t }) => {
-                    if (t) {
-                        return req.text(true).match(r);
-                    }
-                    return req.text().match(r);
-                });
-
-                if (match) {
-                    return true;
-                }
-            }
-
-            if (!req._intents || req._intents.length === 0) {
-                return false;
-            }
-
-            const [winningIntent] = req._intents;
+        return (req, res, needWinningIntent = false) => {
+            const winningIntent = this.matcher.match(req, rules);
 
             const useConfidence = confidence === null
                 ? this.confidence
                 : confidence;
 
-            if (!intents.includes(winningIntent.intent)
-                    || winningIntent.score < useConfidence) {
+            if (needWinningIntent) {
+                return winningIntent && winningIntent.score >= useConfidence
+                    ? winningIntent
+                    : null;
+            }
 
+            if (!winningIntent || winningIntent.score < useConfidence) {
                 return false;
             }
 
             const action = req.action();
 
-            // when there's an action, store the current path as a bookmark
+            // do not continue, when there is another action expected
             if (!this.disableBookmarking
-                && !skipBookmarking
                 && action
-                && !res.bookmark()
                 && action !== res.currentAction()) {
 
-                res.setBookmark();
                 return false;
             }
+
+            req._winningIntent = winningIntent;
 
             return true;
         };
@@ -335,38 +333,47 @@ class Ai {
     }
 
     _getMockIntent (req) {
-        if (this._mockIntent !== null) {
-            return [{
-                intent: this._mockIntent.intent,
-                score: this._mockIntent.confidence || this.confidence
-            }];
+        const intentFromData = req.data && req.data.intent;
+
+        if (!this._mockIntent && !intentFromData) {
+            return null;
         }
-        if (req.data && req.data.intent) {
-            return [{
-                intent: req.data.intent,
-                score: req.data.score || this.confidence
-            }];
-        }
-        return null;
+
+        const { intent, score = null } = intentFromData
+            ? req.data
+            : this._mockIntent;
+
+        return {
+            intents: [
+                { intent, score: score === null ? this.confidence : score }
+            ],
+            entities: []
+        };
     }
 
     async preloadIntent (req) {
-        if (req._intents || !req.isText()) {
+        if (req.intents || !req.isText()) {
             return;
         }
         const mockIntent = this._getMockIntent(req);
         if (mockIntent) {
-            req._intents = mockIntent;
-        } else if (!req._intents && this._keyworders.size !== 0 && req.isText()) {
+            req.intents = mockIntent.intents;
+            req.entities = mockIntent.entities;
+        } else if (!req.intents && this._keyworders.size !== 0 && req.isText()) {
             const model = this._getModelForRequest(req);
             if (!model) {
-                req._intents = [];
+                req.intents = [];
                 return;
             }
-            req._intents = await this._queryModel(req, model);
+            await this._loadIntents(req, model);
         } else {
-            req._intents = [];
+            req.intents = [];
         }
+    }
+
+    async _loadIntents (req, model = null) {
+        const { intents, entities = [] } = await this._queryModel(req, model);
+        Object.assign(req, { intents, entities });
     }
 
     async _queryModel (req, useModel = null) {
@@ -378,7 +385,7 @@ class Ai {
         if (!model) {
             model = this._getModelForRequest(req);
             if (!model) {
-                return [];
+                return { intents: [], entities: [] };
             }
         }
         return model.resolve(req.text(), req);

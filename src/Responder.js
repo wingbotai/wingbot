@@ -103,6 +103,7 @@ class Responder {
      * Stores current action to be able to all it again
      *
      * @param {string} [action]
+     * @param {Object} [winningIntent]
      * @returns {this}
      * @example
      * bot.use(['action-name', /keyword/], (req, res) => {
@@ -116,8 +117,9 @@ class Responder {
      *
      * // check out the res.runBookmark() method
      */
-    setBookmark (action = this.currentAction()) {
+    setBookmark (action = this.currentAction(), winningIntent = null) {
         this._bookmark = makeAbsolute(action, this.path);
+        this._winningIntent = winningIntent;
         return this;
     }
 
@@ -161,7 +163,11 @@ class Responder {
             return true;
         }
         const bookmark = this._bookmark;
-        const res = await postBack(bookmark, Object.assign({ bookmark }, data), true);
+        const sendData = Object.assign({
+            bookmark,
+            _winningIntent: this._winningIntent
+        }, data);
+        const res = await postBack(bookmark, sendData, true);
         this._bookmark = null;
         return res;
     }

@@ -32,7 +32,7 @@ function sustainCallback () {
  * @module callbackMiddleware
  * @deprecated - use res.runBookmark()
  * @example
- * const { Router, callbackMiddleware, ai } = require(''wingbot');
+ * const { Router, callbackMiddleware, ai } = require('wingbot');
  *
  * const bot = new Router();
  *

@@ -149,7 +149,7 @@ The result looks like this:
 *-----------------------------------*
 ```
 
-## Expected cases
+## Handling expected text messages
 
 For clean code it's good to handle text for quick replies separately.
 

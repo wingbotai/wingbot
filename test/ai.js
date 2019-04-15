@@ -13,8 +13,8 @@ const WingbotModel = require('../src/wingbot/WingbotModel');
 
 const DEFAULT_SCORE = 0.96;
 
-function createResponse (tag = 'hello', score = 0.96) {
-    return { tags: tag ? [{ tag, score }] : [] };
+function createResponse (intent = 'hello', score = 0.96) {
+    return { tags: intent ? [{ intent, score }] : [] };
 }
 
 function fakeReq (text = 'text') {
@@ -24,7 +24,7 @@ function fakeReq (text = 'text') {
             data: { timestamp: Date.now() },
             text () { return text; },
             isText () { return !!text; },
-            _intents: null
+            intents: null
         },
         {},
         sinon.spy()
@@ -59,7 +59,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledOnce);
             assert.strictEqual(res, Router.CONTINUE);
-            assert.strictEqual(args[0]._intents[0].score, DEFAULT_SCORE);
+            assert.strictEqual(args[0].intents[0].score, DEFAULT_SCORE);
 
             args = fakeReq();
 
@@ -68,7 +68,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledOnce);
             assert.strictEqual(res, Router.CONTINUE);
-            assert.strictEqual(args[0]._intents[0].score, DEFAULT_SCORE);
+            assert.strictEqual(args[0].intents[0].score, DEFAULT_SCORE);
 
             syncRes = Promise.resolve(createResponse(null));
             args = fakeReq('unknown');
@@ -76,7 +76,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledTwice);
             assert.strictEqual(res, Router.BREAK);
-            assert.deepStrictEqual(args[0]._intents, []);
+            assert.deepStrictEqual(args[0].intents, []);
         });
 
         it('should skip request without texts', async function () {
@@ -86,7 +86,7 @@ describe('<Ai>', function () {
 
             assert.ok(!this.fakeRequest.called);
             assert.strictEqual(res, Router.BREAK);
-            assert.strictEqual(args[0]._intents, null);
+            assert.strictEqual(args[0].intents, null);
         });
 
         it('should skip request when the confidence is low', async function () {
@@ -96,7 +96,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.called);
             assert.strictEqual(res, Router.BREAK);
-            assert.deepStrictEqual(args[0]._intents, [{ intent: 'hello', score: 0.96 }]);
+            assert.deepStrictEqual(args[0].intents, [{ intent: 'hello', score: 0.96 }]);
         });
 
         it('mutes errors', async function () {
@@ -107,7 +107,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledOnce);
             assert.strictEqual(res, Router.BREAK);
-            assert.deepStrictEqual(args[0]._intents, []);
+            assert.deepStrictEqual(args[0].intents, []);
         });
 
         it('mutes bad responses', async function () {
@@ -118,7 +118,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.calledOnce);
             assert.strictEqual(res, Router.BREAK);
-            assert.deepStrictEqual(args[0]._intents, []);
+            assert.deepStrictEqual(args[0].intents, []);
         });
 
         it('makes able to dispath previously matched intent, when there is an "expected" action', async () => {
@@ -128,7 +128,7 @@ describe('<Ai>', function () {
             const steps = [];
 
             // @ts-ignore
-            bot.use(['action-name', ai.match('test-intent')], (req, res) => {
+            bot.use(['action-name', ai.localMatch('test-intent')], (req, res) => {
                 steps.push(3);
                 res.text('Bar');
             });
@@ -219,6 +219,8 @@ describe('<Ai>', function () {
             t.res(0).contains('nothing');
         });
 
+        it('single entity makes a match');
+
     });
 
     describe('mockIntent', function () {
@@ -235,7 +237,7 @@ describe('<Ai>', function () {
             return match(req, {})
                 .then((res) => {
                     assert.strictEqual(res, Router.CONTINUE);
-                    const { intent, score } = req._intents[0];
+                    const { intent, score } = req.intents[0];
 
                     assert.strictEqual(intent, 'testIntent');
                     assert.strictEqual(score, ai.confidence);
@@ -255,7 +257,7 @@ describe('<Ai>', function () {
             return match(req, {})
                 .then((res) => {
                     assert.strictEqual(res, Router.CONTINUE);
-                    const { intent, score } = req._intents[0];
+                    const { intent, score } = req.intents[0];
 
                     assert.strictEqual(intent, 'testIntent');
                     assert.strictEqual(score, ai.confidence);
