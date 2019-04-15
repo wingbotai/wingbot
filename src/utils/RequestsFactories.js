@@ -117,6 +117,28 @@ class RequestsFactories {
         return res;
     }
 
+    static intentWithEntity (
+        senderId,
+        text,
+        intentName,
+        entity,
+        value,
+        score = null,
+        timestamp = makeTimestamp()
+    ) {
+        const res = RequestsFactories.text(senderId, text, timestamp);
+
+        Object.assign(res, {
+            intent: intentName,
+            entities: [
+                { entity, value }
+            ],
+            score
+        });
+
+        return res;
+    }
+
     static quickReply (senderId, action, data = {}, timestamp = makeTimestamp()) {
         return {
             timestamp,

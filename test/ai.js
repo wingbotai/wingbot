@@ -26,7 +26,9 @@ function fakeReq (text = 'text') {
             isText () { return !!text; },
             intents: null
         },
-        {},
+        {
+            bookmark: () => null
+        },
         sinon.spy()
     ];
 }
@@ -234,7 +236,7 @@ describe('<Ai>', function () {
 
             const req = { isText: () => true, action: () => null, data: { timestamp: Date.now() } };
 
-            return match(req, {})
+            return match(req, { bookmark: () => null })
                 .then((res) => {
                     assert.strictEqual(res, Router.CONTINUE);
                     const { intent, score } = req.intents[0];
@@ -254,7 +256,7 @@ describe('<Ai>', function () {
             const data = Request.intent('any', 'hoho', 'testIntent');
             const req = { isText: () => true, data, action: () => null };
 
-            return match(req, {})
+            return match(req, { bookmark: () => null })
                 .then((res) => {
                     assert.strictEqual(res, Router.CONTINUE);
                     const { intent, score } = req.intents[0];

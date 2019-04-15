@@ -330,6 +330,12 @@ describe('<Router> logic', () => {
             withGlobalIntent.use(['g-int', ai.globalMatch('g-int')], (req, res) => {
                 res.text('global intent globally');
             });
+
+            // @ts-ignore
+            withGlobalIntent.use(['g-int-with-entity', ai.globalMatch(['g-int', '@entity'])], (req, res) => {
+                res.text('with entity');
+            });
+
             // @ts-ignore
             withGlobalIntent.use(['ex-int', ai.globalMatch('ex-int')], (req, res) => {
                 res.text('ex intent globally');
@@ -431,6 +437,12 @@ describe('<Router> logic', () => {
             t.any().contains('rand');
             assert.strictEqual(t.responses.length, 1, 'one response');
 
+        });
+
+        it('intent with entity should win', async () => {
+            await t.intentWithEntity('g-int', 'entity');
+
+            t.passedAction('g-int-with-entity');
         });
 
     });

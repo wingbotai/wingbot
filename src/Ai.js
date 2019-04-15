@@ -313,6 +313,10 @@ class Ai {
 
             const action = req.action();
 
+            if (res.bookmark() && action !== res.currentAction()) {
+                return false;
+            }
+
             // do not continue, when there is another action expected
             if (!this.disableBookmarking
                 && action
@@ -339,7 +343,7 @@ class Ai {
             return null;
         }
 
-        const { intent, score = null } = intentFromData
+        const { intent, score = null, entities = [] } = intentFromData
             ? req.data
             : this._mockIntent;
 
@@ -347,7 +351,7 @@ class Ai {
             intents: [
                 { intent, score: score === null ? this.confidence : score }
             ],
-            entities: []
+            entities
         };
     }
 

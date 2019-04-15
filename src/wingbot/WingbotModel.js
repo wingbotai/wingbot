@@ -5,7 +5,7 @@ const assert = require('assert');
 const { tokenize } = require('../utils');
 const CachedModel = require('./CachedModel');
 
-const DEFAULT_MATCHES = 1;
+const DEFAULT_MATCHES = 3;
 const SERVICE_URL = 'https://model.wingbot.ai';
 
 /**

@@ -265,6 +265,23 @@ class Tester {
     }
 
     /**
+     * Makes recognised AI intent request with entity
+     *
+     * @param {string} intent
+     * @param {string} entity
+     * @param {string} [value]
+     * @param {string} [text]
+     * @param {number} [score]
+     * @returns {Promise}
+     *
+     * @memberOf Tester
+     */
+    intentWithEntity (intent, entity, value = entity, text = intent, score = null) {
+        return this.processMessage(Request
+            .intentWithEntity(this.senderId, text, intent, entity, value, score));
+    }
+
+    /**
      * Makes pass thread control request
      *
      * @param {string|Object} [data] - action
