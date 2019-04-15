@@ -60,7 +60,7 @@ Create new router from configuration
 ```javascript
 // usage under serverless environment
 
-const { Settings, BuildRouter, Blocks } = require(''wingbot');
+const { Settings, BuildRouter, Blocks } = require('wingbot');
 const { createHandler, createProcessor } = require(''wingbot/serverlessAWS');
 const dynamoDb = require('./lib/dynamodb');
 const config = require('./config');
@@ -159,7 +159,7 @@ Create new router from configuration
 ```javascript
 // usage under serverless environment
 
-const { Settings, BuildRouter, Blocks } = require(''wingbot');
+const { Settings, BuildRouter, Blocks } = require('wingbot');
 const { createHandler, createProcessor } = require(''wingbot/serverlessAWS');
 const dynamoDb = require('./lib/dynamodb');
 const config = require('./config');

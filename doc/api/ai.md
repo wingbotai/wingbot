@@ -12,9 +12,21 @@
 ## Typedefs
 
 <dl>
-<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dt><a href="#EntityExpression">EntityExpression</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#IntentRule">IntentRule</a> : <code>string</code> | <code><a href="#EntityExpression">EntityExpression</a></code></dt>
+<dd></dd>
+<dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Result">Result</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Result">Result</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 
@@ -28,10 +40,11 @@
     * [.logger](#Ai_logger) : <code>Object</code>
     * [.disableBookmarking](#Ai_disableBookmarking) : <code>boolean</code>
     * [.getPrefix(prefix, req)](#Ai_getPrefix)
-    * [.mockIntent([intent], [confidence])](#Ai_mockIntent) ⇒ <code>this</code>
+    * [.mockIntent([intent], [score])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
     * [.load()](#Ai_load)
     * [.match(intent, [confidence])](#Ai_match) ⇒ <code>function</code>
+    * [.localMatch(intent, [confidence])](#Ai_localMatch) ⇒ <code>function</code>
     * [.globalMatch(intent, [confidence])](#Ai_globalMatch) ⇒ <code>function</code>
 
 {% raw %}<div id="Ai_confidence">&nbsp;</div>{% endraw %}
@@ -65,14 +78,14 @@ The prefix translator - for request-specific prefixes
 
 {% raw %}<div id="Ai_mockIntent">&nbsp;</div>{% endraw %}
 
-### ai.mockIntent([intent], [confidence]) ⇒ <code>this</code>
+### ai.mockIntent([intent], [score]) ⇒ <code>this</code>
 Usefull method for testing AI routes
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 **Params**
 
 - [intent] <code>string</code> <code> = null</code> - intent name
-- [confidence] <code>number</code> <code> = </code> - the confidence of the top intent
+- [score] <code>number</code> <code> = </code> - the score of the top intent
 
 **Example**  
 ```javascript
@@ -80,7 +93,7 @@ const { Tester, ai, Route } = require('bontaut');
 
 const bot = new Route();
 
-bot.use(['intentAction', ai.match('intentName')], (req, res) => {
+bot.use(['intentAction', ai.localMatch('intentName')], (req, res) => {
     res.text('PASSED');
 });
 
@@ -133,25 +146,53 @@ Returns matching middleware
 
 **supports:**
 
-- intents (`intentName`)
-- wildcard keywords (`#keyword#`)
-- phrases (`#first-phrase|second-phrase`)
-- emojis (`#😄🙃😛`)
+- intents (`'intentName'`)
+- entities (`'@entity'`)
+- complex entities (`{ entity:'entity', op:'range', compare:[null,1000] }`)
+- optional entities (`{ entity:'entity', optional: true }`)
+- wildcard keywords (`'#keyword#'`)
+- phrases (`'#first-phrase|second-phrase'`)
+- emojis (`'#😄🙃😛'`)
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 **Returns**: <code>function</code> - - the middleware  
 **Params**
 
-- intent <code>string</code> | <code>Array</code>
+- intent [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
 - [confidence] <code>number</code> <code> = </code>
 
 **Example**  
 ```javascript
-const { Router, ai } = require(''wingbot');
+const { Router, ai } = require('wingbot');
 
 ai.register('app-model');
 
 bot.use(ai.match('intent1'), (req, res) => {
+    console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
+
+    res.text('Oh, intent 1 :)');
+});
+```
+{% raw %}<div id="Ai_localMatch">&nbsp;</div>{% endraw %}
+
+### ai.localMatch(intent, [confidence]) ⇒ <code>function</code>
+Returns matching middleware, that will export the intent to the root router
+so the intent will be matched in a local context (nested Router)
+
+**Kind**: instance method of [<code>Ai</code>](#Ai)  
+**Returns**: <code>function</code> - - the middleware  
+**Params**
+
+- intent [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
+- [confidence] <code>number</code> <code> = </code>
+
+**Example**  
+```javascript
+const { Router, ai } = require('wingbot');
+
+ai.register('app-model');
+
+bot.use(ai.localMatch('intent1'), (req, res) => {
     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
 
     res.text('Oh, intent 1 :)');
@@ -167,12 +208,12 @@ so the intent will be matched in a global context
 **Returns**: <code>function</code> - - the middleware  
 **Params**
 
-- intent <code>string</code> | <code>Array</code>
+- intent [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
 - [confidence] <code>number</code> <code> = </code>
 
 **Example**  
 ```javascript
-const { Router, ai } = require(''wingbot');
+const { Router, ai } = require('wingbot');
 
 ai.register('app-model');
 
@@ -189,7 +230,7 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 * [WingbotModel](#WingbotModel)
     * [new WingbotModel(options, [log])](#new_WingbotModel_new)
-    * [._queryModel(text)](#WingbotModel__queryModel) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+    * [._queryModel(text)](#WingbotModel__queryModel) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 
 {% raw %}<div id="new_WingbotModel_new">&nbsp;</div>{% endraw %}
 
@@ -205,7 +246,7 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 {% raw %}<div id="WingbotModel__queryModel">&nbsp;</div>{% endraw %}
 
-### wingbotModel.\_queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+### wingbotModel.\_queryModel(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>WingbotModel</code>](#WingbotModel)  
 **Params**
 
@@ -218,8 +259,8 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 * [CachedModel](#CachedModel)
     * [new CachedModel(options, [log])](#new_CachedModel_new)
-    * [.resolve(text)](#CachedModel_resolve) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
-    * [._queryModel(text)](#CachedModel__queryModel) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+    * [.resolve(text)](#CachedModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
+    * [._queryModel(text)](#CachedModel__queryModel) ⇒ <code>Promise.&lt;(Array.&lt;Intent&gt;\|Result)&gt;</code>
 
 {% raw %}<div id="new_CachedModel_new">&nbsp;</div>{% endraw %}
 
@@ -232,7 +273,7 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 {% raw %}<div id="CachedModel_resolve">&nbsp;</div>{% endraw %}
 
-### cachedModel.resolve(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+### cachedModel.resolve(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
 **Params**
 
@@ -240,12 +281,39 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 {% raw %}<div id="CachedModel__queryModel">&nbsp;</div>{% endraw %}
 
-### cachedModel.\_queryModel(text) ⇒ <code>Promise.&lt;Array.&lt;Intent&gt;&gt;</code>
+### cachedModel.\_queryModel(text) ⇒ <code>Promise.&lt;(Array.&lt;Intent&gt;\|Result)&gt;</code>
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
 **Params**
 
 - text <code>string</code>
 
+{% raw %}<div id="EntityExpression">&nbsp;</div>{% endraw %}
+
+## EntityExpression : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| entity | <code>string</code> | the requested entity |
+| [optional] | <code>boolean</code> | entity is optional, can be missing in request |
+| [op] | <code>Compare</code> | comparison operation (eq|ne|range) |
+| [compare] | <code>Array.&lt;string&gt;</code> \| <code>Array.&lt;number&gt;</code> | value to compare with |
+
+{% raw %}<div id="IntentRule">&nbsp;</div>{% endraw %}
+
+## IntentRule : <code>string</code> \| [<code>EntityExpression</code>](#EntityExpression)
+**Kind**: global typedef  
+{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+
+## Entity : <code>Object</code>
+**Kind**: global typedef  
+**Params**
+
+- entity <code>string</code>
+- value <code>string</code>
+- score <code>number</code>
+
 {% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
 
 ## Intent : <code>Object</code>
@@ -254,7 +322,26 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 - intent <code>string</code>
 - score <code>number</code>
-- [entities] <code>Array.&lt;Object&gt;</code>
+- [entities] [<code>Array.&lt;Entity&gt;</code>](#Entity)
+
+{% raw %}<div id="Result">&nbsp;</div>{% endraw %}
+
+## Result : <code>Object</code>
+**Kind**: global typedef  
+**Params**
+
+- entities [<code>Array.&lt;Entity&gt;</code>](#Entity)
+- intents [<code>Array.&lt;Intent&gt;</code>](#Intent)
+
+{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+
+## Entity : <code>Object</code>
+**Kind**: global typedef  
+**Params**
+
+- entity <code>string</code>
+- value <code>string</code>
+- score <code>number</code>
 
 {% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
 
@@ -264,5 +351,14 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 - intent <code>string</code>
 - score <code>number</code>
-- [entities] <code>Array.&lt;Object&gt;</code>
+- [entities] [<code>Array.&lt;Entity&gt;</code>](#Entity)
+
+{% raw %}<div id="Result">&nbsp;</div>{% endraw %}
+
+## Result : <code>Object</code>
+**Kind**: global typedef  
+**Params**
+
+- entities [<code>Array.&lt;Entity&gt;</code>](#Entity)
+- intents [<code>Array.&lt;Intent&gt;</code>](#Intent)
 

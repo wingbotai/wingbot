@@ -64,7 +64,7 @@
     <link rel="next" href="Responder.html" />
     
     
-    <link rel="prev" href="../tutorial/templates.html" />
+    <link rel="prev" href="../tutorial/nlpRouting.html" />
     
 
     </head>
@@ -631,6 +631,90 @@
             
         </li>
     
+        <li class="chapter " data-level="2.7" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html">
+            
+                    
+                    Intents, entities and fallbacks
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.7.1" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#defining-entities">
+            
+                    
+                    Entities
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7.2" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#global-intents-and-fallbacks">
+            
+                    
+                    Global Intents
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7.3" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#local-intents-and-fallbacks-dialogue-context">
+            
+                    
+                    Local Intents
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7.4" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#processing-an-expected-response-interaction-context">
+            
+                    
+                    Interaction Context
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7.5" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#bookmarks-global-intents-under-control">
+            
+                    
+                    Bookmarks
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
 
     
         
@@ -880,6 +964,8 @@
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
+<dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
@@ -902,7 +988,10 @@
 <li><a href="#Request_pageId">.pageId</a></li>
 <li><a href="#Request_state">.state</a></li>
 <li><a href="#Request_subscribtions">.subscribtions</a></li>
+<li><a href="#Request_entities">.entities</a></li>
+<li><a href="#Request_intents">.intents</a></li>
 <li><a href="#Request_intent">.intent(getDataOrScore)</a> &#x21D2; <code>null</code> | <code>string</code> | <a href="#Intent"><code>Intent</code></a></li>
+<li><a href="#Request_entity">.entity(name, [sequence])</a> &#x21D2; <code>number</code> | <code>string</code> | <code>null</code></li>
 <li><a href="#Request_isAttachment">.isAttachment()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isImage">.isImage([attachmentIndex], [includingStickers])</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isFile">.isFile([attachmentIndex])</a> &#x21D2; <code>boolean</code></li>
@@ -1062,7 +1151,48 @@
 <tr>
 <td>state</td>
 <td><a href="#Subscribtion"><code>Array.&lt;Subscribtion&gt;</code></a></td>
-<td>current state of the conversation</td>
+<td>list of subscribed tags</td>
+</tr>
+</tbody>
+</table>
+<div id="Request_entities">&#xA0;</div>
+
+<h3 id="requestentities"><a name="requestentities" class="plugin-anchor" href="#requestentities"><i class="fa fa-link" aria-hidden="true"></i></a>request.entities</h3>
+<p><strong>Kind</strong>: instance property of <a href="#Request"><code>Request</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entities</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+<td>list of entities</td>
+</tr>
+</tbody>
+</table>
+<div id="Request_intents">&#xA0;</div>
+
+<h3 id="requestintents"><a name="requestintents" class="plugin-anchor" href="#requestintents"><i class="fa fa-link" aria-hidden="true"></i></a>request.intents</h3>
+<p><strong>Kind</strong>: instance property of <a href="#Request"><code>Request</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intents</td>
+<td><a href="#Intent"><code>Array.&lt;Intent&gt;</code></a> \</td>
+<td><code>null</code></td>
+<td>list of resolved intents</td>
 </tr>
 </tbody>
 </table>
@@ -1073,6 +1203,15 @@
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
 <ul>
 <li>getDataOrScore <code>boolean</code> | <code>number</code> <code> = false</code> - score limit or true for getting intent data</li>
+</ul>
+<div id="Request_entity">&#xA0;</div>
+
+<h3 id="requestentityname-sequence-&#x21D2;-number--string--null"><a name="requestentityname-sequence-&#x21D2;-number--string--null" class="plugin-anchor" href="#requestentityname-sequence-&#x21D2;-number--string--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.entity(name, [sequence]) &#x21D2; <code>number</code> | <code>string</code> | <code>null</code></h3>
+<p>Get matched entity value</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
+<ul>
+<li>name <code>string</code> - name of requested entity</li>
+<li>[sequence] <code>number</code> <code> = 0</code> - when there are more then one entity</li>
 </ul>
 <div id="Request_isAttachment">&#xA0;</div>
 
@@ -1257,6 +1396,15 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <pre><code class="lang-javascript"><span class="hljs-keyword">typeof</span> res.postBack() === <span class="hljs-string">&apos;string&apos;</span> || res.postBack() === <span class="hljs-literal">null</span>;
 <span class="hljs-keyword">typeof</span> res.postBack(<span class="hljs-literal">true</span>) === <span class="hljs-string">&apos;object&apos;</span>;
 </code></pre>
+<div id="Entity">&#xA0;</div>
+
+<h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
+<ul>
+<li>entity <code>string</code></li>
+<li>value <code>string</code></li>
+<li>score <code>number</code></li>
+</ul>
 <div id="Intent">&#xA0;</div>
 
 <h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>Object</code></h2>
@@ -1279,7 +1427,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </tr>
 <tr>
 <td>[entities]</td>
-<td><code>Array.&lt;Object&gt;</code></td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -1354,7 +1502,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 
             
                 
-                <a href="../tutorial/templates.html#working-with-webviews" class="navigation navigation-prev " aria-label="Previous page: Webviews">
+                <a href="../tutorial/nlpRouting.html#bookmarks-global-intents-under-control" class="navigation navigation-prev " aria-label="Previous page: Bookmarks">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
@@ -1370,7 +1518,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Webviews","level":"2.6.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2019-03-18T10:12:12.783Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-18T10:12:22.364Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Bookmarks","level":"2.7.5","depth":2,"anchor":"#bookmarks-global-intents-under-control","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#bookmarks-global-intents-under-control","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2019-04-15T10:58:40.018Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-15T10:58:42.949Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

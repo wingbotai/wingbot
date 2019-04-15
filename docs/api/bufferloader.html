@@ -631,6 +631,90 @@
             
         </li>
     
+        <li class="chapter " data-level="2.7" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html">
+            
+                    
+                    Intents, entities and fallbacks
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.7.1" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#defining-entities">
+            
+                    
+                    Entities
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7.2" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#global-intents-and-fallbacks">
+            
+                    
+                    Global Intents
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7.3" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#local-intents-and-fallbacks-dialogue-context">
+            
+                    
+                    Local Intents
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7.4" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#processing-an-expected-response-interaction-context">
+            
+                    
+                    Interaction Context
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7.5" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#bookmarks-global-intents-under-control">
+            
+                    
+                    Bookmarks
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
 
     
         
@@ -972,17 +1056,17 @@
 <li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
 </ul>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const translate = new Translate({ sourcePath: __dirname });
+<span class="hljs-keyword">const</span> translate = <span class="hljs-keyword">new</span> Translate({ sourcePath: __dirname });
 
-const t = translate.translator([&apos;cs&apos;, &apos;en&apos;]);
+<span class="hljs-keyword">const</span> t = translate.translator([<span class="hljs-string">&apos;cs&apos;</span>, <span class="hljs-string">&apos;en&apos;</span>]);
 
-// czech
-t.cs.t(&apos;requested text&apos;);
+<span class="hljs-comment">// czech</span>
+t.cs.t(<span class="hljs-string">&apos;requested text&apos;</span>);
 
-// english
-t.en.t(&apos;requested text&apos;);
+<span class="hljs-comment">// english</span>
+t.en.t(<span class="hljs-string">&apos;requested text&apos;</span>);
 </code></pre>
 <div id="Translate_middleware">&#xA0;</div>
 
@@ -996,14 +1080,14 @@ t.en.t(&apos;requested text&apos;);
 <li>languageResolver <code>function</code></li>
 </ul>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const translate = new Translate({ sourcePath: __dirname });
+<span class="hljs-keyword">const</span> translate = <span class="hljs-keyword">new</span> Translate({ sourcePath: __dirname });
 
-bot.use(translate.middleware((req, res) =&gt; &apos;cs&apos;));
+bot.use(translate.middleware((req, res) =&gt; <span class="hljs-string">&apos;cs&apos;</span>));
 
 bot.use((req, res) =&gt; {
-   res.text(res.t(&apos;Translated text&apos;));
+   res.text(res.t(<span class="hljs-string">&apos;Translated text&apos;</span>));
 });
 </code></pre>
 <div id="Translate">&#xA0;</div>
@@ -1043,17 +1127,17 @@ bot.use((req, res) =&gt; {
 <li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
 </ul>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const translate = new Translate({ sourcePath: __dirname });
+<span class="hljs-keyword">const</span> translate = <span class="hljs-keyword">new</span> Translate({ sourcePath: __dirname });
 
-const t = translate.translator([&apos;cs&apos;, &apos;en&apos;]);
+<span class="hljs-keyword">const</span> t = translate.translator([<span class="hljs-string">&apos;cs&apos;</span>, <span class="hljs-string">&apos;en&apos;</span>]);
 
-// czech
-t.cs.t(&apos;requested text&apos;);
+<span class="hljs-comment">// czech</span>
+t.cs.t(<span class="hljs-string">&apos;requested text&apos;</span>);
 
-// english
-t.en.t(&apos;requested text&apos;);
+<span class="hljs-comment">// english</span>
+t.en.t(<span class="hljs-string">&apos;requested text&apos;</span>);
 </code></pre>
 <div id="Translate_middleware">&#xA0;</div>
 
@@ -1067,14 +1151,14 @@ t.en.t(&apos;requested text&apos;);
 <li>languageResolver <code>function</code></li>
 </ul>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">const { Translate } = require(&apos;&apos;wingbot&apos;);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-const translate = new Translate({ sourcePath: __dirname });
+<span class="hljs-keyword">const</span> translate = <span class="hljs-keyword">new</span> Translate({ sourcePath: __dirname });
 
-bot.use(translate.middleware((req, res) =&gt; &apos;cs&apos;));
+bot.use(translate.middleware((req, res) =&gt; <span class="hljs-string">&apos;cs&apos;</span>));
 
 bot.use((req, res) =&gt; {
-   res.text(res.t(&apos;Translated text&apos;));
+   res.text(res.t(<span class="hljs-string">&apos;Translated text&apos;</span>));
 });
 </code></pre>
 <div id="ReturnSender">&#xA0;</div>
@@ -1196,7 +1280,7 @@ bot.use((req, res) =&gt; {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2019-03-18T10:12:14.892Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-03-18T10:12:22.364Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2019-04-15T10:58:40.037Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-15T10:58:42.949Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

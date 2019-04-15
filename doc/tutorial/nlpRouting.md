@@ -1,4 +1,4 @@
-# Routing with NLP, intents and entities and fallbacks
+# Routing with NLP: intents, entities and fallbacks
 
 ## Introduction
 
@@ -29,6 +29,52 @@ The logic behind the evaluation is simple. If **one of intents** are matching an
 interaction will be executed.
 
 `(intent OR intent OR ...) AND entity AND entity`
+
+## Defining entities
+
+1. **Required entity**
+
+  ```javascript
+  const { Router, ai } = require('wingbot');
+  const bot = new Router();
+  bot.use(ai.match(['@town']), (req, res) => {
+      res.text('Matched!');
+  });
+  ```
+
+2. **Optional entity**
+
+  ```javascript
+  const { Router, ai } = require('wingbot');
+  const bot = new Router();
+  bot.use(ai.match([{ entity: 'town', optional: true }]), (req, res) => {
+      res.text('Matched!');
+  });
+  ```
+
+3. **Entity value**
+
+  ```javascript
+  const { Router, ai } = require('wingbot');
+  const bot = new Router();
+  bot.use(ai.match([{ entity: 'town', compare: 'Prague' }]), (req, res) => {
+      res.text('Matched!');
+  });
+  ```
+
+4. **Numeric range**
+
+  Number should be equal to 200 or less.
+
+  ```javascript
+  const { Router, ai } = require('wingbot');
+  const bot = new Router();
+  bot.use(ai.match([
+      { entity: 'amount', op: 'range ', compare: [null, 200] }
+    ]), (req, res) => {
+      res.text('Matched!');
+  });
+  ```
 
 ## Context of intent detection
 
@@ -131,16 +177,14 @@ To just process a response on a single interaction, there is a `res.expected(<ac
 
   ```javascript
   tickets.use('ask-for-email', (req, res) => {
-        res.text('Will you give me your email?')
-            .expected('email-response');
+    res.text('Will you give me your email?')
+      .expected('email-response');
   });
 
-
   tickets.use('email-response', (req, res) => {
-      const email = req.text();
-
-      res.text(`Ok, saving ${email} as your email.`)
-          .setState({ email });
+    const email = req.text();
+    res.text(`Ok, saving ${email} as your email.`)
+      .setState({ email });
   });
   ```
 
@@ -152,49 +196,46 @@ To just process a response on a single interaction, there is a `res.expected(<ac
 
   ```javascript
   tickets.use('ask-for-email', (req, res) => {
-        res.text('Will you give me your email?')
-            .expected('email-response');
+    res.text('Will you give me your email?')
+      .expected('email-response');
   });
-
 
   tickets.use('email-response', ai.match('negative'), (req, res) => {
-      res.text('It\'s ok. I do not insist on having your email.');
+    res.text('It\'s ok. I do not insist on having your email.');
   });
 
-
   tickets.use('email-response', (req, res) => {
-      const email = req.text();
-
-      res.text(`Ok, saving ${email} as your email.`)
-          .setState({ email });
+    const email = req.text();
+    res.text(`Ok, saving ${email} as your email.`)
+      .setState({ email });
   });
   ```
 
-## Bookmarking: Global intents under control
+## Bookmarks: Global intents under control
 
 When using **an interaction context** - the expected interaction is specified, the global intents are not triggered, but **they're accessible under bookmarks**. Let's follow up the previous example.
 
-  ```javascript
-  tickets.use('ask-for-email', (req, res) => {
-        res.text('Will you give me your email?')
-            .expected('email-response');
-  });
+```javascript
+tickets.use('ask-for-email', (req, res) => {
+    res.text('Will you give me your email?')
+        .expected('email-response');
+});
 
 
-  tickets.use('email-response', async (req, res, postBack) => {
-      // if there is a bookmark
-      if (res.bookmark()) {
-          // respond with the bookmark
-          await res.runBookmark(postBack);
+tickets.use('email-response', async (req, res, postBack) => {
+    // if there is a bookmark
+    if (res.bookmark()) {
+        // respond with the bookmark
+        await res.runBookmark(postBack);
 
-          // stop
-          return Router.END;
-      }
+        // stop
+        return Router.END;
+    }
 
-      const email = req.text();
+    const email = req.text();
 
-      res.text(`Ok, saving ${email} as your email.`)
-          .setState({ email });
-  });
-  ```
+    res.text(`Ok, saving ${email} as your email.`)
+        .setState({ email });
+});
+```
 

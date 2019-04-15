@@ -42,6 +42,12 @@
     * [Generic Template](tutorial/templates.md#generic-template)
     * [Receipt Template](tutorial/templates.md#receipt-template)
     * [Webviews](tutorial/templates.md#working-with-webviews)
+* [Intents, entities and fallbacks](tutorial/nlpRouting.md)
+    * [Entities](tutorial/nlpRouting.md#defining-entities)
+    * [Global Intents](tutorial/nlpRouting.md#global-intents-and-fallbacks)
+    * [Local Intents](tutorial/nlpRouting.md#local-intents-and-fallbacks-dialogue-context)
+    * [Interaction Context](tutorial/nlpRouting.md#processing-an-expected-response-interaction-context)
+    * [Bookmarks](tutorial/nlpRouting.md#bookmarks-global-intents-under-control)
 
 ## API
 

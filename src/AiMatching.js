@@ -325,7 +325,7 @@ class AiMatching {
     }
 
     _entityIsMatching (op, compare, value) {
-        switch (op) {
+        switch (op || (typeof compare !== 'undefined' ? COMPARE.EQUAL : null)) {
             case COMPARE.EQUAL:
                 return compare.includes(`${value}`);
             case COMPARE.NOT_EQUAL:

@@ -9,6 +9,8 @@
 ## Typedefs
 
 <dl>
+<dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
@@ -32,7 +34,10 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.pageId](#Request_pageId)
     * [.state](#Request_state)
     * [.subscribtions](#Request_subscribtions)
+    * [.entities](#Request_entities)
+    * [.intents](#Request_intents)
     * [.intent(getDataOrScore)](#Request_intent) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
+    * [.entity(name, [sequence])](#Request_entity) ⇒ <code>number</code> \| <code>string</code> \| <code>null</code>
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
     * [.isImage([attachmentIndex], [includingStickers])](#Request_isImage) ⇒ <code>boolean</code>
     * [.isFile([attachmentIndex])](#Request_isFile) ⇒ <code>boolean</code>
@@ -123,7 +128,27 @@ Instance of {Request} class is passed as first parameter of handler (req)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| state | [<code>Array.&lt;Subscribtion&gt;</code>](#Subscribtion) | current state of the conversation |
+| state | [<code>Array.&lt;Subscribtion&gt;</code>](#Subscribtion) | list of subscribed tags |
+
+{% raw %}<div id="Request_entities">&nbsp;</div>{% endraw %}
+
+### request.entities
+**Kind**: instance property of [<code>Request</code>](#Request)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | list of entities |
+
+{% raw %}<div id="Request_intents">&nbsp;</div>{% endraw %}
+
+### request.intents
+**Kind**: instance property of [<code>Request</code>](#Request)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) \| <code>null</code> | list of resolved intents |
 
 {% raw %}<div id="Request_intent">&nbsp;</div>{% endraw %}
 
@@ -134,6 +159,17 @@ Returns intent, when using AI
 **Params**
 
 - getDataOrScore <code>boolean</code> | <code>number</code> <code> = false</code> - score limit or true for getting intent data
+
+{% raw %}<div id="Request_entity">&nbsp;</div>{% endraw %}
+
+### request.entity(name, [sequence]) ⇒ <code>number</code> \| <code>string</code> \| <code>null</code>
+Get matched entity value
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
+
+- name <code>string</code> - name of requested entity
+- [sequence] <code>number</code> <code> = 0</code> - when there are more then one entity
 
 {% raw %}<div id="Request_isAttachment">&nbsp;</div>{% endraw %}
 
@@ -356,6 +392,16 @@ When `getData` is `true`, object will be returned. Otherwise string or null.
 typeof res.postBack() === 'string' || res.postBack() === null;
 typeof res.postBack(true) === 'object';
 ```
+{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+
+## Entity : <code>Object</code>
+**Kind**: global typedef  
+**Params**
+
+- entity <code>string</code>
+- value <code>string</code>
+- score <code>number</code>
+
 {% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
 
 ## Intent : <code>Object</code>
@@ -366,7 +412,7 @@ typeof res.postBack(true) === 'object';
 | --- | --- |
 | intent | <code>string</code> | 
 | score | <code>number</code> | 
-| [entities] | <code>Array.&lt;Object&gt;</code> | 
+| [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
 {% raw %}<div id="Subscribtion">&nbsp;</div>{% endraw %}
 

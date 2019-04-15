@@ -105,7 +105,7 @@ Creates static translator for static settings
 
 **Example**  
 ```javascript
-const { Translate } = require(''wingbot');
+const { Translate } = require('wingbot');
 
 const translate = new Translate({ sourcePath: __dirname });
 
@@ -131,7 +131,7 @@ Bots middleware for text translations
 
 **Example**  
 ```javascript
-const { Translate } = require(''wingbot');
+const { Translate } = require('wingbot');
 
 const translate = new Translate({ sourcePath: __dirname });
 
@@ -178,7 +178,7 @@ Creates static translator for static settings
 
 **Example**  
 ```javascript
-const { Translate } = require(''wingbot');
+const { Translate } = require('wingbot');
 
 const translate = new Translate({ sourcePath: __dirname });
 
@@ -204,7 +204,7 @@ Bots middleware for text translations
 
 **Example**  
 ```javascript
-const { Translate } = require(''wingbot');
+const { Translate } = require('wingbot');
 
 const translate = new Translate({ sourcePath: __dirname });
 

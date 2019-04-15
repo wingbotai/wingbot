@@ -10,7 +10,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.finalMessageSent](#Responder_finalMessageSent)
     * [.data](#Responder_data) : <code>Object</code>
     * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
-    * [.setBookmark([action])](#Responder_setBookmark) ⇒ <code>this</code>
+    * [.setBookmark([action], [winningIntent])](#Responder_setBookmark) ⇒ <code>this</code>
     * [.bookmark()](#Responder_bookmark) ⇒ <code>string</code> \| <code>null</code>
     * [.runBookmark(postBack, [data])](#Responder_runBookmark) ⇒ <code>Promise.&lt;(null\|boolean)&gt;</code>
     * [.setMessgingType(messagingType, [tag])](#Responder_setMessgingType) ⇒ <code>this</code>
@@ -85,13 +85,14 @@ Run a code block defined by a plugin
 
 {% raw %}<div id="Responder_setBookmark">&nbsp;</div>{% endraw %}
 
-### responder.setBookmark([action]) ⇒ <code>this</code>
+### responder.setBookmark([action], [winningIntent]) ⇒ <code>this</code>
 Stores current action to be able to all it again
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 **Params**
 
 - [action] <code>string</code>
+- [winningIntent] <code>Object</code> <code> = </code>
 
 **Example**  
 ```javascript

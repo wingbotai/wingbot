@@ -10,6 +10,9 @@
 <dl>
 <dt><a href="#Resolver">Resolver</a> : <code>function</code></dt>
 <dd></dd>
+<dt><a href="#Middleware">Middleware</a> : <code>string</code> | <code><a href="#Resolver">Resolver</a></code> | <code>RegExp</code> | <code><a href="#Router">Router</a></code></dt>
+<dd><p>flow control statement or function</p>
+</dd>
 </dl>
 
 {% raw %}<div id="Router">&nbsp;</div>{% endraw %}
@@ -41,7 +44,7 @@ Appends middleware, action handler or another router
 **Kind**: instance method of [<code>Router</code>](#Router)  
 **Params**
 
-- ...resolvers <code>string</code> | [<code>Resolver</code>](#Resolver) | <code>RegExp</code> | [<code>Router</code>](#Router) | [<code>Array.&lt;Resolver&gt;</code>](#Resolver) | <code>Array.&lt;string&gt;</code> - list of resolvers
+- ...resolvers [<code>Middleware</code>](#Middleware) | [<code>Array.&lt;Middleware&gt;</code>](#Middleware) - list of resolvers
 
 **Example**  
 ```javascript
@@ -138,3 +141,9 @@ router.use((req, res) => {
 - [res] <code>Responder</code>
 - [postBack] <code>function</code>
 
+{% raw %}<div id="Middleware">&nbsp;</div>{% endraw %}
+
+## Middleware : <code>string</code> \| [<code>Resolver</code>](#Resolver) \| <code>RegExp</code> \| [<code>Router</code>](#Router)
+flow control statement or function
+
+**Kind**: global typedef  
