@@ -50,7 +50,7 @@ class Plugins {
             return;
         }
         name._plugins.forEach((el, key) => {
-            this._plugins.set(el, key);
+            this._plugins.set(key, el);
         });
     }
 
