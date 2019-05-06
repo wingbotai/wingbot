@@ -117,6 +117,28 @@ describe('Notifications', function () {
                 // @ts-ignore
                 res.subscribe('anyTag');
             });
+
+            bot.use('check', (req, res, postBack) => {
+                postBack('goto');
+            });
+
+            bot.use('goto', (req, res) => {
+                res.text(JSON.stringify(req.subscribtions));
+            });
+        });
+
+        it('remembers subcribtions', async () => {
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            assert.throws(() => t.passedAction('testAction'));
+
+            await wait(100);
+
+            await t.postBack('check');
+
+            t.any().contains('["anyTag"]');
         });
 
         it('is possible to trigger action in right time and it\'s not added again', async () => {

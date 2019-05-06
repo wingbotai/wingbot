@@ -280,7 +280,8 @@ class Notifications extends EventEmitter {
     }
 
     async _preloadSubscribtions (senderId, pageId, req, res) {
-        if (res.data.notificationSubscribtions) {
+        if (res.data._requestSubscribtions) {
+            req.subscribtions = res.data._requestSubscribtions;
             return;
         }
 
@@ -297,7 +298,10 @@ class Notifications extends EventEmitter {
             });
         });
 
-        res.setData({ notificationSubscribtions });
+        res.setData({
+            _notificationSubscribtions: notificationSubscribtions,
+            _requestSubscribtions: req.subscribtions
+        });
     }
 
     middleware () {
