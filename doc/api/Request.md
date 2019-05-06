@@ -13,8 +13,6 @@
 <dd></dd>
 <dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
-<dd></dd>
 <dt><a href="#Action">Action</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
@@ -128,7 +126,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| state | [<code>Array.&lt;Subscribtion&gt;</code>](#Subscribtion) | list of subscribed tags |
+| state | <code>Array.&lt;string&gt;</code> | list of subscribed tags |
 
 {% raw %}<div id="Request_entities">&nbsp;</div>{% endraw %}
 
@@ -413,17 +411,6 @@ typeof res.postBack(true) === 'object';
 | intent | <code>string</code> | 
 | score | <code>number</code> | 
 | [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
-
-{% raw %}<div id="Subscribtion">&nbsp;</div>{% endraw %}
-
-## Subscribtion : <code>Object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type |
-| --- | --- |
-| tag | <code>string</code> | 
-| ts | <code>number</code> | 
 
 {% raw %}<div id="Action">&nbsp;</div>{% endraw %}
 

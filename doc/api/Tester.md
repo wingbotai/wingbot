@@ -28,6 +28,7 @@
         * [.setState([state])](#Tester_setState)
         * [.text(text)](#Tester_text) ⇒ <code>Promise</code>
         * [.intent(intent, [text], [score])](#Tester_intent) ⇒ <code>Promise</code>
+        * [.intentWithEntity(intent, entity, [value], [text], [score])](#Tester_intentWithEntity) ⇒ <code>Promise</code>
         * [.passThread([data], [appId])](#Tester_passThread) ⇒ <code>Promise</code>
         * [.optin(action, [data], [userRef])](#Tester_optin) ⇒ <code>Promise</code>
         * [.quickReply(action, [data])](#Tester_quickReply) ⇒ <code>Promise</code>
@@ -136,6 +137,20 @@ Makes recognised AI intent request
 **Params**
 
 - intent <code>string</code>
+- [text] <code>string</code>
+- [score] <code>number</code> <code> = </code>
+
+{% raw %}<div id="Tester_intentWithEntity">&nbsp;</div>{% endraw %}
+
+### tester.intentWithEntity(intent, entity, [value], [text], [score]) ⇒ <code>Promise</code>
+Makes recognised AI intent request with entity
+
+**Kind**: instance method of [<code>Tester</code>](#Tester)  
+**Params**
+
+- intent <code>string</code>
+- entity <code>string</code>
+- [value] <code>string</code>
 - [text] <code>string</code>
 - [score] <code>number</code> <code> = </code>
 

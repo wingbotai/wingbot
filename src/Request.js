@@ -24,12 +24,6 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  */
 
 /**
- * @typedef {Object} Subscribtion
- * @prop {string} tag
- * @prop {number} ts
- */
-
-/**
  * @typedef {Object} Action
  * @prop {string} action
  * @prop {Object} data
@@ -92,7 +86,7 @@ class Request extends RequestsFactories {
         this.state = state;
 
         /**
-         * @prop {Subscribtion[]} state list of subscribed tags
+         * @prop {string[]} state list of subscribed tags
          */
         this.subscribtions = [];
 

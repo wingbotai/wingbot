@@ -984,6 +984,7 @@
 <li><a href="#Tester_setState">.setState([state])</a></li>
 <li><a href="#Tester_text">.text(text)</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_intent">.intent(intent, [text], [score])</a> &#x21D2; <code>Promise</code></li>
+<li><a href="#Tester_intentWithEntity">.intentWithEntity(intent, entity, [value], [text], [score])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_passThread">.passThread([data], [appId])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_optin">.optin(action, [data], [userRef])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_quickReply">.quickReply(action, [data])</a> &#x21D2; <code>Promise</code></li>
@@ -1081,6 +1082,18 @@
 <p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>intent <code>string</code></li>
+<li>[text] <code>string</code></li>
+<li>[score] <code>number</code> <code> = </code></li>
+</ul>
+<div id="Tester_intentWithEntity">&#xA0;</div>
+
+<h3 id="testerintentwithentityintent-entity-value-text-score-&#x21D2;-promise"><a name="testerintentwithentityintent-entity-value-text-score-&#x21D2;-promise" class="plugin-anchor" href="#testerintentwithentityintent-entity-value-text-score-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>tester.intentWithEntity(intent, entity, [value], [text], [score]) &#x21D2; <code>Promise</code></h3>
+<p>Makes recognised AI intent request with entity</p>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>intent <code>string</code></li>
+<li>entity <code>string</code></li>
+<li>[value] <code>string</code></li>
 <li>[text] <code>string</code></li>
 <li>[score] <code>number</code> <code> = </code></li>
 </ul>
@@ -1319,7 +1332,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2019-04-15T10:58:40.033Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-15T10:58:42.949Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2019-05-06T11:13:42.637Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-05-06T11:13:50.182Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
