@@ -79,6 +79,31 @@ describe('Processor', function () {
             });
         });
 
+        it('has cyclic check', async () => {
+            const reducer = sinon.spy((req, res, postBack) => {
+                res.text('Hello');
+                postBack('start');
+            });
+
+            const stateStorage = createStateStorage();
+            const opts = makeOptions(stateStorage);
+            const options = Object.assign(opts, { autoSeen: true, log: console });
+            // @ts-ignore
+            const proc = new Processor(reducer, options);
+
+            const res = await proc.processMessage({
+                sender: {
+                    id: 1
+                },
+                message: {
+                    text: 'ahoj'
+                }
+            }, 10);
+
+            assert.equal(res.status, 500);
+            assert.ok(res.error.startsWith('Reached 20 redirects'));
+        });
+
         it('should work', function () {
 
             const reducer = sinon.spy((req, res) => {

@@ -72,6 +72,8 @@ const uuid = require('uuid/v4');
  * @prop {number} [delivery]
  * @prop {number} [sent]
  * @prop {number} [insEnqueue]
+ * @prop {boolean} [reaction] - user reacted
+ * @prop {number} [leaved] - time the event was not sent because user left
  */
 
 
@@ -197,6 +199,26 @@ class NotificationsStorage {
 
     /**
      *
+     * @param {string} campaignId
+     * @param {boolean} [sentWithoutReaction]
+     * @param {string} [pageId]
+     */
+    getUnsuccessfulSubscribersByCampaign (campaignId, sentWithoutReaction = false, pageId = null) {
+        let tasks;
+        if (sentWithoutReaction) {
+            tasks = this._tasks.filter(t => t.campaignId === campaignId
+                && t.leaved === null && t.reaction === false);
+        } else {
+            tasks = this._tasks.filter(t => t.campaignId === campaignId && t.leaved > 0);
+        }
+        if (pageId) {
+            tasks = tasks.filter(t => t.pageId === pageId);
+        }
+        return Promise.resolve(tasks.map(({ senderId, pageId: p }) => ({ senderId, pageId: p })));
+    }
+
+    /**
+     *
      * @param {string} pageId
      * @param {string} senderId
      * @param {string[]} checkCampaignIds
@@ -246,17 +268,23 @@ class NotificationsStorage {
     /**
      *
      * @param {Object} campaign
+     * @param {Object} [updateCampaign]
      * @returns {Promise<Campaign>}
      */
-    upsertCampaign (campaign) {
+    async upsertCampaign (campaign, updateCampaign = null) {
         let insert = campaign;
         if (!insert.id) {
             insert = Object.assign({}, insert, { id: uuid() });
         }
         if (!this._campaigns.has(insert.id)) {
+            if (updateCampaign) Object.assign(insert, updateCampaign);
             this._campaigns.set(insert.id, insert);
         } else {
             insert = this._campaigns.get(insert.id);
+            if (updateCampaign) {
+                insert = Object.assign({}, insert, updateCampaign);
+                this._campaigns.set(insert.id, insert);
+            }
         }
         return Promise.resolve(insert);
     }

@@ -66,7 +66,13 @@ class RequestsFactories {
         };
     }
 
-    static campaignPostBack (senderId, campaign, timestamp = makeTimestamp(), data = null) {
+    static campaignPostBack (
+        senderId,
+        campaign,
+        timestamp = makeTimestamp(),
+        data = null,
+        taskId = null
+    ) {
         const postback = RequestsFactories.postBack(
             senderId,
             campaign.action,
@@ -76,7 +82,8 @@ class RequestsFactories {
             timestamp
         );
         return Object.assign(postback, {
-            campaign
+            campaign,
+            taskId
         });
     }
 

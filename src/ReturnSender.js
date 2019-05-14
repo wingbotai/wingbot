@@ -32,10 +32,12 @@ class ReturnSender {
         this._sequence = 0;
 
         this._finished = false;
+        this._catchedBeforeFinish = null;
 
         this.waits = false;
 
         this.simulatesOptIn = false;
+        this.simulateFail = false;
 
         this._simulateStateChange = null;
         this._simulateStateChangeOnLoad = null;
@@ -51,6 +53,10 @@ class ReturnSender {
 
         if (isOptIn && this.simulatesOptIn) {
             this._simulateStateChange = { senderId: this._userId };
+        }
+
+        if (this.simulateFail) {
+            return Promise.reject(new Error('Fail'));
         }
 
         return Promise.resolve(res);
@@ -88,9 +94,19 @@ class ReturnSender {
         }
         this._queue.push(payload);
 
+        if (this._catchedBeforeFinish) {
+            return;
+        }
+
         if (!this._isWorking) {
             this._promise = this._promise
-                .then(() => this._work());
+                .then(() => this._work())
+                .catch((e) => {
+                    if (this._finished) {
+                        throw e; // ints ok
+                    }
+                    this._catchedBeforeFinish = e;
+                });
         }
     }
 
@@ -113,6 +129,10 @@ class ReturnSender {
 
         try {
             await this._promise;
+
+            if (this._catchedBeforeFinish) {
+                throw this._catchedBeforeFinish;
+            }
 
             if (this._sendLogs) {
                 this._sendLogs = false;

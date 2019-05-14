@@ -111,6 +111,7 @@ input UpdateCampaignInput {
 
     sliding: Boolean
     slide: Int
+    slideRound: Int
     active: Boolean
     in24hourWindow: Boolean
     startAt: Float
@@ -148,6 +149,13 @@ type Query {
 
     "returns the API version"
     version: String!
+
+    "export subscribtions from campaigns"
+    unsuccessfulSubscribers(
+        campaignId: String
+        sentWithoutReaction: Boolean = false
+        pageId: String
+    ): Subscribtions
 }
 
 type Mutation {

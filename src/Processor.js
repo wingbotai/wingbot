@@ -38,6 +38,7 @@ class Processor {
      * @param {Function} [options.log] - console like error logger
      * @param {Object} [options.defaultState] - default chat state
      * @param {boolean} [options.autoSeen] - send seen automatically
+     * @param {number} [options.redirectLimit] - maximum number of redirects at single request
      *
      * @memberOf Processor
      */
@@ -51,7 +52,8 @@ class Processor {
             log: console,
             defaultState: {},
             autoTyping: false,
-            autoSeen: false
+            autoSeen: false,
+            redirectLimit: 20
         };
 
         Object.assign(this.options, options);
@@ -207,13 +209,21 @@ class Processor {
         } catch (e) {
             const { code = 500 } = e;
             this.reportSendError(e, message, pageId);
-            result = { status: code };
+            result = { status: code, error: e.message };
         }
         return result;
     }
 
     async _processMessage (message, pageId, messageSender, responderData, fromEvent = false) {
         let senderId = message.sender && message.sender.id;
+
+        // prevent infinite cycles
+        let { _actionCount: actionCount = 0 } = responderData;
+        actionCount++;
+        if (actionCount >= this.options.redirectLimit) {
+            return Promise.reject(new Error(`Reached ${actionCount} redirects on ${JSON.stringify(message)}. Check cyclic redirects.`));
+        }
+        Object.assign(responderData, { _actionCount: actionCount });
 
         const postbackAcumulator = [];
 

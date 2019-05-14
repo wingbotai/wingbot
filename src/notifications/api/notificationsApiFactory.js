@@ -69,6 +69,34 @@ function notificationsApiFactory (storage, notifications, acl) {
             return storage.updateCampaign(campaignId, update);
         },
 
+        async unsuccessfulSubscribers (args, ctx) {
+            if (!apiAuthorizer(args, ctx, acl)) {
+                return null;
+            }
+
+            const {
+                campaignId,
+                sentWithoutReaction,
+                pageId
+            } = args;
+
+            if (!campaignId) {
+                return {
+                    data: [],
+                    count: 0
+                };
+            }
+
+            const data = await storage.getUnsuccessfulSubscribersByCampaign(
+                campaignId, sentWithoutReaction, pageId
+            );
+
+            return {
+                data,
+                count: data.length
+            };
+        },
+
         async removeCampaign (args, ctx) {
             if (!apiAuthorizer(args, ctx, acl)) {
                 return null;

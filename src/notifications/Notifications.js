@@ -57,6 +57,46 @@ const DEFAULT_CAMPAIGN_DATA = {
  * @prop {number} [read] - time of read
  * @prop {number} [delivery] - time of delivery
  * @prop {number} [sent] - time of send
+ * @prop {boolean} [reaction] - user reacted
+ * @prop {number} [leaved] - time the event was not sent because user left
+ */
+
+
+/**
+ * @typedef Campaign {Object}
+ * @prop {string} id
+ * @prop {string} name
+ *
+ * Tatgeting
+ *
+ * @prop {string[]} include
+ * @prop {string[]} exclude
+ * @prop {string} pageId
+ *
+ * Stats
+ *
+ * @prop {number} sent
+ * @prop {number} failed
+ * @prop {number} delivery
+ * @prop {number} read
+ * @prop {number} notSent
+ * @prop {number} leaved
+ * @prop {number} queued
+ *
+ * Interaction
+ *
+ * @prop {string} action
+ * @prop {Object} [data]
+ *
+ * Setup
+ *
+ * @prop {boolean} sliding
+ * @prop {number} slide
+ * @prop {boolean} active
+ * @prop {boolean} in24hourWindow
+ * @prop {boolean} allowRepeat
+ * @prop {number} startAt
+ * @prop {number} slideRound
  */
 
 /**
@@ -103,6 +143,16 @@ class Notifications extends EventEmitter {
         return api(this._storage, this, acl);
     }
 
+    /**
+     * Upsert the campaign
+     * If the campaing does not exists add new. Otherwise, update it.
+     *
+     * @param {string} name
+     * @param {string} action
+     * @param {Object} [data]
+     * @param {Object} options - use { id: '...' } to make campaign accessible from code
+     * @returns {Promise<Campaign>}
+     */
     async createCampaign (
         name,
         action,
@@ -111,11 +161,16 @@ class Notifications extends EventEmitter {
     ) {
 
         const campaign = {
-            name,
-            action,
-            data,
             pageId: null
         };
+
+        const update = {
+            name,
+            action,
+            data
+        };
+
+        Object.assign(update, options);
 
         Object.assign(campaign, DEFAULT_CAMPAIGN_DATA, {
             startAt: null,
@@ -123,9 +178,19 @@ class Notifications extends EventEmitter {
             in24hourWindow: true,
             include: [],
             exclude: []
-        }, options);
+        });
 
-        return this._storage.upsertCampaign(campaign);
+        Object.keys(options)
+            .forEach((option) => {
+                if (option === 'id') {
+                    Object.assign(campaign, { id: options.id });
+                } else if (typeof campaign[option] !== 'undefined') {
+                    delete campaign[option];
+                }
+            });
+
+
+        return this._storage.upsertCampaign(campaign, update);
     }
 
     /**
@@ -153,7 +218,9 @@ class Notifications extends EventEmitter {
                 enqueue: target.enqueue || defEnqueue, // time, when campaign should be fired,
                 sent: null,
                 read: null,
-                delivery: null
+                delivery: null,
+                reaction: null,
+                leaved: null
             }));
 
         const ret = await this._storage.pushTasks(tasks);
@@ -333,7 +400,7 @@ class Notifications extends EventEmitter {
 
             if (!campaign) {
                 // track campaign success
-                const { _ntfLastCampaignId: lastCampaignId } = req.state;
+                const { _ntfLastCampaignId: lastCampaignId, _ntfLastTask: taskId } = req.state;
                 const {
                     _trackAsNegative: isNegative = false,
                     _localpostback: isLocal = false
@@ -342,7 +409,8 @@ class Notifications extends EventEmitter {
                 if (lastCampaignId && !isLocal) {
                     res.setState({
                         _ntfLastCampaignId: null,
-                        _ntfLastCampaignName: null
+                        _ntfLastCampaignName: null,
+                        _ntfLastTask: null
                     });
 
 
@@ -350,7 +418,8 @@ class Notifications extends EventEmitter {
                         isNegative ? 'negative' : 'positive',
                         lastCampaignId,
                         req.state._ntfLastCampaignName,
-                        { senderId: req.senderId, pageId: req.pageId }
+                        { senderId: req.senderId, pageId: req.pageId },
+                        taskId
                     );
                 }
 
@@ -385,7 +454,7 @@ class Notifications extends EventEmitter {
             res.setMessgingType(campaign.type || 'UPDATE');
 
             if (!campaign.in24hourWindow) {
-                this._setLastCampaign(res, campaign);
+                this._setLastCampaign(res, campaign, req.taskId);
                 return true;
             }
 
@@ -394,7 +463,7 @@ class Notifications extends EventEmitter {
 
             // do not send one message over, because of future campaigns
             if (inTimeFrame) {
-                this._setLastCampaign(res, campaign);
+                this._setLastCampaign(res, campaign, req.taskId);
                 return true;
             }
 
@@ -404,7 +473,7 @@ class Notifications extends EventEmitter {
 
             res.setState({ _ntfOverMessageSent: true });
 
-            this._setLastCampaign(res, campaign);
+            this._setLastCampaign(res, campaign, req.taskId);
             return true;
         };
     }
@@ -431,16 +500,20 @@ class Notifications extends EventEmitter {
             && !subscribtions.some(s => campaign.exclude.includes(s));
     } */
 
-    _reportCampaignSuccess (eventName, campaignId, campaignName, meta) {
+    _reportCampaignSuccess (eventName, campaignId, campaignName, meta, taskId) {
         this._storage.incrementCampaign(campaignId, { [eventName]: 1 })
             .catch(e => this._log.error('report campaign success store', e));
+        if (taskId) {
+            this._storage.updateTask(taskId, { reaction: true });
+        }
         this._reportEvent(eventName, campaignName, meta);
     }
 
-    _setLastCampaign (res, campaign) {
+    _setLastCampaign (res, campaign, taskId = null) {
         res.setState({
             _ntfLastCampaignId: campaign.id,
-            _ntfLastCampaignName: campaign.name
+            _ntfLastCampaignName: campaign.name,
+            _ntfLastTask: taskId
         });
     }
 
@@ -663,7 +736,7 @@ class Notifications extends EventEmitter {
             return { status: 204 };
         }
 
-        const message = Request.campaignPostBack(task.senderId, campaign, ts, task.data);
+        const message = Request.campaignPostBack(task.senderId, campaign, ts, task.data, task.id);
         let status;
         let mid;
 
@@ -698,10 +771,7 @@ class Notifications extends EventEmitter {
                 await this._finishTask('notSent', campaign, task, ts);
                 break;
             case 403:
-                await Promise.all([
-                    this._finishTask('leaved', campaign, task, ts),
-                    this.unsubscribe(task.senderId, task.pageId)
-                ]);
+                await this._finishTask('leaved', campaign, task, ts);
                 break;
             case 500:
             default:
@@ -714,7 +784,9 @@ class Notifications extends EventEmitter {
         const { senderId, pageId } = task;
         const promises = [];
         if (mid !== null) {
-            promises.push(this._storage.updateTask(task.id, { mid, sent: ts }));
+            promises.push(this._storage.updateTask(task.id, { mid, sent: ts, reaction: false }));
+        } else {
+            promises.push(this._storage.updateTask(task.id, { [eventName]: ts }));
         }
         if (campaign) {
             promises.push(this._storage.incrementCampaign(campaign.id, { [eventName]: 1 }));

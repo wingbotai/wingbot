@@ -122,6 +122,7 @@ class Tester {
 
         const res = await this.processor.processMessage(message, pageId, messageSender);
         this._acquireResponseActions(res, messageSender);
+
         return res;
     }
 

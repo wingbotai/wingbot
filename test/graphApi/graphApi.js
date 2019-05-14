@@ -305,6 +305,43 @@ describe('<GraphApi>', function () {
 
     });
 
+    describe('{ unsuccessfulSubscribers }', () => {
+
+        it('should return subscribtions', async () => {
+            const res = await api.request({
+                query: `{
+                    unsuccessfulSubscribers (campaignId: "ab") {
+                        data { pageId, senderId }
+                        count
+                    }
+                }`
+            }, headers);
+
+            const { data, count } = res.data.unsuccessfulSubscribers;
+
+            assert.ok(Array.isArray(data));
+            assert.ok(data.length === count);
+        });
+
+        it('no campaign means empty response', async () => {
+            const res = await api.request({
+                query: `{
+                    unsuccessfulSubscribers {
+                        data { pageId, senderId }
+                        count
+                    }
+                }`
+            }, headers);
+
+            const { data, count } = res.data.unsuccessfulSubscribers;
+
+            assert.ok(Array.isArray(data));
+            assert.equal(data.length, 0);
+            assert.equal(count, 0);
+        });
+
+    });
+
     describe('{ subscribtions }', () => {
 
         it('should return paginated subscribtions', async () => {

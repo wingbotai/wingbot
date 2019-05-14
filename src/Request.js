@@ -41,6 +41,8 @@ class Request extends RequestsFactories {
 
         this.campaign = data.campaign || null;
 
+        this.taskId = data.taskId || null;
+
         this.data = data;
 
         /**

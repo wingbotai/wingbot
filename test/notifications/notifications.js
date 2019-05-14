@@ -13,6 +13,32 @@ const TEST_ITEMS = 20;
 
 describe('Notifications', function () {
 
+    describe('#createCampaign()', () => {
+
+        it('creates and overrides right props', async () => {
+
+            const notifications = new Notifications();
+
+            const campaign = await notifications.createCampaign('name', 'act', { a: 1 }, { id: 'test', in24hourWindow: false });
+
+            assert.strictEqual(campaign.name, 'name');
+            assert.strictEqual(campaign.action, 'act');
+            assert.strictEqual(campaign.in24hourWindow, false);
+            assert.strictEqual(campaign.sliding, false);
+            assert.strictEqual(campaign.slide, null);
+            assert.deepEqual(campaign.data, { a: 1 });
+
+            const second = await notifications.createCampaign('name', 'another', { b: 2 }, { id: 'test', sliding: true, slide: 10000 });
+
+            assert.strictEqual(second.name, 'name');
+            assert.strictEqual(second.action, 'another');
+            assert.strictEqual(second.in24hourWindow, false);
+            assert.strictEqual(second.sliding, true);
+            assert.strictEqual(second.slide, 10000);
+            assert.deepEqual(second.data, { b: 2 });
+        });
+    });
+
     describe('#runCampaign()', function () {
 
         it('should work', async () => {
@@ -66,7 +92,7 @@ describe('Notifications', function () {
 
             const { data: subs } = await notifications._storage.getSubscribtions([], [], 500);
 
-            assert.equal(subs.length, TEST_ITEMS - iterations);
+            assert.equal(subs.length, TEST_ITEMS, 'remains same because this should not trigger unsubscribtion');
             assert.equal(logger.error.callCount, iterations);
         });
 
@@ -543,6 +569,50 @@ describe('Notifications', function () {
             assert.strictEqual(new Date(res).toISOString(), '2019-02-07T15:30:00.000Z');
 
         });
+    });
+
+    describe('ability to record task results', () => {
+
+        it('should record successful reaction', async () => {
+            const bot = new Router();
+
+            bot.use('camp-action', (req, res) => {
+                res.text('yeeesss', {
+                    cont: 'Foo'
+                });
+            });
+
+            bot.use('cont', (req, res) => {
+                res.text('Good');
+            });
+
+            const notifications = new Notifications();
+
+            const t = new Tester(bot);
+            t.processor.plugin(notifications);
+
+            const campaign = await notifications
+                .createCampaign('Custom campaign', 'camp-action', {}, { id: 'custom-campaign' });
+
+            const res = await notifications.sendCampaignMessage(campaign, t, t.pageId, t.senderId, { a: 'fooo' });
+
+            assert.strictEqual(res.status, 200);
+
+            t.any()
+                .contains('yeeesss');
+
+            // queue will not process this task again
+            await wait(10);
+
+            await t.quickReply('cont');
+
+            t.passedAction('cont');
+
+            const [task] = notifications._storage._tasks;
+
+            assert.strictEqual(task.reaction, true);
+        });
+
     });
 
 });

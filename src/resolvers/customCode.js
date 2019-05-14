@@ -99,7 +99,7 @@ function customCode (params, context, blocks) {
                 }
 
                 const reducers = items[codeBlockName];
-                return router.processReducers(reducers, req, res, postBack, path, action);
+                return router.processReducers(reducers, req, res, postBack, path, action, true);
             }
         });
 

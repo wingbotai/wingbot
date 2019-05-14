@@ -124,6 +124,85 @@ describe('<NotificationsStorage>', () => {
 
     });
 
+    describe('#unsuccessfulCampaigns()', () => {
+
+        beforeEach(async () => {
+            await storage.pushTasks([
+                { // leaved
+                    pageId: '1',
+                    senderId: '1',
+                    campaignId: '1',
+                    sent: null,
+                    enqueue: 1,
+                    leaved: 1,
+                    reaction: null
+                },
+                { // sent, but without reaction
+                    pageId: '1',
+                    senderId: '2',
+                    campaignId: '1',
+                    sent: 1,
+                    enqueue: 1,
+                    leaved: null,
+                    reaction: false
+                },
+                { // sent with reaction
+                    pageId: '1',
+                    senderId: '3',
+                    campaignId: '1',
+                    sent: 1,
+                    enqueue: 1,
+                    leaved: null,
+                    reaction: true
+                },
+                { // not sent
+                    pageId: '1',
+                    senderId: '4',
+                    campaignId: '1',
+                    sent: null,
+                    enqueue: 1,
+                    leaved: null,
+                    reaction: null
+                },
+                { // another page leaved
+                    pageId: '2',
+                    senderId: '5',
+                    campaignId: '1',
+                    sent: null,
+                    enqueue: 1,
+                    leaved: 1,
+                    reaction: null
+                },
+                { // another campaing without reaction
+                    pageId: '1',
+                    senderId: '6',
+                    campaignId: '2',
+                    sent: null,
+                    enqueue: 1,
+                    leaved: null,
+                    reaction: false
+                }
+            ]);
+        });
+
+        it('shoud return campaings that has not been sent', async () => {
+            const res = await storage.getUnsuccessfulSubscribersByCampaign('1', false, '1');
+
+            assert.deepEqual(res, [
+                { senderId: '1', pageId: '1' }
+            ]);
+        });
+
+        it('shoud return campaings that has been sent, but without users reaction', async () => {
+            const res = await storage.getUnsuccessfulSubscribersByCampaign('1', true, '1');
+
+            assert.deepEqual(res, [
+                { senderId: '2', pageId: '1' }
+            ]);
+        });
+
+    });
+
     describe('#popTasks()', () => {
 
         beforeEach(async () => {
@@ -308,6 +387,22 @@ describe('<NotificationsStorage>', () => {
 
             assert.equal(camp.id, 'same');
             assert.equal(camp.name, 'hello');
+        });
+
+        it('overrides data with campaign given as second param', async () => {
+            let camp = await storage.upsertCampaign({
+                id: 'same',
+                name: 'hello'
+            });
+
+            assert.equal(camp.id, 'same');
+
+            camp = await storage.upsertCampaign({
+                id: 'same'
+            }, { name: 'will be there' });
+
+            assert.equal(camp.id, 'same');
+            assert.equal(camp.name, 'will be there');
         });
 
     });
