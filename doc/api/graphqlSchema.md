@@ -134,6 +134,30 @@ returns the API version
 
 </td>
 </tr>
+<tr>
+<td colspan="2" valign="top"><strong>unsuccessfulSubscribers</strong></td>
+<td valign="top"><a href="#subscribtions">Subscribtions</a></td>
+<td>
+
+export subscribtions from campaigns
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">campaignId</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">sentWithoutReaction</td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">pageId</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 
@@ -774,6 +798,11 @@ run a campaign
 </tr>
 <tr>
 <td colspan="2" valign="top"><strong>slide</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>slideRound</strong></td>
 <td valign="top"><a href="#int">Int</a></td>
 <td></td>
 </tr>

@@ -12,6 +12,8 @@
 <dd></dd>
 <dt><a href="#Task">Task</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Campaign">Campaign</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="#Tag">Tag</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#Target">Target</a> : <code>Object</code></dt>
@@ -33,6 +35,7 @@
     * [new Notifications()](#new_Notifications_new)
     * _instance_
         * [.api([acl])](#Notifications_api) ⇒ <code>Object</code>
+        * [.createCampaign(name, action, [data], options)](#Notifications_createCampaign) ⇒ [<code>Promise.&lt;Campaign&gt;</code>](#Campaign)
         * [.pushTasksToQueue(campaignTargets)](#Notifications_pushTasksToQueue) ⇒ <code>Promise.&lt;Array.&lt;Task&gt;&gt;</code>
         * [.subscribe(senderId, pageId, tag)](#Notifications_subscribe)
         * [.unsubscribe(senderId, pageId, [tag], [req], [res])](#Notifications_unsubscribe)
@@ -58,6 +61,20 @@ API Factory
 **Params**
 
 - [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function
+
+{% raw %}<div id="Notifications_createCampaign">&nbsp;</div>{% endraw %}
+
+### notifications.createCampaign(name, action, [data], options) ⇒ [<code>Promise.&lt;Campaign&gt;</code>](#Campaign)
+Upsert the campaign
+If the campaing does not exists add new. Otherwise, update it.
+
+**Kind**: instance method of [<code>Notifications</code>](#Notifications)  
+**Params**
+
+- name <code>string</code>
+- action <code>string</code>
+- [data] <code>Object</code>
+- options <code>Object</code> - use { id: '...' } to make campaign accessible from code
 
 {% raw %}<div id="Notifications_pushTasksToQueue">&nbsp;</div>{% endraw %}
 
@@ -186,6 +203,38 @@ Creates a new instance on notification service
 | [read] | <code>number</code> | time of read |
 | [delivery] | <code>number</code> | time of delivery |
 | [sent] | <code>number</code> | time of send |
+| [reaction] | <code>boolean</code> | user reacted |
+| [leaved] | <code>number</code> | time the event was not sent because user left |
+
+{% raw %}<div id="Campaign">&nbsp;</div>{% endraw %}
+
+## Campaign : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> |  |
+| name | <code>string</code> | Tatgeting |
+| include | <code>Array.&lt;string&gt;</code> |  |
+| exclude | <code>Array.&lt;string&gt;</code> |  |
+| pageId | <code>string</code> | Stats |
+| sent | <code>number</code> |  |
+| failed | <code>number</code> |  |
+| delivery | <code>number</code> |  |
+| read | <code>number</code> |  |
+| notSent | <code>number</code> |  |
+| leaved | <code>number</code> |  |
+| queued | <code>number</code> | Interaction |
+| action | <code>string</code> |  |
+| [data] | <code>Object</code> | Setup |
+| sliding | <code>boolean</code> |  |
+| slide | <code>number</code> |  |
+| active | <code>boolean</code> |  |
+| in24hourWindow | <code>boolean</code> |  |
+| allowRepeat | <code>boolean</code> |  |
+| startAt | <code>number</code> |  |
+| slideRound | <code>number</code> |  |
 
 {% raw %}<div id="Tag">&nbsp;</div>{% endraw %}
 
@@ -257,15 +306,17 @@ Creates a new instance on notification service
 **Kind**: global typedef  
 **Properties**
 
-| Name | Type |
-| --- | --- |
-| id | <code>string</code> | 
-| pageId | <code>string</code> | 
-| senderId | <code>string</code> | 
-| campaignId | <code>string</code> | 
-| enqueue | <code>number</code> | 
-| [read] | <code>number</code> | 
-| [delivery] | <code>number</code> | 
-| [sent] | <code>number</code> | 
-| [insEnqueue] | <code>number</code> | 
+| Name | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> |  |
+| pageId | <code>string</code> |  |
+| senderId | <code>string</code> |  |
+| campaignId | <code>string</code> |  |
+| enqueue | <code>number</code> |  |
+| [read] | <code>number</code> |  |
+| [delivery] | <code>number</code> |  |
+| [sent] | <code>number</code> |  |
+| [insEnqueue] | <code>number</code> |  |
+| [reaction] | <code>boolean</code> | user reacted |
+| [leaved] | <code>number</code> | time the event was not sent because user left |
 
