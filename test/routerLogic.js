@@ -275,6 +275,46 @@ describe('<Router> logic', () => {
         });
     });
 
+    it('should trigger right actions, when there is a postback in responder', async () => {
+        const bot = new Router();
+
+        const collector = [];
+
+        bot.use('a', (req, res) => {
+            res.text('ask')
+                .expected('b');
+        });
+
+        // @ts-ignore
+        bot.use('b', ai.match('int'), (req, res, postBack) => {
+            postBack('c');
+        });
+
+        bot.use('c', (req, res) => {
+            res.text('answer');
+        });
+
+        bot.on('action', (a, path) => {
+            collector.push(path);
+        });
+
+        const t = new Tester(bot);
+
+        await t.postBack('a');
+
+        t.passedAction('a');
+
+        await new Promise(r => setTimeout(r, 10));
+
+        assert.deepEqual(collector, ['/a']);
+
+        await t.intent('int');
+
+        await new Promise(r => setTimeout(r, 10));
+
+        assert.deepEqual(collector, ['/a', '/b', '/c']);
+    });
+
     describe('LOCAL FALLBACKS', () => {
 
         /** @type {Tester} */

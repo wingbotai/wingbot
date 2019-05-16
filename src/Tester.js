@@ -66,8 +66,8 @@ class Tester {
         }
 
         // @ts-ignore
-        wrappedReducer.on('_action', (senderIdentifier, action, text) => {
-            this._actionsCollector.push({ action, text });
+        wrappedReducer.on('_action', (senderIdentifier, action, text, req, prevAction) => {
+            this._actionsCollector.push({ action, text, prevAction });
         });
 
         this.processor = new Processor(wrappedReducer, Object.assign({

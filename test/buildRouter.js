@@ -164,6 +164,41 @@ describe('<BuildRouter>', async () => {
 
     });
 
+    it('should make the responders at fallback working', async () => {
+        const plugins = new Plugins();
+
+        plugins.register('routerBlock', new Router());
+        plugins.code('exampleBlock', async (req, res) => {
+            await res.run('responseBlockName');
+        });
+
+        const bot = BuildRouter.fromData(testbot.data, plugins);
+
+        const t = new Tester(bot);
+
+        const actions = [];
+        t.processor.on('event', (s, action, txt, r, prevAction) => {
+            actions.push({ action, prevAction });
+        });
+
+        await t.text('random-text');
+
+        t.any()
+            .contains('Yes, this is the fallback');
+
+        await t.intent('localIntent');
+
+        await new Promise(r => setTimeout(r, 10));
+
+        t.any()
+            .contains('Matched fallback responder');
+
+        assert.deepEqual(actions, [
+            { action: '/*', prevAction: null },
+            { action: '/just-a-fallback_responder', prevAction: '/*' }
+        ]);
+    });
+
     function makeBot (text) {
         return {
             blocks: [{

@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const EventEmitter = require('events');
 const { MemoryStateStorage } = require('./tools');
 const Responder = require('./Responder');
 const Request = require('./Request');
@@ -22,7 +23,7 @@ const ReturnSender = require('./ReturnSender');
  * @prop {Function} processMessage
  */
 
-class Processor {
+class Processor extends EventEmitter {
 
     /**
      * Creates an instance of Processor
@@ -43,6 +44,8 @@ class Processor {
      * @memberOf Processor
      */
     constructor (reducer, options = {}) {
+        super();
+
         this.options = {
             appUrl: '',
             stateStorage: new MemoryStateStorage(),
@@ -286,6 +289,10 @@ class Processor {
                 if (reduceResult instanceof Promise) { // note the result can be undefined
                     await reduceResult;
                 }
+
+                if (fromEvent) {
+                    this._emitEvent(req, res);
+                }
             }
 
             // update state
@@ -334,6 +341,26 @@ class Processor {
         );
 
         return true;
+    }
+
+    /**
+     *
+     * @private
+     * @param {Request} req
+     * @param {Responder} res
+     */
+    _emitEvent (req, res) {
+        const { _lastAction: lastAction = null } = req.state;
+        const { _lastAction: act = null } = res.newState;
+        const params = [req.senderId, act, req.text(), req, lastAction];
+
+        process.nextTick(() => {
+            try {
+                this.emit('event', ...params);
+            } catch (e) {
+                this.options.log.error('Firing Processor event failed', e);
+            }
+        });
     }
 
     _processPostbacks (postbackAcumulator, senderId, pageId, messageSender, responderData) {

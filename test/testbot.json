@@ -504,6 +504,26 @@
             "id": 1507123353009
           },
           {
+            "isResponder": true,
+            "path": null,
+            "resolvers": [
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [],
+                  "text": "Matched fallback responder"
+                },
+                "id": 1507124026698
+              }
+            ],
+            "respondsToRouteId": 1507123652202,
+            "aiTags": [
+              "localIntent"
+            ],
+            "name": null,
+            "id": 1507123942137
+          },
+          {
             "name": "Just a fallback",
             "path": "just-a-fallback",
             "resolvers": [
