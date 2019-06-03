@@ -171,6 +171,11 @@ describe('<Router> logic', () => {
             });
             bot.use('include', nested);
 
+            bot.use((req, res) => {
+                res.expected('expected');
+                res.text(res.bookmark() ? 'Bookmark' : 'Fallback');
+            });
+
             const t = new Tester(bot);
 
             await t.postBack('start');
@@ -180,6 +185,19 @@ describe('<Router> logic', () => {
             t.any()
                 .contains('BM /include/has-path')
                 .contains('foo text');
+
+            await t.intent('foo');
+
+            t.any()
+                .contains('foo text');
+
+            await t.text('random');
+
+            t.any().contains('Fallback');
+
+            await t.intent('foo');
+
+            t.any().contains('Fallback');
         });
 
         it('makes right bookmark from a local intent, when there\'s expected action after the expected action', async () => {

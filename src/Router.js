@@ -284,7 +284,7 @@ class Router extends ReducerWrapper {
             let expected = req.expected();
             if (expected) {
                 expected = expected.action.replace(/\/?[^/]+$/, '');
-                localRegexToMatch = new RegExp(`^${expected}/[^/]+`);
+                localRegexToMatch = new RegExp(`^${expected}/[^/]+$`);
             }
         }
 
