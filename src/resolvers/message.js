@@ -103,7 +103,7 @@ function message (params, { isLastIndex, linksMap }) {
                     const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
                         ? Object.assign({}, reply)
                         : Object.assign({}, reply, {
-                            title: reply.title(req.state)
+                            title: reply.title(data)
                         });
 
                     if (typeof rep.condition === 'function') {
