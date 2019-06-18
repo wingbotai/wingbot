@@ -164,7 +164,9 @@ describe('Notifications', function () {
 
             await t.postBack('check');
 
-            t.any().contains('["anyTag"]');
+            t.any()
+                .contains('"anyTag"')
+                .contains('"#all"');
         });
 
         it('is possible to trigger action in right time and it\'s not added again', async () => {

@@ -14,7 +14,7 @@ const DAY = 86400000;
 const WINDOW_24_HOURS = DAY; // 24 hours
 const REMOVED_CAMPAIGN = '<removed campaign>';
 const MAX_TS = 9999999999999;
-const DEFAULT_24_CLEARANCE = 240000; // four minutes
+const DEFAULT_24_CLEARANCE = 600000; // ten minutes
 
 const DEFAULT_CAMPAIGN_DATA = {
     sent: 0,
@@ -117,6 +117,7 @@ class Notifications extends EventEmitter {
      * @param {console} [options.log] - logger
      * @param {boolean} [options.sendMoreMessagesOver24] - use true to disable the 24h window check
      * @param {number} [options.default24Clearance] - use this clearance to ensure delivery in 24h
+     * @param {string} [options.allAudienceTag] - tag to mark all users
      */
     constructor (notificationStorage = new NotificationsStorage(), options = {}) {
         super();
@@ -126,6 +127,9 @@ class Notifications extends EventEmitter {
         this.limit = DEFAULT_LIMIT;
         this._sendMoreMessagesOver24 = options.sendMoreMessagesOver24;
         this._default24Clearance = options.default24Clearance || DEFAULT_24_CLEARANCE;
+        this._allAudienceTag = typeof options.allAudienceTag !== 'undefined'
+            ? options.allAudienceTag
+            : '#all';
 
         // ensure unique timestamps for messages
         this._lts = new Map();
@@ -264,11 +268,11 @@ class Notifications extends EventEmitter {
                 this._storage.subscribe(`${senderId}`, pageId, tag),
                 this._postponeTasksOnInteraction(cmps, req)
             ]);
+
+            this._reportEvent('subscribed', tag, { senderId, pageId });
         } else {
             await this._storage.subscribe(`${senderId}`, pageId, tag);
         }
-
-        this._reportEvent('subscribed', tag, { senderId, pageId });
     }
 
     // eslint-disable-next-line jsdoc/require-param
@@ -354,6 +358,10 @@ class Notifications extends EventEmitter {
 
         req.subscribtions = await this._storage.getSenderSubscribtions(senderId, pageId);
         this._updateResDataWithSubscribtions(req, res);
+
+        if (this._allAudienceTag && !req.subscribtions.includes(this._allAudienceTag)) {
+            await this.subscribe(senderId, pageId, this._allAudienceTag, req, res);
+        }
     }
 
     _updateResDataWithSubscribtions (req, res) {
@@ -537,6 +545,9 @@ class Notifications extends EventEmitter {
     }
 
     async _postponeTasksOnInteraction (data, req, res = null) {
+        if (!data) {
+            return;
+        }
 
         const slidingCampaigns = data
             .filter(c => this._isTargetGroup(c, req.subscribtions, req.pageId));
