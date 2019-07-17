@@ -18,7 +18,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.setData(data)](#Responder_setData) ⇒ <code>this</code>
     * [.text(text, [...quickReplies])](#Responder_text) ⇒ <code>this</code>
     * [.setState(object)](#Responder_setState) ⇒ <code>this</code>
-    * [.addQuickReply(action, title, [data], [prepend])](#Responder_addQuickReply)
+    * [.addQuickReply(action, title, [data], [prepend], [justToExisting])](#Responder_addQuickReply)
     * [.expected(action, data)](#Responder_expected) ⇒ <code>this</code>
     * [.toAbsoluteAction(action)](#Responder_toAbsoluteAction) ⇒ <code>string</code>
     * [.currentAction()](#Responder_currentAction) ⇒ <code>string</code>
@@ -225,7 +225,7 @@ res.setState({ visited: true });
 ```
 {% raw %}<div id="Responder_addQuickReply">&nbsp;</div>{% endraw %}
 
-### responder.addQuickReply(action, title, [data], [prepend])
+### responder.addQuickReply(action, title, [data], [prepend], [justToExisting])
 Appends quick reply, to be sent with following text method
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
@@ -235,6 +235,7 @@ Appends quick reply, to be sent with following text method
 - title <code>string</code> - quick reply title
 - [data] <code>Object</code> - additional data
 - [prepend] <code>boolean</code> <code> = false</code> - set true to add reply at the beginning
+- [justToExisting] <code>boolean</code> <code> = false</code> - add quick reply only to existing replies
 
 **Example**  
 ```javascript

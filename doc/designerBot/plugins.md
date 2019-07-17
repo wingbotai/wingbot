@@ -10,7 +10,7 @@ Each plugin can be used as any other conversation element like message.
 
 ## Configuring the designer
 
-```
+```json
 [
   {
     "id": "exampleBlock",
@@ -56,9 +56,9 @@ You can specify:
 
 ## Plugin as a function
 
-You can register your plugin simply:
+You can register your plugin simply.
 
-```
+```javascript
 const { Plugins } = require('wingbot');
 
 const plugins = new Plugins();
@@ -73,13 +73,15 @@ plugins.register('exampleBlock', async (req, res, postBack) => {
     // run an interaction block
     await res.run('responseBlockName');
 });
+
+module.exports = plugins;
 ```
 
 ## Plugin as a nested Router
 
 For more sophisticated use cases you can use the router as a plugin.
 
-```
+```javascript
 const { Plugins, Router } = require('wingbot');
 
 const plugins = new Plugins();
@@ -109,4 +111,31 @@ exampleBlock.use('after-timeout', async (req, res) => {
 });
 
 plugins.register('exampleBlock', exampleBlock);
+
+module.exports = plugins;
+```
+
+## Testing the plugin
+
+You can use the Tester util.
+
+```javascript
+const { Tester } = require('wingbot');
+const plugins = require('../../bot/plugins');
+
+describe('exampleBlock plugin', function () {
+
+    it('should work', async function () {
+        const t = new Tester(plugins.getPluginFactory('exampleBlock'));
+
+        await t.postBack('/'); // run the initial action
+
+        await new Promise(r => setTimeout(r, 1500));
+
+        // asserts
+        t.respondedWithBlock('responseBlockName');
+        t.passedAction('after-timeout');
+    });
+
+});
 ```

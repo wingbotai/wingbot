@@ -14,6 +14,9 @@
 <dl>
 <dt><a href="#EntityExpression">EntityExpression</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#textFilter">textFilter</a> ⇒ <code>string</code></dt>
+<dd><p>Text filter function</p>
+</dd>
 <dt><a href="#IntentRule">IntentRule</a> : <code>string</code> | <code><a href="#EntityExpression">EntityExpression</a></code></dt>
 <dd></dd>
 <dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
@@ -40,6 +43,7 @@
     * [.logger](#Ai_logger) : <code>Object</code>
     * [.disableBookmarking](#Ai_disableBookmarking) : <code>boolean</code>
     * [.getPrefix(prefix, req)](#Ai_getPrefix)
+    * [.textFilter()](#Ai_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.mockIntent([intent], [score])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
     * [.load()](#Ai_load)
@@ -76,6 +80,13 @@ The prefix translator - for request-specific prefixes
 - prefix <code>string</code>
 - req <code>Request</code>
 
+{% raw %}<div id="Ai_textFilter">&nbsp;</div>{% endraw %}
+
+### ai.textFilter() : [<code>textFilter</code>](#textFilter)
+Preprocess text for NLP
+For example to remove any confidential data
+
+**Kind**: instance method of [<code>Ai</code>](#Ai)  
 {% raw %}<div id="Ai_mockIntent">&nbsp;</div>{% endraw %}
 
 ### ai.mockIntent([intent], [score]) ⇒ <code>this</code>
@@ -299,6 +310,17 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 | [optional] | <code>boolean</code> | entity is optional, can be missing in request |
 | [op] | <code>Compare</code> | comparison operation (eq|ne|range) |
 | [compare] | <code>Array.&lt;string&gt;</code> \| <code>Array.&lt;number&gt;</code> | value to compare with |
+
+{% raw %}<div id="textFilter">&nbsp;</div>{% endraw %}
+
+## textFilter ⇒ <code>string</code>
+Text filter function
+
+**Kind**: global typedef  
+**Returns**: <code>string</code> - - filtered text  
+**Params**
+
+- text <code>string</code> - input text
 
 {% raw %}<div id="IntentRule">&nbsp;</div>{% endraw %}
 

@@ -35,9 +35,11 @@ wingbot init
 .
 ├── bin                  : runnables (express or deployment scripts)
 ├── bot      : controllers for all routes
-|    ├── plugins         : images and generated js-css files
+|    ├── plugins         : chatbot integrations and business logic
+|    └── anonymize.js    : place to attach chatbot middewares
 |    └── bot.js          : place to attach chatbot middewares
 |    └── botSettings.js  : called on bot update, sets start button or menu on FB
+|    ├── onAction.js     : Analytics integration
 |    └── index.js        : set up the Processor here
 ├── config      : project configuration for different environments
 ├── lib         : serverside libraries
@@ -48,8 +50,8 @@ wingbot init
 |    ├── lib             : libs unit tests
 ├── routes      : controllers for all routes
 |    ├── bot.js          : chatbot endpoint, messenger integration is set here
-|    ├── update.js       : conversation update endpoint called from wingbot.ai designer
-|    ├── validate.js     : conversation validation endpoint called from wingbot.ai designer
+|    ├── api.js          : chatbots GQL API
+|    ├── tracker.js      : tracking of outgoing links
 |    └── ...             : other endpoints
 ├── app.js      : webserver initialization (only express)
 ```

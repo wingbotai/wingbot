@@ -40,7 +40,7 @@ Experimental chatbot API
 
 * [GraphApi](#GraphApi)
     * [new GraphApi(apis, options)](#new_GraphApi_new)
-    * [.request(body, headers)](#GraphApi_request) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
+    * [.request(body, headers, [wingbotToken])](#GraphApi_request) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
 
 {% raw %}<div id="new_GraphApi_new">&nbsp;</div>{% endraw %}
 
@@ -55,7 +55,7 @@ Experimental chatbot API
 
 {% raw %}<div id="GraphApi_request">&nbsp;</div>{% endraw %}
 
-### graphApi.request(body, headers) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
+### graphApi.request(body, headers, [wingbotToken]) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
 **Kind**: instance method of [<code>GraphApi</code>](#GraphApi)  
 **Params**
 
@@ -66,6 +66,7 @@ Experimental chatbot API
 - headers <code>Object</code>
     - [.Authorization] <code>string</code>
     - [.authorization] <code>string</code>
+- [wingbotToken] <code>string</code>
 
 {% raw %}<div id="postBackApi">&nbsp;</div>{% endraw %}
 
