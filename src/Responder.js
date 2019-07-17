@@ -287,13 +287,14 @@ class Responder {
 
             const {
                 quickReplies: qrs, expectedKeywords
-            } = makeQuickReplies(replies || [], this.path, this._t, this._quickReplyCollector);
+            } = makeQuickReplies(replies, this.path, this._t, this._quickReplyCollector);
 
-            this._quickReplyCollector = [];
-
-            this.finalMessageSent = true;
-            messageData.message.quick_replies = qrs;
-            this.setState({ _expectedKeywords: expectedKeywords });
+            if (qrs.length > 0) {
+                this.finalMessageSent = true;
+                messageData.message.quick_replies = qrs;
+                this.setState({ _expectedKeywords: expectedKeywords });
+                this._quickReplyCollector = [];
+            }
         }
 
         this._autoTypingIfEnabled(messageData.message.text);
@@ -323,6 +324,7 @@ class Responder {
      * @param {string} title - quick reply title
      * @param {Object} [data] - additional data
      * @param {boolean} [prepend] - set true to add reply at the beginning
+     * @param {boolean} [justToExisting] - add quick reply only to existing replies
      * @example
      *
      * bot.use((req, res) => {
@@ -335,11 +337,12 @@ class Responder {
      *     }); // will be merged and sent with previously added quick replies
      * });
      */
-    addQuickReply (action, title, data = {}, prepend = false) {
-        let prep = {};
-        if (prepend) {
-            prep = { _prepend: true };
-        }
+    addQuickReply (action, title, data = {}, prepend = false, justToExisting = false) {
+        const prep = {};
+
+        if (prepend) Object.assign(prep, { _prepend: true });
+        if (justToExisting) Object.assign(prep, { _justToExisting: true });
+
         this._quickReplyCollector.push(Object.assign({
             action: this.toAbsoluteAction(action),
             title

@@ -96,25 +96,28 @@ function message (params, { isLastIndex, linksMap }) {
         const data = stateData(req, res);
         const text = textTemplate(data);
 
-        const sendReplies = replies && replies
-            .filter(reply => reply.condition(req, res));
+        if (replies) {
+            const sendReplies = replies
+                .filter(reply => reply.condition(req, res))
+                .map((reply) => {
+                    const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
+                        ? Object.assign({}, reply)
+                        : Object.assign({}, reply, {
+                            title: reply.title(data)
+                        });
 
-        if (sendReplies && sendReplies.length > 0) {
-            res.text(text, sendReplies.map((reply) => {
-                const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
-                    ? Object.assign({}, reply)
-                    : Object.assign({}, reply, {
-                        title: reply.title(data)
-                    });
+                    if (typeof rep.condition === 'function') {
+                        delete rep.condition;
+                    }
 
-                if (typeof rep.condition === 'function') {
-                    delete rep.condition;
-                }
+                    return rep;
+                });
 
-                return rep;
-            }));
+            res.text(text, sendReplies);
         } else {
-            res.text(text);
+            // replies on last index will be present, so the addQuickReply will be working
+            const sendReplies = isLastIndex ? [] : undefined;
+            res.text(text, sendReplies);
         }
 
         return ret;

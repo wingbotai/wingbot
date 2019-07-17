@@ -53,6 +53,19 @@ describe('Responder', function () {
             assert(opts.translator.calledTwice);
         });
 
+        it('should send no quick replies, when they are empty', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            assert.strictEqual(res.text('Hello', []), res, 'should return self');
+
+            assert(sendFn.calledOnce);
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
+            assert.strictEqual(sendFn.firstCall.args[0].message.quick_replies, undefined);
+
+            assert(opts.translator.calledOnce);
+        });
+
         it('should send nice structured text with advanced quick replies', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
@@ -130,6 +143,45 @@ describe('Responder', function () {
                 sendFn.getCall(4).args[0].wait > sendFn.getCall(1).args[0].wait,
                 'The wait time should be longer for long texts.'
             );
+        });
+
+    });
+
+    describe('#addQuickReply', () => {
+
+        it('is able to add the quick reply at the beginning', () => {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.addQuickReply('x', 'Y', {}, false);
+
+            assert.strictEqual(res.text('Hello', {
+                option: 'Text'
+            }), res, 'should return self');
+
+            assert(sendFn.calledOnce);
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, 'option');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[1].title, '-Y');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[1].payload, 'x');
+        });
+
+        it('is able to add the quick reply only when replies presents', () => {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.addQuickReply('x', 'Y', {}, false, true);
+
+            res.text('Hi');
+
+            assert.strictEqual(res.text('Hello', []), res, 'should return self');
+
+            assert(sendFn.calledTwice);
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hi');
+            assert.equal(sendFn.secondCall.args[0].message.text, '-Hello');
+            assert.equal(sendFn.secondCall.args[0].message.quick_replies[0].title, '-Y');
+            assert.equal(sendFn.secondCall.args[0].message.quick_replies[0].payload, 'x');
         });
 
     });

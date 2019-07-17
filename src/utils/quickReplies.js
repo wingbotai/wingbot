@@ -29,7 +29,7 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}) {
 /**
  *
  *
- * @param {Object|Object[]} replies
+ * @param {Object|Object[]|null} replies
  * @param {string} [path]
  * @param {Function} [translate=w => w]
  * @param {Object[]} [quickReplyCollector]
@@ -40,6 +40,15 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
     const expectedKeywords = [];
 
     let iterate = replies;
+
+    // if there are no replies and quickReplyCollector collector
+    // has only "_justToExisting" items, skip it
+    if (!iterate
+        && quickReplyCollector.every(q => q._justToExisting)) {
+
+        return { quickReplies: [], expectedKeywords };
+    }
+
 
     if (!Array.isArray(iterate)) {
         iterate = Object.keys(replies)
@@ -56,6 +65,9 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
 
     let unshift = 0;
     quickReplyCollector.forEach((reply) => {
+        if (reply._justToExisting) {
+            delete reply._justToExisting; // eslint-disable-line no-param-reassign
+        }
         if (reply._prepend) {
             delete reply._prepend; // eslint-disable-line no-param-reassign
             iterate.splice(unshift++, 0, reply);
