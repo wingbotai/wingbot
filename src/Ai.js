@@ -19,6 +19,14 @@ let uq = 1;
  * @prop {string[]|number[]} [compare] - value to compare with
  */
 
+/**
+ * Text filter function
+ *
+ * @callback textFilter
+ * @param {string} text - input text
+ * @returns {string} - filtered text
+ */
+
 
 /**
  * @typedef {string|EntityExpression} IntentRule
@@ -62,6 +70,15 @@ class Ai {
          * @type {boolean}
          */
         this.disableBookmarking = false;
+
+        // eslint-disable-next-line jsdoc/require-param
+        /**
+         * Preprocess text for NLP
+         * For example to remove any confidential data
+         *
+         * @type {textFilter}
+         */
+        this.textFilter = w => w;
 
         this.matcher = matcher;
     }
@@ -392,7 +409,8 @@ class Ai {
                 return { intents: [], entities: [] };
             }
         }
-        return model.resolve(req.text(), req);
+        const text = this.textFilter(req.text());
+        return model.resolve(text, req);
     }
 
 }

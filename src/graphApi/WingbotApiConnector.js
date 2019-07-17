@@ -42,7 +42,7 @@ class WingbotApiConnector {
         return this._schema;
     }
 
-    async verifyToken (token) {
+    async verifyToken (token, wingbotToken = this._token) {
         if (!token) {
             throw this._error('Unauthorized', 401);
         }
@@ -61,7 +61,7 @@ class WingbotApiConnector {
             // @ts-ignore
             const { header, payload } = decoded;
 
-            if (this._token !== payload.token) {
+            if (wingbotToken !== payload.token) {
                 throw new Error('Token does not match');
             }
 

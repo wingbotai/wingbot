@@ -12,12 +12,18 @@
     * [Conversation state and data](designerBot/scripting.md#conversation-state-and-data)
     * [Using data in designer](designerBot/scripting.md#using-data-in-designer)
     * [Loading data from APIs](designerBot/scripting.md#loading-data-from-apis)
+* [Plugins](designerBot/plugins.md)
 * [Testing](tutorial/testing.md)
 * [Analytics](tutorial/analytics.md)
 * [Chatbot API](tutorial/chatbotApi.md)
 
 ## Understanding the core
 
+* [Architecture and modules](tutorial/architecture.md)
+    * [Messaging channels](tutorial/architecture.md#messaging-channels)
+    * [Conversational interface](tutorial/architecture.md#conversational-interface)
+    * [Modules](tutorial/architecture.md#modules-services)
+    * [GraphQL API](tutorial/architecture.md#graphql-api)
 * [Building a Bot programmatically](tutorial/buildingConversation.md)
     * [Asking a question](tutorial/buildingConversation.md#asking-a-question)
     * [Using quick replies](tutorial/buildingConversation.md#using-quick-replies-for-controlling-conversation)

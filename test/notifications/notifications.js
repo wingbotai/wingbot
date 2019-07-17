@@ -533,7 +533,9 @@ describe('Notifications', function () {
         });
 
         it('rounds date to closest one', () => {
-            const notifications = new Notifications();
+            const notifications = new Notifications(undefined, {
+                default24Clearance: 4 * 60000
+            });
 
             let start = new Date('2019-02-07T12:14:00.000Z').getTime();
             let slideRound = new Date('1970-01-01T18:00:00.000Z').getTime();

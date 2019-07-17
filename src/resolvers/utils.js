@@ -82,9 +82,7 @@ function randomizedCompiler (text, lang) {
 }
 
 function stateData (req, res) {
-    return Object.assign({}, req.state, res.newState, res.data, {
-        _action: req.action(true)
-    });
+    return Object.assign({}, req.state, res.newState, req.action(true), res.data);
 }
 
 function cachedTranslatedCompilator (text) {

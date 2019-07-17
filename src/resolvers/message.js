@@ -96,22 +96,23 @@ function message (params, { isLastIndex, linksMap }) {
         const data = stateData(req, res);
         const text = textTemplate(data);
 
-        if (replies) {
-            res.text(text, replies
-                .filter(reply => reply.condition(req, res))
-                .map((reply) => {
-                    const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
-                        ? Object.assign({}, reply)
-                        : Object.assign({}, reply, {
-                            title: reply.title(data)
-                        });
+        const sendReplies = replies && replies
+            .filter(reply => reply.condition(req, res));
 
-                    if (typeof rep.condition === 'function') {
-                        delete rep.condition;
-                    }
+        if (sendReplies && sendReplies.length > 0) {
+            res.text(text, sendReplies.map((reply) => {
+                const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
+                    ? Object.assign({}, reply)
+                    : Object.assign({}, reply, {
+                        title: reply.title(data)
+                    });
 
-                    return rep;
-                }));
+                if (typeof rep.condition === 'function') {
+                    delete rep.condition;
+                }
+
+                return rep;
+            }));
         } else {
             res.text(text);
         }
