@@ -14,3 +14,4 @@ docs
 .nyc_output
 .circleci
 mocha.opts
+out
