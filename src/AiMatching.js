@@ -7,6 +7,7 @@ const { replaceDiacritics } = require('./utils/tokenizer');
 
 const FULL_EMOJI_REGEX = /^#((?:[\u2600-\u27bf].?|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])+)$/;
 const HAS_CLOSING_HASH = /^#(.+)#$/;
+const ENTITY_REGEX = /^@([^=><!?]+)(\?)?([!=><]{1,2})?([^=><!]+)?$/i;
 
 /**
  * @typedef {string} Compare
@@ -18,7 +19,11 @@ const HAS_CLOSING_HASH = /^#(.+)#$/;
 const COMPARE = {
     EQUAL: 'eq',
     NOT_EQUAL: 'ne',
-    RANGE: 'range'
+    RANGE: 'range',
+    GT: 'gt',
+    GTE: 'gte',
+    LT: 'lt',
+    LTE: 'lte'
 };
 
 /**
@@ -89,6 +94,19 @@ class AiMatching {
     _normalizeComparisonArray (compare, op) {
         const arr = Array.isArray(compare) ? compare : [compare];
 
+        if ([
+            COMPARE.GTE,
+            COMPARE.GT,
+            COMPARE.LTE,
+            COMPARE.LT
+        ].includes(op)) {
+            const [val] = arr;
+
+            return [
+                this._normalizeToNumber(val)
+            ];
+        }
+
         if (op === COMPARE.RANGE) {
             const [min, max] = arr;
 
@@ -99,6 +117,48 @@ class AiMatching {
         }
 
         return arr.map(cmp => `${cmp}`);
+    }
+
+    _stringOpToOperation (op) {
+        switch (op) {
+            case '>':
+                return COMPARE.GT;
+            case '>=':
+            case '=>':
+                return COMPARE.GTE;
+            case '<':
+                return COMPARE.LT;
+            case '<=':
+            case '=<':
+                return COMPARE.LTE;
+            case '!=':
+                return COMPARE.NOT_EQUAL;
+            case '<>':
+            case '><':
+                return COMPARE.RANGE;
+            case '=':
+            case '==':
+            default:
+                return COMPARE.EQUAL;
+        }
+    }
+
+    _parseEntityString (entityString) {
+        // eslint-disable-next-line prefer-const
+        let [, entity, optional, op, compare] = entityString.trim().match(ENTITY_REGEX);
+
+        optional = !!optional;
+
+        if (!op || !compare) {
+            return { entity, optional };
+        }
+
+        op = this._stringOpToOperation(op);
+        compare = this._normalizeComparisonArray(compare.split(','), op);
+
+        return {
+            entity, op, compare, optional
+        };
     }
 
     /**
@@ -113,7 +173,7 @@ class AiMatching {
             .filter(ex => typeof ex === 'object' || ex.match(/^@/))
             .map((ex) => {
                 if (typeof ex === 'string') {
-                    return { entity: ex.replace(/^@/, '') };
+                    return this._parseEntityString(ex);
                 }
                 if (!ex.op) {
                     return ex;
@@ -338,8 +398,34 @@ class AiMatching {
                 }
                 return normalized >= min && normalized <= max;
             }
+            case COMPARE.GT:
+            case COMPARE.LT:
+            case COMPARE.GTE:
+            case COMPARE.LTE: {
+                const [cmp] = compare;
+                const normalized = this._normalizeToNumber(value);
+                if (normalized === null) {
+                    return false;
+                }
+                return this._numberComparison(op, cmp, normalized);
+            }
             default:
                 return true;
+        }
+    }
+
+    _numberComparison (op, cmp, normalized) {
+        switch (op) {
+            case COMPARE.GT:
+                return normalized > cmp;
+            case COMPARE.LT:
+                return normalized < cmp;
+            case COMPARE.GTE:
+                return normalized >= cmp;
+            case COMPARE.LTE:
+                return normalized <= cmp;
+            default:
+                return false;
         }
     }
 

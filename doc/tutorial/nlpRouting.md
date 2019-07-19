@@ -37,7 +37,7 @@ interaction will be executed.
   ```javascript
   const { Router, ai } = require('wingbot');
   const bot = new Router();
-  bot.use(ai.match(['@town']), (req, res) => {
+  bot.use(ai.match('@town'), (req, res) => {
       res.text('Matched!');
   });
   ```
@@ -57,6 +57,13 @@ interaction will be executed.
   ```javascript
   const { Router, ai } = require('wingbot');
   const bot = new Router();
+
+  // using string expression
+  bot.use(ai.match('@town=Prague'), (req, res) => {
+      res.text('Matched!');
+  });
+
+  // using object
   bot.use(ai.match([{ entity: 'town', compare: 'Prague' }]), (req, res) => {
       res.text('Matched!');
   });
@@ -75,6 +82,20 @@ interaction will be executed.
       res.text('Matched!');
   });
   ```
+
+## Detecting entities using expressions
+
+1. Entity is present: `@town`
+2. Entity is optional: `@town?`
+3. Entity is present and value matches: `@town=Prague`
+5. Entity is present and value does not match: `@town!=Prague`
+6. Entity is present and value is greater than: `@number>10`
+7. Entity is present and value is greater or equal to: `@number>=10`
+8. Entity is present and value is less than: `@number<10`
+9. Entity is present and value is less or equal to: `@number<=10`
+10. Entity is present and value is within range: `@number<>10,20`
+11. Entity is present and value matches one of: `@town=Prague,Berlin`
+12. Entity is present and value does not match one of: `@town!=Prague,Berlin`
 
 ## Context of intent detection
 

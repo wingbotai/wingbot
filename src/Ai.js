@@ -180,6 +180,8 @@ class Ai {
      *
      * - intents (`'intentName'`)
      * - entities (`'@entity'`)
+     * - entities with conditions (`'@entity=PRG,NYC'`)
+     * - entities with conditions (`'@entity>=100'`)
      * - complex entities (`{ entity:'entity', op:'range', compare:[null,1000] }`)
      * - optional entities (`{ entity:'entity', optional: true }`)
      * - wildcard keywords (`'#keyword#'`)

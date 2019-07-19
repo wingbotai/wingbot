@@ -38,7 +38,7 @@ describe('<AiMatching>', () => {
         });
 
         it('should match entity', () => {
-            const rule = ai.preprocessRule('@entity');
+            const rule = ai.preprocessRule('@entity=');
 
             const e = entity('entity');
             const req = fakeReq([], [e]);
@@ -95,7 +95,7 @@ describe('<AiMatching>', () => {
         });
 
         it('should handicap optional entities', () => {
-            const badRule = ai.preprocessRule(['@foo', { entity: 'bar', optional: true }]);
+            const badRule = ai.preprocessRule(['@foo', '@bar?']);
             const goodRule = ai.preprocessRule(['@foo', { entity: 'bar', optional: false }]);
 
             const foo = entity('foo');
@@ -159,6 +159,7 @@ describe('<AiMatching>', () => {
 
         it('should compare equality', () => {
             const rule = ai.preprocessRule([{ entity: 'foo', op: 'eq', compare: ['yes'] }]);
+            const stringRule = ai.preprocessRule(['@foo=yes']);
 
             const goodFoo = entity('foo', 'yes');
             const badFoo = entity('foo', 'no');
@@ -170,10 +171,13 @@ describe('<AiMatching>', () => {
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
         it('should compare inequality', () => {
             const rule = ai.preprocessRule([{ entity: 'foo', op: 'ne', compare: ['yes'] }]);
+            const stringRule = ai.preprocessRule(['@foo!=yes']);
 
             const goodFoo = entity('foo', 'no');
             const badFoo = entity('foo', 'yes');
@@ -185,10 +189,85 @@ describe('<AiMatching>', () => {
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
+        });
+
+        it('should compare LT', () => {
+            const rule = ai.preprocessRule([{ entity: 'foo', op: 'lt', compare: [2] }]);
+            const stringRule = ai.preprocessRule(['@foo<2']);
+
+            const goodFoo = entity('foo', '1');
+            const badFoo = entity('foo', '2');
+
+            const goodReq = fakeReq([], [goodFoo]);
+            const badReq = fakeReq([], [badFoo]);
+
+            const winningIntent = intent(null, [goodFoo], SCORE);
+
+            assert.deepEqual(ai.match(goodReq, rule), winningIntent);
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
+        });
+
+        it('should compare LTE', () => {
+            const rule = ai.preprocessRule([{ entity: 'foo', op: 'lte', compare: [2] }]);
+            const stringRule = ai.preprocessRule(['@foo<=2']);
+
+            const goodFoo = entity('foo', '2');
+            const badFoo = entity('foo', '3');
+
+            const goodReq = fakeReq([], [goodFoo]);
+            const badReq = fakeReq([], [badFoo]);
+
+            const winningIntent = intent(null, [goodFoo], SCORE);
+
+            assert.deepEqual(ai.match(goodReq, rule), winningIntent);
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
+        });
+
+        it('should compare GT', () => {
+            const rule = ai.preprocessRule([{ entity: 'foo', op: 'gt', compare: [2] }]);
+            const stringRule = ai.preprocessRule(['@foo>2']);
+
+            const goodFoo = entity('foo', '4');
+            const badFoo = entity('foo', '2');
+
+            const goodReq = fakeReq([], [goodFoo]);
+            const badReq = fakeReq([], [badFoo]);
+
+            const winningIntent = intent(null, [goodFoo], SCORE);
+
+            assert.deepEqual(ai.match(goodReq, rule), winningIntent);
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
+        });
+
+        it('should compare GTE', () => {
+            const rule = ai.preprocessRule([{ entity: 'foo', op: 'gte', compare: [2] }]);
+            const stringRule = ai.preprocessRule(['@foo>=2']);
+
+            const goodFoo = entity('foo', '2');
+            const badFoo = entity('foo', '1');
+
+            const goodReq = fakeReq([], [goodFoo]);
+            const badReq = fakeReq([], [badFoo]);
+
+            const winningIntent = intent(null, [goodFoo], SCORE);
+
+            assert.deepEqual(ai.match(goodReq, rule), winningIntent);
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
         it('should compare well defined ranges', () => {
             const rule = ai.preprocessRule([{ entity: 'foo', op: 'range', compare: [2, 4] }]);
+            const stringRule = ai.preprocessRule(['@foo<>2,4']);
 
             const goodFoo = entity('foo', '3');
             const badFoo = entity('foo', '1');
@@ -200,10 +279,13 @@ describe('<AiMatching>', () => {
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
         it('should compare right side ranges', () => {
             const rule = ai.preprocessRule([{ entity: 'foo', op: 'range', compare: [2] }]);
+            const stringRule = ai.preprocessRule(['@foo<>2']);
 
             const goodFoo = entity('foo', '3');
             const badFoo = entity('foo', '1');
@@ -215,10 +297,13 @@ describe('<AiMatching>', () => {
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
         it('should compare left side ranges', () => {
             const rule = ai.preprocessRule([{ entity: 'foo', op: 'range', compare: [null, 2] }]);
+            const stringRule = ai.preprocessRule(['@foo<>,2']);
 
             const goodFoo = entity('foo', '-1');
             const badFoo = entity('foo', '3');
@@ -230,10 +315,13 @@ describe('<AiMatching>', () => {
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
         it('should be ok with mixed types', () => {
             const rule = ai.preprocessRule([{ entity: 'foo', op: 'range', compare: ['-1.5', '3'] }]);
+            const stringRule = ai.preprocessRule(['@foo<>-1.5,3']);
 
             // @ts-ignore
             const goodFoo = entity('foo', 0.25);
@@ -247,6 +335,8 @@ describe('<AiMatching>', () => {
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
     });

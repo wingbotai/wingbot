@@ -288,13 +288,15 @@ class Router extends ReducerWrapper {
             }
         }
 
+        const localEnhancement = (1 - Ai.ai.confidence) / 2;
         for (const gi of this.globalIntents.values()) {
-            if (gi.local && (!localRegexToMatch || !localRegexToMatch.exec(gi.path))) {
+            const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.path);
+            if (gi.local && !pathMatches) {
                 continue;
             }
             const wi = gi.matcher(req, res, true);
             if (wi !== null) {
-                const sort = wi.score + (gi.local ? (1 - Ai.ai.confidence) / 2 : 0);
+                const sort = wi.score + (pathMatches ? localEnhancement : 0);
                 // console.log(sort, wi.intent);
                 winners.push({
                     ...gi,
