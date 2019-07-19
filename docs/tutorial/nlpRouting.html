@@ -1068,7 +1068,7 @@ interaction will be executed.</p>
 <li><p><strong>Required entity</strong></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 <span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-bot.use(ai.match([<span class="hljs-string">&apos;@town&apos;</span>]), (req, res) =&gt; {
+bot.use(ai.match(<span class="hljs-string">&apos;@town&apos;</span>), (req, res) =&gt; {
    res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
 });
 </code></pre>
@@ -1084,6 +1084,13 @@ bot.use(ai.match([{ entity: <span class="hljs-string">&apos;town&apos;</span>, o
 <li><p><strong>Entity value</strong></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 <span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+
+<span class="hljs-comment">// using string expression</span>
+bot.use(ai.match(<span class="hljs-string">&apos;@town=Prague&apos;</span>), (req, res) =&gt; {
+   res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
+});
+
+<span class="hljs-comment">// using object</span>
 bot.use(ai.match([{ entity: <span class="hljs-string">&apos;town&apos;</span>, compare: <span class="hljs-string">&apos;Prague&apos;</span> }]), (req, res) =&gt; {
    res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
 });
@@ -1100,6 +1107,20 @@ bot.use(ai.match([
 });
 </code></pre>
 </li>
+</ol>
+<h2 id="detecting-entities-using-expressions"><a name="detecting-entities-using-expressions" class="plugin-anchor" href="#detecting-entities-using-expressions"><i class="fa fa-link" aria-hidden="true"></i></a>Detecting entities using expressions</h2>
+<ol>
+<li>Entity is present: <code>@town</code></li>
+<li>Entity is optional: <code>@town?</code></li>
+<li>Entity is present and value matches: <code>@town=Prague</code></li>
+<li>Entity is present and value does not match: <code>@town!=Prague</code></li>
+<li>Entity is present and value is greater than: <code>@number&gt;10</code></li>
+<li>Entity is present and value is greater or equal to: <code>@number&gt;=10</code></li>
+<li>Entity is present and value is less than: <code>@number&lt;10</code></li>
+<li>Entity is present and value is less or equal to: <code>@number&lt;=10</code></li>
+<li>Entity is present and value is within range: <code>@number&lt;&gt;10,20</code></li>
+<li>Entity is present and value matches one of: <code>@town=Prague,Berlin</code></li>
+<li>Entity is present and value does not match one of: <code>@town!=Prague,Berlin</code></li>
 </ol>
 <h2 id="context-of-intent-detection"><a name="context-of-intent-detection" class="plugin-anchor" href="#context-of-intent-detection"><i class="fa fa-link" aria-hidden="true"></i></a>Context of intent detection</h2>
 <p>Context is usefull for routing text messages to the right interaction. In general, the context is defined by There are three types of context:</p>
@@ -1282,7 +1303,7 @@ tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, <span c
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Intents, entities and fallbacks","level":"2.8","depth":1,"next":{"title":"Entities","level":"2.8.1","depth":2,"anchor":"#defining-entities","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#defining-entities","articles":[]},"previous":{"title":"Webviews","level":"2.7.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/nlpRouting.md","mtime":"2019-04-15T10:58:36.415Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-17T13:58:05.701Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Intents, entities and fallbacks","level":"2.8","depth":1,"next":{"title":"Entities","level":"2.8.1","depth":2,"anchor":"#defining-entities","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#defining-entities","articles":[]},"previous":{"title":"Webviews","level":"2.7.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/nlpRouting.md","mtime":"2019-07-19T13:48:06.433Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-19T16:50:42.604Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
