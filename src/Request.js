@@ -371,7 +371,7 @@ class Request extends RequestsFactories {
     /**
      * Returns the request expected handler in case have been set last response
      *
-     * @returns {string|null}
+     * @returns {{action:string,data:Object}|null}
      */
     expected () {
         return this.state._expected || null;

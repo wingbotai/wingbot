@@ -23,6 +23,17 @@ const ReturnSender = require('./ReturnSender');
  * @prop {Function} processMessage
  */
 
+const NAME_FROM_STATE = (state) => {
+    if (state.user && state.user.firstName) {
+        return `${state.user.firstName} ${state.user.lastName}`;
+    }
+    if (state.user && state.user.name) {
+        return `${state.user.name}`;
+    }
+    return null;
+};
+
+
 class Processor extends EventEmitter {
 
     /**
@@ -35,6 +46,7 @@ class Processor extends EventEmitter {
      * @param {Object} [options.tokenStorage] - frontend token storage
      * @param {Function} [options.translator] - text translate function
      * @param {number} [options.timeout] - text translate function
+     * @param {Function} [options.nameFromState] - override the name translator
      * @param {boolean|AutoTypingConfig} [options.autoTyping] - enable or disable automatic typing
      * @param {Function} [options.log] - console like error logger
      * @param {Object} [options.defaultState] - default chat state
@@ -56,7 +68,8 @@ class Processor extends EventEmitter {
             defaultState: {},
             autoTyping: false,
             autoSeen: false,
-            redirectLimit: 20
+            redirectLimit: 20,
+            nameFromState: NAME_FROM_STATE
         };
 
         Object.assign(this.options, options);
@@ -207,8 +220,9 @@ class Processor extends EventEmitter {
 
         let result;
         try {
-            await this._processMessage(message, pageId, messageSender, responderData, true);
-            result = await messageSender.finished();
+            const { req, res } = await this
+                ._processMessage(message, pageId, messageSender, responderData, true);
+            result = await messageSender.finished(req, res);
         } catch (e) {
             const { code = 500 } = e;
             this.reportSendError(e, message, pageId);
@@ -236,6 +250,8 @@ class Processor extends EventEmitter {
         ]);
 
         let stateObject = originalState;
+        let req;
+        let res;
 
         try {
             // ensure the request was not processed
@@ -258,8 +274,8 @@ class Processor extends EventEmitter {
             // prepare request and responder
             let { state } = stateObject;
 
-            const req = new Request(message, state, pageId);
-            const res = new Responder(senderId, messageSender, token, this.options, responderData);
+            req = new Request(message, state, pageId);
+            res = new Responder(senderId, messageSender, token, this.options, responderData);
             const postBack = this._createPostBack(postbackAcumulator, req, res);
 
             let continueToReducer = true;
@@ -316,7 +332,8 @@ class Processor extends EventEmitter {
                 state,
                 lastTimestamps,
                 lastInteraction: new Date(),
-                off: false
+                off: false,
+                name: this.options.nameFromState(state)
             });
 
             if (senderUpdate) {
@@ -340,7 +357,7 @@ class Processor extends EventEmitter {
             responderData
         );
 
-        return true;
+        return { req, res };
     }
 
     /**
@@ -396,7 +413,6 @@ class Processor extends EventEmitter {
         if (senderStateUpdate && senderStateUpdate.state) {
             Object.assign(state, senderStateUpdate.state);
         }
-
         return state;
     }
 

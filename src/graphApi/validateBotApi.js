@@ -9,7 +9,7 @@ const apiAuthorizer = require('./apiAuthorizer');
 
 /**
  * @typedef {Object} ValidateBotAPI
- * @typedef {Function} validateBot
+ * @prop {Function} validateBot
  */
 
 async function validate (bot, validationRequestBody, postBackTest = 'start', textTest = 'hello') {

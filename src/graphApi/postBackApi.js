@@ -8,7 +8,7 @@ const RequestsFactories = require('../utils/RequestsFactories');
 
 /**
  * @typedef {Object} PostBackAPI
- * @typedef {Function} postBack
+ * @prop {Function} postBack
  */
 
 /**

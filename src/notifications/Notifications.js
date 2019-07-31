@@ -350,6 +350,18 @@ class Notifications extends EventEmitter {
         this._reportEvent(eventType, campaignName, { senderId, pageId });
     }
 
+    /**
+     *
+     * Get user subscribtions
+     *
+     * @param {string} senderId
+     * @param {string} pageId
+     * @returns {Promise<string[]>}
+     */
+    async getSubscribtions (senderId, pageId) {
+        return this._storage.getSenderSubscribtions(senderId, pageId);
+    }
+
     async _preloadSubscribtions (senderId, pageId, req, res) {
         if (res.data._requestSubscribtions) {
             req.subscribtions = res.data._requestSubscribtions;

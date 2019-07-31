@@ -3,6 +3,8 @@
  */
 'use strict';
 
+const ai = require('./Ai');
+
 class ReturnSender {
 
     /**
@@ -124,8 +126,37 @@ class ReturnSender {
         return Promise.resolve(this._simulateStateChange);
     }
 
-    async finished () {
+    /**
+     * @private
+     * @param {import('./Request')} req
+     * @param {import('./Responder')} res
+     */
+    _createMeta (req = null, res = null) { // eslint-disable-line no-unused-vars
+        const meta = {};
+
+        if (req) {
+            const expected = req.expected();
+            Object.assign(meta, {
+                timestamp: req.timestamp,
+                text: req.text(),
+                intent: req.intent(ai.ai.confidence),
+                intents: req.intents || [],
+                entities: (req.entities || []).filter(e => e.score >= ai.ai.confidence),
+                action: req.action(),
+                data: req.action(true),
+                expected: expected ? expected.action : null,
+                pageId: req.pageId,
+                senderId: req.senderId
+            });
+        }
+
+        return meta;
+    }
+
+    async finished (req = null, res = null) {
         this._finished = true;
+
+        const meta = this._createMeta(req, res);
 
         try {
             await this._promise;
@@ -137,7 +168,7 @@ class ReturnSender {
             if (this._sendLogs) {
                 this._sendLogs = false;
                 await Promise.resolve(this._logger
-                    .log(this._userId, this._sent, this._incommingMessage));
+                    .log(this._userId, this._sent, this._incommingMessage, meta));
             }
 
             const somethingSent = this._responses.length > 0;
@@ -149,7 +180,7 @@ class ReturnSender {
         } catch (e) {
             if (this._logger) {
                 await Promise.resolve(this._logger
-                    .error(e, this._userId, this._sent, this._incommingMessage));
+                    .error(e, this._userId, this._sent, this._incommingMessage, meta));
             } else {
                 console.error(e, this._userId, this._sent, this._incommingMessage); // eslint-disable-line
             }

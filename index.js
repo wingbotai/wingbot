@@ -24,6 +24,7 @@ const GraphApi = require('./src/graphApi/GraphApi');
 const validateBotApi = require('./src/graphApi/validateBotApi');
 const postBackApi = require('./src/graphApi/postBackApi');
 const apiAuthorizer = require('./src/graphApi/apiAuthorizer');
+const conversationsApi = require('./src/graphApi/conversationsApi');
 const { parseActionPayload } = require('./src/utils');
 const {
     bufferloader,
@@ -70,5 +71,6 @@ module.exports = {
     GraphApi,
     apiAuthorizer,
     validateBotApi,
-    postBackApi
+    postBackApi,
+    conversationsApi
 };

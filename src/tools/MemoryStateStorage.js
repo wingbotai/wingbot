@@ -12,6 +12,11 @@
  */
 
 /**
+ * @typedef {Object} StateCondition
+ * @prop {string} [search]
+ */
+
+/**
  * Memory conversation state storage for testing purposes
  *
  * @class
@@ -78,6 +83,71 @@ class MemoryStateStorage {
         const { senderId, pageId } = state;
         this.store.set(this._key(senderId, pageId), state);
         return Promise.resolve(state);
+    }
+
+    /**
+     *
+     * @param {StateCondition} condition
+     * @param {number} limit
+     * @param {string} lastKey
+     * @returns {Promise<{data:State[],lastKey:string}>}
+     */
+    getStates (condition = {}, limit = 20, lastKey = null) {
+        let reachedKey = lastKey === null;
+        let filtered = 0;
+        let hasNext = false;
+
+        const key = lastKey !== null
+            ? JSON.parse(Buffer.from(lastKey, 'base64').toString('utf8'))
+            : null;
+
+        const data = Array.from(this.store.values())
+            .sort((a, b) => {
+                if (a.lastInteraction === b.lastInteraction) {
+                    return 0;
+                }
+                return a.lastInteraction > b.lastInteraction
+                    ? -1
+                    : 1;
+            })
+            .filter((state) => {
+                // const matches = conditionKeys
+                //     .every(k => state[k] === condition[k]);
+
+                const matches = !condition.search
+                    || condition.search === state.senderId;
+
+                if (!matches) {
+                    return false;
+                }
+
+                if (limit !== null && filtered >= limit) {
+                    hasNext = true;
+                    return false;
+                }
+
+                if (reachedKey) {
+                    filtered++;
+                    return true;
+                }
+
+                reachedKey = key.senderId === state.senderId
+                    && key.pageId === state.pageId;
+
+                return false;
+            });
+
+        let nextLastKey = null;
+
+        if (limit && hasNext) {
+            const last = data[data.length - 1];
+            nextLastKey = Buffer.from(JSON.stringify({
+                senderId: last.senderId,
+                pageId: last.pageId
+            })).toString('base64');
+        }
+
+        return Promise.resolve({ data, lastKey: nextLastKey });
     }
 
 }

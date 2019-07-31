@@ -7,7 +7,9 @@ const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
 const { buildSchema } = require('graphql');
-const { GraphApi, postBackApi, validateBotApi } = require('../../src/graphApi');
+const {
+    GraphApi, postBackApi, validateBotApi, conversationsApi
+} = require('../../src/graphApi');
 const { Notifications } = require('../../src/notifications');
 const Router = require('../../src/Router');
 const Tester = require('../../src/Tester');
@@ -59,6 +61,7 @@ describe('<GraphApi>', function () {
         api = new GraphApi([
             notifications.api(),
             postBackApi(tester),
+            conversationsApi(tester.storage),
             validateBotApi(() => new BuildRouter({ botId: 'a', snapshot: 'b' }, new Plugins()), 'start', '*')
         ], {
             token: 'x',
@@ -389,6 +392,71 @@ describe('<GraphApi>', function () {
             const { count } = res.data.subscribtions;
 
             assert.strictEqual(count, 2);
+        });
+
+    });
+
+    describe('{ conversations }', () => {
+
+        it('should return conversations', async () => {
+            // make some states
+            await tester.postBack('start');
+            tester.senderId = 'abc';
+            await tester.postBack('start');
+
+            const res = await api.request({
+                query: `{
+                    conversations (limit: 1) {
+                        data {
+                            senderId,
+                            pageId,
+                            lastInteraction,
+                            name,
+                            state,
+                            history {
+                                timestamp
+                            }
+                        },
+                        lastKey
+                    }
+                }`
+            }, headers);
+
+            assert.strictEqual(typeof res.data.conversations, 'object');
+            assert.strictEqual(typeof res.data.conversations.data, 'object');
+        });
+
+    });
+
+    describe('{ conversation }', () => {
+
+        it('should return single conversation', async () => {
+            // make some states
+            await tester.postBack('start');
+            tester.senderId = 'abc';
+            await tester.postBack('start');
+
+            const res = await api.request({
+                query: `query Conversation ($senderId: String!, $pageId: String!) {
+                    conversation (senderId: $senderId, pageId: $pageId) {
+                        senderId,
+                        pageId,
+                        lastInteraction,
+                        name,
+                        subscribtions,
+                        state,
+                        history {
+                            timestamp
+                        }
+                    }
+                }`,
+                variables: {
+                    senderId: tester.senderId,
+                    pageId: tester.pageId
+                }
+            }, headers);
+
+            assert.strictEqual(typeof res.data.conversation, 'object');
         });
 
     });

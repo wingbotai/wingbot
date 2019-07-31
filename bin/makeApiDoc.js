@@ -15,7 +15,7 @@ const docs = [
     ['src/Ai.js', 'src/wingbot/WingbotModel.js', 'src/wingbot/CachedModel.js'],
     ['src/BuildRouter.js', 'src/Plugins.js'],
     ['src/notifications/Notifications.js', 'src/notifications/NotificationsStorage.js'],
-    ['src/graphApi/GraphApi.js', 'src/graphApi/postBackApi.js', 'src/graphApi/validateBotApi.js', 'src/graphApi/apiAuthorizer.js']
+    ['src/graphApi/GraphApi.js', 'src/graphApi/postBackApi.js', 'src/graphApi/validateBotApi.js', 'src/graphApi/conversationsApi.js', 'src/graphApi/apiAuthorizer.js']
 ];
 
 let srcFile;

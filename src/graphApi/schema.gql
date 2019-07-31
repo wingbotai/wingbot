@@ -65,6 +65,56 @@ input CampaignsCondition {
     sliding: Boolean
 }
 
+type Entity {
+    entity: String!
+    value: String!
+    score: Float
+}
+
+type Intent {
+    intent: String!
+    score: Float
+    entities: [Entity!]
+}
+
+type UserInteraction {
+    timestamp: Float!
+
+    intent: String
+    text: String
+    entities: [Entity!]
+    intents: [Intent!]
+    action: String
+    data: Any
+    expected: String
+
+    request: Any!
+    responses: [Any]!
+}
+
+type Conversation {
+    senderId: String!
+    pageId: String!
+    lastInteraction: String!
+    name: String
+    state: Any!
+    subscribtions: [String]
+    history (
+        limit: Int! = 10
+        startTimestamp: Float
+        endTimestamp: Float
+    ): [UserInteraction]
+}
+
+input ConversationsCondition {
+    search: String
+}
+
+type Conversations {
+    data: [Conversation]!
+    lastKey: String
+}
+
 type QueuingResult {
     queued: Int!
 }
@@ -146,6 +196,19 @@ type Query {
         lastKey: String
         condition: CampaignsCondition
     ): Campaigns
+
+    "list all known conversations"
+    conversations(
+        limit: Int
+        lastKey: String
+        condition: ConversationsCondition
+    ): Conversations
+
+    "get a conversation by ID"
+    conversation (
+        pageId: String!
+        senderId: String!
+    ): Conversation
 
     "returns the API version"
     version: String!
