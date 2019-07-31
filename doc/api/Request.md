@@ -48,7 +48,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.isText()](#Request_isText) ⇒ <code>boolean</code>
     * [.isSticker([includeToTextStickers])](#Request_isSticker) ⇒ <code>boolean</code>
     * [.text([tokenized])](#Request_text) ⇒ <code>string</code>
-    * [.expected()](#Request_expected) ⇒ <code>string</code> \| <code>null</code>
+    * [.expected()](#Request_expected) ⇒ <code>Object</code> \| <code>null</code>
     * [.quickReply([getData])](#Request_quickReply) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
     * [.isPostBack()](#Request_isPostBack) ⇒ <code>boolean</code>
     * [.isReferral()](#Request_isReferral) ⇒ <code>boolean</code>
@@ -294,7 +294,7 @@ console.log(req.text(true)) // "can-you-help-me"
 ```
 {% raw %}<div id="Request_expected">&nbsp;</div>{% endraw %}
 
-### request.expected() ⇒ <code>string</code> \| <code>null</code>
+### request.expected() ⇒ <code>Object</code> \| <code>null</code>
 Returns the request expected handler in case have been set last response
 
 **Kind**: instance method of [<code>Request</code>](#Request)  

@@ -40,6 +40,7 @@
         * [.subscribe(senderId, pageId, tag)](#Notifications_subscribe)
         * [.unsubscribe(senderId, pageId, [tag], [req], [res])](#Notifications_unsubscribe)
         * [.processMessage(event, pageId)](#Notifications_processMessage) ⇒ <code>Promise.&lt;{status:number}&gt;</code>
+        * [.getSubscribtions(senderId, pageId)](#Notifications_getSubscribtions) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
         * [.runCampaign(campaign)](#Notifications_runCampaign) ⇒ <code>Promise.&lt;{queued:number}&gt;</code>
         * [.sendCampaignMessage(campaign, processor, pageId, senderId, [data])](#Notifications_sendCampaignMessage) ⇒ <code>Promise.&lt;{status: number}&gt;</code>
     * _static_
@@ -121,6 +122,17 @@ Preprocess message - for read and delivery
 **Params**
 
 - event <code>Object</code>
+- pageId <code>string</code>
+
+{% raw %}<div id="Notifications_getSubscribtions">&nbsp;</div>{% endraw %}
+
+### notifications.getSubscribtions(senderId, pageId) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
+Get user subscribtions
+
+**Kind**: instance method of [<code>Notifications</code>](#Notifications)  
+**Params**
+
+- senderId <code>string</code>
 - pageId <code>string</code>
 
 {% raw %}<div id="Notifications_runCampaign">&nbsp;</div>{% endraw %}

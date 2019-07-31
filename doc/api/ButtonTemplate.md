@@ -134,6 +134,7 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 `#token=foo&senderId=23344`
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
+**Overrides**: [<code>urlButton</code>](#ButtonTemplate_urlButton)  
 **Params**
 
 - title <code>string</code> - button text
@@ -147,6 +148,7 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 Adds button, which makes another action
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
+**Overrides**: [<code>postBackButton</code>](#ButtonTemplate_postBackButton)  
 **Params**
 
 - title <code>string</code> - Button title
@@ -157,6 +159,7 @@ Adds button, which makes another action
 
 ### genericTemplate.shareButton() ⇒ <code>this</code>
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
+**Overrides**: [<code>shareButton</code>](#ButtonTemplate_shareButton)  
 {% raw %}<div id="ReceiptTemplate">&nbsp;</div>{% endraw %}
 
 ## ReceiptTemplate ⇐ <code>BaseTemplate</code>

@@ -25,6 +25,8 @@
 <dl>
 <dt><a href="#State">State</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#StateCondition">StateCondition</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="MemoryStateStorage">&nbsp;</div>{% endraw %}
@@ -38,6 +40,7 @@ Memory conversation state storage for testing purposes
     * [.getState(senderId, pageId)](#MemoryStateStorage_getState) ⇒ <code>Promise.&lt;(State\|null)&gt;</code>
     * [.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout)](#MemoryStateStorage_getOrCreateAndLock) ⇒ [<code>Promise.&lt;State&gt;</code>](#State)
     * [.saveState(state)](#MemoryStateStorage_saveState) ⇒ <code>Promise</code>
+    * [.getStates(condition, limit, lastKey)](#MemoryStateStorage_getStates) ⇒ <code>Promise.&lt;{Array.&lt;data:State&gt;, lastKey:string}&gt;</code>
 
 {% raw %}<div id="MemoryStateStorage_getState">&nbsp;</div>{% endraw %}
 
@@ -67,6 +70,16 @@ Memory conversation state storage for testing purposes
 **Params**
 
 - state <code>Object</code> - conversation state
+
+{% raw %}<div id="MemoryStateStorage_getStates">&nbsp;</div>{% endraw %}
+
+### memoryStateStorage.getStates(condition, limit, lastKey) ⇒ <code>Promise.&lt;{Array.&lt;data:State&gt;, lastKey:string}&gt;</code>
+**Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
+**Params**
+
+- condition [<code>StateCondition</code>](#StateCondition)
+- limit <code>number</code> <code> = 20</code>
+- lastKey <code>string</code> <code> = null</code>
 
 {% raw %}<div id="Translate">&nbsp;</div>{% endraw %}
 
@@ -276,4 +289,14 @@ router.use('*', (req, res, postBack) => {
 | senderId | <code>string</code> | 
 | pageId | <code>string</code> | 
 | state | <code>Object</code> | 
+
+{% raw %}<div id="StateCondition">&nbsp;</div>{% endraw %}
+
+## StateCondition : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [search] | <code>string</code> | 
 

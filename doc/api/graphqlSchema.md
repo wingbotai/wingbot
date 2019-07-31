@@ -8,15 +8,21 @@
   * [Objects](#objects)
     * [Campaign](#campaign)
     * [Campaigns](#campaigns)
+    * [Conversation](#conversation)
+    * [Conversations](#conversations)
+    * [Entity](#entity)
+    * [Intent](#intent)
     * [PostBackResult](#postbackresult)
     * [QueuingResult](#queuingresult)
     * [Subscribtion](#subscribtion)
     * [Subscribtions](#subscribtions)
     * [Tag](#tag)
     * [Tags](#tags)
+    * [UserInteraction](#userinteraction)
     * [ValidationResult](#validationresult)
   * [Inputs](#inputs)
     * [CampaignsCondition](#campaignscondition)
+    * [ConversationsCondition](#conversationscondition)
     * [CreateCampaignInput](#createcampaigninput)
     * [UpdateCampaignInput](#updatecampaigninput)
   * [Scalars](#scalars)
@@ -123,6 +129,49 @@ list of user defined campaigns
 <tr>
 <td colspan="2" align="right" valign="top">condition</td>
 <td valign="top"><a href="#campaignscondition">CampaignsCondition</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>conversations</strong></td>
+<td valign="top"><a href="#conversations">Conversations</a></td>
+<td>
+
+list all known conversations
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">limit</td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">lastKey</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">condition</td>
+<td valign="top"><a href="#conversationscondition">ConversationsCondition</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>conversation</strong></td>
+<td valign="top"><a href="#conversation">Conversation</a></td>
+<td>
+
+get a conversation by ID
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">pageId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">senderId</td>
+<td valign="top"><a href="#string">String</a>!</td>
 <td></td>
 </tr>
 <tr>
@@ -460,6 +509,156 @@ run a campaign
 </tbody>
 </table>
 
+### Conversation
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>senderId</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>pageId</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>lastInteraction</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>name</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>state</strong></td>
+<td valign="top"><a href="#any">Any</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>subscribtions</strong></td>
+<td valign="top">[<a href="#string">String</a>]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>history</strong></td>
+<td valign="top">[<a href="#userinteraction">UserInteraction</a>]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">limit</td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">startTimestamp</td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">endTimestamp</td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### Conversations
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>data</strong></td>
+<td valign="top">[<a href="#conversation">Conversation</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>lastKey</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### Entity
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>entity</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>value</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>score</strong></td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### Intent
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>intent</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>score</strong></td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>entities</strong></td>
+<td valign="top">[<a href="#entity">Entity</a>!]</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ### PostBackResult
 
 <table>
@@ -605,6 +804,71 @@ run a campaign
 </tbody>
 </table>
 
+### UserInteraction
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>timestamp</strong></td>
+<td valign="top"><a href="#float">Float</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>intent</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>text</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>entities</strong></td>
+<td valign="top">[<a href="#entity">Entity</a>!]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>intents</strong></td>
+<td valign="top">[<a href="#intent">Intent</a>!]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>action</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>data</strong></td>
+<td valign="top"><a href="#any">Any</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>expected</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>request</strong></td>
+<td valign="top"><a href="#any">Any</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>responses</strong></td>
+<td valign="top">[<a href="#any">Any</a>]!</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ### ValidationResult
 
 <table>
@@ -651,6 +915,25 @@ run a campaign
 <tr>
 <td colspan="2" valign="top"><strong>sliding</strong></td>
 <td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### ConversationsCondition
+
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>search</strong></td>
+<td valign="top"><a href="#string">String</a></td>
 <td></td>
 </tr>
 </tbody>

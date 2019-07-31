@@ -130,7 +130,6 @@ describe('bot', function () {
 Registers Wingbot AI model
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Template**: T  
 **Params**
 
 - model <code>string</code> | [<code>WingbotModel</code>](#WingbotModel) | <code>T</code> - wingbot model name or AI plugin

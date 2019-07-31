@@ -128,8 +128,8 @@ class ReturnSender {
 
     /**
      * @private
-     * @param {import('./Request')} req
-     * @param {import('./Responder')} res
+     * @param {Request} req
+     * @param {Responder} res
      */
     _createMeta (req = null, res = null) { // eslint-disable-line no-unused-vars
         const meta = {};

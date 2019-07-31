@@ -1079,6 +1079,7 @@
 <li><a href="#Notifications_subscribe">.subscribe(senderId, pageId, tag)</a></li>
 <li><a href="#Notifications_unsubscribe">.unsubscribe(senderId, pageId, [tag], [req], [res])</a></li>
 <li><a href="#Notifications_processMessage">.processMessage(event, pageId)</a> &#x21D2; <code>Promise.&lt;{status:number}&gt;</code></li>
+<li><a href="#Notifications_getSubscribtions">.getSubscribtions(senderId, pageId)</a> &#x21D2; <code>Promise.&lt;Array.&lt;string&gt;&gt;</code></li>
 <li><a href="#Notifications_runCampaign">.runCampaign(campaign)</a> &#x21D2; <code>Promise.&lt;{queued:number}&gt;</code></li>
 <li><a href="#Notifications_sendCampaignMessage">.sendCampaignMessage(campaign, processor, pageId, senderId, [data])</a> &#x21D2; <code>Promise.&lt;{status: number}&gt;</code></li>
 </ul>
@@ -1154,6 +1155,15 @@ If the campaing does not exists add new. Otherwise, update it.</p>
 <p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
 <ul>
 <li>event <code>Object</code></li>
+<li>pageId <code>string</code></li>
+</ul>
+<div id="Notifications_getSubscribtions">&#xA0;</div>
+
+<h3 id="notificationsgetsubscribtionssenderid-pageid-&#x21D2;-promisearraystring"><a name="notificationsgetsubscribtionssenderid-pageid-&#x21D2;-promisearraystring" class="plugin-anchor" href="#notificationsgetsubscribtionssenderid-pageid-&#x21D2;-promisearraystring"><i class="fa fa-link" aria-hidden="true"></i></a>notifications.getSubscribtions(senderId, pageId) &#x21D2; <code>Promise.&lt;Array.&lt;string&gt;&gt;</code></h3>
+<p>Get user subscribtions</p>
+<p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
+<ul>
+<li>senderId <code>string</code></li>
 <li>pageId <code>string</code></li>
 </ul>
 <div id="Notifications_runCampaign">&#xA0;</div>
@@ -1733,7 +1743,7 @@ and records it&apos;s delivery status at campaign stats</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Notifications","level":"3.9","depth":1,"next":{"title":"GraphApi","level":"3.10","depth":1,"path":"api/GraphApi.md","ref":"api/GraphApi.md","articles":[]},"previous":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Notifications.md","mtime":"2019-07-19T16:50:36.356Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-19T16:50:42.604Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Notifications","level":"3.9","depth":1,"next":{"title":"GraphApi","level":"3.10","depth":1,"path":"api/GraphApi.md","ref":"api/GraphApi.md","articles":[]},"previous":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Notifications.md","mtime":"2019-07-31T14:42:01.556Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T14:42:06.815Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

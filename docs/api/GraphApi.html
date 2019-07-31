@@ -1054,6 +1054,10 @@
 <dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> &#x21D2; <code>ValidateBotAPI</code></dt>
 <dd><p>Test the bot configuration</p>
 </dd>
+<dt><a href="#conversationsApi">conversationsApi(stateStorage, chatLogStorage, notifications, [acl])</a> &#x21D2; <code>ConversationsAPI</code></dt>
+<dd><p>Create a conversations API
+for retrieving conversations and it&apos;s history</p>
+</dd>
 <dt><a href="#apiAuthorizer">apiAuthorizer(args, ctx, acl)</a> &#x21D2; <code>boolean</code></dt>
 <dd><p>If API call is authorized - use for own implementations of API endpoints</p>
 </dd>
@@ -1063,9 +1067,17 @@
 <dl>
 <dt><a href="#GraphQlResponse">GraphQlResponse</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#postBack">postBack</a> : <code>Object</code></dt>
+<dt><a href="#PostBackAPI">PostBackAPI</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#validateBot">validateBot</a> : <code>Object</code></dt>
+<dt><a href="#ValidateBotAPI">ValidateBotAPI</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#conversation">conversation</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#StateStorage">StateStorage</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Notifications">Notifications</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 
@@ -1114,7 +1126,7 @@
 </ul>
 <div id="postBackApi">&#xA0;</div>
 
-<h2 id="postbackapiprocessor-acl-&#x21D2;-postbackapi"><a name="postbackapiprocessor-acl-&#x21D2;-postbackapi" class="plugin-anchor" href="#postbackapiprocessor-acl-&#x21D2;-postbackapi"><i class="fa fa-link" aria-hidden="true"></i></a>postBackApi(processor, [acl]) &#x21D2; <code>PostBackAPI</code></h2>
+<h2 id="postbackapiprocessor-acl-&#x21D2;-postbackapi"><a name="postbackapiprocessor-acl-&#x21D2;-postbackapi" class="plugin-anchor" href="#postbackapiprocessor-acl-&#x21D2;-postbackapi"><i class="fa fa-link" aria-hidden="true"></i></a>postBackApi(processor, [acl]) &#x21D2; <a href="#PostBackAPI"><code>PostBackAPI</code></a></h2>
 <p>Create a postback API</p>
 <p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
 <ul>
@@ -1132,7 +1144,7 @@
 </code></pre>
 <div id="validateBotApi">&#xA0;</div>
 
-<h2 id="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><a name="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi" class="plugin-anchor" href="#validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><i class="fa fa-link" aria-hidden="true"></i></a>validateBotApi(botFactory, [postBackTest], [textTest], [acl]) &#x21D2; <code>ValidateBotAPI</code></h2>
+<h2 id="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><a name="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi" class="plugin-anchor" href="#validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><i class="fa fa-link" aria-hidden="true"></i></a>validateBotApi(botFactory, [postBackTest], [textTest], [acl]) &#x21D2; <a href="#ValidateBotAPI"><code>ValidateBotAPI</code></a></h2>
 <p>Test the bot configuration</p>
 <p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
 <ul>
@@ -1150,6 +1162,18 @@
     token: <span class="hljs-string">&apos;wingbot-token&apos;</span>
 })
 </code></pre>
+<div id="conversationsApi">&#xA0;</div>
+
+<h2 id="conversationsapistatestorage-chatlogstorage-notifications-acl-&#x21D2;-conversationsapi"><a name="conversationsapistatestorage-chatlogstorage-notifications-acl-&#x21D2;-conversationsapi" class="plugin-anchor" href="#conversationsapistatestorage-chatlogstorage-notifications-acl-&#x21D2;-conversationsapi"><i class="fa fa-link" aria-hidden="true"></i></a>conversationsApi(stateStorage, chatLogStorage, notifications, [acl]) &#x21D2; <code>ConversationsAPI</code></h2>
+<p>Create a conversations API
+for retrieving conversations and it&apos;s history</p>
+<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
+<ul>
+<li>stateStorage <a href="#StateStorage"><code>StateStorage</code></a></li>
+<li>chatLogStorage <a href="#ChatLogStorage"><code>ChatLogStorage</code></a> <code> = </code></li>
+<li>notifications <a href="#Notifications"><code>Notifications</code></a> <code> = </code></li>
+<li>[acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function</li>
+</ul>
 <div id="apiAuthorizer">&#xA0;</div>
 
 <h2 id="apiauthorizerargs-ctx-acl-&#x21D2;-boolean"><a name="apiauthorizerargs-ctx-acl-&#x21D2;-boolean" class="plugin-anchor" href="#apiauthorizerargs-ctx-acl-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>apiAuthorizer(args, ctx, acl) &#x21D2; <code>boolean</code></h2>
@@ -1181,14 +1205,104 @@
 <li>[data] <code>*</code></li>
 <li>[errors] <code>Array.&lt;Object&gt;</code></li>
 </ul>
-<div id="postBack">&#xA0;</div>
+<div id="PostBackAPI">&#xA0;</div>
 
-<h2 id="postback--object"><a name="postback--object" class="plugin-anchor" href="#postback--object"><i class="fa fa-link" aria-hidden="true"></i></a>postBack : <code>Object</code></h2>
-<p><strong>Kind</strong>: global typedef  </p>
-<div id="validateBot">&#xA0;</div>
+<h2 id="postbackapi--object"><a name="postbackapi--object" class="plugin-anchor" href="#postbackapi--object"><i class="fa fa-link" aria-hidden="true"></i></a>PostBackAPI : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>postBack</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
+<div id="ValidateBotAPI">&#xA0;</div>
 
-<h2 id="validatebot--object"><a name="validatebot--object" class="plugin-anchor" href="#validatebot--object"><i class="fa fa-link" aria-hidden="true"></i></a>validateBot : <code>Object</code></h2>
+<h2 id="validatebotapi--object"><a name="validatebotapi--object" class="plugin-anchor" href="#validatebotapi--object"><i class="fa fa-link" aria-hidden="true"></i></a>ValidateBotAPI : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>validateBot</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
+<div id="conversation">&#xA0;</div>
+
+<h2 id="conversation--object"><a name="conversation--object" class="plugin-anchor" href="#conversation--object"><i class="fa fa-link" aria-hidden="true"></i></a>conversation : <code>Object</code></h2>
 <p><strong>Kind</strong>: global typedef  </p>
+<div id="StateStorage">&#xA0;</div>
+
+<h2 id="statestorage--object"><a name="statestorage--object" class="plugin-anchor" href="#statestorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>StateStorage : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getStates</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>getState</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
+<div id="Notifications">&#xA0;</div>
+
+<h2 id="notifications--object"><a name="notifications--object" class="plugin-anchor" href="#notifications--object"><i class="fa fa-link" aria-hidden="true"></i></a>Notifications : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getSubscribtions</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
+<div id="ChatLogStorage">&#xA0;</div>
+
+<h2 id="chatlogstorage--object"><a name="chatlogstorage--object" class="plugin-anchor" href="#chatlogstorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>ChatLogStorage : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getInteractions</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1232,7 +1346,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"GraphApi","level":"3.10","depth":1,"next":{"title":"Chatbot API GraphQL schema","level":"3.11","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"previous":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/GraphApi.md","mtime":"2019-07-19T16:50:36.360Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-19T16:50:42.604Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"GraphApi","level":"3.10","depth":1,"next":{"title":"Chatbot API GraphQL schema","level":"3.11","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"previous":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/GraphApi.md","mtime":"2019-07-31T14:42:02.068Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T14:42:06.815Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

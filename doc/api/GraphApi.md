@@ -9,11 +9,15 @@
 ## Functions
 
 <dl>
-<dt><a href="#postBackApi">postBackApi(processor, [acl])</a> ⇒ <code>PostBackAPI</code></dt>
+<dt><a href="#postBackApi">postBackApi(processor, [acl])</a> ⇒ <code><a href="#PostBackAPI">PostBackAPI</a></code></dt>
 <dd><p>Create a postback API</p>
 </dd>
-<dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> ⇒ <code>ValidateBotAPI</code></dt>
+<dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> ⇒ <code><a href="#ValidateBotAPI">ValidateBotAPI</a></code></dt>
 <dd><p>Test the bot configuration</p>
+</dd>
+<dt><a href="#conversationsApi">conversationsApi(stateStorage, chatLogStorage, notifications, [acl])</a> ⇒ <code>ConversationsAPI</code></dt>
+<dd><p>Create a conversations API
+for retrieving conversations and it&#39;s history</p>
 </dd>
 <dt><a href="#apiAuthorizer">apiAuthorizer(args, ctx, acl)</a> ⇒ <code>boolean</code></dt>
 <dd><p>If API call is authorized - use for own implementations of API endpoints</p>
@@ -25,9 +29,17 @@
 <dl>
 <dt><a href="#GraphQlResponse">GraphQlResponse</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#postBack">postBack</a> : <code>Object</code></dt>
+<dt><a href="#PostBackAPI">PostBackAPI</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#validateBot">validateBot</a> : <code>Object</code></dt>
+<dt><a href="#ValidateBotAPI">ValidateBotAPI</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#conversation">conversation</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#StateStorage">StateStorage</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Notifications">Notifications</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
 
@@ -70,7 +82,7 @@ Experimental chatbot API
 
 {% raw %}<div id="postBackApi">&nbsp;</div>{% endraw %}
 
-## postBackApi(processor, [acl]) ⇒ <code>PostBackAPI</code>
+## postBackApi(processor, [acl]) ⇒ [<code>PostBackAPI</code>](#PostBackAPI)
 Create a postback API
 
 **Kind**: global function  
@@ -91,7 +103,7 @@ const api = new GraphApi([
 ```
 {% raw %}<div id="validateBotApi">&nbsp;</div>{% endraw %}
 
-## validateBotApi(botFactory, [postBackTest], [textTest], [acl]) ⇒ <code>ValidateBotAPI</code>
+## validateBotApi(botFactory, [postBackTest], [textTest], [acl]) ⇒ [<code>ValidateBotAPI</code>](#ValidateBotAPI)
 Test the bot configuration
 
 **Kind**: global function  
@@ -112,6 +124,20 @@ const api = new GraphApi([
     token: 'wingbot-token'
 })
 ```
+{% raw %}<div id="conversationsApi">&nbsp;</div>{% endraw %}
+
+## conversationsApi(stateStorage, chatLogStorage, notifications, [acl]) ⇒ <code>ConversationsAPI</code>
+Create a conversations API
+for retrieving conversations and it's history
+
+**Kind**: global function  
+**Params**
+
+- stateStorage [<code>StateStorage</code>](#StateStorage)
+- chatLogStorage [<code>ChatLogStorage</code>](#ChatLogStorage) <code> = </code>
+- notifications [<code>Notifications</code>](#Notifications) <code> = </code>
+- [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function
+
 {% raw %}<div id="apiAuthorizer">&nbsp;</div>{% endraw %}
 
 ## apiAuthorizer(args, ctx, acl) ⇒ <code>boolean</code>
@@ -147,11 +173,58 @@ function createApi (acl = null) {
 - [data] <code>\*</code>
 - [errors] <code>Array.&lt;Object&gt;</code>
 
-{% raw %}<div id="postBack">&nbsp;</div>{% endraw %}
+{% raw %}<div id="PostBackAPI">&nbsp;</div>{% endraw %}
 
-## postBack : <code>Object</code>
+## PostBackAPI : <code>Object</code>
 **Kind**: global typedef  
-{% raw %}<div id="validateBot">&nbsp;</div>{% endraw %}
+**Properties**
 
-## validateBot : <code>Object</code>
+| Name | Type |
+| --- | --- |
+| postBack | <code>function</code> | 
+
+{% raw %}<div id="ValidateBotAPI">&nbsp;</div>{% endraw %}
+
+## ValidateBotAPI : <code>Object</code>
 **Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| validateBot | <code>function</code> | 
+
+{% raw %}<div id="conversation">&nbsp;</div>{% endraw %}
+
+## conversation : <code>Object</code>
+**Kind**: global typedef  
+{% raw %}<div id="StateStorage">&nbsp;</div>{% endraw %}
+
+## StateStorage : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| getStates | <code>function</code> | 
+| getState | <code>function</code> | 
+
+{% raw %}<div id="Notifications">&nbsp;</div>{% endraw %}
+
+## Notifications : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| getSubscribtions | <code>function</code> | 
+
+{% raw %}<div id="ChatLogStorage">&nbsp;</div>{% endraw %}
+
+## ChatLogStorage : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| getInteractions | <code>function</code> | 
+
