@@ -25,6 +25,11 @@ const validateBotApi = require('./src/graphApi/validateBotApi');
 const postBackApi = require('./src/graphApi/postBackApi');
 const apiAuthorizer = require('./src/graphApi/apiAuthorizer');
 const conversationsApi = require('./src/graphApi/conversationsApi');
+const AnyResponseAssert = require('./src/testTools/AnyResponseAssert');
+const ResponseAssert = require('./src/testTools/ResponseAssert');
+const ButtonTemplate = require('./src/templates/ButtonTemplate');
+const GenericTemplate = require('./src/templates/GenericTemplate');
+const BaseTemplate = require('./src/templates/BaseTemplate');
 const { parseActionPayload } = require('./src/utils');
 const {
     bufferloader,
@@ -72,5 +77,12 @@ module.exports = {
     apiAuthorizer,
     validateBotApi,
     postBackApi,
-    conversationsApi
+    conversationsApi,
+
+    // Other files
+    AnyResponseAssert,
+    ResponseAssert,
+    ButtonTemplate,
+    GenericTemplate,
+    BaseTemplate
 };
