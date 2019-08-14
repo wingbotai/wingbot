@@ -27,6 +27,9 @@
 <dd></dd>
 <dt><a href="#StateCondition">StateCondition</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#textFilter">textFilter</a> ⇒ <code>string</code></dt>
+<dd><p>Text filter function</p>
+</dd>
 </dl>
 
 {% raw %}<div id="MemoryStateStorage">&nbsp;</div>{% endraw %}
@@ -234,6 +237,7 @@ bot.use((req, res) => {
 
 * [ReturnSender](#ReturnSender)
     * [new ReturnSender(options, userId, incommingMessage, logger)](#new_ReturnSender_new)
+    * [.textFilter](#ReturnSender_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.modifyStateAfterLoad()](#ReturnSender_modifyStateAfterLoad) ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
     * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
 
@@ -243,9 +247,21 @@ bot.use((req, res) => {
 **Params**
 
 - options <code>Object</code>
+    - [.textFilter] [<code>textFilter</code>](#textFilter) - filter for saving the texts
 - userId <code>string</code>
 - incommingMessage <code>Object</code>
-- logger <code>console</code> <code> = </code> - console like logger
+- logger <code>console</code> - console like logger
+
+{% raw %}<div id="ReturnSender_textFilter">&nbsp;</div>{% endraw %}
+
+### returnSender.textFilter : [<code>textFilter</code>](#textFilter)
+Preprocess text for NLP
+For example to remove any confidential data
+
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+**Params**
+
+- text <code>string</code>
 
 {% raw %}<div id="ReturnSender_modifyStateAfterLoad">&nbsp;</div>{% endraw %}
 
@@ -299,4 +315,15 @@ router.use('*', (req, res, postBack) => {
 | Name | Type |
 | --- | --- |
 | [search] | <code>string</code> | 
+
+{% raw %}<div id="textFilter">&nbsp;</div>{% endraw %}
+
+## textFilter ⇒ <code>string</code>
+Text filter function
+
+**Kind**: global typedef  
+**Returns**: <code>string</code> - - filtered text  
+**Params**
+
+- text <code>string</code> - input text
 

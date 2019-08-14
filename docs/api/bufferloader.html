@@ -1065,6 +1065,9 @@
 <dd></dd>
 <dt><a href="#StateCondition">StateCondition</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#textFilter">textFilter</a> &#x21D2; <code>string</code></dt>
+<dd><p>Text filter function</p>
+</dd>
 </dl>
 
 <div id="MemoryStateStorage">&#xA0;</div>
@@ -1264,6 +1267,7 @@ bot.use((req, res) =&gt; {
 <ul>
 <li><a href="#ReturnSender">ReturnSender</a><ul>
 <li><a href="#new_ReturnSender_new">new ReturnSender(options, userId, incommingMessage, logger)</a></li>
+<li><a href="#ReturnSender_textFilter">.textFilter</a> : <a href="#textFilter"><code>textFilter</code></a></li>
 <li><a href="#ReturnSender_modifyStateAfterLoad">.modifyStateAfterLoad()</a> &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></li>
 <li><a href="#ReturnSender_modifyStateBeforeStore">.modifyStateBeforeStore()</a> &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></li>
 </ul>
@@ -1274,10 +1278,22 @@ bot.use((req, res) =&gt; {
 <h3 id="new-returnsenderoptions-userid-incommingmessage-logger"><a name="new-returnsenderoptions-userid-incommingmessage-logger" class="plugin-anchor" href="#new-returnsenderoptions-userid-incommingmessage-logger"><i class="fa fa-link" aria-hidden="true"></i></a>new ReturnSender(options, userId, incommingMessage, logger)</h3>
 <p><strong>Params</strong></p>
 <ul>
-<li>options <code>Object</code></li>
+<li>options <code>Object</code><ul>
+<li>[.textFilter] <a href="#textFilter"><code>textFilter</code></a> - filter for saving the texts</li>
+</ul>
+</li>
 <li>userId <code>string</code></li>
 <li>incommingMessage <code>Object</code></li>
-<li>logger <code>console</code> <code> = </code> - console like logger</li>
+<li>logger <code>console</code> - console like logger</li>
+</ul>
+<div id="ReturnSender_textFilter">&#xA0;</div>
+
+<h3 id="returnsendertextfilter--textfilter"><a name="returnsendertextfilter--textfilter" class="plugin-anchor" href="#returnsendertextfilter--textfilter"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.textFilter : <a href="#textFilter"><code>textFilter</code></a></h3>
+<p>Preprocess text for NLP
+For example to remove any confidential data</p>
+<p><strong>Kind</strong>: instance property of <a href="#ReturnSender"><code>ReturnSender</code></a><br><strong>Params</strong></p>
+<ul>
+<li>text <code>string</code></li>
 </ul>
 <div id="ReturnSender_modifyStateAfterLoad">&#xA0;</div>
 
@@ -1351,6 +1367,14 @@ bot.use((req, res) =&gt; {
 </tr>
 </tbody>
 </table>
+<div id="textFilter">&#xA0;</div>
+
+<h2 id="textfilter-&#x21D2;-string"><a name="textfilter-&#x21D2;-string" class="plugin-anchor" href="#textfilter-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>textFilter &#x21D2; <code>string</code></h2>
+<p>Text filter function</p>
+<p><strong>Kind</strong>: global typedef<br><strong>Returns</strong>: <code>string</code> - - filtered text<br><strong>Params</strong></p>
+<ul>
+<li>text <code>string</code> - input text</li>
+</ul>
 
                                 
                                 </section>
@@ -1394,7 +1418,7 @@ bot.use((req, res) =&gt; {
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2019-07-31T14:41:59.407Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T14:42:06.815Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2019-08-14T14:01:25.737Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-14T14:01:32.686Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

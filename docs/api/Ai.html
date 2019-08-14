@@ -1082,7 +1082,7 @@
 <li><a href="#Ai_logger">.logger</a> : <code>Object</code></li>
 <li><a href="#Ai_disableBookmarking">.disableBookmarking</a> : <code>boolean</code></li>
 <li><a href="#Ai_getPrefix">.getPrefix(prefix, req)</a></li>
-<li><a href="#Ai_textFilter">.textFilter()</a> : <a href="#textFilter"><code>textFilter</code></a></li>
+<li><a href="#Ai_textFilter">.textFilter(text)</a> : <a href="#textFilter"><code>textFilter</code></a></li>
 <li><a href="#Ai_mockIntent">.mockIntent([intent], [score])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Ai_register">.register(model, prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></li>
 <li><a href="#Ai_load">.load()</a></li>
@@ -1118,10 +1118,13 @@
 </ul>
 <div id="Ai_textFilter">&#xA0;</div>
 
-<h3 id="aitextfilter--textfilter"><a name="aitextfilter--textfilter" class="plugin-anchor" href="#aitextfilter--textfilter"><i class="fa fa-link" aria-hidden="true"></i></a>ai.textFilter() : <a href="#textFilter"><code>textFilter</code></a></h3>
+<h3 id="aitextfiltertext--textfilter"><a name="aitextfiltertext--textfilter" class="plugin-anchor" href="#aitextfiltertext--textfilter"><i class="fa fa-link" aria-hidden="true"></i></a>ai.textFilter(text) : <a href="#textFilter"><code>textFilter</code></a></h3>
 <p>Preprocess text for NLP
 For example to remove any confidential data</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Params</strong></p>
+<ul>
+<li>text <code>string</code></li>
+</ul>
 <div id="Ai_mockIntent">&#xA0;</div>
 
 <h3 id="aimockintentintent-score-&#x21D2;-this"><a name="aimockintentintent-score-&#x21D2;-this" class="plugin-anchor" href="#aimockintentintent-score-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ai.mockIntent([intent], [score]) &#x21D2; <code>this</code></h3>
@@ -1464,7 +1467,7 @@ bot.use(ai.globalMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (r
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2019-07-31T14:42:00.091Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-31T14:42:06.815Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2019-08-14T14:01:26.155Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-14T14:01:32.686Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

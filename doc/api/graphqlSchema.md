@@ -6,6 +6,7 @@
   * [Query](#query)
   * [Mutation](#mutation)
   * [Objects](#objects)
+    * [AiMatch](#aimatch)
     * [Campaign](#campaign)
     * [Campaigns](#campaigns)
     * [Conversation](#conversation)
@@ -338,6 +339,46 @@ run a campaign
 </table>
 
 ## Objects
+
+### AiMatch
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>path</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>sort</strong></td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>intent</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>score</strong></td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>entities</strong></td>
+<td valign="top">[<a href="#entity">Entity</a>!]</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 ### Campaign
 
@@ -857,6 +898,16 @@ run a campaign
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>aiConfidence</strong></td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>aiMatch</strong></td>
+<td valign="top"><a href="#aimatch">AiMatch</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>request</strong></td>
 <td valign="top"><a href="#any">Any</a>!</td>
 <td></td>
@@ -864,6 +915,11 @@ run a campaign
 <tr>
 <td colspan="2" valign="top"><strong>responses</strong></td>
 <td valign="top">[<a href="#any">Any</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>err</strong></td>
+<td valign="top"><a href="#string">String</a></td>
 <td></td>
 </tr>
 </tbody>

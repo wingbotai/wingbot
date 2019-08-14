@@ -43,7 +43,7 @@
     * [.logger](#Ai_logger) : <code>Object</code>
     * [.disableBookmarking](#Ai_disableBookmarking) : <code>boolean</code>
     * [.getPrefix(prefix, req)](#Ai_getPrefix)
-    * [.textFilter()](#Ai_textFilter) : [<code>textFilter</code>](#textFilter)
+    * [.textFilter(text)](#Ai_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.mockIntent([intent], [score])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
     * [.load()](#Ai_load)
@@ -82,11 +82,15 @@ The prefix translator - for request-specific prefixes
 
 {% raw %}<div id="Ai_textFilter">&nbsp;</div>{% endraw %}
 
-### ai.textFilter() : [<code>textFilter</code>](#textFilter)
+### ai.textFilter(text) : [<code>textFilter</code>](#textFilter)
 Preprocess text for NLP
 For example to remove any confidential data
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
+**Params**
+
+- text <code>string</code>
+
 {% raw %}<div id="Ai_mockIntent">&nbsp;</div>{% endraw %}
 
 ### ai.mockIntent([intent], [score]) ⇒ <code>this</code>
