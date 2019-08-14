@@ -292,7 +292,7 @@ class Processor extends EventEmitter {
             }
 
             if (continueToReducer) {
-                if (this.options.autoSeen && fromEvent) {
+                if (this.options.autoSeen && (!req.isReferral() || req.action()) && fromEvent) {
                     res.seen();
                 }
                 // process the event

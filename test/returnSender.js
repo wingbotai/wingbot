@@ -32,4 +32,41 @@ describe('<ReturnSender>', () => {
 
     });
 
+    describe('#textFilter', () => {
+
+        it('is able to filter text data', async () => {
+            const collect = [];
+            const log = (...args) => collect.push(args);
+
+            const rs = new ReturnSender(
+                { textFilter: () => 'good' },
+                'a',
+                { message: { text: 'bad' } },
+                // @ts-ignore
+                { log, error: log, info: log }
+            );
+
+            rs.send({ message: { text: 'bad' } });
+
+            rs.send({ message: { attachment: { type: 'template', payload: { text: 'bad' } } } });
+
+            const res = await rs.finished();
+
+            assert.equal(res.status, 200);
+            assert.deepEqual(collect, [
+                [
+                    'a',
+                    [
+                        { message: { text: 'good' } },
+                        { message: { attachment: { type: 'template', payload: { text: 'good' } } } }
+                    ],
+                    { message: { text: 'good' } },
+                    {}
+                ]
+            ]);
+
+        });
+
+    });
+
 });

@@ -294,13 +294,13 @@ class Router extends ReducerWrapper {
             if (gi.local && !pathMatches) {
                 continue;
             }
-            const wi = gi.matcher(req, res, true);
-            if (wi !== null) {
-                const sort = wi.score + (pathMatches ? localEnhancement : 0);
+            const intent = gi.matcher(req, res, true);
+            if (intent !== null) {
+                const sort = intent.score + (pathMatches ? localEnhancement : 0);
                 // console.log(sort, wi.intent);
                 winners.push({
                     ...gi,
-                    wi,
+                    intent,
                     sort
                 });
             }
@@ -309,6 +309,7 @@ class Router extends ReducerWrapper {
         winners.sort((l, r) => r.sort - l.sort);
 
         req._matchingGlobalIntents = winners.map(g => g.id);
+        req._match = req._match || winners[0];
 
         return winners[0];
     }
@@ -328,7 +329,7 @@ class Router extends ReducerWrapper {
             const match = this._getMatchingGlobalIntent(req, res);
 
             if (match) {
-                res.setBookmark(match.path, match.wi);
+                res.setBookmark(match.path, match.intent);
             }
         }
 

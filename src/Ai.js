@@ -71,14 +71,14 @@ class Ai {
          */
         this.disableBookmarking = false;
 
-        // eslint-disable-next-line jsdoc/require-param
         /**
          * Preprocess text for NLP
          * For example to remove any confidential data
          *
+         * @param {string} text
          * @type {textFilter}
          */
-        this.textFilter = w => w;
+        this.textFilter = text => text;
 
         this.matcher = matcher;
     }

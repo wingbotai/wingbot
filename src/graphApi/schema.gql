@@ -77,6 +77,14 @@ type Intent {
     entities: [Entity!]
 }
 
+type AiMatch {
+    path: String
+    sort: Float
+    intent: String
+    score: Float
+    entities: [Entity!]
+}
+
 type UserInteraction {
     timestamp: Float!
 
@@ -87,9 +95,13 @@ type UserInteraction {
     action: String
     data: Any
     expected: String
+    aiConfidence: Float
+    aiMatch: AiMatch
 
     request: Any!
     responses: [Any]!
+
+    err: String
 }
 
 type Conversation {

@@ -5,11 +5,20 @@
 
 const ai = require('./Ai');
 
+/**
+ * Text filter function
+ *
+ * @callback textFilter
+ * @param {string} text - input text
+ * @returns {string} - filtered text
+ */
+
 class ReturnSender {
 
     /**
      *
      * @param {Object} options
+     * @param {textFilter} [options.textFilter] - filter for saving the texts
      * @param {string} userId
      * @param {Object} incommingMessage
      * @param {console} logger - console like logger
@@ -43,6 +52,15 @@ class ReturnSender {
 
         this._simulateStateChange = null;
         this._simulateStateChangeOnLoad = null;
+
+        /**
+         * Preprocess text for NLP
+         * For example to remove any confidential data
+         *
+         * @param {string} text
+         * @type {textFilter}
+         */
+        this.textFilter = options.textFilter || (text => text);
     }
 
     _send (payload) { // eslint-disable-line no-unused-vars
@@ -69,6 +87,38 @@ class ReturnSender {
             return Promise.resolve();
         }
         return new Promise(r => setTimeout(r, wait));
+    }
+
+    _filterMessage (payload) {
+
+        // text message
+        if (payload.message && payload.message.text) {
+
+            return Object.assign({}, payload, {
+                message: Object.assign({}, payload.message, {
+                    text: this.textFilter(payload.message.text)
+                })
+            });
+        }
+
+        // button message
+        if (payload.message && payload.message.attachment
+            && payload.message.attachment.type === 'template'
+            && payload.message.attachment.payload
+            && payload.message.attachment.payload.text) {
+
+            return Object.assign({}, payload, {
+                message: Object.assign({}, payload.message, {
+                    attachment: Object.assign({}, payload.message.attachment, {
+                        payload: Object.assign({}, payload.message.attachment.payload, {
+                            text: this.textFilter(payload.message.attachment.payload.text)
+                        })
+                    })
+                })
+            });
+        }
+
+        return payload;
     }
 
     async _work () {
@@ -135,11 +185,34 @@ class ReturnSender {
         const meta = {};
 
         if (req) {
+            let text = req.text();
+
+            if (text) {
+                text = this.textFilter(text);
+            }
+
+            let aiMatch = null;
+
+            if (req._match) {
+                const {
+                    path,
+                    intent,
+                    sort
+                } = req._match;
+
+                aiMatch = Object.assign({}, intent, {
+                    path,
+                    sort
+                });
+            }
+
             const expected = req.expected();
             Object.assign(meta, {
                 timestamp: req.timestamp,
-                text: req.text(),
+                text,
                 intent: req.intent(ai.ai.confidence),
+                aiConfidence: ai.ai.confidence,
+                aiMatch,
                 intents: req.intents || [],
                 entities: (req.entities || []).filter(e => e.score >= ai.ai.confidence),
                 action: req.action(),
@@ -167,8 +240,11 @@ class ReturnSender {
 
             if (this._sendLogs) {
                 this._sendLogs = false;
+                const sent = this._sent.map(s => this._filterMessage(s));
+                const incomming = this._filterMessage(this._incommingMessage);
+
                 await Promise.resolve(this._logger
-                    .log(this._userId, this._sent, this._incommingMessage, meta));
+                    .log(this._userId, sent, incomming, meta));
             }
 
             const somethingSent = this._responses.length > 0;
@@ -178,11 +254,14 @@ class ReturnSender {
                 responses: this._responses
             };
         } catch (e) {
+            const sent = this._sent.map(s => this._filterMessage(s));
+            const incomming = this._filterMessage(this._incommingMessage);
+
             if (this._logger) {
                 await Promise.resolve(this._logger
-                    .error(e, this._userId, this._sent, this._incommingMessage, meta));
+                    .error(e, this._userId, sent, incomming, meta));
             } else {
-                console.error(e, this._userId, this._sent, this._incommingMessage); // eslint-disable-line
+                console.error(e, this._userId, sent, incomming); // eslint-disable-line
             }
             return {
                 status: e.code || 500,
