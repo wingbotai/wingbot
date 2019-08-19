@@ -1047,6 +1047,10 @@
 <dd></dd>
 <dt><a href="#CachedModel">CachedModel</a></dt>
 <dd></dd>
+<dt><a href="#AiMatching">AiMatching</a></dt>
+<dd><p>{AiMatching}</p>
+<p>Class responsible for NLP Routing by score</p>
+</dd>
 </dl>
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
@@ -1070,6 +1074,22 @@
 <dd></dd>
 <dt><a href="#Result">Result</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Compare">Compare</a> : <code>string</code></dt>
+<dd></dd>
+<dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#EntityExpression">EntityExpression</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#IntentRule">IntentRule</a> : <code>string</code> | <code>EntityExpression</code></dt>
+<dd></dd>
+<dt><a href="#RegexpComparator">RegexpComparator</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#PreprocessorOutput">PreprocessorOutput</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#AIRequest">AIRequest</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 <div id="Ai">&#xA0;</div>
@@ -1081,6 +1101,7 @@
 <li><a href="#Ai_confidence">.confidence</a> : <code>number</code></li>
 <li><a href="#Ai_logger">.logger</a> : <code>Object</code></li>
 <li><a href="#Ai_disableBookmarking">.disableBookmarking</a> : <code>boolean</code></li>
+<li><a href="#Ai_matcher">.matcher</a> : <a href="#AiMatching"><code>AiMatching</code></a></li>
 <li><a href="#Ai_getPrefix">.getPrefix(prefix, req)</a></li>
 <li><a href="#Ai_textFilter">.textFilter(text)</a> : <a href="#textFilter"><code>textFilter</code></a></li>
 <li><a href="#Ai_mockIntent">.mockIntent([intent], [score])</a> &#x21D2; <code>this</code></li>
@@ -1106,6 +1127,11 @@
 
 <h3 id="aidisablebookmarking--boolean"><a name="aidisablebookmarking--boolean" class="plugin-anchor" href="#aidisablebookmarking--boolean"><i class="fa fa-link" aria-hidden="true"></i></a>ai.disableBookmarking : <code>boolean</code></h3>
 <p>Backward compatibility - to be able to use older &quot;callback&quot; middleware</p>
+<p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
+<div id="Ai_matcher">&#xA0;</div>
+
+<h3 id="aimatcher--aimatching"><a name="aimatcher--aimatching" class="plugin-anchor" href="#aimatcher--aimatching"><i class="fa fa-link" aria-hidden="true"></i></a>ai.matcher : <a href="#AiMatching"><code>AiMatching</code></a></h3>
+<p>AI Score provider</p>
 <p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
 <div id="Ai_getPrefix">&#xA0;</div>
 
@@ -1322,6 +1348,118 @@ bot.use(ai.globalMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (r
 <ul>
 <li>text <code>string</code></li>
 </ul>
+<div id="AiMatching">&#xA0;</div>
+
+<h2 id="aimatching"><a name="aimatching" class="plugin-anchor" href="#aimatching"><i class="fa fa-link" aria-hidden="true"></i></a>AiMatching</h2>
+<p>{AiMatching}</p>
+<p>Class responsible for NLP Routing by score</p>
+<p><strong>Kind</strong>: global class  </p>
+<ul>
+<li><a href="#AiMatching">AiMatching</a><ul>
+<li><a href="#AiMatching_optionalHandicap">.optionalHandicap</a> : <code>number</code></li>
+<li><a href="#AiMatching_redundantHandicap">.redundantHandicap</a> : <code>number</code></li>
+<li><a href="#AiMatching_multiMatchGain">.multiMatchGain</a> : <code>number</code></li>
+<li><a href="#AiMatching_preprocessRule">.preprocessRule(intent)</a> &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
+<li><a href="#AiMatching_match">.match(req, rule)</a> &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></li>
+<li><a href="#AiMatching__matchRegexp">._matchRegexp(req, regexps)</a> &#x21D2; <code>boolean</code></li>
+</ul>
+</li>
+</ul>
+<div id="AiMatching_optionalHandicap">&#xA0;</div>
+
+<h3 id="aimatchingoptionalhandicap--number"><a name="aimatchingoptionalhandicap--number" class="plugin-anchor" href="#aimatchingoptionalhandicap--number"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.optionalHandicap : <code>number</code></h3>
+<p>When the entity is optional, the final score should be little bit lower
+(0.001 by default)</p>
+<p><strong>Kind</strong>: instance property of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<div id="AiMatching_redundantHandicap">&#xA0;</div>
+
+<h3 id="aimatchingredundanthandicap--number"><a name="aimatchingredundanthandicap--number" class="plugin-anchor" href="#aimatchingredundanthandicap--number"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.redundantHandicap : <code>number</code></h3>
+<p>When there are additional entities then required add a handicap for each unmatched entity
+Also works, when an optional entity was not matched
+(0.05 by default)</p>
+<p><strong>Kind</strong>: instance property of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<div id="AiMatching_multiMatchGain">&#xA0;</div>
+
+<h3 id="aimatchingmultimatchgain--number"><a name="aimatchingmultimatchgain--number" class="plugin-anchor" href="#aimatchingmultimatchgain--number"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.multiMatchGain : <code>number</code></h3>
+<p>When more than one AI features (Intent, Entity, Regex) are matching,
+enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
+(1.2 by default)</p>
+<p><strong>Kind</strong>: instance property of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<div id="AiMatching_preprocessRule">&#xA0;</div>
+
+<h3 id="aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput"><a name="aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput" class="plugin-anchor" href="#aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.preprocessRule(intent) &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></h3>
+<p>Create a rule to be cached inside a routing structure</p>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a><br><strong>Params</strong></p>
+<ul>
+<li>intent <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
+</ul>
+<div id="AiMatching_match">&#xA0;</div>
+
+<h3 id="aimatchingmatchreq-rule-&#x21D2;-intent--null"><a name="aimatchingmatchreq-rule-&#x21D2;-intent--null" class="plugin-anchor" href="#aimatchingmatchreq-rule-&#x21D2;-intent--null"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.match(req, rule) &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></h3>
+<p>Calculate a matching score of preprocessed rule against the request</p>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a><br><strong>Params</strong></p>
+<ul>
+<li>req <a href="#AIRequest"><code>AIRequest</code></a></li>
+<li>rule <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
+</ul>
+<div id="AiMatching__matchRegexp">&#xA0;</div>
+
+<h3 id="aimatchingmatchregexpreq-regexps-&#x21D2;-boolean"><a name="aimatchingmatchregexpreq-regexps-&#x21D2;-boolean" class="plugin-anchor" href="#aimatchingmatchregexpreq-regexps-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching._matchRegexp(req, regexps) &#x21D2; <code>boolean</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a><br><strong>Params</strong></p>
+<ul>
+<li>req <a href="#AIRequest"><code>AIRequest</code></a></li>
+<li>regexps <a href="#RegexpComparator"><code>Array.&lt;RegexpComparator&gt;</code></a></li>
+</ul>
+<div id="COMPARE">&#xA0;</div>
+
+<h2 id="compare--enum"><a name="compare--enum" class="plugin-anchor" href="#compare--enum"><i class="fa fa-link" aria-hidden="true"></i></a>COMPARE : <code>enum</code></h2>
+<p><strong>Kind</strong>: global enum<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EQUAL</td>
+<td><a href="#Compare"><code>Compare</code></a></td>
+<td><code>eq</code></td>
+</tr>
+<tr>
+<td>NOT_EQUAL</td>
+<td><a href="#Compare"><code>Compare</code></a></td>
+<td><code>ne</code></td>
+</tr>
+<tr>
+<td>RANGE</td>
+<td><a href="#Compare"><code>Compare</code></a></td>
+<td><code>range</code></td>
+</tr>
+<tr>
+<td>GT</td>
+<td><a href="#Compare"><code>Compare</code></a></td>
+<td><code>gt</code></td>
+</tr>
+<tr>
+<td>GTE</td>
+<td><a href="#Compare"><code>Compare</code></a></td>
+<td><code>gte</code></td>
+</tr>
+<tr>
+<td>LT</td>
+<td><a href="#Compare"><code>Compare</code></a></td>
+<td><code>lt</code></td>
+</tr>
+<tr>
+<td>LTE</td>
+<td><a href="#Compare"><code>Compare</code></a></td>
+<td><code>lte</code></td>
+</tr>
+</tbody>
+</table>
 <div id="EntityExpression">&#xA0;</div>
 
 <h2 id="entityexpression--object"><a name="entityexpression--object" class="plugin-anchor" href="#entityexpression--object"><i class="fa fa-link" aria-hidden="true"></i></a>EntityExpression : <code>Object</code></h2>
@@ -1347,7 +1485,7 @@ bot.use(ai.globalMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (r
 </tr>
 <tr>
 <td>[op]</td>
-<td><code>Compare</code></td>
+<td><a href="#Compare"><code>Compare</code></a></td>
 <td>comparison operation (eq</td>
 <td>ne</td>
 <td>range)</td>
@@ -1424,6 +1562,146 @@ bot.use(ai.globalMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (r
 <li>entities <a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></li>
 <li>intents <a href="#Intent"><code>Array.&lt;Intent&gt;</code></a></li>
 </ul>
+<div id="Compare">&#xA0;</div>
+
+<h2 id="compare--string"><a name="compare--string" class="plugin-anchor" href="#compare--string"><i class="fa fa-link" aria-hidden="true"></i></a>Compare : <code>string</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<div id="Entity">&#xA0;</div>
+
+<h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
+<ul>
+<li>entity <code>string</code></li>
+<li>value <code>string</code></li>
+<li>score <code>number</code></li>
+</ul>
+<div id="Intent">&#xA0;</div>
+
+<h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
+<ul>
+<li>[intent] <code>string</code></li>
+<li>score <code>number</code></li>
+<li>[entities] <a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></li>
+</ul>
+<div id="EntityExpression">&#xA0;</div>
+
+<h2 id="entityexpression--object"><a name="entityexpression--object" class="plugin-anchor" href="#entityexpression--object"><i class="fa fa-link" aria-hidden="true"></i></a>EntityExpression : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entity</td>
+<td><code>string</code></td>
+<td>the requested entity</td>
+</tr>
+<tr>
+<td>[optional]</td>
+<td><code>boolean</code></td>
+<td>the match is optional</td>
+</tr>
+<tr>
+<td>[op]</td>
+<td><a href="#Compare"><code>Compare</code></a></td>
+<td>comparison operation</td>
+</tr>
+<tr>
+<td>[compare]</td>
+<td><code>Array.&lt;string&gt;</code> \</td>
+<td><code>Array.&lt;number&gt;</code></td>
+<td>value to compare with</td>
+</tr>
+</tbody>
+</table>
+<div id="IntentRule">&#xA0;</div>
+
+<h2 id="intentrule--string--entityexpression"><a name="intentrule--string--entityexpression" class="plugin-anchor" href="#intentrule--string--entityexpression"><i class="fa fa-link" aria-hidden="true"></i></a>IntentRule : <code>string</code> | <a href="#EntityExpression"><code>EntityExpression</code></a></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<div id="RegexpComparator">&#xA0;</div>
+
+<h2 id="regexpcomparator--object"><a name="regexpcomparator--object" class="plugin-anchor" href="#regexpcomparator--object"><i class="fa fa-link" aria-hidden="true"></i></a>RegexpComparator : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td><code>RegExp</code></td>
+<td>regular expression</td>
+</tr>
+<tr>
+<td>t</td>
+<td><code>boolean</code></td>
+<td>use normalized text</td>
+</tr>
+</tbody>
+</table>
+<div id="PreprocessorOutput">&#xA0;</div>
+
+<h2 id="preprocessoroutput--object"><a name="preprocessoroutput--object" class="plugin-anchor" href="#preprocessoroutput--object"><i class="fa fa-link" aria-hidden="true"></i></a>PreprocessorOutput : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regexps</td>
+<td><a href="#RegexpComparator"><code>Array.&lt;RegexpComparator&gt;</code></a></td>
+</tr>
+<tr>
+<td>intents</td>
+<td><code>Array.&lt;string&gt;</code></td>
+</tr>
+<tr>
+<td>entities</td>
+<td><a href="#EntityExpression"><code>Array.&lt;EntityExpression&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="AIRequest">&#xA0;</div>
+
+<h2 id="airequest--object"><a name="airequest--object" class="plugin-anchor" href="#airequest--object"><i class="fa fa-link" aria-hidden="true"></i></a>AIRequest : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>intents</td>
+<td><a href="#Intent"><code>Array.&lt;Intent&gt;</code></a> \</td>
+<td><code>null</code></td>
+</tr>
+<tr>
+<td>entities</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1467,7 +1745,7 @@ bot.use(ai.globalMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (r
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2019-08-14T14:01:26.155Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-14T14:01:32.686Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2019-08-19T15:47:30.643Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-08-19T15:47:35.598Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

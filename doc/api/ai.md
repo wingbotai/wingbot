@@ -7,6 +7,10 @@
 <dd></dd>
 <dt><a href="#CachedModel">CachedModel</a></dt>
 <dd></dd>
+<dt><a href="#AiMatching">AiMatching</a></dt>
+<dd><p>{AiMatching}</p>
+<p>Class responsible for NLP Routing by score</p>
+</dd>
 </dl>
 
 ## Typedefs
@@ -31,6 +35,22 @@
 <dd></dd>
 <dt><a href="#Result">Result</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#Compare">Compare</a> : <code>string</code></dt>
+<dd></dd>
+<dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#EntityExpression">EntityExpression</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#IntentRule">IntentRule</a> : <code>string</code> | <code><a href="#EntityExpression">EntityExpression</a></code></dt>
+<dd></dd>
+<dt><a href="#RegexpComparator">RegexpComparator</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#PreprocessorOutput">PreprocessorOutput</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#AIRequest">AIRequest</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="Ai">&nbsp;</div>{% endraw %}
@@ -42,6 +62,7 @@
     * [.confidence](#Ai_confidence) : <code>number</code>
     * [.logger](#Ai_logger) : <code>Object</code>
     * [.disableBookmarking](#Ai_disableBookmarking) : <code>boolean</code>
+    * [.matcher](#Ai_matcher) : [<code>AiMatching</code>](#AiMatching)
     * [.getPrefix(prefix, req)](#Ai_getPrefix)
     * [.textFilter(text)](#Ai_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.mockIntent([intent], [score])](#Ai_mockIntent) ⇒ <code>this</code>
@@ -67,6 +88,12 @@ The logger (console by default)
 
 ### ai.disableBookmarking : <code>boolean</code>
 Backward compatibility - to be able to use older "callback" middleware
+
+**Kind**: instance property of [<code>Ai</code>](#Ai)  
+{% raw %}<div id="Ai_matcher">&nbsp;</div>{% endraw %}
+
+### ai.matcher : [<code>AiMatching</code>](#AiMatching)
+AI Score provider
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
 {% raw %}<div id="Ai_getPrefix">&nbsp;</div>{% endraw %}
@@ -303,6 +330,92 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 
 - text <code>string</code>
 
+{% raw %}<div id="AiMatching">&nbsp;</div>{% endraw %}
+
+## AiMatching
+{AiMatching}
+
+Class responsible for NLP Routing by score
+
+**Kind**: global class  
+
+* [AiMatching](#AiMatching)
+    * [.optionalHandicap](#AiMatching_optionalHandicap) : <code>number</code>
+    * [.redundantHandicap](#AiMatching_redundantHandicap) : <code>number</code>
+    * [.multiMatchGain](#AiMatching_multiMatchGain) : <code>number</code>
+    * [.preprocessRule(intent)](#AiMatching_preprocessRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
+    * [.match(req, rule)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
+    * [._matchRegexp(req, regexps)](#AiMatching__matchRegexp) ⇒ <code>boolean</code>
+
+{% raw %}<div id="AiMatching_optionalHandicap">&nbsp;</div>{% endraw %}
+
+### aiMatching.optionalHandicap : <code>number</code>
+When the entity is optional, the final score should be little bit lower
+(0.001 by default)
+
+**Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
+{% raw %}<div id="AiMatching_redundantHandicap">&nbsp;</div>{% endraw %}
+
+### aiMatching.redundantHandicap : <code>number</code>
+When there are additional entities then required add a handicap for each unmatched entity
+Also works, when an optional entity was not matched
+(0.05 by default)
+
+**Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
+{% raw %}<div id="AiMatching_multiMatchGain">&nbsp;</div>{% endraw %}
+
+### aiMatching.multiMatchGain : <code>number</code>
+When more than one AI features (Intent, Entity, Regex) are matching,
+enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
+(1.2 by default)
+
+**Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
+{% raw %}<div id="AiMatching_preprocessRule">&nbsp;</div>{% endraw %}
+
+### aiMatching.preprocessRule(intent) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
+Create a rule to be cached inside a routing structure
+
+**Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
+**Params**
+
+- intent [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
+
+{% raw %}<div id="AiMatching_match">&nbsp;</div>{% endraw %}
+
+### aiMatching.match(req, rule) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
+Calculate a matching score of preprocessed rule against the request
+
+**Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
+**Params**
+
+- req [<code>AIRequest</code>](#AIRequest)
+- rule [<code>PreprocessorOutput</code>](#PreprocessorOutput)
+
+{% raw %}<div id="AiMatching__matchRegexp">&nbsp;</div>{% endraw %}
+
+### aiMatching.\_matchRegexp(req, regexps) ⇒ <code>boolean</code>
+**Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
+**Params**
+
+- req [<code>AIRequest</code>](#AIRequest)
+- regexps [<code>Array.&lt;RegexpComparator&gt;</code>](#RegexpComparator)
+
+{% raw %}<div id="COMPARE">&nbsp;</div>{% endraw %}
+
+## COMPARE : <code>enum</code>
+**Kind**: global enum  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| EQUAL | [<code>Compare</code>](#Compare) | <code>eq</code> | 
+| NOT_EQUAL | [<code>Compare</code>](#Compare) | <code>ne</code> | 
+| RANGE | [<code>Compare</code>](#Compare) | <code>range</code> | 
+| GT | [<code>Compare</code>](#Compare) | <code>gt</code> | 
+| GTE | [<code>Compare</code>](#Compare) | <code>gte</code> | 
+| LT | [<code>Compare</code>](#Compare) | <code>lt</code> | 
+| LTE | [<code>Compare</code>](#Compare) | <code>lte</code> | 
+
 {% raw %}<div id="EntityExpression">&nbsp;</div>{% endraw %}
 
 ## EntityExpression : <code>Object</code>
@@ -313,7 +426,7 @@ bot.use(ai.globalMatch('intent1'), (req, res) => {
 | --- | --- | --- |
 | entity | <code>string</code> | the requested entity |
 | [optional] | <code>boolean</code> | entity is optional, can be missing in request |
-| [op] | <code>Compare</code> | comparison operation (eq|ne|range) |
+| [op] | [<code>Compare</code>](#Compare) | comparison operation (eq|ne|range) |
 | [compare] | <code>Array.&lt;string&gt;</code> \| <code>Array.&lt;number&gt;</code> | value to compare with |
 
 {% raw %}<div id="textFilter">&nbsp;</div>{% endraw %}
@@ -388,4 +501,80 @@ Text filter function
 
 - entities [<code>Array.&lt;Entity&gt;</code>](#Entity)
 - intents [<code>Array.&lt;Intent&gt;</code>](#Intent)
+
+{% raw %}<div id="Compare">&nbsp;</div>{% endraw %}
+
+## Compare : <code>string</code>
+**Kind**: global typedef  
+{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+
+## Entity : <code>Object</code>
+**Kind**: global typedef  
+**Params**
+
+- entity <code>string</code>
+- value <code>string</code>
+- score <code>number</code>
+
+{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+
+## Intent : <code>Object</code>
+**Kind**: global typedef  
+**Params**
+
+- [intent] <code>string</code>
+- score <code>number</code>
+- [entities] [<code>Array.&lt;Entity&gt;</code>](#Entity)
+
+{% raw %}<div id="EntityExpression">&nbsp;</div>{% endraw %}
+
+## EntityExpression : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| entity | <code>string</code> | the requested entity |
+| [optional] | <code>boolean</code> | the match is optional |
+| [op] | [<code>Compare</code>](#Compare) | comparison operation |
+| [compare] | <code>Array.&lt;string&gt;</code> \| <code>Array.&lt;number&gt;</code> | value to compare with |
+
+{% raw %}<div id="IntentRule">&nbsp;</div>{% endraw %}
+
+## IntentRule : <code>string</code> \| [<code>EntityExpression</code>](#EntityExpression)
+**Kind**: global typedef  
+{% raw %}<div id="RegexpComparator">&nbsp;</div>{% endraw %}
+
+## RegexpComparator : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| r | <code>RegExp</code> | regular expression |
+| t | <code>boolean</code> | use normalized text |
+
+{% raw %}<div id="PreprocessorOutput">&nbsp;</div>{% endraw %}
+
+## PreprocessorOutput : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| regexps | [<code>Array.&lt;RegexpComparator&gt;</code>](#RegexpComparator) | 
+| intents | <code>Array.&lt;string&gt;</code> | 
+| entities | [<code>Array.&lt;EntityExpression&gt;</code>](#EntityExpression) | 
+
+{% raw %}<div id="AIRequest">&nbsp;</div>{% endraw %}
+
+## AIRequest : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| text | <code>function</code> | 
+| intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) \| <code>null</code> | 
+| entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 

@@ -92,6 +92,7 @@ class AiMatching {
         /**
          * When there are additional entities then required add a handicap for each unmatched entity
          * Also works, when an optional entity was not matched
+         * (0.05 by default)
          *
          * @type {number}
          */
@@ -100,6 +101,7 @@ class AiMatching {
         /**
          * When more than one AI features (Intent, Entity, Regex) are matching,
          * enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
+         * (1.2 by default)
          *
          * @type {number}
          */
