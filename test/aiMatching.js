@@ -7,6 +7,7 @@ const assert = require('assert');
 const AiMatching = require('../src/AiMatching');
 
 const SCORE = 0.95;
+const MULTI_SCORE = 0.95 * 1.2;
 
 function entity (e, value = 'val', score = SCORE) {
     return { entity: e, value, score };
@@ -73,7 +74,7 @@ describe('<AiMatching>', () => {
             const goodReq = fakeReq([], [foo, bar]);
             const badReq = fakeReq([], [foo]);
 
-            const winningIntent = intent(null, [foo, bar], SCORE);
+            const winningIntent = intent(null, [foo, bar], MULTI_SCORE);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
@@ -151,17 +152,17 @@ describe('<AiMatching>', () => {
             const goodReq = fakeReq([], [foo, foo]);
             const badReq = fakeReq([], [foo]);
 
-            const winningIntent = intent(null, [foo, foo], SCORE);
+            const winningIntent = intent(null, [foo, foo], MULTI_SCORE);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
         it('should compare equality', () => {
-            const rule = ai.preprocessRule([{ entity: 'foo', op: 'eq', compare: ['yes'] }]);
-            const stringRule = ai.preprocessRule(['@foo=yes']);
+            const rule = ai.preprocessRule([{ entity: 'foo', op: 'eq', compare: ['yes yes č'] }]);
+            const stringRule = ai.preprocessRule(['@foo=yes yes č']);
 
-            const goodFoo = entity('foo', 'yes');
+            const goodFoo = entity('foo', 'yes yes č');
             const badFoo = entity('foo', 'no');
 
             const goodReq = fakeReq([], [goodFoo]);

@@ -80,6 +80,11 @@ class Ai {
          */
         this.textFilter = text => text;
 
+        /**
+         * AI Score provider
+         *
+         * @type {AiMatching}
+         */
         this.matcher = matcher;
     }
 
