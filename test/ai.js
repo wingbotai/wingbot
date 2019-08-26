@@ -262,7 +262,7 @@ describe('<Ai>', function () {
                     const { intent, score } = req.intents[0];
 
                     assert.strictEqual(intent, 'testIntent');
-                    assert.strictEqual(score, ai.confidence);
+                    assert.strictEqual(score, 1);
                 });
         });
 

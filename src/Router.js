@@ -322,8 +322,7 @@ class Router extends ReducerWrapper {
         await Ai.ai.preloadIntent(req);
 
         // if there's intent && action = is expected and there'a no bookmark
-        if (action
-            && req.isText()
+        if (req.isText()
             && !res.bookmark()) {
 
             const match = this._getMatchingGlobalIntent(req, res);

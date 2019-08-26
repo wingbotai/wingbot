@@ -337,8 +337,12 @@ class Ai {
 
             const action = req.action();
 
-            if (res.bookmark() && action !== res.currentAction()) {
-                return false;
+            if (res.bookmark()) {
+                const ca = res.currentAction();
+                // let fallbacks without action to pass
+                if (action !== ca && !`${ca}`.match(/\*$/)) {
+                    return false;
+                }
             }
 
             // do not continue, when there is another action expected

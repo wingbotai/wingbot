@@ -131,7 +131,7 @@ class AiMatching {
             const [val] = arr;
 
             return [
-                this._normalizeToNumber(val)
+                this._normalizeToNumber(val, 0)
             ];
         }
 
@@ -177,12 +177,12 @@ class AiMatching {
 
         optional = !!optional;
 
-        if (!op || !compare) {
+        if (!op) {
             return { entity, optional };
         }
 
         op = this._stringOpToOperation(op);
-        compare = this._normalizeComparisonArray(compare.split(','), op);
+        compare = this._normalizeComparisonArray(compare ? compare.split(',') : [], op);
 
         return {
             entity, op, compare, optional
@@ -391,8 +391,10 @@ class AiMatching {
             const index = requestEntities
                 .findIndex((e, i) => e.entity === wanted.entity && i >= start);
 
-            const matching = index !== -1
-                && this._entityIsMatching(wanted.op, wanted.compare, requestEntities[index].value);
+            const requestEntity = requestEntities[index];
+
+            const matching = this
+                ._entityIsMatching(wanted.op, wanted.compare, requestEntity && requestEntity.value);
 
             if (!matching && !wanted.optional) {
                 return { score: 0, handicap: 0, matched: [] };
@@ -407,9 +409,14 @@ class AiMatching {
                 handicap += this.optionalHandicap;
             }
 
-            matched.push(requestEntities[index]);
-            sum += requestEntities[index].score;
-            occurences.set(wanted.entity, index + 1);
+            if (requestEntity) {
+                matched.push(requestEntity);
+                sum += requestEntity.score;
+                occurences.set(wanted.entity, index + 1);
+            } else {
+                matched.push({ entity: wanted.entity, score: 1, value: undefined });
+                sum += 1;
+            }
         }
 
         handicap += (requestEntities.length - matched.length) * this.redundantHandicap;
@@ -419,11 +426,19 @@ class AiMatching {
     }
 
     _entityIsMatching (op, compare, value) {
-        switch (op || (typeof compare !== 'undefined' ? COMPARE.EQUAL : null)) {
+        const operation = op || (typeof compare !== 'undefined' ? COMPARE.EQUAL : null);
+
+        if (typeof value === 'undefined') {
+            return operation === COMPARE.NOT_EQUAL
+                ? true // eslint-disable-line no-unneeded-ternary
+                : false;
+        }
+
+        switch (operation) {
             case COMPARE.EQUAL:
-                return compare.includes(`${value}`);
+                return compare.length === 0 || compare.includes(`${value}`);
             case COMPARE.NOT_EQUAL:
-                return !compare.includes(`${value}`);
+                return compare.length !== 0 && !compare.includes(`${value}`);
             case COMPARE.RANGE: {
                 const [min, max] = compare;
                 const normalized = this._normalizeToNumber(value);

@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "2.16.1",
+  "version": "2.16.4",
   "description": "Facebook Messenger Chatbot Framework",
   "main": "index.js",
   "scripts": {

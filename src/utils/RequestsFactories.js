@@ -116,7 +116,7 @@ class RequestsFactories {
         };
     }
 
-    static intent (senderId, text, intentName, score = null, timestamp = makeTimestamp()) {
+    static intent (senderId, text, intentName, score = 1, timestamp = makeTimestamp()) {
         const res = RequestsFactories.text(senderId, text, timestamp);
 
         Object.assign(res, { intent: intentName, score });
@@ -130,7 +130,7 @@ class RequestsFactories {
         intentName,
         entity,
         value,
-        score = null,
+        score = 1,
         timestamp = makeTimestamp()
     ) {
         const res = RequestsFactories.text(senderId, text, timestamp);
@@ -138,7 +138,7 @@ class RequestsFactories {
         Object.assign(res, {
             intent: intentName,
             entities: [
-                { entity, value }
+                { entity, value, score }
             ],
             score
         });

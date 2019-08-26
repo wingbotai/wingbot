@@ -368,6 +368,16 @@ describe('<Router> logic', () => {
             });
 
             // @ts-ignore
+            nested.use(['nested-simple', ai.globalMatch(['simple-intent'])], (req, res) => {
+                res.text('simple intent');
+            });
+
+            // @ts-ignore
+            nested.use(['nested-hard', ai.globalMatch(['simple-intent', '@hard'])], (req, res) => {
+                res.text('hard intent');
+            });
+
+            // @ts-ignore
             nested.use(['f-global-locally', ai.localMatch('f-global')], (req, res) => {
                 res.text('f global intent locally');
             });
@@ -422,6 +432,20 @@ describe('<Router> logic', () => {
 
             t = new Tester(bot);
 
+        });
+
+        it('should prefer exact match', async () => {
+            await t.postBack('/start');
+
+            await t.intentWithEntity('simple-intent', 'hard', 'v', 'abc', 1);
+
+            t.passedAction('nested-hard');
+
+            await t.postBack('/start');
+
+            await t.intentWithEntity('simple-intent', 'hard', 'v', 'abc', 1);
+
+            t.passedAction('nested-hard');
         });
 
         it('should not fall into the global fallback', async () => {

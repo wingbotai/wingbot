@@ -356,7 +356,7 @@ class BuildRouter extends Router {
                 resolvers.push(route.path, aiResolver);
             } else if (aiResolver) {
                 resolvers.push([route.path, aiResolver]);
-            } else {
+            } else if (route.path) {
                 resolvers.push(route.path);
             }
         }

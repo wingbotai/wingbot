@@ -277,7 +277,7 @@ class Tester {
      *
      * @memberOf Tester
      */
-    intentWithEntity (intent, entity, value = entity, text = intent, score = null) {
+    intentWithEntity (intent, entity, value = entity, text = intent, score = 1) {
         return this.processMessage(Request
             .intentWithEntity(this.senderId, text, intent, entity, value, score));
     }

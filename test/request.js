@@ -367,13 +367,13 @@ describe('Request', function () {
         it('should return intent data, when present', async () => {
             const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
             await Ai.ai.load()(req);
-            assert.deepStrictEqual(req.intent(true), { intent: 'foo', score: Ai.ai.confidence });
+            assert.deepStrictEqual(req.intent(true), { intent: 'foo', score: 1 });
         });
 
         it('should return null, when present, but score is too low', async () => {
             const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
             await Ai.ai.load()(req);
-            assert.strictEqual(req.intent(0.99), null);
+            assert.strictEqual(req.intent(1.1), null);
             assert.strictEqual(req.intent(0.1), 'foo');
         });
 

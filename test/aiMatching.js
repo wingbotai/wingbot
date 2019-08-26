@@ -194,6 +194,57 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
+        it('should compare inequality with empty sets', () => {
+            const rule = ai.preprocessRule([{ entity: 'foo', op: 'ne', compare: [] }]);
+            const stringRule = ai.preprocessRule(['@foo!=']);
+
+            const goodFoo = entity('noFoo', 'no');
+            const badFoo = entity('foo', 'yes');
+
+            const goodReq = fakeReq([], [goodFoo]);
+            const badReq = fakeReq([], [badFoo]);
+
+            const winningIntent = intent(null, [{ entity: 'foo', score: 1, value: undefined }], 1);
+
+            assert.deepEqual(ai.match(goodReq, rule), winningIntent);
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+            assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
+        });
+
+        it('works good, when theres no comparison data', () => {
+            const lt = ai.preprocessRule(['@foo<']);
+            const gt = ai.preprocessRule(['@foo>']);
+            const lte = ai.preprocessRule(['@foo<=']);
+            const gte = ai.preprocessRule(['@foo>=']);
+
+            const more = entity('foo', '1');
+            const less = entity('foo', '-1');
+            const zero = entity('foo', '0');
+
+            const moreReq = fakeReq([], [more]);
+            const lessReq = fakeReq([], [less]);
+            const zeroReq = fakeReq([], [zero]);
+
+
+            assert.strictEqual(ai.match(moreReq, lt), null);
+            assert.strictEqual(ai.match(zeroReq, lt), null);
+            assert.notStrictEqual(ai.match(lessReq, lt), null);
+
+            assert.notStrictEqual(ai.match(moreReq, gt), null);
+            assert.strictEqual(ai.match(zeroReq, gt), null);
+            assert.strictEqual(ai.match(lessReq, gt), null);
+
+            assert.strictEqual(ai.match(moreReq, lte), null);
+            assert.notStrictEqual(ai.match(zeroReq, lte), null);
+            assert.notStrictEqual(ai.match(lessReq, lte), null);
+
+            assert.notStrictEqual(ai.match(moreReq, gte), null);
+            assert.notStrictEqual(ai.match(zeroReq, gte), null);
+            assert.strictEqual(ai.match(lessReq, gte), null);
+
+        });
+
         it('should compare LT', () => {
             const rule = ai.preprocessRule([{ entity: 'foo', op: 'lt', compare: [2] }]);
             const stringRule = ai.preprocessRule(['@foo<2']);
