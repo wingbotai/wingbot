@@ -152,7 +152,7 @@ Makes recognised AI intent request with entity
 - entity <code>string</code>
 - [value] <code>string</code>
 - [text] <code>string</code>
-- [score] <code>number</code> <code> = </code>
+- [score] <code>number</code> <code> = 1</code>
 
 {% raw %}<div id="Tester_passThread">&nbsp;</div>{% endraw %}
 

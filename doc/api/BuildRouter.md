@@ -30,7 +30,7 @@
     * _instance_
         * [.keepConfigFor](#BuildRouter_keepConfigFor)
     * _static_
-        * [.fromData(blocks, plugins)](#BuildRouter_fromData)
+        * [.fromData(blocks, plugins, [context])](#BuildRouter_fromData)
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
@@ -54,6 +54,7 @@ Create new router from configuration
 - context <code>Object</code> - the building context
     - [.linksTranslator] <code>Object</code> - function, that translates links globally
     - [.configStorage] [<code>ConfigStorage</code>](#ConfigStorage) - function, that translates links globally
+    - [.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule
 - [request] <code>function</code> - the building context
 
 **Example**  
@@ -111,12 +112,13 @@ Timeout, when the router is not checking for new configuration
 
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
-### BuildRouter.fromData(blocks, plugins)
+### BuildRouter.fromData(blocks, plugins, [context])
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
 **Params**
 
 - blocks <code>Array.&lt;Object&gt;</code> - blocks list
 - plugins [<code>Plugins</code>](#Plugins)
+- [context] <code>Object</code>
 
 {% raw %}<div id="BuildRouter">&nbsp;</div>{% endraw %}
 
@@ -129,7 +131,7 @@ Timeout, when the router is not checking for new configuration
     * _instance_
         * [.keepConfigFor](#BuildRouter_keepConfigFor)
     * _static_
-        * [.fromData(blocks, plugins)](#BuildRouter_fromData)
+        * [.fromData(blocks, plugins, [context])](#BuildRouter_fromData)
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
@@ -153,6 +155,7 @@ Create new router from configuration
 - context <code>Object</code> - the building context
     - [.linksTranslator] <code>Object</code> - function, that translates links globally
     - [.configStorage] [<code>ConfigStorage</code>](#ConfigStorage) - function, that translates links globally
+    - [.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule
 - [request] <code>function</code> - the building context
 
 **Example**  
@@ -210,12 +213,13 @@ Timeout, when the router is not checking for new configuration
 
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
-### BuildRouter.fromData(blocks, plugins)
+### BuildRouter.fromData(blocks, plugins, [context])
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
 **Params**
 
 - blocks <code>Array.&lt;Object&gt;</code> - blocks list
 - plugins [<code>Plugins</code>](#Plugins)
+- [context] <code>Object</code>
 
 {% raw %}<div id="Plugins">&nbsp;</div>{% endraw %}
 
