@@ -6,7 +6,7 @@
 const Router = require('../Router');
 const customFn = require('../utils/customFn');
 
-function subscribtions (params, { isLastIndex }) {
+function subscribtions (params, { isLastIndex, allowForbiddenSnippetWords }) {
     const {
         tags = [],
         unsetTag = false,
@@ -17,7 +17,7 @@ function subscribtions (params, { isLastIndex }) {
     let condition = null;
 
     if (hasCondition) {
-        condition = customFn(conditionFn);
+        condition = customFn(conditionFn, '', allowForbiddenSnippetWords);
     }
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;

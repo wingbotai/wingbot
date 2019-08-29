@@ -38,6 +38,7 @@ class BuildRouter extends Router {
      * @param {Object} context - the building context
      * @param {Object} [context.linksTranslator] - function, that translates links globally
      * @param {ConfigStorage} [context.configStorage] - function, that translates links globally
+     * @param {boolean} [context.allowForbiddenSnippetWords] - disable security rule
      * @param {Function} [request] - the building context
      * @example
      *
@@ -441,15 +442,13 @@ class BuildRouter extends Router {
 /**
  * @param {Object[]} blocks - blocks list
  * @param {Plugins} plugins
+ * @param {Object} [context]
  */
-BuildRouter.fromData = function fromData (blocks, plugins) {
-    const context = {
-        blocks
-    };
+BuildRouter.fromData = function fromData (blocks, plugins, context = {}) {
 
     const rootBlock = blocks.find(block => block.isRoot);
 
-    return new BuildRouter(rootBlock, plugins, context);
+    return new BuildRouter(rootBlock, plugins, Object.assign({ blocks }, context));
 };
 
 module.exports = BuildRouter;

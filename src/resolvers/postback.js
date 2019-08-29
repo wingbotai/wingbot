@@ -11,7 +11,7 @@ function postback ({
     postBack: staticAction,
     hasCondition,
     conditionFn
-}, { linksMap, isLastIndex }) {
+}, { linksMap, isLastIndex, allowForbiddenSnippetWords }) {
     let action = staticAction;
 
     if (!action && routeId) {
@@ -25,7 +25,7 @@ function postback ({
     let condition = null;
 
     if (hasCondition) {
-        condition = customFn(conditionFn);
+        condition = customFn(conditionFn, '', allowForbiddenSnippetWords);
     }
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;

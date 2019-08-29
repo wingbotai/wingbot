@@ -7,10 +7,17 @@ const Router = require('../Router'); // eslint-disable-line
 const ai = require('../Ai'); // eslint-disable-line
 const request = require('request-promise-native'); // eslint-disable-line
 
-function customFn (code, description) {
+const FORBIDDEN = /([^a-zA-Z0-9]|^)(this|process|require|module|console)([^a-zA-Z0-9]|$)/;
+
+function customFn (code, description = '', allowForbiddenSnippetWords = false) {
     if (typeof code !== 'string') {
         throw new Error(`Inline code '${description}' has empty code`);
     }
+
+    if (code.match(FORBIDDEN) && !allowForbiddenSnippetWords) {
+        throw new Error('Code contains a forbidden word (this,process,require,module,console)');
+    }
+
     let resolver;
 
     try {

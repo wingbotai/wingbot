@@ -63,7 +63,7 @@ function parseReplies (replies, linksMap) {
 }
 
 
-function message (params, { isLastIndex, linksMap }) {
+function message (params, { isLastIndex, linksMap, allowForbiddenSnippetWords }) {
     if (typeof params.text !== 'string' && !Array.isArray(params.text)) {
         throw new Error('Message should be a text!');
     }
@@ -81,7 +81,7 @@ function message (params, { isLastIndex, linksMap }) {
     let condition = null;
 
     if (params.hasCondition) {
-        condition = customFn(params.conditionFn);
+        condition = customFn(params.conditionFn, '', allowForbiddenSnippetWords);
     }
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;

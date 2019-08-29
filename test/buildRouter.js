@@ -11,6 +11,8 @@ const Plugins = require('../src/Plugins');
 const MemoryBotConfigStorage = require('../src/tools/MemoryBotConfigStorage');
 // @ts-ignore
 const testbot = require('./testbot.json');
+// @ts-ignore
+const snippetTestbot = require('./invalid-snippet-testbot.json');
 
 function wait (ms) {
     return new Promise(r => setTimeout(r, ms));
@@ -325,6 +327,28 @@ describe('<BuildRouter>', async () => {
             assert.strictEqual(bot._runningReqs.length, 0, 'the request has to be running');
             t.res(0).contains('foo');
         });
+    });
+
+    it('forbids selected keywords in snippets', async () => {
+        const plugins = new Plugins();
+
+        plugins.register('exampleBlock', async (req, res) => {
+            await res.run('responseBlockName');
+        });
+
+        plugins.register('routerBlock', new Router());
+
+        assert.throws(() => {
+            BuildRouter.fromData(snippetTestbot.blocks, plugins);
+        }, /forbidden\sword/);
+
+        assert.doesNotThrow(() => {
+            BuildRouter.fromData(snippetTestbot.blocks, plugins, {
+                allowForbiddenSnippetWords: true
+            });
+        });
+
+
     });
 
 });

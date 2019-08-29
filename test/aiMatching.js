@@ -65,6 +65,22 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
+        it('should match more intents without entities', () => {
+            const rule = ai.preprocessRule(['foo', 'bar', '@hehe!=']);
+
+            const foo = intent('foo');
+            const fooReq = fakeReq([foo]);
+
+            const bar = intent('bar');
+            const barReq = fakeReq([bar]);
+
+            const badReq = fakeReq([intent('bad')]);
+
+            assert.deepEqual(ai.match(fooReq, rule), Object.assign({}, foo, { score: 1.2 }));
+            assert.deepEqual(ai.match(barReq, rule), Object.assign({}, bar, { score: 1.2 }));
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+        });
+
         it('should match more entities', () => {
             const rule = ai.preprocessRule(['@foo', '@bar']);
 

@@ -5,8 +5,8 @@
 
 const customFn = require('../utils/customFn');
 
-function inlineCode (params, { isLastIndex }) {
-    const fn = customFn(params.code, params.description);
+function inlineCode (params, { isLastIndex, allowForbiddenSnippetWords }) {
+    const fn = customFn(params.code, params.description, allowForbiddenSnippetWords);
 
     return async function (req, res, postBack, path, action) {
         let ret = fn(req, res, postBack, path, action);

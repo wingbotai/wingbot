@@ -16,14 +16,19 @@ function button ({
     text = null,
     hasCondition,
     conditionFn
-}, { isLastIndex, linksMap, linksTranslator }) {
+}, {
+    isLastIndex,
+    linksMap,
+    linksTranslator,
+    allowForbiddenSnippetWords
+}) {
 
     const compiledText = cachedTranslatedCompilator(text);
 
     let condition = null;
 
     if (hasCondition) {
-        condition = customFn(conditionFn);
+        condition = customFn(conditionFn, '', allowForbiddenSnippetWords);
     }
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
