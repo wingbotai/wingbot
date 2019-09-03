@@ -7,7 +7,7 @@ const Router = require('../Router'); // eslint-disable-line
 const ai = require('../Ai'); // eslint-disable-line
 const request = require('request-promise-native'); // eslint-disable-line
 
-const FORBIDDEN = /([^a-zA-Z0-9]|^)(this|process|require|module|console)([^a-zA-Z0-9]|$)/;
+const FORBIDDEN = /([^a-zA-Z0-9]|^)(this|process|require|module|console|global)([^a-zA-Z0-9]|$)/;
 
 function customFn (code, description = '', allowForbiddenSnippetWords = false) {
     if (typeof code !== 'string') {
