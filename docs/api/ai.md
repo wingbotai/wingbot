@@ -341,7 +341,8 @@ Class responsible for NLP Routing by score
 
 * [AiMatching](#AiMatching)
     * [.optionalHandicap](#AiMatching_optionalHandicap) : <code>number</code>
-    * [.redundantHandicap](#AiMatching_redundantHandicap) : <code>number</code>
+    * [.redundantEntityHandicap](#AiMatching_redundantEntityHandicap) : <code>number</code>
+    * [.redundantIntentHandicap](#AiMatching_redundantIntentHandicap) : <code>number</code>
     * [.multiMatchGain](#AiMatching_multiMatchGain) : <code>number</code>
     * [.preprocessRule(intent)](#AiMatching_preprocessRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
     * [.match(req, rule)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
@@ -354,12 +355,19 @@ When the entity is optional, the final score should be little bit lower
 (0.001 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
-{% raw %}<div id="AiMatching_redundantHandicap">&nbsp;</div>{% endraw %}
+{% raw %}<div id="AiMatching_redundantEntityHandicap">&nbsp;</div>{% endraw %}
 
-### aiMatching.redundantHandicap : <code>number</code>
+### aiMatching.redundantEntityHandicap : <code>number</code>
 When there are additional entities then required add a handicap for each unmatched entity
 Also works, when an optional entity was not matched
 (0.05 by default)
+
+**Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
+{% raw %}<div id="AiMatching_redundantIntentHandicap">&nbsp;</div>{% endraw %}
+
+### aiMatching.redundantIntentHandicap : <code>number</code>
+When there is additional intent, the final score will be lowered by this value
+(0.15 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
 {% raw %}<div id="AiMatching_multiMatchGain">&nbsp;</div>{% endraw %}
