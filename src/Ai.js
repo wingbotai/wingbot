@@ -45,7 +45,7 @@ class Ai {
          *
          * @type {number}
          */
-        this.confidence = 0.94;
+        this.confidence = 0.85;
 
         /**
          * The logger (console by default)

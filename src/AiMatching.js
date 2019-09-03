@@ -96,7 +96,15 @@ class AiMatching {
          *
          * @type {number}
          */
-        this.redundantHandicap = 0.05;
+        this.redundantEntityHandicap = 0.05;
+
+        /**
+         * When there is additional intent, the final score will be lowered by this value
+         * (0.15 by default)
+         *
+         * @type {number}
+         */
+        this.redundantIntentHandicap = 0.15;
 
         /**
          * When more than one AI features (Intent, Entity, Regex) are matching,
@@ -107,6 +115,16 @@ class AiMatching {
          */
         this.multiMatchGain = 1.2;
     }
+
+    get redundantHandicap () {
+        return (this.redundantEntityHandicap + this.redundantIntentHandicap) / 2;
+    }
+
+    set redundantHandicap (handicap) {
+        this.redundantEntityHandicap = handicap;
+        this.redundantIntentHandicap = handicap;
+    }
+
 
     _normalizeToNumber (value, returnIfEmpty = null) {
         if (typeof value === 'string') {
@@ -285,13 +303,13 @@ class AiMatching {
         const regexpMatching = this._matchRegexp(req, regexps);
 
         if (regexpMatching || (intents.length === 0 && regexps.length === 0)) {
-            const noIntentHandicap = req.intents.length === 0 ? 0 : this.redundantHandicap;
+            const noIntentHandicap = req.intents.length === 0 ? 0 : this.redundantIntentHandicap;
 
             if (entities.length === 0) {
                 if (!regexpMatching) {
                     return null;
                 }
-                const handicap = req.entities.length * this.redundantHandicap;
+                const handicap = req.entities.length * this.redundantEntityHandicap;
                 return {
                     intent: null,
                     entites: [],
@@ -356,7 +374,7 @@ class AiMatching {
         const useEntities = requestIntent.entities || allEntities;
 
         if (wantedEntities.length === 0) {
-            return requestIntent.score - (useEntities.length * this.redundantHandicap);
+            return requestIntent.score - (useEntities.length * this.redundantEntityHandicap);
         }
 
         const { score, handicap, matched } = this
@@ -401,7 +419,7 @@ class AiMatching {
             }
 
             if (!matching) { // optional
-                handicap += this.redundantHandicap;
+                handicap += this.redundantEntityHandicap;
                 continue;
             }
 
@@ -419,7 +437,7 @@ class AiMatching {
             }
         }
 
-        handicap += (requestEntities.length - matched.length) * this.redundantHandicap;
+        handicap += (requestEntities.length - matched.length) * this.redundantEntityHandicap;
         const score = matched.length === 0 ? 0 : sum / matched.length;
 
         return { score, handicap, matched };
