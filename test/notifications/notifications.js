@@ -180,9 +180,11 @@ describe('Notifications', function () {
 
             await notifications.processQueue(t);
 
+            await wait(200);
+
             t.passedAction('testAction');
 
-            await wait(200);
+            await wait(300);
 
             t.cleanup();
 
@@ -446,7 +448,11 @@ describe('Notifications', function () {
 
             t.cleanup();
 
+            await wait(200);
+
             await notifications.processQueue(t, 10000, 10);
+
+            await wait(200);
 
             t.passedAction('testAction');
         });

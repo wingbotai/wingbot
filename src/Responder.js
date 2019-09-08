@@ -491,7 +491,11 @@ class Responder {
             }
         };
 
-        this._autoTypingIfEnabled(null);
+        const autoTyping = typeof payload.text === 'string'
+            ? payload.text
+            : null;
+
+        this._autoTypingIfEnabled(autoTyping);
         this._send(messageData);
         return this;
     }

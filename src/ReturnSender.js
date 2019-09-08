@@ -61,6 +61,8 @@ class ReturnSender {
          * @type {textFilter}
          */
         this.textFilter = options.textFilter || (text => text);
+
+        this._lastWait = 0;
     }
 
     _send (payload) { // eslint-disable-line no-unused-vars
@@ -83,10 +85,16 @@ class ReturnSender {
     }
 
     _wait (wait) {
+        const nextWait = this._lastWait
+            ? Math.round(wait * 0.75) + this._lastWait
+            : wait;
+
+        this._lastWait = Math.round(wait * 0.334);
+
         if (!this.waits) {
             return Promise.resolve();
         }
-        return new Promise(r => setTimeout(r, wait));
+        return new Promise(r => setTimeout(r, nextWait));
     }
 
     _filterMessage (payload) {
