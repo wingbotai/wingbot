@@ -28,7 +28,7 @@ class GraphApi {
      *
      * @param {Object[]} apis - list of connected APIs
      * @param {Object} options - API options
-     * @param {string} options.token - wingbot token
+     * @param {string|Promise<string>} options.token - wingbot token
      * @param {string} [options.appToken] - public token
      * @param {string[]} [options.groups] - list of allowed bot groups
      */

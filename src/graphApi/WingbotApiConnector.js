@@ -48,7 +48,11 @@ class WingbotApiConnector {
         }
 
         if (this._appToken && token === this._appToken) {
-            return { id: null, groups: [{ group: 'appToken' }] };
+            const appToken = await Promise.resolve(this._appToken);
+
+            if (token === appToken) {
+                return { id: null, groups: [{ group: 'appToken' }] };
+            }
         }
 
         try {
@@ -61,7 +65,9 @@ class WingbotApiConnector {
             // @ts-ignore
             const { header, payload } = decoded;
 
-            if (wingbotToken !== payload.token) {
+            const resolvedToken = await Promise.resolve(wingbotToken);
+
+            if (resolvedToken !== payload.token) {
                 throw new Error('Token does not match');
             }
 
