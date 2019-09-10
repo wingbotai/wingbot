@@ -184,6 +184,12 @@ class Processor extends EventEmitter {
         ),
         responderData = {}
     ) {
+        // @ts-ignore
+        if (this.reducer && typeof this.reducer.preload === 'function') {
+            // @ts-ignore
+            this.reducer.preload()
+                .catch(e => this.options.log.error('preload error', e));
+        }
 
         try {
             for (const plugin of this._plugins) {
@@ -433,7 +439,7 @@ class Processor extends EventEmitter {
         }
 
         return new Promise((resolve, reject) => {
-            let retrys = lock === 0 ? 0 : 4;
+            let retrys = lock === 0 ? 0 : 8;
 
             const onLoad = (res) => {
                 if (!res) {
@@ -455,7 +461,7 @@ class Processor extends EventEmitter {
     }
 
     _wait (timeout) {
-        const wait = Math.min(timeout + 50, 2000);
+        const wait = Math.min(timeout + 50, 1000);
         return new Promise(r => setTimeout(() => r(null), wait));
     }
 

@@ -133,7 +133,7 @@ class BuildRouter extends Router {
         }
     }
 
-    async reduce (...args) {
+    async preload () {
         if (this._botLoaded === null) {
             this._botLoaded = this._checkForBotUpdate()
                 .then(() => {
@@ -141,7 +141,11 @@ class BuildRouter extends Router {
                 });
         }
 
-        await this._botLoaded;
+        return this._botLoaded;
+    }
+
+    async reduce (...args) {
+        await this.preload();
 
         let runningRequest;
         try {
