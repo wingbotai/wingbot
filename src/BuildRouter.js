@@ -127,7 +127,7 @@ class BuildRouter extends Router {
             this._loadBotUrl = block.url;
         } else if (typeof block.botId === 'string') {
             const snapshot = block.snapshot || 'production';
-            this._loadBotUrl = `https://api.wingbot.ai/bots/${block.botId}/snapshots/${snapshot}`;
+            this._loadBotUrl = `https://api.wingbot.ai/bots/${block.botId}/snapshots/${snapshot}/blocks`;
         } else {
             throw new Error('Not implemented yet');
         }

@@ -51,6 +51,8 @@ class Processor extends EventEmitter {
      * @param {Function} [options.log] - console like error logger
      * @param {Object} [options.defaultState] - default chat state
      * @param {boolean} [options.autoSeen] - send seen automatically
+     * @param {boolean} [options.waitsForSender] - use 'false' resolve the processing promise
+     *     without waiting for message sender
      * @param {number} [options.redirectLimit] - maximum number of redirects at single request
      *
      * @memberOf Processor
@@ -69,7 +71,8 @@ class Processor extends EventEmitter {
             autoTyping: false,
             autoSeen: false,
             redirectLimit: 20,
-            nameFromState: NAME_FROM_STATE
+            nameFromState: NAME_FROM_STATE,
+            waitsForSender: true
         };
 
         Object.assign(this.options, options);
@@ -228,6 +231,24 @@ class Processor extends EventEmitter {
         try {
             const { req, res } = await this
                 ._processMessage(message, pageId, messageSender, responderData, true);
+
+            if (this.options.waitsForSender) {
+                result = await messageSender.finished(req, res);
+            } else {
+                messageSender.finished(req, res).catch(() => {});
+                result = { code: 200 };
+            }
+        } catch (e) {
+            const { code = 500 } = e;
+            this.reportSendError(e, message, pageId);
+            result = { status: code, error: e.message };
+        }
+        return result;
+    }
+
+    async _finishSender (message, pageId, messageSender, req, res) {
+        let result;
+        try {
             result = await messageSender.finished(req, res);
         } catch (e) {
             const { code = 500 } = e;
