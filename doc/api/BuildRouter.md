@@ -47,7 +47,7 @@ Create new router from configuration
 - block <code>Object</code>
     - [.botId] <code>string</code> - the ID of bot
     - [.snapshot] <code>string</code> - snapshot stage of bot
-    - [.token] <code>string</code> - authorization token for bot
+    - [.token] <code>string</code> | <code>Promise.&lt;string&gt;</code> - authorization token for bot
     - [.routes] <code>Object</code> - list of routes for direct bot build
     - [.url] <code>string</code> - specify alternative configuration resource
 - plugins [<code>Plugins</code>](#Plugins) - custom code blocks resource
@@ -148,7 +148,7 @@ Create new router from configuration
 - block <code>Object</code>
     - [.botId] <code>string</code> - the ID of bot
     - [.snapshot] <code>string</code> - snapshot stage of bot
-    - [.token] <code>string</code> - authorization token for bot
+    - [.token] <code>string</code> | <code>Promise.&lt;string&gt;</code> - authorization token for bot
     - [.routes] <code>Object</code> - list of routes for direct bot build
     - [.url] <code>string</code> - specify alternative configuration resource
 - plugins [<code>Plugins</code>](#Plugins) - custom code blocks resource

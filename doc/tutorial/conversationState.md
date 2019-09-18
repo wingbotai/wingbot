@@ -84,3 +84,13 @@ module.exports = bot;
 
 > It's better to avoid using "default state", because when you need to change default state in future updates,
 > you should also migrate current users states to new structure.
+
+## Default state properties
+
+| property | meaning |
+|----------|---------|
+|`lastAction`|last action the user visited|
+|`lastInteraction`|last action excluding "expected actions"|
+|`beforeLastInteraction`|previous vaule of `lastInteraction`|
+
+> `beforeLastInteraction` is useful property, which makes bot able to go back to the last interaction using `postBack(req.state.beforeLastInteraction)`

@@ -61,7 +61,7 @@ Experimental chatbot API
 
 - apis <code>Array.&lt;Object&gt;</code> - list of connected APIs
 - options <code>Object</code> - API options
-    - .token <code>string</code> - wingbot token
+    - .token <code>string</code> | <code>Promise.&lt;string&gt;</code> - wingbot token
     - [.appToken] <code>string</code> - public token
     - [.groups] <code>Array.&lt;string&gt;</code> - list of allowed bot groups
 

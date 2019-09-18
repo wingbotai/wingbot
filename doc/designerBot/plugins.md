@@ -107,7 +107,7 @@ exampleBlock.use('/', (req, res, postBack) => {
 exampleBlock.use('after-timeout', async (req, res) => {
     const { myVar } = req.action(true);
 
-    await req.run('responseBlockName');
+    await res.run('responseBlockName');
 });
 
 plugins.register('exampleBlock', exampleBlock);
