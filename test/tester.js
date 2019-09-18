@@ -220,7 +220,10 @@ describe('Tester', function () {
             _expected: null,
             _lastAction: '/postBack',
             _expectedKeywords: null,
-            _lastVisitedPath: null
+            _lastVisitedPath: null,
+            beforeLastInteraction: '/start',
+            lastAction: '/postBack',
+            lastInteraction: '/postBack'
         });
 
         t.any()
@@ -236,7 +239,10 @@ describe('Tester', function () {
             _expected: null,
             _expectedKeywords: null,
             _lastAction: '/postBack',
-            _lastVisitedPath: null
+            _lastVisitedPath: null,
+            beforeLastInteraction: '/start',
+            lastAction: '/postBack',
+            lastInteraction: '/postBack'
         });
 
         t.any()

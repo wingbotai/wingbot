@@ -529,4 +529,135 @@ describe('<Router> logic', () => {
 
     });
 
+    describe('back pattern', () => {
+
+
+        /** @type {Tester} */
+        let t;
+
+        beforeEach(() => {
+            const bot = new Router();
+
+            bot.use('start', (req, res, postBack) => {
+                res.text('Welcome');
+                postBack('afterStart');
+            });
+
+            bot.use('afterStart', (req, res) => {
+                res.text('Lets begin', {
+                    dialog: 'Dialog'
+                });
+            });
+
+            bot.use('dialog', (req, res) => {
+                res.text('What color do you like', {
+                    whatIsColor: 'what is colour'
+                });
+
+                res.expected('dialog_responder');
+            });
+
+            bot.use('dialog_responder', async (req, res, postBack) => {
+                if (res.bookmark()) {
+                    await res.runBookmark(postBack);
+                    // leave (to continue just comment the following line)
+                    if (res.finalMessageSent) {
+                        return Router.END;
+                    }
+                }
+
+                return true;
+            });
+
+            // @ts-ignore
+            bot.use([ai.globalMatch('whatIsColor'), 'whatIsColor'], (req, res) => {
+                res.text('It\'s hard to say', {
+                    back: 'Back'
+                });
+            });
+
+            // @ts-ignore
+            bot.use([ai.globalMatch('back'), 'back'], (req, res, postBack) => {
+                res.text('Going back');
+                postBack(req.state.beforeLastInteraction);
+            });
+
+            t = new Tester(bot);
+        });
+
+        it('is able to get back using the back intent', async () => {
+            await t.postBack('start');
+
+            t.passedAction('start');
+            t.passedAction('afterStart');
+
+            await t.quickReply('Dialog');
+
+            t.passedAction('dialog');
+
+            await t.intent('back');
+
+            t.passedAction('back');
+            t.passedAction('afterStart');
+        });
+
+        it('is able to get back using the back postback', async () => {
+            await t.postBack('start');
+
+            t.passedAction('start');
+            t.passedAction('afterStart');
+
+            await t.quickReply('Dialog');
+
+            t.passedAction('dialog');
+
+            await t.postBack('back');
+
+            t.passedAction('back');
+            t.passedAction('afterStart');
+        });
+
+        it('should be able to bring user back by quick reply', async () => {
+
+            await t.postBack('dialog');
+
+            await t.quickReply('what is colour');
+
+            t.passedAction('whatIsColor');
+
+            await t.quickReply('Back');
+
+            t.passedAction('back');
+            t.passedAction('dialog');
+        });
+
+        it('should be able to bring user back by quick reply after intent', async () => {
+
+            await t.postBack('dialog');
+
+            await t.intent('whatIsColor');
+
+            t.passedAction('whatIsColor');
+
+            await t.quickReply('Back');
+
+            t.passedAction('back');
+            t.passedAction('dialog');
+        });
+
+        it('should be able to bring user back by intent after intent', async () => {
+
+            await t.postBack('dialog');
+
+            await t.intent('whatIsColor');
+
+            t.passedAction('whatIsColor');
+
+            await t.intent('back');
+
+            t.passedAction('back');
+        });
+
+    });
+
 });

@@ -24,6 +24,7 @@ function createMockRes (req) {
     const ret = {
         path: '',
         routePath: '',
+        newState: {},
         bookmark () { return null; },
         setState (s) {
             Object.assign(req.state, s);

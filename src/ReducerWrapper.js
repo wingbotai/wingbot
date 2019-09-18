@@ -59,8 +59,28 @@ class ReducerWrapper extends EventEmitter {
         const { _lastAction: lastAction = null } = req.state;
         const act = action || req.action();
         const params = [req.senderId, act, req.text(), req, lastAction];
+
+        let { lastInteraction = null } = req.state;
+        let beforeLastInteraction;
+
+        const expected = req.expected();
+        const isExpectedAction = expected && act === expected.action;
+
+        if (res.newState.lastInteraction) {
+            beforeLastInteraction = lastInteraction;
+            ({ lastInteraction } = res.newState);
+        } else if (act && !isExpectedAction) {
+            beforeLastInteraction = lastInteraction;
+            lastInteraction = act;
+        }
+
         if (act) {
-            res.setState({ _lastAction: act });
+            res.setState({
+                _lastAction: act,
+                lastAction: act,
+                lastInteraction,
+                beforeLastInteraction
+            });
         }
         this.emit('_action', ...params);
         if (!doNotTrack) {
