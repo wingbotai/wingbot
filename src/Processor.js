@@ -267,7 +267,7 @@ class Processor extends EventEmitter {
         if (actionCount >= this.options.redirectLimit) {
             return Promise.reject(new Error(`Reached ${actionCount} redirects on ${JSON.stringify(message)}. Check cyclic redirects.`));
         }
-        Object.assign(responderData, { _actionCount: actionCount });
+        Object.assign(responderData, { _actionCount: actionCount, _fromInitialEvent: fromEvent });
 
         const postbackAcumulator = [];
 

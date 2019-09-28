@@ -539,17 +539,31 @@ describe('<Router> logic', () => {
             const bot = new Router();
 
             bot.use('start', (req, res, postBack) => {
-                res.text('Welcome');
+                res.text('Welcome', {
+                    left: 'Left',
+                    start: 'Again'
+                });
                 postBack('afterStart');
             });
 
             bot.use('afterStart', (req, res) => {
+                if (req.state.lastInteraction && req.state.lastInteraction !== '/*') {
+                    res.text('has');
+                } else {
+                    res.text('not');
+                }
                 res.text('Lets begin', {
                     dialog: 'Dialog'
                 });
             });
 
             bot.use('dialog', (req, res) => {
+                if (req.state.lastInteraction && req.state.lastInteraction !== '/*') {
+                    res.text('has');
+                } else {
+                    res.text('not');
+                }
+
                 res.text('What color do you like', {
                     whatIsColor: 'what is colour'
                 });
@@ -569,8 +583,94 @@ describe('<Router> logic', () => {
                 return true;
             });
 
+            bot.use('withexpected', (req, res) => {
+                res.text('ex');
+                res.expected('bookmarker');
+            });
+
+            bot.use('bookmarker', (req, res, postBack) => {
+                if (res.bookmark()) {
+                    return res.runBookmark(postBack);
+                }
+                return true;
+            });
+
+            bot.use('left', (req, res, postBack) => {
+                res.text('left', {
+                    right: 'Right'
+                });
+                res.expected('common');
+                postBack('back');
+            });
+
+            bot.use('right', (req, res, postBack) => {
+                res.text('right');
+                postBack('back');
+            });
+
+            bot.use('common', (req, res) => {
+                res.text('common');
+            });
+
+            const subrouter = new Router();
+
+            subrouter.use((req, res) => {
+                const { lastInteraction } = req.state;
+                res.setState({ lastInteraction });
+                return true;
+            });
+
+            // @ts-ignore
+            subrouter.use(['a', ai.globalMatch('aint')], (req, res, postBack) => {
+                res.text('A');
+                postBack('zpt');
+            });
+
+            // @ts-ignore
+            subrouter.use(['b', ai.globalMatch('bint')], (req, res, postBack) => {
+                res.text('B');
+                postBack('zpt');
+                res.expected('bokmarking');
+            });
+
+            subrouter.use('bokmarking', (req, res, postBack) => {
+                if (res.bookmark()) {
+                    return res.runBookmark(postBack);
+                }
+                return true;
+            });
+
+            // @ts-ignore
+            subrouter.use(['x', ai.globalMatch('xint')], (req, res) => {
+                res.text('X');
+            });
+
+            subrouter.use('c', (req, res, postBack) => {
+                res.text('C');
+                postBack('zpt');
+            });
+
+            subrouter.use('zpt', (req, res) => {
+                res.text('Z', {
+                    '/back': 'back quick reply'
+                });
+                res.expected('bokmarking');
+            });
+
+            subrouter.use('toA', () => 'toA');
+
+            bot.use('sub', subrouter)
+                .onExit('toA', (data, req, res, postBack) => {
+                    postBack('sub/a');
+                });
+
             // @ts-ignore
             bot.use([ai.globalMatch('whatIsColor'), 'whatIsColor'], (req, res) => {
+                if (req.state.lastInteraction && req.state.lastInteraction !== '/*') {
+                    res.text('has');
+                } else {
+                    res.text('not');
+                }
                 res.text('It\'s hard to say', {
                     back: 'Back'
                 });
@@ -578,11 +678,83 @@ describe('<Router> logic', () => {
 
             // @ts-ignore
             bot.use([ai.globalMatch('back'), 'back'], (req, res, postBack) => {
-                res.text('Going back');
-                postBack(req.state.beforeLastInteraction);
+                if (req.state.beforeLastInteraction
+                    && req.state.beforeLastInteraction !== '/*'
+                    && req.state.beforeLastInteraction !== res.currentAction()) {
+
+                    res.setState({ lastInteraction: null, beforeLastInteraction: null });
+                    postBack(req.state.beforeLastInteraction);
+                    return null;
+                }
+                return true;
+            }, (req, res) => {
+                res.text('No last action :/');
+            });
+
+            bot.use((req, res) => {
+                if (req.state.lastInteraction && req.state.lastInteraction !== '/*') {
+                    res.text('has', {
+                        back: 'back'
+                    });
+                } else {
+                    res.text('not');
+                }
+                res.text('fallback');
             });
 
             t = new Tester(bot);
+        });
+
+        it('will not crash', async () => {
+            await t.postBack('start');
+
+            await t.quickReply('Again');
+
+            await t.quickReply('Left');
+
+            t.any().contains('left');
+
+            await t.quickReply('Right');
+        });
+
+        it('skip some actions in back route in expected actions', async () => {
+
+            await t.postBack('start');
+
+            await t.postBack('withexpected');
+
+            await t.postBack('sub/toA');
+
+            await t.intent('back');
+
+            t.passedAction('back');
+            t.passedAction('withexpected');
+        });
+
+        it('skip some actions in back route', async () => {
+            await t.postBack('start');
+
+            await t.postBack('sub/a');
+
+            await t.postBack('sub/b');
+
+            await t.intent('back');
+
+            t.passedAction('back');
+            t.passedAction('start');
+
+            await t.postBack('start');
+
+            await t.postBack('sub/a');
+
+            await t.postBack('sub/b');
+
+            await t.postBack('sub/c');
+
+            await t.quickReply('back');
+
+            t.passedAction('back');
+            t.passedAction('start');
         });
 
         it('is able to get back using the back intent', async () => {
@@ -599,6 +771,8 @@ describe('<Router> logic', () => {
 
             t.passedAction('back');
             t.passedAction('afterStart');
+
+            t.any().contains('not');
         });
 
         it('is able to get back using the back postback', async () => {
@@ -610,11 +784,13 @@ describe('<Router> logic', () => {
             await t.quickReply('Dialog');
 
             t.passedAction('dialog');
+            t.any().contains('has');
 
             await t.postBack('back');
 
             t.passedAction('back');
             t.passedAction('afterStart');
+            t.any().contains('not');
         });
 
         it('should be able to bring user back by quick reply', async () => {
@@ -634,10 +810,12 @@ describe('<Router> logic', () => {
         it('should be able to bring user back by quick reply after intent', async () => {
 
             await t.postBack('dialog');
+            t.any().contains('not');
 
             await t.intent('whatIsColor');
 
             t.passedAction('whatIsColor');
+            t.any().contains('has');
 
             await t.quickReply('Back');
 
@@ -646,8 +824,10 @@ describe('<Router> logic', () => {
         });
 
         it('should be able to bring user back by intent after intent', async () => {
+            await t.postBack('start');
 
             await t.postBack('dialog');
+            t.any().contains('has');
 
             await t.intent('whatIsColor');
 
@@ -656,6 +836,114 @@ describe('<Router> logic', () => {
             await t.intent('back');
 
             t.passedAction('back');
+            t.any().contains('not');
+
+            await t.intent('back');
+
+            t.any().contains('No last action');
+        });
+
+        it('works in fallback', async () => {
+            await t.postBack('start');
+
+            t.passedAction('start');
+            t.passedAction('afterStart');
+
+            await t.text('random');
+
+            t.any().contains('has');
+
+            await t.quickReply('back');
+
+            t.passedAction('afterStart');
+            t.any().contains('not');
+        });
+
+        it('ignores fallback', async () => {
+            await t.postBack('start');
+
+            t.passedAction('start');
+            t.passedAction('afterStart');
+
+            await t.text('random');
+
+            await t.postBack('dialog');
+
+            t.any().contains('not');
+
+            await t.intent('back');
+
+            t.any().contains('No last action');
+        });
+
+    });
+
+    describe('re-expected in fallback', () => {
+
+
+        /** @type {Tester} */
+        let t;
+
+        beforeEach(() => {
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                res.text('Welcome');
+                res.expected('expected');
+            });
+
+            bot.use('expected', /keyword/, (req, res) => {
+                res.text('received keyword');
+            });
+
+            bot.use((req, res) => {
+                const expected = req.expected();
+
+                if (expected) {
+
+                    const { action, data = {} } = expected;
+
+                    if (!data._expectedFallbackOccured) {
+
+                        res.expected(action, {
+                            ...data,
+                            _expectedFallbackOccured: true
+                        });
+                    }
+                }
+
+                res.text('fallback');
+            });
+
+            t = new Tester(bot);
+        });
+
+        it('is able to re-answer expected actions', async () => {
+            await t.postBack('start');
+
+            await t.text('any');
+
+            t.any().contains('fallback');
+
+            await t.text('keyword');
+
+            t.any().contains('keyword');
+        });
+
+        it('two fallbacks means just a fallback', async () => {
+            await t.postBack('start');
+
+            await t.text('any');
+
+            t.any().contains('fallback');
+
+            await t.text('any');
+
+            t.any().contains('fallback');
+
+            await t.text('keyword');
+
+            t.any().contains('fallback');
         });
 
     });

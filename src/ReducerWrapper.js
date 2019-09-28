@@ -66,7 +66,7 @@ class ReducerWrapper extends EventEmitter {
         const expected = req.expected();
         const isExpectedAction = expected && act === expected.action;
 
-        if (res.newState.lastInteraction) {
+        if (typeof res.newState.lastInteraction !== 'undefined') {
             beforeLastInteraction = lastInteraction;
             ({ lastInteraction } = res.newState);
         } else if (act && !isExpectedAction) {
@@ -74,12 +74,21 @@ class ReducerWrapper extends EventEmitter {
             lastInteraction = act;
         }
 
+        if (typeof res.newState.beforeLastInteraction !== 'undefined') {
+            ({ beforeLastInteraction } = res.newState);
+        }
+
+        if (act && res.data && res.data._fromInitialEvent) {
+            res.setState({
+                lastInteraction,
+                beforeLastInteraction
+            });
+        }
+
         if (act) {
             res.setState({
                 _lastAction: act,
-                lastAction: act,
-                lastInteraction,
-                beforeLastInteraction
+                lastAction: act
             });
         }
         this.emit('_action', ...params);
