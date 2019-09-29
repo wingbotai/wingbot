@@ -118,6 +118,26 @@ function conversationsApi (stateStorage, chatLogStorage = null, notifications = 
                 return null;
             }
             return mapState(state);
+        },
+        async flaggedInteractions (args, ctx) {
+            if (!apiAuthorizer(args, ctx, acl)) {
+                return null;
+            }
+
+            if (!chatLogStorage || typeof chatLogStorage.getInteractions !== 'function') {
+                return null;
+            }
+
+            const {
+                limit,
+                startTimestamp,
+                flag = null
+            } = args;
+
+            const data = await chatLogStorage
+                .getInteractions(flag, null, limit, null, startTimestamp);
+
+            return data;
         }
     };
 }

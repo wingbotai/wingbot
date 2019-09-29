@@ -105,18 +105,19 @@ class Router extends ReducerWrapper {
         reducers.forEach(({ globalIntents }) => {
             for (const gi of globalIntents.values()) {
                 const {
-                    id, matcher, path: intentPath, local
+                    id, matcher, action: intentPath, local, title
                 } = gi;
-                const path = intentPath === '/*'
+                const action = intentPath === '/*'
                     ? pathContext.path
                     : `${pathContext.path}${intentPath}`.replace(/^\/\*/, '');
 
                 this.globalIntents.set(id, {
                     id,
                     matcher,
-                    path,
+                    action,
                     localPath: pathContext.path,
-                    local
+                    local,
+                    title
                 });
             }
         });
@@ -267,14 +268,16 @@ class Router extends ReducerWrapper {
         if (!req.isText()) {
             return null;
         }
-        if (req._matchingGlobalIntents) {
-            const gid = req._matchingGlobalIntents
-                .find(id => this.globalIntents.has(id));
+        if (req._aiActions) {
+            const actions = req._aiActions
+                .filter(a => a.aboveConfidence && this.globalIntents.has(a.id));
 
-            return gid && this.globalIntents.get(gid);
+            const winner = this._winner(actions);
+
+            return winner && this.globalIntents.get(winner.id);
         }
 
-        const winners = [];
+        const aiActions = [];
 
         // to match the local context intent
         let localRegexToMatch = null;
@@ -290,7 +293,7 @@ class Router extends ReducerWrapper {
 
         const localEnhancement = (1 - Ai.ai.confidence) / 2;
         for (const gi of this.globalIntents.values()) {
-            const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.path);
+            const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.action);
             if (gi.local && !pathMatches) {
                 continue;
             }
@@ -298,20 +301,43 @@ class Router extends ReducerWrapper {
             if (intent !== null) {
                 const sort = intent.score + (pathMatches ? localEnhancement : 0);
                 // console.log(sort, wi.intent);
-                winners.push({
+                aiActions.push({
                     ...gi,
                     intent,
+                    aboveConfidence: intent.aboveConfidence,
                     sort
                 });
             }
         }
 
-        winners.sort((l, r) => r.sort - l.sort);
+        aiActions.sort((l, r) => r.sort - l.sort);
+        req._aiActions = aiActions;
 
-        req._matchingGlobalIntents = winners.map(g => g.id);
-        req._match = req._match || winners[0];
+        const winner = this._winner(aiActions);
+        req._match = req._match || winner;
+        return winner;
+    }
 
-        return winners[0];
+    _winner (aiActions) {
+        if (aiActions.length === 0 || !aiActions[0].aboveConfidence) {
+            return null;
+        }
+
+        // there will be no winner, if there are two different intents
+        if (aiActions.length > 1 && aiActions[1].aboveConfidence) {
+
+            const [first, second] = aiActions;
+
+            const margin = 1 - (second.sort / first.sort);
+            const bothHaveTitles = first.title && second.title;
+            const similarScore = margin < (1 - Ai.ai.confidence);
+
+            if (bothHaveTitles && similarScore) {
+                return null;
+            }
+        }
+
+        return aiActions[0];
     }
 
     async reduce (req, res, postBack = () => {}, path = '/') {
@@ -328,7 +354,7 @@ class Router extends ReducerWrapper {
             const match = this._getMatchingGlobalIntent(req, res);
 
             if (match) {
-                res.setBookmark(match.path, match.intent);
+                res.setBookmark(match.action, match.intent);
             }
         }
 

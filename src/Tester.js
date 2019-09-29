@@ -254,15 +254,23 @@ class Tester {
     /**
      * Makes recognised AI intent request
      *
-     * @param {string} intent
+     * @param {string|string[]} intent
      * @param {string} [text]
      * @param {number} [score]
      * @returns {Promise}
      *
      * @memberOf Tester
      */
-    intent (intent, text = intent, score = null) {
-        return this.processMessage(Request.intent(this.senderId, text, intent, score));
+    intent (intent, text = null, score = null) {
+        let useText;
+        if (text) {
+            useText = text;
+        } else if (Array.isArray(intent)) {
+            [useText] = intent;
+        } else {
+            useText = intent;
+        }
+        return this.processMessage(Request.intent(this.senderId, useText, intent, score));
     }
 
     /**

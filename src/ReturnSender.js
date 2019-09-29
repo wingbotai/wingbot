@@ -214,6 +214,12 @@ class ReturnSender {
                 });
             }
 
+            const data = req.action(true);
+
+            if (typeof data._senderMeta === 'object') {
+                Object.assign(meta, data._senderMeta);
+            }
+
             const expected = req.expected();
             Object.assign(meta, {
                 timestamp: req.timestamp,
@@ -224,7 +230,7 @@ class ReturnSender {
                 intents: req.intents || [],
                 entities: (req.entities || []).filter(e => e.score >= ai.ai.confidence),
                 action: req.action(),
-                data: req.action(true),
+                data,
                 expected: expected ? expected.action : null,
                 pageId: req.pageId,
                 senderId: req.senderId

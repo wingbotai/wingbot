@@ -320,8 +320,8 @@ class Responder {
     /**
      * Appends quick reply, to be sent with following text method
      *
-     * @param {string} action - relative or absolute action
-     * @param {string} title - quick reply title
+     * @param {string|Object} action - relative or absolute action
+     * @param {string} [title] - quick reply title
      * @param {Object} [data] - additional data
      * @param {boolean} [prepend] - set true to add reply at the beginning
      * @param {boolean} [justToExisting] - add quick reply only to existing replies
@@ -338,15 +338,23 @@ class Responder {
      * });
      */
     addQuickReply (action, title, data = {}, prepend = false, justToExisting = false) {
-        const prep = {};
+        const actionIsObject = typeof action === 'object' && action;
+        const prep = actionIsObject ? action : {};
 
         if (prepend) Object.assign(prep, { _prepend: true });
         if (justToExisting) Object.assign(prep, { _justToExisting: true });
 
-        this._quickReplyCollector.push(Object.assign({
-            action: this.toAbsoluteAction(action),
-            title
-        }, data, prep));
+        if (actionIsObject) {
+            this._quickReplyCollector.push(Object.assign({}, prep, {
+                action: this.toAbsoluteAction(action.action)
+            }, data));
+        } else {
+            this._quickReplyCollector.push(Object.assign({
+                action: this.toAbsoluteAction(action),
+                title
+            }, data, prep));
+        }
+
         return this;
     }
 

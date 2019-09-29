@@ -48,6 +48,21 @@ class AnyResponseAssert {
     }
 
     /**
+     * Checks quick response text
+     *
+     * @param {string} search
+     * @returns {this}
+     *
+     * @memberOf ResponseAssert
+     */
+    quickReplyTextContains (search) {
+        const ok = this.responses
+            .some(res => asserts.quickReplyText(res, search, false));
+        assert.ok(ok, `No quick action matches: "${search}"`);
+        return this;
+    }
+
+    /**
      * Checks template type
      *
      * @param {string} type

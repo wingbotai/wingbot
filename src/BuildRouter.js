@@ -7,6 +7,7 @@ const requestNative = require('request-promise-native');
 const Router = require('./Router');
 const Ai = require('./Ai');
 const expected = require('./resolvers/expected');
+const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
 const defaultResourceMap = require('./defaultResourceMap');
 
 /**
@@ -349,12 +350,22 @@ class BuildRouter extends Router {
             let aiResolver = null;
 
             if (route.aiTags && route.aiTags.length) {
+                let { aiTitle = null } = route;
+
+                if (aiTitle) {
+                    const aiTitleRenderer = cachedTranslatedCompilator(aiTitle);
+                    aiTitle = (req) => {
+                        const state = stateData(req);
+                        return aiTitleRenderer(state);
+                    };
+                }
+
                 if (route.aiGlobal) {
-                    aiResolver = Ai.ai.globalMatch(route.aiTags);
+                    aiResolver = Ai.ai.globalMatch(route.aiTags, aiTitle);
                 } else if (route.isResponder) {
                     aiResolver = Ai.ai.match(route.aiTags);
                 } else {
-                    aiResolver = Ai.ai.localMatch(route.aiTags);
+                    aiResolver = Ai.ai.localMatch(route.aiTags, aiTitle);
                 }
             }
 

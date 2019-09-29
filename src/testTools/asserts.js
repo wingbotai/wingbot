@@ -138,6 +138,32 @@ function quickReplyAction (response, action, message = 'Should contain the actio
 }
 
 /**
+ * Checks quick response action
+ *
+ * @param {Object} response
+ * @param {string} search
+ * @param {string|false} [message='Should contain the action'] - use false for no asserts
+ * @returns {boolean}
+ */
+function quickReplyText (response, search, message = 'Should contain the text') {
+    const replies = getQuickReplies(response);
+    const hasItems = replies.length > 0;
+    if (message === false && !hasItems) {
+        return false;
+    }
+    assert.ok(hasItems, m(message, search, 'Theres no quick response'));
+    const has = replies.some((reply) => {
+        const { title = '' } = reply;
+        return searchMatchesText(title, search);
+    });
+    if (message === false) {
+        return has;
+    }
+    assert.ok(has, m(message, search));
+    return true;
+}
+
+/**
  * Checks template type
  *
  * @param {Object} response
@@ -311,5 +337,6 @@ module.exports = {
     passThread,
     genericTemplateItems,
     genericTemplate,
-    buttonTemplate
+    buttonTemplate,
+    quickReplyText
 };

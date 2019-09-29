@@ -54,6 +54,19 @@ describe('<GraphApi>', function () {
             res.text('Fallback');
         });
 
+        bot.use('flagged-action', (req, res) => {
+            res.text('with flag', [
+                {
+                    title: 'start',
+                    action: 'start',
+                    _senderMeta: {
+                        flag: 'd',
+                        likelyIntent: 'likely'
+                    }
+                }
+            ]);
+        });
+
         tester = new Tester(bot);
 
         const notifications = new Notifications();
@@ -457,6 +470,35 @@ describe('<GraphApi>', function () {
             }, headers);
 
             assert.strictEqual(typeof res.data.conversation, 'object');
+        });
+
+    });
+
+    describe('{ flaggedInteractions }', () => {
+
+        it('should return all flagged interactions', async () => {
+            // make some states
+            await tester.postBack('flagged-action');
+
+            await tester.quickReply('start');
+
+            const res = await api.request({
+                query: `query FlaggedActions ($limit: Int!, $startTimestamp: Float, $flag: String) {
+                    flaggedInteractions (limit: $limit, startTimestamp: $startTimestamp, flag: $flag) {
+                        senderId,
+                        pageId,
+                        timestamp
+                        flag
+                    }
+                }`,
+                variables: {
+                    limit: 5,
+                    startTimestamp: null,
+                    flag: null
+                }
+            }, headers);
+
+            assert.deepEqual(res, { data: { flaggedInteractions: null } });
         });
 
     });

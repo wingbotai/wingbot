@@ -48,6 +48,13 @@ class Ai {
         this.confidence = 0.85;
 
         /**
+         * Lower threshold - for disambiguation
+         *
+         * @type {number}
+         */
+        this.threshold = 0.3;
+
+        /**
          * The logger (console by default)
          *
          * @type {Object}
@@ -229,6 +236,7 @@ class Ai {
      * so the intent will be matched in a local context (nested Router)
      *
      * @param {IntentRule|IntentRule[]} intent
+     * @param {string} [title]
      * @param {number} [confidence]
      * @returns {Function} - the middleware
      * @memberOf Ai
@@ -243,7 +251,7 @@ class Ai {
      *     res.text('Oh, intent 1 :)');
      * });
      */
-    localMatch (intent, confidence = null) {
+    localMatch (intent, title = null, confidence = null) {
         const matcher = this._createIntentMatcher(intent, confidence);
 
         const resolver = async (req, res) => {
@@ -264,7 +272,8 @@ class Ai {
             id,
             matcher,
             local: true,
-            path: '/*'
+            action: '/*',
+            title
         }]]);
 
         return resolver;
@@ -275,6 +284,7 @@ class Ai {
      * so the intent will be matched in a global context
      *
      * @param {IntentRule|IntentRule[]} intent
+     * @param {string} [title]
      * @param {number} [confidence]
      * @returns {Function} - the middleware
      * @memberOf Ai
@@ -289,7 +299,7 @@ class Ai {
      *     res.text('Oh, intent 1 :)');
      * });
      */
-    globalMatch (intent, confidence = null) {
+    globalMatch (intent, title = null, confidence = null) {
         const matcher = this._createIntentMatcher(intent, confidence);
 
         const resolver = async (req, res) => {
@@ -309,7 +319,9 @@ class Ai {
         resolver.globalIntents = new Map([[id, {
             id,
             matcher,
-            path: '/*'
+            action: '/*',
+            title,
+            local: false
         }]]);
 
         return resolver;
@@ -318,17 +330,24 @@ class Ai {
     _createIntentMatcher (intent, confidence = null) {
         const rules = this.matcher.preprocessRule(intent);
 
-        return (req, res, needWinningIntent = false) => {
+        return (req, res, needResult = false) => {
             const winningIntent = this.matcher.match(req, rules);
 
             const useConfidence = confidence === null
                 ? this.confidence
                 : confidence;
 
-            if (needWinningIntent) {
-                return winningIntent && winningIntent.score >= useConfidence
-                    ? winningIntent
-                    : null;
+            if (needResult) {
+                if (!winningIntent || this.threshold > winningIntent.score) {
+                    return null;
+                }
+
+                const aboveConfidence = winningIntent.score >= useConfidence;
+
+                return {
+                    ...winningIntent,
+                    aboveConfidence
+                };
             }
 
             if (!winningIntent || winningIntent.score < useConfidence) {
@@ -375,10 +394,12 @@ class Ai {
             ? req.data
             : this._mockIntent;
 
+        const intents = Array.isArray(intent)
+            ? intent.map(i => ({ intent: i, score: score === null ? this.confidence : score }))
+            : [{ intent, score: score === null ? this.confidence : score }];
+
         return {
-            intents: [
-                { intent, score: score === null ? this.confidence : score }
-            ],
+            intents,
             entities
         };
     }

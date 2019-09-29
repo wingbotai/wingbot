@@ -81,8 +81,14 @@ function randomizedCompiler (text, lang) {
     };
 }
 
-function stateData (req, res) {
-    return Object.assign({}, req.state, res.newState, req.action(true), res.data);
+function stateData (req, res = null) {
+    return Object.assign(
+        {},
+        req.state,
+        res ? res.newState : {},
+        req.action(true),
+        res ? res.data : {}
+    );
 }
 
 function cachedTranslatedCompilator (text) {

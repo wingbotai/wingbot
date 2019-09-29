@@ -30,6 +30,21 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  */
 
 /**
+ * @typedef {Object} IntentAction
+ * @prop {string} action
+ * @prop {Intent} intent
+ * @prop {number} sort
+ * @prop {boolean} local
+ * @prop {boolean} aboveConfidence
+ */
+
+/**
+ * @typedef {Object} QuickReply
+ * @prop {string} action
+ * @prop {*} title
+ */
+
+/**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
  * @class
@@ -109,6 +124,58 @@ class Request extends RequestsFactories {
         this._action = undefined;
 
         this._winningIntent = null;
+
+        this._aiActions = null;
+    }
+
+    /**
+     * Get all matched actions from NLP intents
+     *
+     * @returns {IntentAction[]}
+     */
+    aiActions () {
+        if (this._aiActions === null) {
+            return [];
+        }
+        return this._aiActions;
+    }
+
+    /**
+     * Covert all matched actions for disambiguation purposes
+     *
+     * @param {number} [limit]
+     * @returns {QuickReply[]}
+     */
+    aiActionsForQuickReplies (limit = 5) {
+        if (this._aiActions === null) {
+            return [];
+        }
+        return this._aiActions
+            .filter(a => a.title)
+            .slice(0, limit)
+            .map(a => ({
+                title: typeof a.title === 'function'
+                    ? a.title(this)
+                    : a.title,
+                action: a.action,
+                _senderMeta: {
+                    flag: 'd',
+                    likelyIntent: a.intent.intent
+                }
+            }));
+    }
+
+    /**
+     * Returns true, if there is an action for disambiguation
+     *
+     * @param {number} minimum
+     * @returns {boolean}
+     */
+    hasAiActionsForDisambiguation (minimum = 1) {
+        return this._aiActions !== null
+            && this._aiActions
+                .filter(a => a.title)
+                .length >= minimum;
     }
 
     /**
