@@ -78,11 +78,25 @@ class ReducerWrapper extends EventEmitter {
             ({ beforeLastInteraction } = res.newState);
         }
 
-        if (act && res.data && res.data._fromInitialEvent) {
-            res.setState({
-                lastInteraction,
-                beforeLastInteraction
-            });
+        if (act && res.data) {
+            const shouldDelayTrack = doNotTrack || isExpectedAction;
+            const shouldSetLastInteraction = res.data._fromInitialEvent
+                || res.data._fromUntrackedInitialEvent;
+
+            if (shouldDelayTrack && shouldSetLastInteraction) {
+                res.setData({ _initialEventWasntTracked: true });
+            }
+            // @todo _fromUntrackedInitialEvent should be removed with exists
+            if (!shouldDelayTrack && shouldSetLastInteraction) {
+
+                res.setState({
+                    lastInteraction,
+                    beforeLastInteraction
+                });
+                res.setData({
+                    lastInteractionSet: lastInteraction
+                });
+            }
         }
 
         if (act) {

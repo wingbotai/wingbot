@@ -268,6 +268,13 @@ class Processor extends EventEmitter {
             return Promise.reject(new Error(`Reached ${actionCount} redirects on ${JSON.stringify(message)}. Check cyclic redirects.`));
         }
         Object.assign(responderData, { _actionCount: actionCount, _fromInitialEvent: fromEvent });
+        if (responderData._initialEventWasntTracked) {
+            Object.assign(responderData, {
+                _fromUntrackedInitialEvent: true, _initialEventWasntTracked: false
+            });
+        } else if (responderData._fromUntrackedInitialEvent) {
+            Object.assign(responderData, { _fromUntrackedInitialEvent: false });
+        }
 
         const postbackAcumulator = [];
 

@@ -329,10 +329,10 @@ class Router extends ReducerWrapper {
             const [first, second] = aiActions;
 
             const margin = 1 - (second.sort / first.sort);
-            const bothHaveTitles = first.title && second.title;
+            const oneHasTitle = first.title || second.title;
             const similarScore = margin < (1 - Ai.ai.confidence);
 
-            if (bothHaveTitles && similarScore) {
+            if (oneHasTitle && similarScore) {
                 return null;
             }
         }
@@ -434,6 +434,8 @@ class Router extends ReducerWrapper {
                 }
             }
 
+            const resultIsExit = typeof result === 'string' || Array.isArray(result);
+
             if (!reducer.isReducer
                     && [Router.BREAK, Router.CONTINUE].indexOf(result) === -1) {
                 pathContext = `${path === '/' ? '' : path}${route.path}`;
@@ -441,7 +443,7 @@ class Router extends ReducerWrapper {
                 // store the last visited path
                 res.setState({ _lastVisitedPath: path === '/' ? null : path });
                 // console.log({ action: req.action(), pathContext, path });
-                this._emitAction(req, res, pathContext, doNotTrack);
+                this._emitAction(req, res, pathContext, doNotTrack || resultIsExit);
             }
 
             if (result === breakOn) {
@@ -450,7 +452,7 @@ class Router extends ReducerWrapper {
                 }
                 break; // skip the rest path reducers, continue with next route
 
-            } else if (typeof result === 'string' || Array.isArray(result)) {
+            } else if (resultIsExit) {
                 const [exitPoint, data = {}] = Array.isArray(result) ? result : [result];
 
                 // NOTE exit point can cause call of an upper exit point

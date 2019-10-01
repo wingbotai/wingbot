@@ -538,6 +538,13 @@ describe('<Router> logic', () => {
         beforeEach(() => {
             const bot = new Router();
 
+            const ENABLE_EXIT_SNIPEPT = false;
+            const backExistsCondition = (req, res) => {
+                const { lastInteraction: l, beforeLastInteraction: b } = req.state;
+                const c = l === res.data.lastInteractionSet ? b : l;
+                return c && c !== '/*';
+            };
+
             bot.use('start', (req, res, postBack) => {
                 res.text('Welcome', {
                     left: 'Left',
@@ -547,18 +554,19 @@ describe('<Router> logic', () => {
             });
 
             bot.use('afterStart', (req, res) => {
-                if (req.state.lastInteraction && req.state.lastInteraction !== '/*') {
+                if (backExistsCondition(req, res)) {
                     res.text('has');
                 } else {
                     res.text('not');
                 }
                 res.text('Lets begin', {
-                    dialog: 'Dialog'
+                    dialog: 'Dialog',
+                    'second/try': 'secondtry'
                 });
             });
 
             bot.use('dialog', (req, res) => {
-                if (req.state.lastInteraction && req.state.lastInteraction !== '/*') {
+                if (backExistsCondition(req, res)) {
                     res.text('has');
                 } else {
                     res.text('not');
@@ -612,6 +620,59 @@ describe('<Router> logic', () => {
                 res.text('common');
             });
 
+            const first = new Router();
+
+            first.use('try', (req, res) => {
+                res.text('Ahoj', {
+                    toSecond: 'to second'
+                });
+            });
+
+            first.use('toSecond', () => 'theexit');
+
+            bot.use('first', first)
+                .onExit('theexit', (data, req, res, postBack) => {
+                    if (ENABLE_EXIT_SNIPEPT) {
+                        const { lastInteraction } = req.state;
+                        res.setState({ lastInteraction });
+                    }
+                    postBack('second/try');
+                });
+
+            const second = new Router();
+
+            second.use('try', (req, res) => {
+                res.text('Ahoj', {
+                    toExit: 'to exit'
+                });
+                res.expected('ex');
+            });
+
+            second.use('ex', ai.match('ex'), (req, res, postBack) => postBack('toExit'));
+
+            second.use('book', (req, res) => {
+                res.text('Book');
+                res.expected('bookExpected');
+            });
+
+            second.use('bookExpected', (req, res, postBack) => {
+                if (res.bookmark()) {
+                    return res.runBookmark(postBack);
+                }
+                return true;
+            });
+
+            second.use('toExit', () => ['theexit', {}]);
+
+            bot.use('second', second)
+                .onExit('theexit', (data, req, res, postBack) => {
+                    if (ENABLE_EXIT_SNIPEPT) {
+                        const { lastInteraction } = req.state;
+                        res.setState({ lastInteraction });
+                    }
+                    postBack('sub/a');
+                });
+
             const subrouter = new Router();
 
             subrouter.use((req, res) => {
@@ -652,21 +713,35 @@ describe('<Router> logic', () => {
 
             subrouter.use('zpt', (req, res) => {
                 res.text('Z', {
-                    '/back': 'back quick reply'
+                    '/back': 'back quick reply',
+                    bck: 'too bac'
                 });
                 res.expected('bokmarking');
             });
+
+            subrouter.use('bck', () => 'toBack');
 
             subrouter.use('toA', () => 'toA');
 
             bot.use('sub', subrouter)
                 .onExit('toA', (data, req, res, postBack) => {
+                    if (ENABLE_EXIT_SNIPEPT) {
+                        const { lastInteraction } = req.state;
+                        res.setState({ lastInteraction });
+                    }
                     postBack('sub/a');
+                })
+                .onExit('toBack', (data, req, res, postBack) => {
+                    if (ENABLE_EXIT_SNIPEPT) {
+                        const { lastInteraction } = req.state;
+                        res.setState({ lastInteraction });
+                    }
+                    postBack('back');
                 });
 
             // @ts-ignore
             bot.use([ai.globalMatch('whatIsColor'), 'whatIsColor'], (req, res) => {
-                if (req.state.lastInteraction && req.state.lastInteraction !== '/*') {
+                if (backExistsCondition(req, res)) {
                     res.text('has');
                 } else {
                     res.text('not');
@@ -692,7 +767,7 @@ describe('<Router> logic', () => {
             });
 
             bot.use((req, res) => {
-                if (req.state.lastInteraction && req.state.lastInteraction !== '/*') {
+                if (backExistsCondition(req, res)) {
                     res.text('has', {
                         back: 'back'
                     });
@@ -703,6 +778,94 @@ describe('<Router> logic', () => {
             });
 
             t = new Tester(bot);
+        });
+
+        it('goes from first to second and back', async () => {
+            await t.postBack('start');
+
+            await t.postBack('first/try');
+
+            await t.quickReply('toSecond');
+            t.passedAction('second/try');
+
+            await t.postBack('back');
+            t.passedAction('first/try');
+        });
+
+        it('goes from first to sub', async () => {
+            await t.postBack('start');
+
+            await t.postBack('first/try');
+
+            await t.quickReply('toSecond');
+            t.passedAction('second/try');
+
+            await t.quickReply('toExit');
+
+            await t.quickReply('back');
+            t.passedAction('second/try');
+        });
+
+        // fuv
+        it('goes from second to sub', async () => {
+            await t.postBack('start');
+
+            await t.quickReply('second/try');
+
+            await t.quickReply('toExit');
+
+            await t.quickReply('bck');
+            t.passedAction('second/try');
+        });
+
+        it('goes from second to sub by intent', async () => {
+            await t.postBack('start');
+
+            await t.postBack('second/try');
+
+            await t.intent('ex');
+
+            await t.quickReply('back');
+            t.passedAction('second/try');
+        });
+
+        it('goes from second to sub by intent and another faq', async () => {
+            await t.postBack('start');
+
+            await t.postBack('second/try');
+
+            await t.intent('ex');
+
+            await t.postBack('sub/c');
+
+            await t.quickReply('back');
+            t.passedAction('second/try');
+        });
+
+        it('goes from second to sub by intent in bookmark and another faq', async () => {
+            await t.postBack('start');
+
+            await t.postBack('second/book');
+
+            await t.intent('aint');
+            t.passedAction('sub/a');
+
+            await t.postBack('sub/c');
+
+            await t.quickReply('back');
+            t.passedAction('second/book');
+        });
+
+        it('goes from second to sub by intent in bookmark', async () => {
+            await t.postBack('start');
+
+            await t.postBack('second/book');
+
+            await t.intent('aint');
+            t.passedAction('sub/a');
+
+            await t.quickReply('back');
+            t.passedAction('second/book');
         });
 
         it('will not crash', async () => {
@@ -757,11 +920,22 @@ describe('<Router> logic', () => {
             t.passedAction('start');
         });
 
+        it('should not execute back to start twice', async () => {
+            await t.postBack('start');
+
+            // t.any().contains('not');
+
+            await t.intent('back');
+
+            t.any().contains('No last action');
+        });
+
         it('is able to get back using the back intent', async () => {
             await t.postBack('start');
 
             t.passedAction('start');
             t.passedAction('afterStart');
+            t.any().contains('not');
 
             await t.quickReply('Dialog');
 
@@ -773,6 +947,10 @@ describe('<Router> logic', () => {
             t.passedAction('afterStart');
 
             t.any().contains('not');
+
+            await t.intent('back');
+
+            t.any().contains('No last action');
         });
 
         it('is able to get back using the back postback', async () => {
