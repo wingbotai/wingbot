@@ -344,10 +344,23 @@ class AiMatching {
 
                     if (score > max) {
                         max = score;
+                        const useEntities = requestIntent.entities || req.entities;
+
                         winningIntent = {
                             ...requestIntent,
-                            score
+                            score,
+                            entities: useEntities
+                                .filter(e => entities.some(w => w.entity === e.entity))
                         };
+
+
+                        // attach used entities
+                        if (!winningIntent.entities && req.entities) {
+                            winningIntent = {
+                                ...winningIntent,
+                                entities: req.entities
+                            };
+                        }
                     }
                 }
 
@@ -425,6 +438,10 @@ class AiMatching {
 
             if (wanted.optional) {
                 handicap += this.optionalHandicap;
+            }
+
+            if (wanted.op === COMPARE.NOT_EQUAL) {
+                handicap += this.optionalHandicap / 2;
             }
 
             if (requestEntity) {

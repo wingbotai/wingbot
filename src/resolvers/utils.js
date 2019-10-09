@@ -73,6 +73,23 @@ function randomizedCompiler (text, lang) {
     }
 
     return (...args) => {
+        const [data = {}] = args;
+
+        if (data._expandRandomTexts) {
+            return texts
+                .map((t, i) => {
+                    let compiled;
+                    if (typeof t !== 'function') {
+                        compiled = hbs.compile(t);
+                        texts[i] = compiled;
+                    } else {
+                        compiled = t;
+                    }
+                    return compiled(...args);
+                })
+                .join(' ');
+        }
+
         const index = Math.floor(Math.random() * texts.length);
         if (typeof texts[index] !== 'function') {
             texts[index] = hbs.compile(texts[index]);

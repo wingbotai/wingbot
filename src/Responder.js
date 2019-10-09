@@ -81,6 +81,18 @@ class Responder {
          * @prop {boolean}
          */
         this.finalMessageSent = false;
+
+        /**
+         * Is true, when a an output started during the event dispatch
+         *
+         * @prop {boolean}
+         */
+        this.startedOutput = false;
+    }
+
+    // PROTECTED METHOD (called from ReturnSender)
+    _visitedInteraction (action) {
+        this._messageSender.visitedInteraction(action);
     }
 
     _send (data) {
@@ -95,7 +107,7 @@ class Responder {
                 tag: this._tag
             });
         }
-
+        this.startedOutput = true;
         this._messageSender.send(data);
     }
 

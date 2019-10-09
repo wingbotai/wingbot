@@ -15,7 +15,8 @@ function createMockReq (text = '', action = 'action') {
         expected: () => null,
         text () { return text; },
         intent () { return null; },
-        isText () { return !!text; }
+        isText () { return !!text; },
+        isQuickReply () { return text && action; }
     };
     return req;
 }

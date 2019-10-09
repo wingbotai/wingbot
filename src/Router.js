@@ -331,8 +331,10 @@ class Router extends ReducerWrapper {
             const margin = 1 - (second.sort / first.sort);
             const oneHasTitle = first.title || second.title;
             const similarScore = margin < (1 - Ai.ai.confidence);
+            const intentIsNotTheSame = !first.intent.intent
+                || first.intent.intent !== second.intent.intent;
 
-            if (oneHasTitle && similarScore) {
+            if (oneHasTitle && similarScore && intentIsNotTheSame) {
                 return null;
             }
         }

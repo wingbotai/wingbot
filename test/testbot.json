@@ -298,6 +298,17 @@
                 "id": 1507634674268
               },
               {
+                "type": "botbuild.message",
+                "params": {
+                  "text": [
+                    { "t": ["first", "second", "third"], "l": "default" }
+                  ],
+                  "replies": [],
+                  "hasCondition": false
+                },
+                "id": 1507634674268
+              },
+              {
                 "type": "botbuild.inlineCode",
                 "params": {
                   "description": "increment state",

@@ -10,7 +10,7 @@ const Request = require('./Request');
 const { MemoryStateStorage } = require('./tools');
 const ReducerWrapper = require('./ReducerWrapper');
 const ReturnSender = require('./ReturnSender');
-const { actionMatches, parseActionPayload } = require('./utils');
+const { actionMatches, parseActionPayload, tokenize } = require('./utils');
 const { asserts } = require('./testTools');
 const AnyResponseAssert = require('./testTools/AnyResponseAssert');
 const ResponseAssert = require('./testTools/ResponseAssert');
@@ -66,8 +66,10 @@ class Tester {
         }
 
         // @ts-ignore
-        wrappedReducer.on('_action', (senderIdentifier, action, text, req, prevAction) => {
-            this._actionsCollector.push({ action, text, prevAction });
+        wrappedReducer.on('_action', (senderIdentifier, action, text, req, prevAction, doNotTrack) => {
+            this._actionsCollector.push({
+                action, text, prevAction, doNotTrack
+            });
         });
 
         this.processor = new Processor(wrappedReducer, Object.assign({
@@ -94,6 +96,21 @@ class Tester {
         this.pluginBlocks = [];
         this.responses = [];
         this.actions = [];
+
+        /**
+         * @type {Object} predefined test data to use
+         */
+        this.testData = {};
+    }
+
+    /**
+     * Enable tester to expand random texts
+     * It joins them into a single sting
+     */
+    setExpandRandomTexts () {
+        Object.assign(this.testData, {
+            _expandRandomTexts: true
+        });
     }
 
     /**
@@ -120,7 +137,8 @@ class Tester {
         const messageSender = new ReturnSender({}, senderId, message);
         messageSender.simulatesOptIn = true;
 
-        const res = await this.processor.processMessage(message, pageId, messageSender);
+        const res = await this.processor
+            .processMessage(message, pageId, messageSender, Object.assign({}, this.testData));
         this._acquireResponseActions(res, messageSender);
 
         return res;
@@ -193,7 +211,14 @@ class Tester {
     passedAction (path) {
         const ok = this.actions
             .some(action => !action.action.match(/\*/) && actionMatches(action.action, path));
-        assert.ok(ok, `Action ${path} was not passed`);
+        let actual;
+        if (!ok) {
+            const set = new Set();
+            actual = this.actions
+                .map(a => (a.doNotTrack ? `(system interaction) ${a.action}` : a.action))
+                .filter(a => !set.has(a) && set.add(a));
+            assert.fail(asserts.ex('Interaction was not passed', path, actual));
+        }
         return this;
     }
 
@@ -348,6 +373,33 @@ class Tester {
         }
 
         return this.processMessage(Request.quickReply(this.senderId, usedAction, usedData));
+    }
+
+    /**
+     * Send quick reply if text exactly matches, otherwise returns false
+     *
+     * @param {string} text
+     * @returns {Promise<boolean>}
+     *
+     * @memberOf Tester
+     */
+    async quickReplyText (text) {
+
+        if (this.responses.length !== 0) {
+            const search = tokenize(text);
+            const last = this.responses[this.responses.length - 1];
+            const quickReplys = asserts.getQuickReplies(last);
+            const res = quickReplys
+                .filter(({ title = '', payload }) => title && payload && tokenize(title) === search);
+
+            if (res[0]) {
+                const { action, data } = parseActionPayload(res[0], true);
+                await this.processMessage(Request.quickReply(this.senderId, action, data));
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

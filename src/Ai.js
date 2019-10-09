@@ -173,7 +173,7 @@ class Ai {
      */
     load () {
         return async (req) => {
-            if (!req.isText()) {
+            if (!req.isText() || req.isQuickReply()) {
                 return true;
             }
 
@@ -219,7 +219,7 @@ class Ai {
         const matcher = this._createIntentMatcher(intent, confidence);
 
         return async (req, res) => {
-            if (!req.isText()) {
+            if (!req.isText() || req.isQuickReply()) {
                 return false;
             }
 
@@ -255,7 +255,7 @@ class Ai {
         const matcher = this._createIntentMatcher(intent, confidence);
 
         const resolver = async (req, res) => {
-            if (!req.isText()) {
+            if (!req.isText() || req.isQuickReply()) {
                 return false;
             }
 
@@ -303,7 +303,7 @@ class Ai {
         const matcher = this._createIntentMatcher(intent, confidence);
 
         const resolver = async (req, res) => {
-            if (!req.isText()) {
+            if (!req.isText() || req.isQuickReply()) {
                 return false;
             }
 
@@ -405,7 +405,7 @@ class Ai {
     }
 
     async preloadIntent (req) {
-        if (req.intents || !req.isText()) {
+        if (req.intents || !req.isText() || req.isQuickReply()) {
             return;
         }
         const mockIntent = this._getMockIntent(req);

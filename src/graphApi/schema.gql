@@ -105,6 +105,7 @@ type UserInteraction {
 
     request: Any!
     responses: [Any]!
+    visitedInteractions: [String]
 
     err: String
 }
@@ -143,6 +144,10 @@ type PostBackResult {
 type ValidationResult {
     ok: Boolean!
     error: String
+}
+
+type TestResult {
+    output: String
 }
 
 input CreateCampaignInput {
@@ -243,6 +248,11 @@ type Query {
         sentWithoutReaction: Boolean = false
         pageId: String
     ): Subscribtions
+
+    "run conversation test"
+    conversationTest(
+        bot: Any
+    ): TestResult
 }
 
 type Mutation {

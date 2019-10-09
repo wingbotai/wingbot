@@ -503,6 +503,25 @@ describe('<GraphApi>', function () {
 
     });
 
+    describe('{ conversationTest }', () => {
+
+        it('should return null, when not attached', async () => {
+            const res = await api.request({
+                query: `query RunTest ($bot: Any!) {
+                    conversationTest (bot: $bot) {
+                        output
+                    }
+                }`,
+                variables: {
+                    bot: {}
+                }
+            }, headers);
+
+            assert.strictEqual(res.data.conversationTest, null);
+        });
+
+    });
+
     describe('mutation { createCampaign () }', () => {
 
         it('should create a campaign', async () => {

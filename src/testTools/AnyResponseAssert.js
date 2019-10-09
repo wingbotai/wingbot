@@ -6,6 +6,8 @@
 const assert = require('assert');
 const asserts = require('./asserts');
 
+const m = asserts.ex;
+
 /**
  * Utility for searching among responses
  *
@@ -28,7 +30,12 @@ class AnyResponseAssert {
     contains (search) {
         const ok = this.responses
             .some(res => asserts.contains(res, search, false));
-        assert.ok(ok, `No response contains: "${search}"`);
+        if (!ok) {
+            const actual = this.responses
+                .map(res => asserts.getText(res))
+                .filter(t => !!t);
+            assert.fail(m('No response contains required text', search, actual));
+        }
         return this;
     }
 
@@ -43,7 +50,21 @@ class AnyResponseAssert {
     quickReplyAction (action) {
         const ok = this.responses
             .some(res => asserts.quickReplyAction(res, action, false));
-        assert.ok(ok, `No quick action matches: "${action}"`);
+        if (!ok) {
+            const actual = this.responses
+                .map(res => asserts.getQuickReplies(res))
+                .filter(replies => !!replies)
+                .reduce((a, replies) => {
+                    for (const reply of replies) {
+                        const { action: route } = asserts.parseActionPayload(reply.payload) || {};
+                        if (route) {
+                            a.push(route);
+                        }
+                    }
+                    return a;
+                }, []);
+            assert.fail(m('Quick reply action not found', action, actual));
+        }
         return this;
     }
 
@@ -58,7 +79,20 @@ class AnyResponseAssert {
     quickReplyTextContains (search) {
         const ok = this.responses
             .some(res => asserts.quickReplyText(res, search, false));
-        assert.ok(ok, `No quick action matches: "${search}"`);
+        if (!ok) {
+            const actual = this.responses
+                .map(res => asserts.getQuickReplies(res))
+                .filter(replies => !!replies)
+                .reduce((a, replies) => {
+                    for (const { title } of replies) {
+                        if (title) {
+                            a.push(title);
+                        }
+                    }
+                    return a;
+                }, []);
+            assert.fail(m('Quick reply not found', search, actual));
+        }
         return this;
     }
 

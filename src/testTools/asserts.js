@@ -28,8 +28,24 @@ function m (text, actual = null, expected = null) {
     return `${text}${result}`;
 }
 
+function ex (message, expected, actual) {
+    const actuals = Array.isArray(actual) ? actual : [actual];
+    return `${message}\n  + expected: "${expected}"\n  - actual: ${actuals
+        .map(a => `"${a}"`).join('\n            ')}`;
+}
+
 function getText (response) {
-    return response && response.message && response.message.text;
+    if (!response || !response.message) {
+        return null;
+    }
+    const { message } = response;
+    if (message.text) {
+        return message.text;
+    }
+    if (message.attachment && message.attachment.payload) {
+        return message.attachment.payload.text;
+    }
+    return null;
 }
 
 function getQuickReplies (response) {
@@ -83,7 +99,7 @@ function searchMatchesText (search, text) {
     if (search instanceof RegExp) {
         match = text.match(search);
     } else {
-        match = text.toLowerCase().match(search.toLowerCase());
+        match = `${text}`.toLocaleLowerCase().indexOf(search.toLocaleLowerCase()) !== -1;
     }
     return match;
 }
@@ -154,7 +170,7 @@ function quickReplyText (response, search, message = 'Should contain the text') 
     assert.ok(hasItems, m(message, search, 'Theres no quick response'));
     const has = replies.some((reply) => {
         const { title = '' } = reply;
-        return searchMatchesText(title, search);
+        return searchMatchesText(search, title);
     });
     if (message === false) {
         return has;
@@ -338,5 +354,8 @@ module.exports = {
     genericTemplateItems,
     genericTemplate,
     buttonTemplate,
-    quickReplyText
+    quickReplyText,
+    getText,
+    parseActionPayload,
+    ex
 };

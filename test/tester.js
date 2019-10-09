@@ -330,4 +330,99 @@ describe('Tester', function () {
             .respondedWithBlock('bar');
     });
 
+    it('can find quick reply by text', async () => {
+        const r = new Router();
+
+        r.use('/start', (req, res) => {
+            res.text('text', [
+                {
+                    action: 'quick',
+                    title: 'look',
+                    val: '1'
+                }
+            ]);
+        });
+
+        r.use('/quick', (req, res) => {
+            const { val } = req.action(true);
+
+            res.text(`v${val}`);
+        });
+
+        const t = new Tester(r);
+
+        await t.postBack('start');
+
+        const res = await t.quickReplyText('look');
+
+        assert.strictEqual(res, true);
+
+        t.any().contains('v1');
+
+        const res2 = await t.quickReplyText('look');
+        assert.strictEqual(res2, false);
+    });
+
+    it('thows nice exceptions', async () => {
+        const r = new Router();
+
+        r.use('/text', (req, res) => {
+            res.text('haha');
+            res.text('text', {
+                action: 'quick'
+            });
+        });
+
+        r.use('/redir', (req, res, postback) => postback('button'));
+
+        r.use('/button', (req, res) => {
+            res.text('haha');
+            res.button('text')
+                .postBackButton('title', 'act')
+                .send();
+
+        });
+
+        const t = new Tester(r);
+
+        let message;
+        await t.postBack('redir');
+        try {
+            t.passedAction('other');
+        } catch (e) {
+            ({ message } = e);
+        }
+        assert.ok(message && message.indexOf('Interaction was not passed') !== -1);
+        t.any().contains('text');
+
+        try {
+            t.any().contains('other');
+        } catch (e) {
+            ({ message } = e);
+        }
+        assert.ok(message && message.indexOf('No response contains required text') !== -1);
+
+        await t.postBack('text');
+        try {
+            t.any().contains('other');
+        } catch (e) {
+            ({ message } = e);
+        }
+        assert.ok(message && message.indexOf('No response contains required text') !== -1);
+
+        try {
+            t.any().quickReplyAction('other');
+        } catch (e) {
+            ({ message } = e);
+        }
+        assert.ok(message && message.indexOf('Quick reply action not found') !== -1);
+
+        try {
+            t.any().quickReplyTextContains('other');
+        } catch (e) {
+            ({ message } = e);
+        }
+        assert.ok(message && message.indexOf('Quick reply not found') !== -1);
+    });
+
 });

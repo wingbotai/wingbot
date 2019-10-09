@@ -351,4 +351,25 @@ describe('<BuildRouter>', async () => {
 
     });
 
+    it('expands randob texts', async () => {
+        const plugins = new Plugins();
+
+        plugins.register('exampleBlock', async (req, res) => {
+            await res.run('responseBlockName');
+        });
+
+        plugins.register('routerBlock', new Router());
+
+        const bot = BuildRouter.fromData(testbot.data, plugins);
+
+        const t = new Tester(bot);
+
+        t.setExpandRandomTexts();
+
+        await t.postBack('/start');
+
+        t.any()
+            .contains('first second third');
+    });
+
 });

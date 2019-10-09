@@ -173,37 +173,48 @@ class BuildRouter extends Router {
 
         if (!this._configStorage) {
             // not need to wait for existing requests, there are no existing ones
-            const snapshot = await this._loadBot();
+            const snapshot = await this.loadBot();
             this.buildWithSnapshot(snapshot.blocks);
             return;
         }
+        try {
+            // check for current TS
+            const ts = await this._configStorage.getConfigTimestamp();
 
-        // check for current TS
-        const ts = await this._configStorage.getConfigTimestamp();
+            if (ts <= this._configTs && this._configTs !== 0 && ts !== 0) {
+                // do not update, when there is no better configuration
+                return;
+            }
 
-        if (ts <= this._configTs && this._configTs !== 0 && ts !== 0) {
-            // do not update, when there is no better configuration
-            return;
+            let snapshot;
+
+            if (ts !== 0) {
+                // probably someone has updated the configuration
+                snapshot = await this._configStorage.getConfig();
+            }
+
+            if (!snapshot || typeof snapshot !== 'object' || !Array.isArray(snapshot.blocks)) {
+                // there is no configuration, load it from server
+                snapshot = await this.loadBot();
+                snapshot = await this._configStorage.updateConfig(snapshot);
+            }
+
+            // wait for running request
+            await Promise.all(this._runningReqs);
+
+            this.buildWithSnapshot(snapshot.blocks, snapshot.timestamp);
+        } catch (e) {
+            await this._configStorage.invalidateConfig();
+            throw e;
         }
-
-        let snapshot;
-
-        if (ts === 0) {
-            // there is no configuration, load it from server
-            snapshot = await this._loadBot();
-            snapshot = await this._configStorage.updateConfig(snapshot);
-        } else {
-            // probably someone has updated the configuration
-            snapshot = await this._configStorage.getConfig();
-        }
-
-        // wait for running request
-        await Promise.all(this._runningReqs);
-
-        this.buildWithSnapshot(snapshot.blocks, snapshot.timestamp);
     }
 
-    async _loadBot () {
+    /**
+     * Loads conversation configuration
+     *
+     * @returns {Promise<Object>}
+     */
+    async loadBot () {
         const req = {
             url: this._loadBotUrl,
             json: true

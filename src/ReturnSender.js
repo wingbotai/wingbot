@@ -63,6 +63,8 @@ class ReturnSender {
         this.textFilter = options.textFilter || (text => text);
 
         this._lastWait = 0;
+
+        this._visitedInteractions = [];
     }
 
     _send (payload) { // eslint-disable-line no-unused-vars
@@ -147,6 +149,9 @@ class ReturnSender {
         this._isWorking = false;
     }
 
+    visitedInteraction (action) {
+        this._visitedInteractions.push(action);
+    }
 
     send (payload) {
         if (this._finished) {
@@ -190,7 +195,9 @@ class ReturnSender {
      * @param {Responder} res
      */
     _createMeta (req = null, res = null) { // eslint-disable-line no-unused-vars
-        const meta = {};
+        const meta = {
+            visitedInteractions: this._visitedInteractions.slice()
+        };
 
         if (req) {
             let text = req.text();
