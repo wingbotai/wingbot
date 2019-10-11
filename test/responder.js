@@ -53,6 +53,20 @@ describe('Responder', function () {
             assert(opts.translator.calledTwice);
         });
 
+        it('should send nice text with quick replies with empty payload', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            assert.strictEqual(res.text('Hello', [{ title: 'Text' }]), res, 'should return self');
+
+            assert(sendFn.calledOnce);
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, undefined);
+
+            assert(opts.translator.calledTwice);
+        });
+
         it('should send no quick replies, when they are empty', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);

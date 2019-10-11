@@ -105,7 +105,11 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
                 };
             }
 
-            const absoluteAction = makeAbsolute(action, path);
+            let absoluteAction = null;
+
+            if (action) {
+                absoluteAction = makeAbsolute(action, path);
+            }
 
             let payload = absoluteAction;
             const data = Object.assign({}, reply);
@@ -126,11 +130,18 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
             const expect = makeExpectedKeyword(absoluteAction, translatedTitle, match, data);
             expectedKeywords.push(expect);
 
-            return {
+            const res = {
                 content_type: 'text',
-                title: translatedTitle,
-                payload
+                title: translatedTitle
             };
+
+            if (payload) {
+                Object.assign(res, {
+                    payload
+                });
+            }
+
+            return res;
         });
 
     return { quickReplies, expectedKeywords };
