@@ -372,6 +372,19 @@ class Responder {
         return this;
     }
 
+    expectedIntent (intents, action, data = {}) {
+        const { _expectedKeywords: ex = [] } = this.newState;
+
+        ex.push({
+            action,
+            intents,
+            data
+        });
+
+        this.setState({ _expectedKeywords: ex });
+        return this;
+    }
+
     /**
      * When user writes some text as reply, it will be processed as action
      *

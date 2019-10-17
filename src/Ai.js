@@ -161,6 +161,25 @@ class Ai {
         return modelObj;
     }
 
+    global (path, intents, title = null) {
+        const matcher = this._createIntentMatcher(intents, null);
+
+        const resolver = `${path}`;
+
+        const id = uq++;
+
+        // @ts-ignore
+        resolver.globalIntents = new Map([[id, {
+            id,
+            matcher,
+            local: false,
+            action: '/*',
+            title
+        }]]);
+
+        return resolver;
+    }
+
     /**
      * Middleware, which ensures, that AI data are properly loaded in Request
      *
