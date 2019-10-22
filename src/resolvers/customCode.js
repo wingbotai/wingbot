@@ -33,8 +33,12 @@ class RouterWrap extends EventEmitter {
 
         const { path, routePath } = res;
 
+        // attach params
+        res.params = params;
+
         // attach block runner
         Object.assign(res, {
+            // @deprecated
             params,
             async run (codeBlockName) {
                 if (typeof items[codeBlockName] === 'undefined') {

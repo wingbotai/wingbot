@@ -356,23 +356,22 @@ class Tester {
      * @memberOf Tester
      */
     quickReply (action, data = {}) {
-        let usedAction = action;
-        let usedData = data;
-
         if (this.responses.length !== 0) {
             const last = this.responses[this.responses.length - 1];
             const quickReplys = asserts.getQuickReplies(last);
             const res = quickReplys
-                .map(reply => parseActionPayload(reply, true))
-                .filter(({ action: route }) => route && actionMatches(route, action));
+                .filter((reply) => {
+                    const { action: route } = parseActionPayload(reply, true);
+                    return route && actionMatches(route, action);
+                });
 
             if (res[0]) {
-                usedAction = res[0].action;
-                usedData = res[0].data;
+                const { title, payload } = res[0];
+                return this.processMessage(Request.quickReplyText(this.senderId, title, payload));
             }
         }
 
-        return this.processMessage(Request.quickReply(this.senderId, usedAction, usedData));
+        return this.processMessage(Request.quickReply(this.senderId, action, data));
     }
 
     /**
@@ -393,8 +392,8 @@ class Tester {
                 .filter(({ title = '', payload }) => title && payload && tokenize(title) === search);
 
             if (res[0]) {
-                const { action, data } = parseActionPayload(res[0], true);
-                await this.processMessage(Request.quickReply(this.senderId, action, data));
+                const { title, payload } = res[0];
+                await this.processMessage(Request.quickReplyText(this.senderId, title, payload));
                 return true;
             }
         }
