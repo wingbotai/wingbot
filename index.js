@@ -12,6 +12,7 @@ const Tester = require('./src/Tester');
 const Ai = require('./src/Ai');
 const WingbotModel = require('./src/wingbot/WingbotModel');
 const CachedModel = require('./src/wingbot/CachedModel');
+const ConversationTester = require('./src/ConversationTester');
 const { asserts } = require('./src/testTools');
 const BuildRouter = require('./src/BuildRouter');
 const ReturnSender = require('./src/ReturnSender');
@@ -23,6 +24,7 @@ const MemoryBotConfigStorage = require('./src/tools/MemoryBotConfigStorage');
 const GraphApi = require('./src/graphApi/GraphApi');
 const validateBotApi = require('./src/graphApi/validateBotApi');
 const postBackApi = require('./src/graphApi/postBackApi');
+const conversationTestApi = require('./src/graphApi/conversationTestApi');
 const apiAuthorizer = require('./src/graphApi/apiAuthorizer');
 const conversationsApi = require('./src/graphApi/conversationsApi');
 const AnyResponseAssert = require('./src/testTools/AnyResponseAssert');
@@ -78,11 +80,15 @@ module.exports = {
     validateBotApi,
     postBackApi,
     conversationsApi,
+    conversationTestApi,
 
     // Other files
     AnyResponseAssert,
     ResponseAssert,
     ButtonTemplate,
     GenericTemplate,
-    BaseTemplate
+    BaseTemplate,
+
+    // tests
+    ConversationTester
 };

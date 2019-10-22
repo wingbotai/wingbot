@@ -10,12 +10,12 @@ const docs = [
     ['src/templates/ButtonTemplate.js', 'src/templates/GenericTemplate.js', 'src/templates/ReceiptTemplate.js'],
     'src/Router.js',
     'src/ReducerWrapper.js',
-    ['src/Tester.js', 'src/testTools/ResponseAssert.js', 'src/testTools/AnyResponseAssert.js'],
+    ['src/Tester.js', 'src/testTools/ResponseAssert.js', 'src/testTools/AnyResponseAssert.js', 'src/ConversationTester.js'],
     ['src/tools/bufferloader.js', 'src/tools/MemoryStateStorage.js', 'src/tools/Translate.js', 'src/ReturnSender.js'],
     ['src/Ai.js', 'src/wingbot/WingbotModel.js', 'src/wingbot/CachedModel.js', 'src/AiMatching.js'],
     ['src/BuildRouter.js', 'src/Plugins.js'],
     ['src/notifications/Notifications.js', 'src/notifications/NotificationsStorage.js'],
-    ['src/graphApi/GraphApi.js', 'src/graphApi/postBackApi.js', 'src/graphApi/validateBotApi.js', 'src/graphApi/conversationsApi.js', 'src/graphApi/apiAuthorizer.js']
+    ['src/graphApi/GraphApi.js', 'src/graphApi/postBackApi.js', 'src/graphApi/validateBotApi.js', 'src/graphApi/conversationsApi.js', 'src/graphApi/apiAuthorizer.js', 'src/graphApi/conversationsApi.js']
 ];
 
 let srcFile;
@@ -52,4 +52,3 @@ const file = path.resolve(process.cwd(), 'doc', 'api', 'graphqlSchema.md');
 let data = fs.readFileSync(file, { encoding: 'utf8' });
 data = data.replace(/<\/?details>/g, '');
 fs.writeFileSync(file, data);
-
