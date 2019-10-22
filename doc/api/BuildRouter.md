@@ -29,6 +29,7 @@
     * [new BuildRouter(block, plugins, context, [request])](#new_BuildRouter_new)
     * _instance_
         * [.keepConfigFor](#BuildRouter_keepConfigFor)
+        * [.loadBot()](#BuildRouter_loadBot) ⇒ <code>Promise.&lt;Object&gt;</code>
     * _static_
         * [.fromData(blocks, plugins, [context])](#BuildRouter_fromData)
 
@@ -110,6 +111,12 @@ Timeout, when the router is not checking for new configuration
 | --- |
 | <code>number</code> | 
 
+{% raw %}<div id="BuildRouter_loadBot">&nbsp;</div>{% endraw %}
+
+### buildRouter.loadBot() ⇒ <code>Promise.&lt;Object&gt;</code>
+Loads conversation configuration
+
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
 ### BuildRouter.fromData(blocks, plugins, [context])
@@ -130,6 +137,7 @@ Timeout, when the router is not checking for new configuration
     * [new BuildRouter(block, plugins, context, [request])](#new_BuildRouter_new)
     * _instance_
         * [.keepConfigFor](#BuildRouter_keepConfigFor)
+        * [.loadBot()](#BuildRouter_loadBot) ⇒ <code>Promise.&lt;Object&gt;</code>
     * _static_
         * [.fromData(blocks, plugins, [context])](#BuildRouter_fromData)
 
@@ -211,6 +219,12 @@ Timeout, when the router is not checking for new configuration
 | --- |
 | <code>number</code> | 
 
+{% raw %}<div id="BuildRouter_loadBot">&nbsp;</div>{% endraw %}
+
+### buildRouter.loadBot() ⇒ <code>Promise.&lt;Object&gt;</code>
+Loads conversation configuration
+
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
 ### BuildRouter.fromData(blocks, plugins, [context])

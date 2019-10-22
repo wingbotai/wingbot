@@ -1054,6 +1054,10 @@
 <dd></dd>
 <dt><a href="#Action">Action</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#IntentAction">IntentAction</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#QuickReply">QuickReply</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 <div id="Request">&#xA0;</div>
@@ -1072,6 +1076,9 @@
 <li><a href="#Request_subscribtions">.subscribtions</a></li>
 <li><a href="#Request_entities">.entities</a></li>
 <li><a href="#Request_intents">.intents</a></li>
+<li><a href="#Request_aiActions">.aiActions()</a> &#x21D2; <a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></li>
+<li><a href="#Request_aiActionsForQuickReplies">.aiActionsForQuickReplies([limit])</a> &#x21D2; <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a></li>
+<li><a href="#Request_hasAiActionsForDisambiguation">.hasAiActionsForDisambiguation(minimum)</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_intent">.intent(getDataOrScore)</a> &#x21D2; <code>null</code> | <code>string</code> | <a href="#Intent"><code>Intent</code></a></li>
 <li><a href="#Request_entity">.entity(name, [sequence])</a> &#x21D2; <code>number</code> | <code>string</code> | <code>null</code></li>
 <li><a href="#Request_isAttachment">.isAttachment()</a> &#x21D2; <code>boolean</code></li>
@@ -1278,6 +1285,27 @@
 </tr>
 </tbody>
 </table>
+<div id="Request_aiActions">&#xA0;</div>
+
+<h3 id="requestaiactions-&#x21D2;-arrayintentaction"><a name="requestaiactions-&#x21D2;-arrayintentaction" class="plugin-anchor" href="#requestaiactions-&#x21D2;-arrayintentaction"><i class="fa fa-link" aria-hidden="true"></i></a>request.aiActions() &#x21D2; <a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></h3>
+<p>Get all matched actions from NLP intents</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<div id="Request_aiActionsForQuickReplies">&#xA0;</div>
+
+<h3 id="requestaiactionsforquickreplieslimit-&#x21D2;-arrayquickreply"><a name="requestaiactionsforquickreplieslimit-&#x21D2;-arrayquickreply" class="plugin-anchor" href="#requestaiactionsforquickreplieslimit-&#x21D2;-arrayquickreply"><i class="fa fa-link" aria-hidden="true"></i></a>request.aiActionsForQuickReplies([limit]) &#x21D2; <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a></h3>
+<p>Covert all matched actions for disambiguation purposes</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
+<ul>
+<li>[limit] <code>number</code> <code> = 5</code></li>
+</ul>
+<div id="Request_hasAiActionsForDisambiguation">&#xA0;</div>
+
+<h3 id="requesthasaiactionsfordisambiguationminimum-&#x21D2;-boolean"><a name="requesthasaiactionsfordisambiguationminimum-&#x21D2;-boolean" class="plugin-anchor" href="#requesthasaiactionsfordisambiguationminimum-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.hasAiActionsForDisambiguation(minimum) &#x21D2; <code>boolean</code></h3>
+<p>Returns true, if there is an action for disambiguation</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
+<ul>
+<li>minimum <code>number</code> <code> = 1</code></li>
+</ul>
 <div id="Request_intent">&#xA0;</div>
 
 <h3 id="requestintentgetdataorscore-&#x21D2;-null--string--intent"><a name="requestintentgetdataorscore-&#x21D2;-null--string--intent" class="plugin-anchor" href="#requestintentgetdataorscore-&#x21D2;-null--string--intent"><i class="fa fa-link" aria-hidden="true"></i></a>request.intent(getDataOrScore) &#x21D2; <code>null</code> | <code>string</code> | <a href="#Intent"><code>Intent</code></a></h3>
@@ -1535,6 +1563,62 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </tr>
 </tbody>
 </table>
+<div id="IntentAction">&#xA0;</div>
+
+<h2 id="intentaction--object"><a name="intentaction--object" class="plugin-anchor" href="#intentaction--object"><i class="fa fa-link" aria-hidden="true"></i></a>IntentAction : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>intent</td>
+<td><a href="#Intent"><code>Intent</code></a></td>
+</tr>
+<tr>
+<td>sort</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>local</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>aboveConfidence</td>
+<td><code>boolean</code></td>
+</tr>
+</tbody>
+</table>
+<div id="QuickReply">&#xA0;</div>
+
+<h2 id="quickreply--object"><a name="quickreply--object" class="plugin-anchor" href="#quickreply--object"><i class="fa fa-link" aria-hidden="true"></i></a>QuickReply : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>title</td>
+<td><code>*</code></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1578,7 +1662,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Bookmarks","level":"2.8.5","depth":2,"anchor":"#bookmarks-global-intents-under-control","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#bookmarks-global-intents-under-control","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2019-09-18T14:29:49.504Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-18T14:29:52.141Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Bookmarks","level":"2.8.5","depth":2,"anchor":"#bookmarks-global-intents-under-control","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#bookmarks-global-intents-under-control","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2019-10-22T19:33:20.032Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-22T19:33:38.131Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

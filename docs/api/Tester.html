@@ -1047,6 +1047,21 @@
 <dd></dd>
 <dt><a href="#AnyResponseAssert">AnyResponseAssert</a></dt>
 <dd></dd>
+<dt><a href="#ConversationTester">ConversationTester</a></dt>
+<dd><p>Automated Conversation tests runner</p>
+</dd>
+</dl>
+
+<h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
+<dl>
+<dt><a href="#TestSource">TestSource</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TestCaseStep">TestCaseStep</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TestCase">TestCase</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TestsOutput">TestsOutput</a> : <code>object</code></dt>
+<dd></dd>
 </dl>
 
 <div id="Tester">&#xA0;</div>
@@ -1057,6 +1072,8 @@
 <li><a href="#Tester">Tester</a><ul>
 <li><a href="#new_Tester_new">new Tester()</a></li>
 <li><em>instance</em><ul>
+<li><a href="#Tester_testData">.testData</a> : <code>Object</code></li>
+<li><a href="#Tester_setExpandRandomTexts">.setExpandRandomTexts()</a></li>
 <li><a href="#Tester_cleanup">.cleanup()</a></li>
 <li><a href="#Tester_processMessage">.processMessage(message, senderId, pageId)</a> &#x21D2; <code>Promise.&lt;any&gt;</code></li>
 <li><a href="#Tester_res">.res([index])</a> &#x21D2; <a href="#ResponseAssert"><code>ResponseAssert</code></a></li>
@@ -1072,6 +1089,7 @@
 <li><a href="#Tester_passThread">.passThread([data], [appId])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_optin">.optin(action, [data], [userRef])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_quickReply">.quickReply(action, [data])</a> &#x21D2; <code>Promise</code></li>
+<li><a href="#Tester_quickReplyText">.quickReplyText(text)</a> &#x21D2; <code>Promise.&lt;boolean&gt;</code></li>
 <li><a href="#Tester_postBack">.postBack(action, [data], [refAction], [refData])</a> &#x21D2; <code>Promise</code></li>
 </ul>
 </li>
@@ -1089,6 +1107,17 @@
 
 <h3 id="new-tester"><a name="new-tester" class="plugin-anchor" href="#new-tester"><i class="fa fa-link" aria-hidden="true"></i></a>new Tester()</h3>
 <p>Utility for testing requests</p>
+<div id="Tester_testData">&#xA0;</div>
+
+<h3 id="testertestdata--object"><a name="testertestdata--object" class="plugin-anchor" href="#testertestdata--object"><i class="fa fa-link" aria-hidden="true"></i></a>tester.testData : <code>Object</code></h3>
+<p>predefined test data to use</p>
+<p><strong>Kind</strong>: instance property of <a href="#Tester"><code>Tester</code></a>  </p>
+<div id="Tester_setExpandRandomTexts">&#xA0;</div>
+
+<h3 id="testersetexpandrandomtexts"><a name="testersetexpandrandomtexts" class="plugin-anchor" href="#testersetexpandrandomtexts"><i class="fa fa-link" aria-hidden="true"></i></a>tester.setExpandRandomTexts()</h3>
+<p>Enable tester to expand random texts
+It joins them into a single sting</p>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
 <div id="Tester_cleanup">&#xA0;</div>
 
 <h3 id="testercleanup"><a name="testercleanup" class="plugin-anchor" href="#testercleanup"><i class="fa fa-link" aria-hidden="true"></i></a>tester.cleanup()</h3>
@@ -1165,8 +1194,8 @@
 <p>Makes recognised AI intent request</p>
 <p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
 <ul>
-<li>intent <code>string</code></li>
-<li>[text] <code>string</code></li>
+<li>intent <code>string</code> | <code>Array.&lt;string&gt;</code></li>
+<li>[text] <code>string</code> <code> = null</code></li>
 <li>[score] <code>number</code> <code> = </code></li>
 </ul>
 <div id="Tester_intentWithEntity">&#xA0;</div>
@@ -1208,6 +1237,14 @@
 <ul>
 <li>action <code>string</code></li>
 <li>[data] <code>Object</code> <code> = {}</code></li>
+</ul>
+<div id="Tester_quickReplyText">&#xA0;</div>
+
+<h3 id="testerquickreplytexttext-&#x21D2;-promiseboolean"><a name="testerquickreplytexttext-&#x21D2;-promiseboolean" class="plugin-anchor" href="#testerquickreplytexttext-&#x21D2;-promiseboolean"><i class="fa fa-link" aria-hidden="true"></i></a>tester.quickReplyText(text) &#x21D2; <code>Promise.&lt;boolean&gt;</code></h3>
+<p>Send quick reply if text exactly matches, otherwise returns false</p>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>text <code>string</code></li>
 </ul>
 <div id="Tester_postBack">&#xA0;</div>
 
@@ -1254,6 +1291,7 @@
 <li><em>static</em><ul>
 <li><a href="#ResponseAssert_AnyResponseAssert_contains">.AnyResponseAssert#contains(search)</a> &#x21D2; <code>this</code></li>
 <li><a href="#ResponseAssert_AnyResponseAssert_quickReplyAction">.AnyResponseAssert#quickReplyAction(action)</a> &#x21D2; <code>this</code></li>
+<li><a href="#ResponseAssert_AnyResponseAssert_quickReplyTextContains">.AnyResponseAssert#quickReplyTextContains(search)</a> &#x21D2; <code>this</code></li>
 <li><a href="#ResponseAssert_AnyResponseAssert_templateType">.AnyResponseAssert#templateType(type)</a> &#x21D2; <code>this</code></li>
 <li><a href="#ResponseAssert_AnyResponseAssert_genericTemplate">.AnyResponseAssert#genericTemplate(itemCount)</a></li>
 <li><a href="#ResponseAssert_AnyResponseAssert_buttonTemplate">.AnyResponseAssert#buttonTemplate(search, buttonCount)</a></li>
@@ -1324,6 +1362,14 @@
 <ul>
 <li>action <code>string</code></li>
 </ul>
+<div id="ResponseAssert_AnyResponseAssert_quickReplyTextContains">&#xA0;</div>
+
+<h3 id="responseassertanyresponseassertquickreplytextcontainssearch-&#x21D2;-this"><a name="responseassertanyresponseassertquickreplytextcontainssearch-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseassertquickreplytextcontainssearch-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#quickReplyTextContains(search) &#x21D2; <code>this</code></h3>
+<p>Checks quick response text</p>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
+<ul>
+<li>search <code>string</code></li>
+</ul>
 <div id="ResponseAssert_AnyResponseAssert_templateType">&#xA0;</div>
 
 <h3 id="responseassertanyresponseasserttemplatetypetype-&#x21D2;-this"><a name="responseassertanyresponseasserttemplatetypetype-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseasserttemplatetypetype-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#templateType(type) &#x21D2; <code>this</code></h3>
@@ -1373,6 +1419,165 @@
 
 <h3 id="new-anyresponseassert"><a name="new-anyresponseassert" class="plugin-anchor" href="#new-anyresponseassert"><i class="fa fa-link" aria-hidden="true"></i></a>new AnyResponseAssert()</h3>
 <p>Utility for searching among responses</p>
+<div id="ConversationTester">&#xA0;</div>
+
+<h2 id="conversationtester"><a name="conversationtester" class="plugin-anchor" href="#conversationtester"><i class="fa fa-link" aria-hidden="true"></i></a>ConversationTester</h2>
+<p>Automated Conversation tests runner</p>
+<p><strong>Kind</strong>: global class  </p>
+<ul>
+<li><a href="#ConversationTester">ConversationTester</a><ul>
+<li><a href="#new_ConversationTester_new">new ConversationTester(testsSource, botFactory, [options])</a></li>
+<li><a href="#ConversationTester_test">.test(validationRequestBody)</a> &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></li>
+<li><a href="#ConversationTester_executeStep">.executeStep(t, step)</a></li>
+</ul>
+</li>
+</ul>
+<div id="new_ConversationTester_new">&#xA0;</div>
+
+<h3 id="new-conversationtestertestssource-botfactory-options"><a name="new-conversationtestertestssource-botfactory-options" class="plugin-anchor" href="#new-conversationtestertestssource-botfactory-options"><i class="fa fa-link" aria-hidden="true"></i></a>new ConversationTester(testsSource, botFactory, [options])</h3>
+<p><strong>Params</strong></p>
+<ul>
+<li>testsSource <a href="#TestSource"><code>TestSource</code></a></li>
+<li>botFactory <code>function</code></li>
+<li>[options] <code>Object</code><ul>
+<li>[.disableAssertActions] <code>boolean</code></li>
+<li>[.disableAssertTexts] <code>boolean</code></li>
+<li>[.disableAssertQuickReplies] <code>boolean</code></li>
+</ul>
+</li>
+</ul>
+<div id="ConversationTester_test">&#xA0;</div>
+
+<h3 id="conversationtestertestvalidationrequestbody-&#x21D2;-promisetestsoutput"><a name="conversationtestertestvalidationrequestbody-&#x21D2;-promisetestsoutput" class="plugin-anchor" href="#conversationtestertestvalidationrequestbody-&#x21D2;-promisetestsoutput"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.test(validationRequestBody) &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></h3>
+<p>Runs the conversation test</p>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>validationRequestBody <code>Object</code> <code> = </code></li>
+</ul>
+<div id="ConversationTester_executeStep">&#xA0;</div>
+
+<h3 id="conversationtesterexecutestept-step"><a name="conversationtesterexecutestept-step" class="plugin-anchor" href="#conversationtesterexecutestept-step"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.executeStep(t, step)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>t <a href="#Tester"><code>Tester</code></a></li>
+<li>step <code>*</code></li>
+</ul>
+<div id="TestSource">&#xA0;</div>
+
+<h2 id="testsource--object"><a name="testsource--object" class="plugin-anchor" href="#testsource--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestSource : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getTestCases</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
+<div id="TestCaseStep">&#xA0;</div>
+
+<h2 id="testcasestep--object"><a name="testcasestep--object" class="plugin-anchor" href="#testcasestep--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestCaseStep : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>step</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>rowNum</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>passedAction</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>textContains</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>quickRepliesContains</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>stepDescription</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="TestCase">&#xA0;</div>
+
+<h2 id="testcase--object"><a name="testcase--object" class="plugin-anchor" href="#testcase--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestCase : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>steps</td>
+<td><a href="#TestCaseStep"><code>Array.&lt;TestCaseStep&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="TestsOutput">&#xA0;</div>
+
+<h2 id="testsoutput--object"><a name="testsoutput--object" class="plugin-anchor" href="#testsoutput--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestsOutput : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>total</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>passed</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>failed</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>output</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1416,7 +1621,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2019-09-18T14:29:49.526Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-18T14:29:52.141Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2019-10-22T19:33:22.229Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-22T19:33:38.131Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

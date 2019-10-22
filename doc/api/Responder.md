@@ -8,6 +8,7 @@ Instance of responder is passed as second parameter of handler (res)
 * [Responder](#Responder)
     * [.newState](#Responder_newState)
     * [.finalMessageSent](#Responder_finalMessageSent)
+    * [.startedOutput](#Responder_startedOutput)
     * [.data](#Responder_data) : <code>Object</code>
     * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
     * [.setBookmark([action], [winningIntent])](#Responder_setBookmark) ⇒ <code>this</code>
@@ -18,7 +19,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.setData(data)](#Responder_setData) ⇒ <code>this</code>
     * [.text(text, [...quickReplies])](#Responder_text) ⇒ <code>this</code>
     * [.setState(object)](#Responder_setState) ⇒ <code>this</code>
-    * [.addQuickReply(action, title, [data], [prepend], [justToExisting])](#Responder_addQuickReply)
+    * [.addQuickReply(action, [title], [data], [prepend], [justToExisting])](#Responder_addQuickReply)
     * [.expected(action, data)](#Responder_expected) ⇒ <code>this</code>
     * [.toAbsoluteAction(action)](#Responder_toAbsoluteAction) ⇒ <code>string</code>
     * [.currentAction()](#Responder_currentAction) ⇒ <code>string</code>
@@ -55,6 +56,18 @@ into the conversation state.
 
 ### responder.finalMessageSent
 Is true, when a final message (the quick replies by default) has been sent
+
+**Kind**: instance property of [<code>Responder</code>](#Responder)  
+**Properties**
+
+| Type |
+| --- |
+| <code>boolean</code> | 
+
+{% raw %}<div id="Responder_startedOutput">&nbsp;</div>{% endraw %}
+
+### responder.startedOutput
+Is true, when a an output started during the event dispatch
 
 **Kind**: instance property of [<code>Responder</code>](#Responder)  
 **Properties**
@@ -225,14 +238,14 @@ res.setState({ visited: true });
 ```
 {% raw %}<div id="Responder_addQuickReply">&nbsp;</div>{% endraw %}
 
-### responder.addQuickReply(action, title, [data], [prepend], [justToExisting])
+### responder.addQuickReply(action, [title], [data], [prepend], [justToExisting])
 Appends quick reply, to be sent with following text method
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 **Params**
 
-- action <code>string</code> - relative or absolute action
-- title <code>string</code> - quick reply title
+- action <code>string</code> | <code>Object</code> - relative or absolute action
+- [title] <code>string</code> - quick reply title
 - [data] <code>Object</code> - additional data
 - [prepend] <code>boolean</code> <code> = false</code> - set true to add reply at the beginning
 - [justToExisting] <code>boolean</code> <code> = false</code> - add quick reply only to existing replies

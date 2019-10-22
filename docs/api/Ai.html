@@ -1099,6 +1099,7 @@
 <ul>
 <li><a href="#Ai">Ai</a><ul>
 <li><a href="#Ai_confidence">.confidence</a> : <code>number</code></li>
+<li><a href="#Ai_threshold">.threshold</a> : <code>number</code></li>
 <li><a href="#Ai_logger">.logger</a> : <code>Object</code></li>
 <li><a href="#Ai_disableBookmarking">.disableBookmarking</a> : <code>boolean</code></li>
 <li><a href="#Ai_matcher">.matcher</a> : <a href="#AiMatching"><code>AiMatching</code></a></li>
@@ -1108,8 +1109,8 @@
 <li><a href="#Ai_register">.register(model, prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></li>
 <li><a href="#Ai_load">.load()</a></li>
 <li><a href="#Ai_match">.match(intent, [confidence])</a> &#x21D2; <code>function</code></li>
-<li><a href="#Ai_localMatch">.localMatch(intent, [confidence])</a> &#x21D2; <code>function</code></li>
-<li><a href="#Ai_globalMatch">.globalMatch(intent, [confidence])</a> &#x21D2; <code>function</code></li>
+<li><a href="#Ai_localMatch">.localMatch(intent, [title], [confidence])</a> &#x21D2; <code>function</code></li>
+<li><a href="#Ai_globalMatch">.globalMatch(intent, [title], [confidence])</a> &#x21D2; <code>function</code></li>
 </ul>
 </li>
 </ul>
@@ -1117,6 +1118,11 @@
 
 <h3 id="aiconfidence--number"><a name="aiconfidence--number" class="plugin-anchor" href="#aiconfidence--number"><i class="fa fa-link" aria-hidden="true"></i></a>ai.confidence : <code>number</code></h3>
 <p>Upper threshold - for match method and for navigate method</p>
+<p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
+<div id="Ai_threshold">&#xA0;</div>
+
+<h3 id="aithreshold--number"><a name="aithreshold--number" class="plugin-anchor" href="#aithreshold--number"><i class="fa fa-link" aria-hidden="true"></i></a>ai.threshold : <code>number</code></h3>
+<p>Lower threshold - for disambiguation</p>
 <p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
 <div id="Ai_logger">&#xA0;</div>
 
@@ -1239,12 +1245,13 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 </code></pre>
 <div id="Ai_localMatch">&#xA0;</div>
 
-<h3 id="ailocalmatchintent-confidence-&#x21D2;-function"><a name="ailocalmatchintent-confidence-&#x21D2;-function" class="plugin-anchor" href="#ailocalmatchintent-confidence-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.localMatch(intent, [confidence]) &#x21D2; <code>function</code></h3>
+<h3 id="ailocalmatchintent-title-confidence-&#x21D2;-function"><a name="ailocalmatchintent-title-confidence-&#x21D2;-function" class="plugin-anchor" href="#ailocalmatchintent-title-confidence-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.localMatch(intent, [title], [confidence]) &#x21D2; <code>function</code></h3>
 <p>Returns matching middleware, that will export the intent to the root router
 so the intent will be matched in a local context (nested Router)</p>
 <p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware<br><strong>Params</strong></p>
 <ul>
 <li>intent <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
+<li>[title] <code>string</code> <code> = null</code></li>
 <li>[confidence] <code>number</code> <code> = </code></li>
 </ul>
 <p><strong>Example</strong>  </p>
@@ -1260,12 +1267,13 @@ bot.use(ai.localMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (re
 </code></pre>
 <div id="Ai_globalMatch">&#xA0;</div>
 
-<h3 id="aiglobalmatchintent-confidence-&#x21D2;-function"><a name="aiglobalmatchintent-confidence-&#x21D2;-function" class="plugin-anchor" href="#aiglobalmatchintent-confidence-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.globalMatch(intent, [confidence]) &#x21D2; <code>function</code></h3>
+<h3 id="aiglobalmatchintent-title-confidence-&#x21D2;-function"><a name="aiglobalmatchintent-title-confidence-&#x21D2;-function" class="plugin-anchor" href="#aiglobalmatchintent-title-confidence-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.globalMatch(intent, [title], [confidence]) &#x21D2; <code>function</code></h3>
 <p>Returns matching middleware, that will export the intent to the root router
 so the intent will be matched in a global context</p>
 <p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware<br><strong>Params</strong></p>
 <ul>
 <li>intent <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
+<li>[title] <code>string</code> <code> = null</code></li>
 <li>[confidence] <code>number</code> <code> = </code></li>
 </ul>
 <p><strong>Example</strong>  </p>
@@ -1752,7 +1760,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2019-09-18T14:29:49.540Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-18T14:29:52.141Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2019-10-22T19:33:23.216Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-22T19:33:38.131Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

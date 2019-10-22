@@ -60,6 +60,7 @@
 
 * [Ai](#Ai)
     * [.confidence](#Ai_confidence) : <code>number</code>
+    * [.threshold](#Ai_threshold) : <code>number</code>
     * [.logger](#Ai_logger) : <code>Object</code>
     * [.disableBookmarking](#Ai_disableBookmarking) : <code>boolean</code>
     * [.matcher](#Ai_matcher) : [<code>AiMatching</code>](#AiMatching)
@@ -69,13 +70,19 @@
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
     * [.load()](#Ai_load)
     * [.match(intent, [confidence])](#Ai_match) ⇒ <code>function</code>
-    * [.localMatch(intent, [confidence])](#Ai_localMatch) ⇒ <code>function</code>
-    * [.globalMatch(intent, [confidence])](#Ai_globalMatch) ⇒ <code>function</code>
+    * [.localMatch(intent, [title], [confidence])](#Ai_localMatch) ⇒ <code>function</code>
+    * [.globalMatch(intent, [title], [confidence])](#Ai_globalMatch) ⇒ <code>function</code>
 
 {% raw %}<div id="Ai_confidence">&nbsp;</div>{% endraw %}
 
 ### ai.confidence : <code>number</code>
 Upper threshold - for match method and for navigate method
+
+**Kind**: instance property of [<code>Ai</code>](#Ai)  
+{% raw %}<div id="Ai_threshold">&nbsp;</div>{% endraw %}
+
+### ai.threshold : <code>number</code>
+Lower threshold - for disambiguation
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
 {% raw %}<div id="Ai_logger">&nbsp;</div>{% endraw %}
@@ -218,7 +225,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 ```
 {% raw %}<div id="Ai_localMatch">&nbsp;</div>{% endraw %}
 
-### ai.localMatch(intent, [confidence]) ⇒ <code>function</code>
+### ai.localMatch(intent, [title], [confidence]) ⇒ <code>function</code>
 Returns matching middleware, that will export the intent to the root router
 so the intent will be matched in a local context (nested Router)
 
@@ -227,6 +234,7 @@ so the intent will be matched in a local context (nested Router)
 **Params**
 
 - intent [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
+- [title] <code>string</code> <code> = null</code>
 - [confidence] <code>number</code> <code> = </code>
 
 **Example**  
@@ -243,7 +251,7 @@ bot.use(ai.localMatch('intent1'), (req, res) => {
 ```
 {% raw %}<div id="Ai_globalMatch">&nbsp;</div>{% endraw %}
 
-### ai.globalMatch(intent, [confidence]) ⇒ <code>function</code>
+### ai.globalMatch(intent, [title], [confidence]) ⇒ <code>function</code>
 Returns matching middleware, that will export the intent to the root router
 so the intent will be matched in a global context
 
@@ -252,6 +260,7 @@ so the intent will be matched in a global context
 **Params**
 
 - intent [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
+- [title] <code>string</code> <code> = null</code>
 - [confidence] <code>number</code> <code> = </code>
 
 **Example**  

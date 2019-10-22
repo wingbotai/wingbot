@@ -19,6 +19,7 @@
     * [Subscribtions](#subscribtions)
     * [Tag](#tag)
     * [Tags](#tags)
+    * [TestResult](#testresult)
     * [UserInteraction](#userinteraction)
     * [ValidationResult](#validationresult)
   * [Inputs](#inputs)
@@ -157,6 +158,30 @@ list all known conversations
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>flaggedInteractions</strong></td>
+<td valign="top">[<a href="#userinteraction">UserInteraction</a>!]</td>
+<td>
+
+list flagged interactions
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">limit</td>
+<td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">startTimestamp</td>
+<td valign="top"><a href="#float">Float</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">flag</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>conversation</strong></td>
 <td valign="top"><a href="#conversation">Conversation</a></td>
 <td>
@@ -206,6 +231,20 @@ export subscribtions from campaigns
 <tr>
 <td colspan="2" align="right" valign="top">pageId</td>
 <td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>conversationTest</strong></td>
+<td valign="top"><a href="#testresult">TestResult</a></td>
+<td>
+
+run conversation test
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">bot</td>
+<td valign="top"><a href="#any">Any</a></td>
 <td></td>
 </tr>
 </tbody>
@@ -845,6 +884,26 @@ run a campaign
 </tbody>
 </table>
 
+### TestResult
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>output</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ### UserInteraction
 
 <table>
@@ -857,6 +916,16 @@ run a campaign
 </tr>
 </thead>
 <tbody>
+<tr>
+<td colspan="2" valign="top"><strong>senderId</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>pageId</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
 <tr>
 <td colspan="2" valign="top"><strong>timestamp</strong></td>
 <td valign="top"><a href="#float">Float</a>!</td>
@@ -908,6 +977,16 @@ run a campaign
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>flag</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>likelyIntent</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>request</strong></td>
 <td valign="top"><a href="#any">Any</a>!</td>
 <td></td>
@@ -915,6 +994,11 @@ run a campaign
 <tr>
 <td colspan="2" valign="top"><strong>responses</strong></td>
 <td valign="top">[<a href="#any">Any</a>]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>visitedInteractions</strong></td>
+<td valign="top">[<a href="#string">String</a>]</td>
 <td></td>
 </tr>
 <tr>

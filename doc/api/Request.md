@@ -15,6 +15,10 @@
 <dd></dd>
 <dt><a href="#Action">Action</a> : <code>Object</code></dt>
 <dd></dd>
+<dt><a href="#IntentAction">IntentAction</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#QuickReply">QuickReply</a> : <code>Object</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="Request">&nbsp;</div>{% endraw %}
@@ -34,6 +38,9 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.subscribtions](#Request_subscribtions)
     * [.entities](#Request_entities)
     * [.intents](#Request_intents)
+    * [.aiActions()](#Request_aiActions) ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
+    * [.aiActionsForQuickReplies([limit])](#Request_aiActionsForQuickReplies) ⇒ [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply)
+    * [.hasAiActionsForDisambiguation(minimum)](#Request_hasAiActionsForDisambiguation) ⇒ <code>boolean</code>
     * [.intent(getDataOrScore)](#Request_intent) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
     * [.entity(name, [sequence])](#Request_entity) ⇒ <code>number</code> \| <code>string</code> \| <code>null</code>
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
@@ -147,6 +154,32 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | Name | Type | Description |
 | --- | --- | --- |
 | intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) \| <code>null</code> | list of resolved intents |
+
+{% raw %}<div id="Request_aiActions">&nbsp;</div>{% endraw %}
+
+### request.aiActions() ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
+Get all matched actions from NLP intents
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+{% raw %}<div id="Request_aiActionsForQuickReplies">&nbsp;</div>{% endraw %}
+
+### request.aiActionsForQuickReplies([limit]) ⇒ [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply)
+Covert all matched actions for disambiguation purposes
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
+
+- [limit] <code>number</code> <code> = 5</code>
+
+{% raw %}<div id="Request_hasAiActionsForDisambiguation">&nbsp;</div>{% endraw %}
+
+### request.hasAiActionsForDisambiguation(minimum) ⇒ <code>boolean</code>
+Returns true, if there is an action for disambiguation
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
+
+- minimum <code>number</code> <code> = 1</code>
 
 {% raw %}<div id="Request_intent">&nbsp;</div>{% endraw %}
 
@@ -422,4 +455,29 @@ typeof res.postBack(true) === 'object';
 | --- | --- |
 | action | <code>string</code> | 
 | data | <code>Object</code> | 
+
+{% raw %}<div id="IntentAction">&nbsp;</div>{% endraw %}
+
+## IntentAction : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| action | <code>string</code> | 
+| intent | [<code>Intent</code>](#Intent) | 
+| sort | <code>number</code> | 
+| local | <code>boolean</code> | 
+| aboveConfidence | <code>boolean</code> | 
+
+{% raw %}<div id="QuickReply">&nbsp;</div>{% endraw %}
+
+## QuickReply : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| action | <code>string</code> | 
+| title | <code>\*</code> | 
 
