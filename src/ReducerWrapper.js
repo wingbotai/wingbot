@@ -57,14 +57,24 @@ class ReducerWrapper extends EventEmitter {
 
     _emitAction (req, res, action = null, doNotTrack = false) {
         const { _lastAction: lastAction = null } = req.state;
-        const act = action || req.action();
-        const params = [req.senderId, act, req.text(), req, lastAction, doNotTrack];
-
-        let { lastInteraction = null } = req.state;
-        let beforeLastInteraction;
+        const act = res._trackAsAction || action || req.action();
 
         const expected = req.expected();
         const isExpectedAction = expected && act === expected.action;
+
+        const shouldNotTrack = res._trackAsAction === false || doNotTrack;
+        const trackingSkill = typeof res.newState._trackAsSkill === 'undefined'
+            ? (req.state._trackAsSkill || null)
+            : res.newState._trackAsSkill;
+
+        res._trackAsAction = null;
+
+        const params = [
+            req.senderId, act, req.text(), req, lastAction, shouldNotTrack, trackingSkill
+        ];
+
+        let { lastInteraction = null } = req.state;
+        let beforeLastInteraction;
 
         if (typeof res.newState.lastInteraction !== 'undefined') {
             beforeLastInteraction = lastInteraction;
@@ -78,12 +88,12 @@ class ReducerWrapper extends EventEmitter {
             ({ beforeLastInteraction } = res.newState);
         }
 
-        if (act && !doNotTrack && !isExpectedAction && typeof res._visitedInteraction === 'function') {
+        if (act && !shouldNotTrack && !isExpectedAction && typeof res._visitedInteraction === 'function') {
             res._visitedInteraction(act);
         }
 
         if (act && res.data) {
-            const shouldDelayTrack = doNotTrack || isExpectedAction;
+            const shouldDelayTrack = shouldNotTrack || isExpectedAction;
             const shouldSetLastInteraction = res.data._fromInitialEvent
                 || res.data._fromUntrackedInitialEvent;
 
@@ -103,14 +113,14 @@ class ReducerWrapper extends EventEmitter {
             }
         }
 
-        if (act) {
+        if (act && !shouldNotTrack) {
             res.setState({
                 _lastAction: act,
                 lastAction: act
             });
         }
         this.emit('_action', ...params);
-        if (!doNotTrack) {
+        if (!shouldNotTrack) {
             process.nextTick(() => {
                 this.emit('action', ...params);
             });

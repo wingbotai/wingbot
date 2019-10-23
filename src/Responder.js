@@ -88,6 +88,8 @@ class Responder {
          * @prop {boolean}
          */
         this.startedOutput = false;
+
+        this._trackAsAction = null;
     }
 
     // PROTECTED METHOD (called from ReturnSender)
@@ -741,6 +743,35 @@ class Responder {
             payload => this.template(payload),
             this._createContext()
         );
+    }
+
+    /**
+     * Override action tracking
+     *
+     * @param {string|boolean} action
+     * @returns {this}
+     */
+    trackAs (action) {
+        if (typeof action === 'boolean') {
+            this._trackAsAction = action === false
+                ? false
+                : null;
+        } else {
+            this._trackAsAction = this.toAbsoluteAction(action);
+        }
+
+        return this;
+    }
+
+    /**
+     * Set skill for tracking (will used untill it will be changed)
+     *
+     * @param {string|null} skill
+     * @returns {this}
+     */
+    trackAsSkill (skill) {
+        this.setState({ _trackAsSkill: skill });
+        return this;
     }
 
     _senderAction (action) {

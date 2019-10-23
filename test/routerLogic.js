@@ -305,6 +305,7 @@ describe('<Router> logic', () => {
 
         // @ts-ignore
         bot.use('b', ai.match('int'), (req, res, postBack) => {
+            res.trackAsSkill('skill');
             postBack('c');
         });
 
@@ -331,6 +332,87 @@ describe('<Router> logic', () => {
         await new Promise(r => setTimeout(r, 10));
 
         assert.deepEqual(collector, ['/a', '/b', '/c']);
+    });
+
+    it('should be able to override tracking', async () => {
+        const bot = new Router();
+
+        const actions = [];
+        const skills = [];
+        const lastActions = [];
+
+        bot.use('a', (req, res) => {
+            res.text('ask')
+                .trackAs('x')
+                .expected('b');
+        });
+
+        // @ts-ignore
+        bot.use('b', ai.match('int'), (req, res, postBack) => {
+            res.trackAs('y');
+            res.trackAsSkill('skill');
+            postBack('c');
+        });
+
+        bot.use('c', (req, res) => {
+            res
+                .trackAs('z')
+                .text('answer');
+        });
+
+        bot.use('after-async', (req, res) => {
+            res.trackAs('hello');
+        });
+
+        bot.use((req, res, postback) => {
+            res.trackAs(false);
+            postback('after-async', async () => {
+                await new Promise(r => setTimeout(r, 100));
+                return {};
+            });
+        });
+
+        bot.on('action', (a, path, text, req, lastAction, doNotTrack, trackingSkill) => {
+            actions.push(path);
+            skills.push(trackingSkill);
+            lastActions.push(lastAction);
+        });
+
+        const t = new Tester(bot);
+        t.allowEmptyResponse = true;
+
+        const procActions = [];
+        const procLastActions = [];
+        t.processor.on('event', (sender, path, text, req, lastAction) => {
+            procActions.push(path);
+            procLastActions.push(lastAction);
+        });
+
+        await t.postBack('a');
+
+        t.passedAction('x');
+
+        await new Promise(r => setTimeout(r, 10));
+
+        assert.deepEqual(actions, ['/x']);
+        assert.deepEqual(skills, [null]);
+
+        await t.intent('int');
+
+        await new Promise(r => setTimeout(r, 10));
+
+        assert.deepEqual(actions, ['/x', '/y', '/z']);
+        assert.deepEqual(skills, [null, 'skill', 'skill']);
+        assert.deepEqual(lastActions, [null, '/x', '/y']);
+
+        await t.text('random');
+        t.passedAction('hello');
+        await new Promise(r => setTimeout(r, 100));
+
+
+        assert.deepEqual(actions, ['/x', '/y', '/z', '/hello']);
+        assert.deepEqual(skills, [null, 'skill', 'skill', 'skill']);
+        assert.deepEqual(lastActions, [null, '/x', '/y', '/z']);
     });
 
     describe('LOCAL FALLBACKS', () => {

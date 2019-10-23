@@ -101,6 +101,11 @@ class Tester {
          * @type {Object} predefined test data to use
          */
         this.testData = {};
+
+        /**
+         * @type {boolean} allow tester to process empty responses
+         */
+        this.allowEmptyResponse = false;
     }
 
     /**
@@ -146,7 +151,8 @@ class Tester {
 
     _acquireResponseActions (res, messageSender) {
         if (res.status !== 200
-            && !(res.status === 204 && this._pluginBlocksCollector.length > 0)) {
+            && !(res.status === 204 && this._pluginBlocksCollector.length > 0)
+            && !(res.status === 204 && this.allowEmptyResponse)) {
 
             throw new Error(`Processor failed with status ${res.status}`);
         }
