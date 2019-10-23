@@ -1077,6 +1077,8 @@
 <li><a href="#Responder_button">.button(text)</a> &#x21D2; <code>ButtonTemplate</code></li>
 <li><a href="#Responder_genericTemplate">.genericTemplate([shareable], [isSquare])</a> &#x21D2; <code>GenericTemplate</code></li>
 <li><a href="#Responder_list">.list([topElementStyle])</a> &#x21D2; <code>ListTemplate</code></li>
+<li><a href="#Responder_trackAs">.trackAs(action)</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_trackAsSkill">.trackAsSkill(skill)</a> &#x21D2; <code>this</code></li>
 </ul>
 </li>
 </ul>
@@ -1495,6 +1497,22 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
         .urlButton(<span class="hljs-string">&apos;Local link with extension&apos;</span>, <span class="hljs-string">&apos;/local/path&apos;</span>, <span class="hljs-literal">true</span>, <span class="hljs-string">&apos;compact&apos;</span>)
     .send();
 </code></pre>
+<div id="Responder_trackAs">&#xA0;</div>
+
+<h3 id="respondertrackasaction-&#x21D2;-this"><a name="respondertrackasaction-&#x21D2;-this" class="plugin-anchor" href="#respondertrackasaction-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.trackAs(action) &#x21D2; <code>this</code></h3>
+<p>Override action tracking</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>action <code>string</code> | <code>boolean</code></li>
+</ul>
+<div id="Responder_trackAsSkill">&#xA0;</div>
+
+<h3 id="respondertrackasskillskill-&#x21D2;-this"><a name="respondertrackasskillskill-&#x21D2;-this" class="plugin-anchor" href="#respondertrackasskillskill-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.trackAsSkill(skill) &#x21D2; <code>this</code></h3>
+<p>Set skill for tracking (will used untill it will be changed)</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>skill <code>string</code> | <code>null</code></li>
+</ul>
 
                                 
                                 </section>
@@ -1538,7 +1556,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2019-10-22T19:33:20.547Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-22T19:33:38.131Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2019-10-23T11:43:14.452Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-23T11:43:22.903Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

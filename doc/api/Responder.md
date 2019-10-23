@@ -37,6 +37,8 @@ Instance of responder is passed as second parameter of handler (res)
     * [.button(text)](#Responder_button) ⇒ <code>ButtonTemplate</code>
     * [.genericTemplate([shareable], [isSquare])](#Responder_genericTemplate) ⇒ <code>GenericTemplate</code>
     * [.list([topElementStyle])](#Responder_list) ⇒ <code>ListTemplate</code>
+    * [.trackAs(action)](#Responder_trackAs) ⇒ <code>this</code>
+    * [.trackAsSkill(skill)](#Responder_trackAsSkill) ⇒ <code>this</code>
 
 {% raw %}<div id="Responder_newState">&nbsp;</div>{% endraw %}
 
@@ -491,3 +493,23 @@ res.list('compact')
         .urlButton('Local link with extension', '/local/path', true, 'compact')
     .send();
 ```
+{% raw %}<div id="Responder_trackAs">&nbsp;</div>{% endraw %}
+
+### responder.trackAs(action) ⇒ <code>this</code>
+Override action tracking
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
+- action <code>string</code> | <code>boolean</code>
+
+{% raw %}<div id="Responder_trackAsSkill">&nbsp;</div>{% endraw %}
+
+### responder.trackAsSkill(skill) ⇒ <code>this</code>
+Set skill for tracking (will used untill it will be changed)
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
+- skill <code>string</code> | <code>null</code>
+
