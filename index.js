@@ -32,7 +32,7 @@ const ResponseAssert = require('./src/testTools/ResponseAssert');
 const ButtonTemplate = require('./src/templates/ButtonTemplate');
 const GenericTemplate = require('./src/templates/GenericTemplate');
 const BaseTemplate = require('./src/templates/BaseTemplate');
-const { parseActionPayload } = require('./src/utils');
+const { parseActionPayload, getUpdate } = require('./src/utils');
 const {
     bufferloader,
     MemoryStateStorage,
@@ -57,6 +57,7 @@ module.exports = {
     Translate,
     CachedModel,
     parseActionPayload,
+    getUpdate,
 
     // Wingbot
     ai: Ai.ai,
