@@ -32,7 +32,8 @@ const ResponseAssert = require('./src/testTools/ResponseAssert');
 const ButtonTemplate = require('./src/templates/ButtonTemplate');
 const GenericTemplate = require('./src/templates/GenericTemplate');
 const BaseTemplate = require('./src/templates/BaseTemplate');
-const { parseActionPayload, getUpdate } = require('./src/utils');
+const { parseActionPayload } = require('./src/utils');
+const getUpdate = require('./src/utils/getUpdate');
 const {
     bufferloader,
     MemoryStateStorage,

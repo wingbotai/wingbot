@@ -262,7 +262,17 @@ class ReturnSender {
             if (this._sendLogs) {
                 this._sendLogs = false;
                 const sent = this._sent.map(s => this._filterMessage(s));
-                const incomming = this._filterMessage(this._incommingMessage);
+                const processedEvent = req
+                    ? req.data
+                    : this._incommingMessage;
+                let incomming = this._filterMessage(processedEvent);
+
+                if (processedEvent !== this._incommingMessage) {
+                    incomming = {
+                        ...incomming,
+                        _incommingMessage: this._incommingMessage
+                    };
+                }
 
                 await Promise.resolve(this._logger
                     .log(this._userId, sent, incomming, meta));
