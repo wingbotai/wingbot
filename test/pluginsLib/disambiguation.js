@@ -20,17 +20,17 @@ describe('Disambiguation', () => {
         const nested = new Router();
 
         // @ts-ignore
-        nested.use(['has-path', ai.globalMatch('foo', 'footitle')], (req, res) => {
+        nested.use(ai.global('has-path', 'foo', 'footitle'), (req, res) => {
             res.text('foo text');
         });
 
         // @ts-ignore
-        nested.use(['has-tag', ai.globalMatch('bar', () => 'bartitle')], (req, res) => {
+        nested.use(ai.global('has-tag', 'bar', () => 'bartitle'), (req, res) => {
             res.text('tag text');
         });
 
         // @ts-ignore
-        nested.use(['has-entity', ai.globalMatch('@ent', 'enttitle')], (req, res) => {
+        nested.use(ai.global('has-entity', '@ent', 'enttitle'), (req, res) => {
             res.text('ent text');
         });
 

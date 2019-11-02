@@ -298,7 +298,7 @@ describe('Tester', function () {
         t.any().passThread();
         t.res(0).passThread();
 
-        await t.passThread({ theData: 'PASS' });
+        await t.postBack('pass-thread');
 
         t.passedAction('pass-thread');
 

@@ -372,18 +372,18 @@ class BuildRouter extends Router {
                 }
 
                 if (route.aiGlobal) {
-                    aiResolver = Ai.ai.globalMatch(route.aiTags, aiTitle);
+                    aiResolver = Ai.ai.global(route.path, route.aiTags, aiTitle);
                 } else if (route.isResponder) {
                     aiResolver = Ai.ai.match(route.aiTags);
                 } else {
-                    aiResolver = Ai.ai.localMatch(route.aiTags, aiTitle);
+                    aiResolver = Ai.ai.local(route.path, route.aiTags, aiTitle);
                 }
             }
 
             if (aiResolver && route.isResponder) {
                 resolvers.push(route.path, aiResolver);
             } else if (aiResolver) {
-                resolvers.push([route.path, aiResolver]);
+                resolvers.push(aiResolver);
             } else if (route.path) {
                 resolvers.push(route.path);
             }

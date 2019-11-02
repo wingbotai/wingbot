@@ -14,7 +14,7 @@ const WingbotModel = require('../src/wingbot/WingbotModel');
 const DEFAULT_SCORE = 0.96;
 
 function createResponse (intent = 'hello', score = 0.96) {
-    return { tags: intent ? [{ intent, score }] : [] };
+    return { tags: intent ? [{ intent, score: intent === 'low' ? 0.5 : score }] : [] };
 }
 
 function fakeReq (text = 'text') {
@@ -93,8 +93,8 @@ describe('<Ai>', function () {
         });
 
         it('should skip request when the confidence is low', async function () {
-            const mid = ai.match('hello', 1);
-            const args = fakeReq('hello');
+            const mid = ai.match('low');
+            const args = fakeReq('low');
             const res = await mid(...args);
 
             assert.ok(this.fakeRequest.called);
@@ -130,8 +130,7 @@ describe('<Ai>', function () {
 
             const steps = [];
 
-            // @ts-ignore
-            bot.use(['action-name', ai.localMatch('test-intent')], (req, res) => {
+            bot.use(ai.local('action-name', 'test-intent'), (req, res) => {
                 steps.push(3);
                 res.text('Bar');
             });

@@ -322,19 +322,6 @@ class Tester {
     }
 
     /**
-     * Makes pass thread control request
-     *
-     * @param {string|Object} [data] - action
-     * @param {string} [appId] - specific app id
-     * @returns {Promise}
-     *
-     * @memberOf Tester
-     */
-    passThread (data = null, appId = 'random-app') {
-        return this.processMessage(Request.passThread(this.senderId, appId, data));
-    }
-
-    /**
      * Make optin call
      *
      * @param {string} action

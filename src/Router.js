@@ -5,7 +5,6 @@
 
 
 const pathToRegexp = require('path-to-regexp');
-const Ai = require('./Ai');
 const ReducerWrapper = require('./ReducerWrapper');
 const { makeAbsolute } = require('./utils');
 
@@ -19,9 +18,13 @@ const Request = require('./Request'); // eslint-disable-line no-unused-vars
  * @param {Function} [postBack]
  */
 
+/**
+ * @typedef {Object} BotPath
+ * @prop {string} path
+ */
 
 /**
- * @typedef {string|Resolver|RegExp|Router} Middleware flow control statement or function
+ * @typedef {Resolver|string|RegExp|Router|BotPath} Middleware flow control statement or function
  */
 
 /**
@@ -173,37 +176,16 @@ class Router extends ReducerWrapper {
         let resolverPath = thePath;
         let reduce = reducer;
         let isReducer = false;
-        const router = this;
-        const { globalIntents = new Map() } = reducer;
+        const { globalIntents = new Map(), path } = reducer;
 
-        if (typeof reducer === 'string') {
-            resolverPath = this._normalizePath(reducer);
+        if (typeof reducer === 'string' || path) {
+            resolverPath = this._normalizePath(path || reducer);
             const pathMatch = pathToRegexp(resolverPath, [], { end: resolverPath === '' });
 
             reduce = (req, res, relativePostBack, pathContext, action) => {
-                const act = req.action();
                 const actionMatches = action && (resolverPath === '/*' || pathMatch.exec(action));
 
-                // when the action matches, execute the bookmark
-                if (actionMatches && !act && res.bookmark()) {
-                    return res.runBookmark(relativePostBack);
-                }
-
                 if (actionMatches) {
-                    return Router.CONTINUE;
-                }
-
-                if (action && act) {
-                    return Router.BREAK;
-                }
-
-                const match = router._getMatchingGlobalIntent(req, res);
-
-                if (match
-                    && pathMatch.exec(match.localPath)
-                    // @todo evaluate in testing
-                    /* && match.localPath !== match.path */) {
-
                     return Router.CONTINUE;
                 }
 
@@ -264,101 +246,10 @@ class Router extends ReducerWrapper {
         };
     }
 
-    _getMatchingGlobalIntent (req, res) {
-        if (!req.isText()) {
-            return null;
-        }
-        if (req._aiActions) {
-            const actions = req._aiActions
-                .filter(a => a.aboveConfidence && this.globalIntents.has(a.id));
-
-            const winner = this._winner(actions);
-
-            return winner && this.globalIntents.get(winner.id);
-        }
-
-        const aiActions = [];
-
-        // to match the local context intent
-        let localRegexToMatch = null;
-        if (req.state._lastVisitedPath) {
-            localRegexToMatch = new RegExp(`^${req.state._lastVisitedPath}/[^/]+`);
-        } else {
-            let expected = req.expected();
-            if (expected) {
-                expected = expected.action.replace(/\/?[^/]+$/, '');
-                localRegexToMatch = new RegExp(`^${expected}/[^/]+$`);
-            }
-        }
-
-        const localEnhancement = (1 - Ai.ai.confidence) / 2;
-        for (const gi of this.globalIntents.values()) {
-            const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.action);
-            if (gi.local && !pathMatches) {
-                continue;
-            }
-            const intent = gi.matcher(req, res, true);
-            if (intent !== null) {
-                const sort = intent.score + (pathMatches ? localEnhancement : 0);
-                // console.log(sort, wi.intent);
-                aiActions.push({
-                    ...gi,
-                    intent,
-                    aboveConfidence: intent.aboveConfidence,
-                    sort
-                });
-            }
-        }
-
-        aiActions.sort((l, r) => r.sort - l.sort);
-        req._aiActions = aiActions;
-
-        const winner = this._winner(aiActions);
-        req._match = req._match || winner;
-        return winner;
-    }
-
-    _winner (aiActions) {
-        if (aiActions.length === 0 || !aiActions[0].aboveConfidence) {
-            return null;
-        }
-
-        // there will be no winner, if there are two different intents
-        if (aiActions.length > 1 && aiActions[1].aboveConfidence) {
-
-            const [first, second] = aiActions;
-
-            const margin = 1 - (second.sort / first.sort);
-            const oneHasTitle = first.title || second.title;
-            const similarScore = margin < (1 - Ai.ai.confidence);
-            const intentIsNotTheSame = !first.intent.intent
-                || first.intent.intent !== second.intent.intent;
-
-            if (oneHasTitle && similarScore && intentIsNotTheSame) {
-                return null;
-            }
-        }
-
-        return aiActions[0];
-    }
-
     async reduce (req, res, postBack = () => {}, path = '/') {
         const action = this._action(req, path);
         const relativePostBack = this._relativePostBack(postBack, path);
         let iterationResult;
-
-        await Ai.ai.preloadIntent(req);
-
-        // if there's intent && action = is expected and there'a no bookmark
-        if (req.isText()
-            && !res.bookmark()) {
-
-            const match = this._getMatchingGlobalIntent(req, res);
-
-            if (match) {
-                res.setBookmark(match.action, match.intent);
-            }
-        }
 
         for (const route of this._routes) {
             iterationResult = await this._reduceTheArray(

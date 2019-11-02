@@ -110,13 +110,13 @@ describe('Responder', function () {
 
             assert.deepEqual(res.newState._expectedKeywords, [
                 {
-                    action: '/foo/option', match: '^text-title$', data: { information: 1 }, title: '-Text Title'
+                    action: '/foo/option', match: '#text-title', data: { information: 1 }, title: '-Text Title'
                 },
                 {
-                    action: '/foo/another', match: 'some|another', data: {}, title: '-Text2'
+                    action: '/foo/another', match: '#some|another#', data: {}, title: '-Text2'
                 },
                 {
-                    action: '/foo/textMatch', match: '^custom-text$', data: {}, title: '-Text2'
+                    action: '/foo/textMatch', match: '#custom-text', data: {}, title: '-Text2'
                 }
             ]);
         });

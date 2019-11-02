@@ -157,31 +157,9 @@ describe('Request', function () {
         it('should return action name from _expected text', function () {
             const data = Request.text(SENDER_ID, 'Foo Bar');
             const req = new Request(data, {
-                _expectedKeywords: [{ action: ACTION, match: 'foo-bar' }]
+                _expectedKeywords: [{ action: ACTION, match: '#foo-bar#' }]
             });
             assert.strictEqual(req.action(), ACTION);
-        });
-
-        it('should return default action from pass thread event', function () {
-            const req = new Request(Request.passThread(SENDER_ID, 'some-app'), STATE);
-            assert.strictEqual(req.action(), 'pass-thread');
-        });
-
-        it('should return specified action from pass thread event', function () {
-            const req = new Request(Request.passThread(SENDER_ID, 'some-app', ACTION), STATE);
-            assert.strictEqual(req.action(), ACTION);
-        });
-
-        it('should return default action from pass thread event when random data given', function () {
-            const data = { random: 'data' };
-            const req = new Request(Request.passThread(SENDER_ID, 'some-app', data), STATE);
-            assert.strictEqual(req.action(), 'pass-thread');
-        });
-
-        it('should return the data from pass thread event when given', function () {
-            const data = { random: 'data' };
-            const req = new Request(Request.passThread(SENDER_ID, 'some-app', data), STATE);
-            assert.deepStrictEqual(req.action(true), data);
         });
 
     });
@@ -258,15 +236,6 @@ describe('Request', function () {
         it('should return tokenized text', function () {
             const req = new Request(Request.quickReply(SENDER_ID, ACTION, DATA), STATE);
             assert.strictEqual(req.text(true), 'action-action');
-        });
-
-    });
-
-    describe('#isPassThread()', function () {
-
-        it('should know, what is pass thread message', function () {
-            const req = new Request(Request.passThread(SENDER_ID, 'app', DATA), STATE);
-            assert.ok(req.isPassThread());
         });
 
     });
@@ -360,26 +329,26 @@ describe('Request', function () {
 
         it('should return intent, when present', async () => {
             const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.load()(req);
+            await Ai.ai.preloadIntent(req);
             assert.strictEqual(req.intent(), 'foo');
         });
 
         it('should return intent data, when present', async () => {
             const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.load()(req);
+            await Ai.ai.preloadIntent(req);
             assert.deepStrictEqual(req.intent(true), { intent: 'foo', score: 1 });
         });
 
         it('should return null, when present, but score is too low', async () => {
             const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.load()(req);
+            await Ai.ai.preloadIntent(req);
             assert.strictEqual(req.intent(1.1), null);
             assert.strictEqual(req.intent(0.1), 'foo');
         });
 
         it('should return null, when intent is missing', async () => {
             const req = new Request(Request.postBack(SENDER_ID, 'any'), STATE);
-            await Ai.ai.load()(req);
+            await Ai.ai.preloadIntent(req);
             assert.strictEqual(req.intent(), null);
             assert.strictEqual(req.intent(true), null);
         });

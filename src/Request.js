@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const Ai = require('./Ai');
 const { tokenize, quickReplyAction, parseActionPayload } = require('./utils');
 const RequestsFactories = require('./utils/RequestsFactories');
 
@@ -51,7 +52,7 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  */
 class Request extends RequestsFactories {
 
-    constructor (data, state, pageId) {
+    constructor (data, state, pageId, globalIntents = new Map()) {
         super();
 
         this.campaign = data.campaign || null;
@@ -59,6 +60,8 @@ class Request extends RequestsFactories {
         this.taskId = data.taskId || null;
 
         this.data = data;
+
+        this.globalIntents = globalIntents;
 
         /**
          * @prop {object} params - plugin configuration
@@ -113,9 +116,9 @@ class Request extends RequestsFactories {
         this.entities = [];
 
         /**
-         * @prop {Intent[]|null} intents list of resolved intents
+         * @prop {Intent[]} intents list of resolved intents
          */
-        this.intents = null;
+        this.intents = [];
 
         /**
          * @prop {Action}
@@ -126,6 +129,8 @@ class Request extends RequestsFactories {
         this._winningIntent = null;
 
         this._aiActions = null;
+
+        this._aiWinner = null;
     }
 
     /**
@@ -134,9 +139,7 @@ class Request extends RequestsFactories {
      * @returns {IntentAction[]}
      */
     aiActions () {
-        if (this._aiActions === null) {
-            return [];
-        }
+        this._getMatchingGlobalIntent();
         return this._aiActions;
     }
 
@@ -147,9 +150,7 @@ class Request extends RequestsFactories {
      * @returns {QuickReply[]}
      */
     aiActionsForQuickReplies (limit = 5) {
-        if (this._aiActions === null) {
-            return [];
-        }
+        this._getMatchingGlobalIntent();
         return this._aiActions
             .filter(a => a.title)
             .slice(0, limit)
@@ -172,10 +173,10 @@ class Request extends RequestsFactories {
      * @returns {boolean}
      */
     hasAiActionsForDisambiguation (minimum = 1) {
-        return this._aiActions !== null
-            && this._aiActions
-                .filter(a => a.title)
-                .length >= minimum;
+        this._getMatchingGlobalIntent();
+        return this._aiActions
+            .filter(a => a.title)
+            .length >= minimum;
     }
 
     /**
@@ -185,7 +186,7 @@ class Request extends RequestsFactories {
      * @returns {null|string|Intent}
      */
     intent (getDataOrScore = false) {
-        if (!this.intents || this.intents.length === 0) {
+        if (this.intents.length === 0) {
             return null;
         }
 
@@ -483,16 +484,6 @@ class Request extends RequestsFactories {
     }
 
     /**
-     * Returns true, if request pass thread control
-     *
-     * @deprecated use passTreadAction option in Facebook plugin instead
-     * @returns {boolean}
-     */
-    isPassThread () {
-        return this.data.target_app_id || this.data.pass_thread_control;
-    }
-
-    /**
      * Returns true, if request is the optin
      *
      * @returns {boolean}
@@ -569,17 +560,6 @@ class Request extends RequestsFactories {
             res = parseActionPayload(this.message.quick_reply);
         }
 
-        // @deprecated
-        if (!res && this.isPassThread()) {
-            if (this.data.pass_thread_control.metadata) {
-                const payload = this.data.pass_thread_control.metadata;
-                res = parseActionPayload({ payload }, true);
-            }
-            if (!res || !res.action) {
-                res = { action: 'pass-thread', data: res ? res.data : {} };
-            }
-        }
-
         if (!res && this.state._expectedKeywords) {
             res = this._actionByExpectedKeywords();
         }
@@ -588,7 +568,94 @@ class Request extends RequestsFactories {
             res = parseActionPayload(this.state._expected);
         }
 
+        if (!res && this.isText()) {
+            const winner = this._getMatchingGlobalIntent();
+            res = winner
+                ? { action: winner.action, data: {} }
+                : null;
+        }
+
         return res;
+    }
+
+    actionByAi () {
+        const winner = this._getMatchingGlobalIntent();
+        return winner ? winner.action : null;
+    }
+
+    _getMatchingGlobalIntent () {
+        if (this._aiActions) {
+            return this._aiWinner;
+        }
+        if (!this.isText()) {
+            this._aiActions = [];
+            return null;
+        }
+
+        const aiActions = [];
+
+        // to match the local context intent
+        let localRegexToMatch = null;
+        if (this.state._lastVisitedPath) {
+            localRegexToMatch = new RegExp(`^${this.state._lastVisitedPath}/[^/]+`);
+        } else {
+            let expected = this.expected();
+            if (expected) {
+                // @ts-ignore
+                expected = expected.action.replace(/\/?[^/]+$/, '');
+                localRegexToMatch = new RegExp(`^${expected}/[^/]+$`);
+            }
+        }
+
+        const localEnhancement = (1 - Ai.ai.confidence) / 2;
+        for (const gi of this.globalIntents.values()) {
+            const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.action);
+            if (gi.local && !pathMatches) {
+                continue;
+            }
+            const intent = gi.matcher(this, null, true);
+            if (intent !== null) {
+                const sort = intent.score + (pathMatches ? localEnhancement : 0);
+                // console.log(sort, wi.intent);
+                aiActions.push({
+                    ...gi,
+                    intent,
+                    aboveConfidence: intent.aboveConfidence,
+                    sort
+                });
+            }
+        }
+
+        aiActions.sort((l, r) => r.sort - l.sort);
+        const winner = this._winner(aiActions);
+
+        this._aiActions = aiActions;
+        this._aiWinner = winner;
+        return winner;
+    }
+
+    _winner (aiActions) {
+        if (aiActions.length === 0 || !aiActions[0].aboveConfidence) {
+            return null;
+        }
+
+        // there will be no winner, if there are two different intents
+        if (aiActions.length > 1 && aiActions[1].aboveConfidence) {
+
+            const [first, second] = aiActions;
+
+            const margin = 1 - (second.sort / first.sort);
+            const oneHasTitle = first.title || second.title;
+            const similarScore = margin < (1 - Ai.ai.confidence);
+            const intentIsNotTheSame = !first.intent.intent
+                || first.intent.intent !== second.intent.intent;
+
+            if (oneHasTitle && similarScore && intentIsNotTheSame) {
+                return null;
+            }
+        }
+
+        return aiActions[0];
     }
 
     _actionByExpectedKeywords () {
@@ -597,8 +664,8 @@ class Request extends RequestsFactories {
         if (!res && this.state._expectedKeywords) {
             const payload = quickReplyAction(
                 this.state._expectedKeywords,
-                this.text(true),
-                this.text()
+                this,
+                Ai.ai
             );
             if (payload) {
                 res = parseActionPayload(payload);

@@ -10,12 +10,12 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}) {
     let match = null;
 
     if (matcher instanceof RegExp) {
-        match = matcher.toString().replace(/^\/|\/$/g, '');
+        match = `#${matcher.source}#`;
     } else if (typeof matcher === 'string') {
-        match = `^${tokenize(matcher)}$`;
+        match = `#${tokenize(matcher)}`;
     } else {
         // make matcher from title
-        match = `^${tokenize(title)}$`;
+        match = `#${tokenize(title)}`;
     }
 
     return {
@@ -151,11 +151,13 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
  *
  *
  * @param {Object[]} expectedKeywords
- * @param {string} normalizedText
- * @param {string} text
+ * @param {Request} req
+ * @param {Ai} ai
  * @returns {null|Object}
  */
-function quickReplyAction (expectedKeywords, normalizedText, text) {
+function quickReplyAction (expectedKeywords, req, ai) {
+    const text = req.text();
+
     if (!text) {
         return null;
     }
@@ -167,12 +169,9 @@ function quickReplyAction (expectedKeywords, normalizedText, text) {
         return exactMatch[0];
     }
 
-    if (!normalizedText) {
-        return null;
-    }
-
+    // @todo sort by score / disamb
     const found = expectedKeywords
-        .filter(keyword => normalizedText.match(new RegExp(keyword.match)));
+        .filter(keyword => ai.ruleIsMatching(keyword.match, req));
 
     if (found.length !== 1) {
         return null;

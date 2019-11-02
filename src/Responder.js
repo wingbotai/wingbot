@@ -119,6 +119,7 @@ class Responder {
      * @param {string} [action]
      * @param {Object} [winningIntent]
      * @returns {this}
+     * @deprecated
      * @example
      * bot.use(['action-name', /keyword/], (req, res) => {
      *     if (req.action() !== res.currentAction()) {
@@ -140,6 +141,7 @@ class Responder {
     /**
      * Returns the action of bookmark
      *
+     * @deprecated
      * @returns {string|null}
      */
     bookmark () {
@@ -152,6 +154,7 @@ class Responder {
      * @param {Function} postBack - the postback func
      * @param {Object} [data] - data for bookmark action
      * @returns {Promise<null|boolean>}
+     * @deprecated
      * @example
      * // there should be a named intent intent matcher (ai.match() and 'action-name')
      *
@@ -376,8 +379,8 @@ class Responder {
         const { _expectedKeywords: ex = [] } = this.newState;
 
         ex.push({
-            action,
-            intents,
+            action: this.toAbsoluteAction(action),
+            match: intents,
             data
         });
 

@@ -7,6 +7,7 @@ const EventEmitter = require('events');
 const { MemoryStateStorage } = require('./tools');
 const Responder = require('./Responder');
 const Request = require('./Request');
+const Ai = require('./Ai');
 const ReturnSender = require('./ReturnSender');
 
 /**
@@ -310,9 +311,18 @@ class Processor extends EventEmitter {
             // prepare request and responder
             let { state } = stateObject;
 
-            req = new Request(message, state, pageId);
+            // @ts-ignore
+            req = new Request(message, state, pageId, this.reducer.globalIntents);
             res = new Responder(senderId, messageSender, token, this.options, responderData);
             const postBack = this._createPostBack(postbackAcumulator, req, res);
+
+            await Ai.ai.preloadIntent(req);
+
+            // @deprecated backward compatibility
+            const aByAi = req.actionByAi();
+            if (aByAi && aByAi !== req.action()) {
+                res.setBookmark(aByAi);
+            }
 
             let continueToReducer = true;
             // process plugin middlewares
