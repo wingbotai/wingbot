@@ -638,4 +638,26 @@ describe('<GraphApi>', function () {
 
     });
 
+    describe('mutation { subscribeUsers () }', () => {
+
+        it('should add some subscribers', async () => {
+            const res = await api.request({
+                query: `mutation SubscribeUsers ($pageId: String!, $tag: String!, $senderIds: [String!]!) {
+                    subscribeUsers (pageId: $pageId, tag: $tag, senderIds: $senderIds)
+                }`,
+                variables: {
+                    pageId: '1',
+                    tag: 'haha',
+                    senderIds: ['2']
+                }
+            }, headers);
+
+            assert.equal(typeof res.data, 'object');
+            assert.deepEqual(res.data, {
+                subscribeUsers: true
+            });
+        });
+
+    });
+
 });

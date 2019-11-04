@@ -139,6 +139,24 @@ function notificationsApiFactory (storage, notifications, acl) {
             return { count };
         },
 
+        async subscribeUsers (args, ctx) {
+            if (!apiAuthorizer(args, ctx, acl)) {
+                return null;
+            }
+
+            const {
+                senderIds,
+                pageId,
+                tag
+            } = args;
+
+            for (const senderId of senderIds) {
+                await storage.subscribe(`${senderId}`, pageId, tag);
+            }
+
+            return true;
+        },
+
         async tags (args, ctx) {
             if (!apiAuthorizer(args, ctx, acl)) {
                 return null;

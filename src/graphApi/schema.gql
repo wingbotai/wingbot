@@ -276,4 +276,7 @@ type Mutation {
 
     "run a campaign"
     runCampaign(campaignId: String!): QueuingResult
+
+    "subscribe users"
+    subscribeUsers(pageId:String!, senderIds:[String!]!, tag: String): Boolean
 }
