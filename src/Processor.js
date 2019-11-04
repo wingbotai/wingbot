@@ -403,7 +403,12 @@ class Processor extends EventEmitter {
     _emitEvent (req, res) {
         const { _lastAction: lastAction = null } = req.state;
         const { _lastAction: act = null } = res.newState;
-        const params = [req.senderId, act, req.text(), req, lastAction];
+
+        const trackingSkill = typeof res.newState._trackAsSkill === 'undefined'
+            ? (req.state._trackAsSkill || null)
+            : res.newState._trackAsSkill;
+
+        const params = [req.senderId, act, req.text(), req, lastAction, false, trackingSkill];
 
         process.nextTick(() => {
             try {
