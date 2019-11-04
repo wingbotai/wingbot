@@ -4,7 +4,6 @@
 'use strict';
 
 const assert = require('assert');
-const sinon = require('sinon');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 
@@ -17,37 +16,6 @@ function delay (job) {
 }
 
 describe('Router extended functions', function () {
-
-    it('should accept or with nested router', async function () {
-        const matcherForSpy = sinon.spy(() => delay(() => false));
-
-        const nested = new Router();
-
-        nested.use((req, res) => delay(() => {
-            res.text('FIRST');
-            return Router.exit('point');
-        }));
-
-        const r = new Router();
-
-        r.use('/start', [matcherForSpy, nested])
-            .onExit('point', (data, req, res, postBack) => postBack('follow'));
-
-        r.use([/^hello$/, 'follow'], (req, res) => res.text('FOLLOW'));
-
-        r.use((req, res) => res.text('SHOULD NOT'));
-
-
-        const t = new Tester(r);
-
-        await t.postBack('/start');
-
-        assert(matcherForSpy.calledOnce);
-
-        t.any()
-            .contains('FIRST')
-            .contains('FOLLOW');
-    });
 
     it('should proceed deep link into the nested router', async function () {
         const nested = new Router();
@@ -115,7 +83,7 @@ describe('Router extended functions', function () {
             res.expected('expectedTest');
         });
 
-        music.use('/back', () => 'exit');
+        music.use('/back', (r, s, postBack) => postBack('/start'));
 
         const goThru = new Router();
 
@@ -137,10 +105,7 @@ describe('Router extended functions', function () {
             });
         });
 
-        r.use('/music', music)
-            .onExit('exit', (data, req, res, postBack) => {
-                postBack('/start');
-            });
+        r.use('/music', music);
 
 
         const t = new Tester(r);

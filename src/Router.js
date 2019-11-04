@@ -60,7 +60,7 @@ class Router extends ReducerWrapper {
      * Appends middleware, action handler or another router
      *
      * @param {...Middleware|Middleware[]} resolvers - list of resolvers
-     * @returns {{onExit:Function}}
+     * @returns {this}
      *
      * @example
      * // middleware
@@ -78,16 +78,7 @@ class Router extends ReducerWrapper {
      * });
      *
      * // use multiple reducers
-     * router.use('/path', reducer1, reducer2)
-     *    .onExit('exitAction', (data, req, res, postBack) => {
-     *        postBack('anotherAction', { someData: true })
-     *    });
-     *
-     * // append router with exit action
-     * router.use('/path', subRouter)
-     *    .onExit('exitAction', (data, req, res, postBack) => {
-     *        postBack('anotherAction', { someData: true })
-     *    });
+     * router.use('/path', reducer1, reducer2);
      *
      * @memberOf Router
      */
@@ -97,10 +88,7 @@ class Router extends ReducerWrapper {
 
         const reducers = this.createReducersArray(resolvers, pathContext);
 
-        const exitPoints = new Map();
-
         this._routes.push({
-            exitPoints,
             reducers,
             path: pathContext.path
         });
@@ -125,12 +113,7 @@ class Router extends ReducerWrapper {
             }
         });
 
-        return {
-            onExit (actionName, listener) {
-                exitPoints.set(actionName, listener);
-                return this;
-            }
-        };
+        return this;
     }
     /* eslint jsdoc/check-param-names: 1 */
 
@@ -216,26 +199,6 @@ class Router extends ReducerWrapper {
         };
     }
 
-    async _callExitPoint (route, req, res, postBack, path, exitPointName, data = {}) {
-        res.setPath(path);
-
-        if (!route.exitPoints.has(exitPointName)) {
-            return [exitPointName, data];
-        }
-
-        let result = route.exitPoints.get(exitPointName)(data, req, res, postBack);
-
-        if (result instanceof Promise) {
-            result = await result;
-        }
-
-        if (typeof result === 'string' || Array.isArray(result)) {
-            return result;
-        }
-
-        return Router.END;
-    }
-
     _relativePostBack (origPostBack, path) {
         return function postBack (action, data = {}, dontWaitTillEndOfLoop = false) {
             if (typeof action === 'object') {
@@ -276,8 +239,7 @@ class Router extends ReducerWrapper {
     async processReducers (reducers, req, res, postBack, path, action, doNotTrack = false) {
         const routeToReduce = {
             reducers,
-            path: res.routePath,
-            exitPoints: new Map()
+            path: res.routePath
         };
 
         return this._reduceTheArray(
@@ -327,8 +289,6 @@ class Router extends ReducerWrapper {
                 }
             }
 
-            const resultIsExit = typeof result === 'string' || Array.isArray(result);
-
             if (!reducer.isReducer
                     && [Router.BREAK, Router.CONTINUE].indexOf(result) === -1) {
                 pathContext = `${path === '/' ? '' : path}${route.path}`;
@@ -336,7 +296,7 @@ class Router extends ReducerWrapper {
                 // store the last visited path
                 res.setState({ _lastVisitedPath: path === '/' ? null : path });
                 // console.log({ action: req.action(), pathContext, path });
-                this._emitAction(req, res, pathContext, doNotTrack || resultIsExit);
+                this._emitAction(req, res, pathContext, doNotTrack);
             }
 
             if (result === breakOn) {
@@ -344,20 +304,6 @@ class Router extends ReducerWrapper {
                     return Router.CONTINUE;
                 }
                 break; // skip the rest path reducers, continue with next route
-
-            } else if (resultIsExit) {
-                const [exitPoint, data = {}] = Array.isArray(result) ? result : [result];
-
-                // NOTE exit point can cause call of an upper exit point
-                return this._callExitPoint(
-                    route,
-                    req,
-                    res,
-                    relativePostBack,
-                    path,
-                    exitPoint,
-                    data
-                );
 
             } else if (result !== continueOn) {
 
@@ -419,21 +365,5 @@ Router.BREAK = false;
  * @property {null}
  */
 Router.END = null;
-
-/**
- * Create the exit point
- * Its same as returning `['action', { data }]`
- *
- * @param {string} action - the exit action
- * @param {Object} [data] - the data
- * @returns {Array}
- * @example
- * router.use((req, res) => {
- *     return Router.exit('exitName');
- * });
- */
-Router.exit = function (action, data = {}) {
-    return [action, data];
-};
 
 module.exports = Router;

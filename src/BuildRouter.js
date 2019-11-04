@@ -4,6 +4,7 @@
 'use strict';
 
 const requestNative = require('request-promise-native');
+const path = require('path');
 const Router = require('./Router');
 const Ai = require('./Ai');
 const expected = require('./resolvers/expected');
@@ -293,10 +294,10 @@ class BuildRouter extends Router {
                 return;
             }
 
-            const path = `${referredRoutePath}_responder`
+            const expectedPath = `${referredRoutePath}_responder`
                 .replace(/^\//, '');
 
-            Object.assign(route, { path });
+            Object.assign(route, { path: expectedPath });
 
             // set expectedPath to referredRoute
 
@@ -307,8 +308,41 @@ class BuildRouter extends Router {
 
             const referredRoute = routes.find(r => r.id === route.respondsToRouteId);
 
-            Object.assign(referredRoute, { expectedPath: path });
+            Object.assign(referredRoute, { expectedPath });
         });
+    }
+
+    _createLinksMap (block) {
+        const linksMap = new Map();
+
+        block.routes
+            .filter(route => !route.isResponder)
+            .forEach(route => linksMap.set(route.id, route.path));
+
+        const { linksMap: prevLinksMap } = this._context;
+
+        if (prevLinksMap) {
+            for (const [from, to] of prevLinksMap.entries()) {
+                if (!linksMap.has(from)) {
+
+                    path.posix.join('..', to);
+
+                    linksMap.set(from, path.posix.join('..', to));
+                }
+            }
+        }
+
+        block.routes.forEach((route) => {
+            let resolver;
+            for (resolver of route.resolvers) {
+                if (resolver.type !== 'botbuild.include') {
+                    continue;
+                }
+                this._findEntryPointsInResolver(linksMap, resolver, route, this._context);
+            }
+        });
+
+        return linksMap;
     }
 
     _findEntryPointsInResolver (linksMap, resolver, route, context) {
@@ -330,28 +364,8 @@ class BuildRouter extends Router {
                 return;
             }
 
-            linksMap.set(`${route.id}/${blockRoute.id}`, `${basePath}${blockRoute.path}`);
+            linksMap.set(`${blockRoute.id}`, `${basePath}${blockRoute.path}`);
         });
-    }
-
-    _createLinksMap (block) {
-        const linksMap = new Map();
-
-        block.routes
-            .filter(route => !route.isResponder)
-            .forEach(route => linksMap.set(route.id, route.path));
-
-        block.routes.forEach((route) => {
-            let resolver;
-            for (resolver of route.resolvers) {
-                if (resolver.type !== 'botbuild.include') {
-                    continue;
-                }
-                this._findEntryPointsInResolver(linksMap, resolver, route, this._context);
-            }
-        });
-
-        return linksMap;
     }
 
     _buildRouteHead (route) {
@@ -398,43 +412,18 @@ class BuildRouter extends Router {
 
     _buildRoutes (routes) {
         routes.forEach((route) => {
-            const register = this.use(...[
+            this.use(...[
                 ...this._buildRouteHead(route),
                 ...this.buildResolvers(route.resolvers, route)
             ]);
-            this._attachExitPoints(register, route.resolvers);
         });
-    }
-
-    _attachExitPoints (register, routeResolvers) {
-        routeResolvers.forEach((resolver) => {
-            if (resolver.type !== 'botbuild.include') {
-                return;
-            }
-
-            Object.keys(resolver.params.items)
-                .forEach((exitName) => {
-                    const { resolvers } = resolver.params.items[exitName];
-                    register.onExit(exitName, this._buildExitPointResolver(resolvers));
-                });
-        });
-    }
-
-    _buildExitPointResolver (resolvers) {
-        const builtResolvers = this.buildResolvers(resolvers);
-        const reducers = this.createReducersArray(builtResolvers);
-        return (data, req, res, postBack) => {
-            const { path } = res;
-            const action = req.action();
-            return this.processReducers(reducers, req, res, postBack, path, action, true);
-        };
     }
 
     buildResolvers (resolvers, route = {}) {
         const lastIndex = resolvers.length - 1;
 
         const {
-            path, isFallback, isResponder, expectedPath
+            path: ctxPath, isFallback, isResponder, expectedPath, id
         } = route;
 
         return resolvers.map((resolver, i) => {
@@ -442,10 +431,11 @@ class BuildRouter extends Router {
                 isLastIndex: lastIndex === i,
                 router: this,
                 linksMap: this._linksMap,
-                path,
+                path: ctxPath,
                 isFallback,
                 isResponder,
-                expectedPath
+                expectedPath,
+                routeId: id
             });
 
             return this._resolverFactory(resolver, context);

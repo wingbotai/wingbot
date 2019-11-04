@@ -591,7 +591,6 @@ describe('<Router> logic', () => {
         beforeEach(() => {
             const bot = new Router();
 
-            const ENABLE_EXIT_SNIPEPT = false;
             const backExistsCondition = (req, res) => {
                 const { lastInteraction: l, beforeLastInteraction: b } = req.state;
                 const c = l === res.data.lastInteractionSet ? b : l;
@@ -677,31 +676,22 @@ describe('<Router> logic', () => {
 
             first.use('try', (req, res) => {
                 res.text('Ahoj', {
-                    toSecond: 'to second'
+                    '/second/try': 'to second'
                 });
             });
 
-            first.use('toSecond', () => 'theexit');
-
-            bot.use('first', first)
-                .onExit('theexit', (data, req, res, postBack) => {
-                    if (ENABLE_EXIT_SNIPEPT) {
-                        const { lastInteraction } = req.state;
-                        res.setState({ lastInteraction });
-                    }
-                    postBack('second/try');
-                });
+            bot.use('first', first);
 
             const second = new Router();
 
             second.use('try', (req, res) => {
                 res.text('Ahoj', {
-                    toExit: 'to exit'
+                    '/sub/a': 'to exit'
                 });
                 res.expected('ex');
             });
 
-            second.use('ex', ai.match('ex'), (req, res, postBack) => postBack('toExit'));
+            second.use('ex', ai.match('ex'), (req, res, postBack) => postBack('/sub/a'));
 
             second.use('book', (req, res) => {
                 res.text('Book');
@@ -715,16 +705,7 @@ describe('<Router> logic', () => {
                 return true;
             });
 
-            second.use('toExit', () => ['theexit', {}]);
-
-            bot.use('second', second)
-                .onExit('theexit', (data, req, res, postBack) => {
-                    if (ENABLE_EXIT_SNIPEPT) {
-                        const { lastInteraction } = req.state;
-                        res.setState({ lastInteraction });
-                    }
-                    postBack('sub/a');
-                });
+            bot.use('second', second);
 
             const subrouter = new Router();
 
@@ -766,31 +747,14 @@ describe('<Router> logic', () => {
 
             subrouter.use('zpt', (req, res) => {
                 res.text('Z', {
-                    '/back': 'back quick reply',
-                    bck: 'too bac'
+                    '/back': 'back quick reply'
                 });
                 res.expected('bokmarking');
             });
 
-            subrouter.use('bck', () => 'toBack');
+            subrouter.use('toA', (r, s, postBack) => postBack('/sub/a'));
 
-            subrouter.use('toA', () => 'toA');
-
-            bot.use('sub', subrouter)
-                .onExit('toA', (data, req, res, postBack) => {
-                    if (ENABLE_EXIT_SNIPEPT) {
-                        const { lastInteraction } = req.state;
-                        res.setState({ lastInteraction });
-                    }
-                    postBack('sub/a');
-                })
-                .onExit('toBack', (data, req, res, postBack) => {
-                    if (ENABLE_EXIT_SNIPEPT) {
-                        const { lastInteraction } = req.state;
-                        res.setState({ lastInteraction });
-                    }
-                    postBack('back');
-                });
+            bot.use('sub', subrouter);
 
             // @ts-ignore
             bot.use(ai.global('whatIsColor', 'whatIsColor'), (req, res) => {
@@ -838,7 +802,7 @@ describe('<Router> logic', () => {
 
             await t.postBack('first/try');
 
-            await t.quickReply('toSecond');
+            await t.quickReply('second/try');
             t.passedAction('second/try');
 
             await t.postBack('back');
@@ -850,10 +814,10 @@ describe('<Router> logic', () => {
 
             await t.postBack('first/try');
 
-            await t.quickReply('toSecond');
+            await t.quickReply('second/try');
             t.passedAction('second/try');
 
-            await t.quickReply('toExit');
+            await t.quickReply('/sub/a');
 
             await t.quickReply('back');
             t.passedAction('second/try');
@@ -865,9 +829,9 @@ describe('<Router> logic', () => {
 
             await t.quickReply('second/try');
 
-            await t.quickReply('toExit');
+            await t.quickReply('/sub/a');
 
-            await t.quickReply('bck');
+            await t.quickReply('back');
             t.passedAction('second/try');
         });
 

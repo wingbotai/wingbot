@@ -23,7 +23,10 @@ describe('Tester', function () {
             });
         });
 
-        music.use('/back', () => 'exit');
+        music.use('/back', (a, res, postBack) => {
+            res.setData({ x: 1 });
+            postBack('/start');
+        });
 
         music.use('/play', (req, res, postBack) => {
             res.image('/image.png');
@@ -86,16 +89,9 @@ describe('Tester', function () {
             });
         });
 
-        r.use('/music', music)
-            .onExit('exit', (data, req, res, postBack) => {
-                res.setData({ x: 1 });
-                postBack('/start');
-            });
+        r.use('/music', music);
 
-        r.use('/read', read)
-            .onExit('exit', (data, req, res, postBack) => {
-                postBack('/start');
-            });
+        r.use('/read', read);
 
 
         const t = new Tester(r);
