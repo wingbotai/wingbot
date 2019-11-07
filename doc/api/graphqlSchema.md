@@ -374,6 +374,30 @@ run a campaign
 <td valign="top"><a href="#string">String</a>!</td>
 <td></td>
 </tr>
+<tr>
+<td colspan="2" valign="top"><strong>subscribeUsers</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td>
+
+subscribe users
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">pageId</td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">senderIds</td>
+<td valign="top">[<a href="#string">String</a>!]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">tag</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
 </tbody>
 </table>
 

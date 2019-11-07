@@ -1299,6 +1299,13 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <h2 id="plugins"><a name="plugins" class="plugin-anchor" href="#plugins"><i class="fa fa-link" aria-hidden="true"></i></a>Plugins</h2>
 <p>Custom code plugins for BuildRouter and wingbot.ai</p>
 <p><strong>Kind</strong>: global class  </p>
+<ul>
+<li><a href="#Plugins">Plugins</a><ul>
+<li><a href="#Plugins_register">.register(name, [plugin])</a></li>
+<li><a href="#Plugins_registerFactory">.registerFactory(name, pluginFactory)</a></li>
+</ul>
+</li>
+</ul>
 <div id="Plugins_register">&#xA0;</div>
 
 <h3 id="pluginsregistername-plugin"><a name="pluginsregistername-plugin" class="plugin-anchor" href="#pluginsregistername-plugin"><i class="fa fa-link" aria-hidden="true"></i></a>plugins.register(name, [plugin])</h3>
@@ -1307,6 +1314,15 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <ul>
 <li>name <code>string</code> | <a href="#Plugins"><code>Plugins</code></a> - plugin name or plugins object to include</li>
 <li>[plugin] <a href="#Plugin"><code>Plugin</code></a> | <code>Router</code> - plugin - optional when including plugin object</li>
+</ul>
+<div id="Plugins_registerFactory">&#xA0;</div>
+
+<h3 id="pluginsregisterfactoryname-pluginfactory"><a name="pluginsregisterfactoryname-pluginfactory" class="plugin-anchor" href="#pluginsregisterfactoryname-pluginfactory"><i class="fa fa-link" aria-hidden="true"></i></a>plugins.registerFactory(name, pluginFactory)</h3>
+<p>Register plugin factory</p>
+<p><strong>Kind</strong>: instance method of <a href="#Plugins"><code>Plugins</code></a><br><strong>Params</strong></p>
+<ul>
+<li>name <code>string</code> - plugin name or plugins object to include</li>
+<li>pluginFactory <code>function</code> - function, which returns a plugin</li>
 </ul>
 <div id="ConfigStorage">&#xA0;</div>
 
@@ -1392,7 +1408,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2019-10-23T11:43:15.509Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-23T11:43:22.903Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2019-11-07T17:28:09.088Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-11-07T17:28:17.319Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

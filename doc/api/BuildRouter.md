@@ -241,6 +241,11 @@ Loads conversation configuration
 Custom code plugins for BuildRouter and wingbot.ai
 
 **Kind**: global class  
+
+* [Plugins](#Plugins)
+    * [.register(name, [plugin])](#Plugins_register)
+    * [.registerFactory(name, pluginFactory)](#Plugins_registerFactory)
+
 {% raw %}<div id="Plugins_register">&nbsp;</div>{% endraw %}
 
 ### plugins.register(name, [plugin])
@@ -251,6 +256,17 @@ Register plugin
 
 - name <code>string</code> | [<code>Plugins</code>](#Plugins) - plugin name or plugins object to include
 - [plugin] [<code>Plugin</code>](#Plugin) | <code>Router</code> - plugin - optional when including plugin object
+
+{% raw %}<div id="Plugins_registerFactory">&nbsp;</div>{% endraw %}
+
+### plugins.registerFactory(name, pluginFactory)
+Register plugin factory
+
+**Kind**: instance method of [<code>Plugins</code>](#Plugins)  
+**Params**
+
+- name <code>string</code> - plugin name or plugins object to include
+- pluginFactory <code>function</code> - function, which returns a plugin
 
 {% raw %}<div id="ConfigStorage">&nbsp;</div>{% endraw %}
 
