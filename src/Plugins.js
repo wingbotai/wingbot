@@ -27,13 +27,18 @@ class Plugins {
     }
 
     getPluginFactory (name) {
+        let plugin;
         if (pluginsLib.has(name)) {
-            return pluginsLib.get(name);
-        }
-        if (!this._plugins.has(name)) {
+            plugin = pluginsLib.get(name);
+        } else if (!this._plugins.has(name)) {
             throw new Error(`Unknown Plugin: ${name}. Ensure its registration.`);
+        } else {
+            plugin = this._plugins.get(name);
         }
-        return this._plugins.get(name);
+        if (plugin && plugin.pluginFactory) {
+            return plugin.pluginFactory();
+        }
+        return plugin;
     }
 
     code (name, factoryFn = null) {
@@ -49,12 +54,31 @@ class Plugins {
      */
     register (name, plugin) {
         if (typeof name === 'string') {
+            // @ts-ignore
+            if (typeof plugin !== 'function') {
+                // eslint-disable-next-line no-console
+                console.warn(`For <Router> plugins, please use registerFactory() instead of register() (plugin: ${name})`);
+            }
             this._plugins.set(name, plugin);
             return;
         }
         name._plugins.forEach((el, key) => {
             this._plugins.set(key, el);
         });
+    }
+
+    /**
+     * Register plugin factory
+     *
+     * @param {string} name - plugin name or plugins object to include
+     * @param {Function} pluginFactory - function, which returns a plugin
+     */
+    registerFactory (name, pluginFactory) {
+        if (typeof pluginFactory !== 'function') {
+            // eslint-disable-next-line no-console
+            console.warn(`Plugin factory expected, ${typeof pluginFactory} given (plugin: ${name})`);
+        }
+        this._plugins.set(name, { pluginFactory });
     }
 
 }

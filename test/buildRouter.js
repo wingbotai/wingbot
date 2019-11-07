@@ -23,7 +23,7 @@ describe('<BuildRouter>', async () => {
     it('should behave as router', async () => {
         const plugins = new Plugins();
 
-        plugins.register('exampleBlock', async (req, res) => {
+        plugins.registerFactory('exampleBlock', () => async (req, res) => {
             await res.run('responseBlockName');
         });
 
