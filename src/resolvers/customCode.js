@@ -34,7 +34,7 @@ class RouterWrap extends EventEmitter {
         const { path, routePath } = res;
 
         // attach params
-        res.params = params;
+        req.params = params;
 
         // attach block runner
         Object.assign(res, {
