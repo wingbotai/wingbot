@@ -191,7 +191,9 @@ class Processor extends EventEmitter {
         if (this.reducer && typeof this.reducer.preload === 'function') {
             // @ts-ignore
             this.reducer.preload()
-                .catch(e => this.options.log.error('preload error', e));
+                .catch(e => this.options.log.error('preload error', e))
+                // mute log errors
+                .catch(() => {});
         }
 
         try {
