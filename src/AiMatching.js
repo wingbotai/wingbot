@@ -317,7 +317,9 @@ class AiMatching {
                 };
             }
             const { score, handicap, matched } = this._entityMatching(entities, req.entities);
-            if (score === 0) {
+
+            const allOptional = entities.every(e => e.optional);
+            if (score === 0 && !allOptional) {
                 return null;
             }
             const countOfAdditionalItems = Math.max(matched.length - (regexpMatching ? 0 : 1), 0);
@@ -393,7 +395,8 @@ class AiMatching {
         const { score, handicap, matched } = this
             ._entityMatching(wantedEntities, useEntities);
 
-        if (score === 0) {
+        const allOptional = wantedEntities.every(e => e.optional);
+        if (score === 0 && !allOptional) {
             return 0;
         }
 

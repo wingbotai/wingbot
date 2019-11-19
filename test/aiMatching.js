@@ -39,6 +39,18 @@ describe('<AiMatching>', () => {
         });
 
         it('should match entity', () => {
+            const rule = ai.preprocessRule(['@entity?', 'intent', 'diff']);
+
+            const req = fakeReq([intent('intent', [entity('another', 'c', 0.9975)], 0.9975)]);
+
+            assert.deepEqual(ai.match(req, rule), {
+                entities: [],
+                intent: 'intent',
+                score: 0.8975000000000001
+            });
+        });
+
+        it('should match intent with optional entity', () => {
             const rule = ai.preprocessRule('@entity=');
 
             const e = entity('entity');
