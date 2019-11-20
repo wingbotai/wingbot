@@ -178,8 +178,17 @@ class ConversationTester {
                 await t.postBack(action.replace(/^#/, ''));
             } else {
                 const quickReplyRequired = action.match(/^>/);
+                const cleanAction = action.replace(/^>/, '');
+                let found;
 
-                const found = await t.quickReplyText(action.replace(/^>/, ''));
+                // action in quick reply
+                if (action.match(/^>\//)) {
+                    await t.quickReply(cleanAction);
+                    found = true;
+                } else {
+                    found = await t.quickReplyText(cleanAction);
+                }
+
 
                 if (!found && quickReplyRequired) {
                     throw new Error(`Quick reply "${action.replace(/^>/, '')}" was required, but has not been found`);
