@@ -444,7 +444,9 @@ class AiMatching {
             }
 
             if (wanted.op === COMPARE.NOT_EQUAL) {
-                handicap += this.optionalHandicap / 2;
+                handicap += requestEntity
+                    ? this.optionalHandicap
+                    : this.redundantEntityHandicap + this.optionalHandicap;
             }
 
             if (requestEntity) {
@@ -452,7 +454,11 @@ class AiMatching {
                 sum += requestEntity.score;
                 occurences.set(wanted.entity, index + 1);
             } else {
-                matched.push({ entity: wanted.entity, score: 1, value: undefined });
+                matched.push({
+                    entity: wanted.entity,
+                    score: 1 - this.redundantEntityHandicap,
+                    value: undefined
+                });
                 sum += 1;
             }
         }

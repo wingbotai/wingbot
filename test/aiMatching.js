@@ -77,6 +77,22 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
+        it('intent with optional entity should have smaller score than with required entity', () => {
+            const rule = ai.preprocessRule(['foo', '@entity!=']);
+            const ruleWithEntity = ai.preprocessRule(['foo', '@entity']);
+
+            const foo = intent('foo');
+            const fooReq = fakeReq([foo]);
+
+            const fooEntity = intent('foo', [entity('entity', 'val')]);
+            const fooWithEntity = fakeReq([fooEntity]);
+
+            const resWithoutEntity = ai.match(fooReq, rule);
+            const resWithEntity = ai.match(fooWithEntity, ruleWithEntity);
+
+            assert.ok(resWithEntity.score > resWithoutEntity.score, `${resWithEntity.score} > ${resWithoutEntity.score}`);
+        });
+
         it('should match more intents without entities', () => {
             const rule = ai.preprocessRule(['foo', 'bar', '@hehe!=']);
 
@@ -89,10 +105,10 @@ describe('<AiMatching>', () => {
             const badReq = fakeReq([intent('bad')]);
 
             assert.deepEqual(ai.match(fooReq, rule), Object.assign({}, foo, {
-                score: 1.1993999999999998
+                score: 1.1387999999999998
             }));
             assert.deepEqual(ai.match(barReq, rule), Object.assign({}, bar, {
-                score: 1.1993999999999998
+                score: 1.1387999999999998
             }));
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
@@ -218,7 +234,7 @@ describe('<AiMatching>', () => {
             const goodReq = fakeReq([], [goodFoo]);
             const badReq = fakeReq([], [badFoo]);
 
-            const winningIntent = intent(null, [goodFoo], 0.9495);
+            const winningIntent = intent(null, [goodFoo], 0.949);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
@@ -236,7 +252,7 @@ describe('<AiMatching>', () => {
             const goodReq = fakeReq([], [goodFoo]);
             const badReq = fakeReq([], [badFoo]);
 
-            const winningIntent = intent(null, [{ entity: 'foo', score: 1, value: undefined }], 0.9995);
+            const winningIntent = intent(null, [{ entity: 'foo', score: 0.95, value: undefined }], 0.949);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
