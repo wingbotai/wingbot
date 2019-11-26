@@ -11,6 +11,9 @@ const expected = require('./resolvers/expected');
 const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
 const defaultResourceMap = require('./defaultResourceMap');
 
+const MESSAGE_RESOLVER_NAME = 'botbuild.message';
+const REPLIES_RESOLVER_NAME = 'botbuild.replies';
+
 /**
  * @typedef {Object} ConfigStorage
  * @prop {{():Promise}} invalidateConfig
@@ -419,23 +422,44 @@ class BuildRouter extends Router {
         });
     }
 
+    _lastMessageIndex (resolvers) {
+        for (let i = resolvers.length - 1; i >= 0; i--) {
+            if (resolvers[i].type === MESSAGE_RESOLVER_NAME) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     buildResolvers (resolvers, route = {}) {
         const lastIndex = resolvers.length - 1;
+        const lastMessageIndex = this._lastMessageIndex(resolvers);
 
         const {
-            path: ctxPath, isFallback, isResponder, expectedPath, id
+            path: ctxPath, isFallback, isResponder, expectedPath, id, replies = []
         } = route;
 
-        return resolvers.map((resolver, i) => {
+        let useResolvers = resolvers;
+
+        if (replies.some(r => r.aiTags && r.aiTags.length !== 0)) {
+            useResolvers = [{
+                type: REPLIES_RESOLVER_NAME,
+                params: {}
+            }, ...useResolvers];
+        }
+
+        return useResolvers.map((resolver, i) => {
             const context = Object.assign({}, this._context, {
                 isLastIndex: lastIndex === i,
+                isLastMessage: lastMessageIndex === i,
                 router: this,
                 linksMap: this._linksMap,
                 path: ctxPath,
                 isFallback,
                 isResponder,
                 expectedPath,
-                routeId: id
+                routeId: id,
+                replies
             });
 
             return this._resolverFactory(resolver, context);

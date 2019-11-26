@@ -471,7 +471,7 @@ class Notifications extends EventEmitter {
                 }
             }
 
-            res.setMessgingType(campaign.type || 'UPDATE');
+            res.setMessagingType(campaign.type || 'UPDATE');
 
             if (!campaign.in24hourWindow) {
                 this._setLastCampaign(res, campaign, req.taskId);

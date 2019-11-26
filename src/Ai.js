@@ -39,6 +39,17 @@ let uq = 1;
  */
 
 /**
+ * @typedef {Object} IntentAction
+ * @prop {string} action
+ * @prop {Intent} intent
+ * @prop {number} sort
+ * @prop {boolean} local
+ * @prop {boolean} aboveConfidence
+ * @prop {boolean} [winner]
+ * @prop {string} [title]
+ */
+
+/**
  * @class Ai
  */
 class Ai {
@@ -166,7 +177,10 @@ class Ai {
      *
      * @param {string} path
      * @param {IntentRule|IntentRule[]} intents
-     * @param {string} [title]
+     * @param {string} [title] - disambiguation title
+     * @param {Object} [meta] - metadata for multibot environments
+     * @param {Object} [meta.targetAppId] - target application id
+     * @param {Object} [meta.targetAction] - target action
      * @returns {Object} - the middleware
      * @memberOf Ai
      * @example
@@ -180,7 +194,7 @@ class Ai {
      *     res.text('Oh, intent 1 :)');
      * });
      */
-    global (path, intents, title = null) {
+    global (path, intents, title = null, meta = {}) {
         const matcher = this._createIntentMatcher(intents);
         const id = uq++;
 
@@ -191,13 +205,34 @@ class Ai {
                 matcher,
                 local: false,
                 action: '/*',
-                title
+                title,
+                meta
             }]])
         };
 
         return resolver;
     }
 
+    /**
+     * Returns matching middleware, that will export the intent to the root router
+     * so the intent will be matched in a context of local dialogue
+     *
+     * @param {string} path
+     * @param {IntentRule|IntentRule[]} intents
+     * @param {string} [title] - disambiguation title
+     * @returns {Object} - the middleware
+     * @memberOf Ai
+     * @example
+     * const { Router, ai } = require('wingbot');
+     *
+     * ai.register('app-model');
+     *
+     * bot.use(ai.global('route-path', 'intent1'), (req, res) => {
+     *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
+     *
+     *     res.text('Oh, intent 1 :)');
+     * });
+     */
     local (path, intents, title = null) {
         const matcher = this._createIntentMatcher(intents);
         const id = uq++;
@@ -209,7 +244,8 @@ class Ai {
                 matcher,
                 local: true,
                 action: '/*',
-                title
+                title,
+                meta: {}
             }]])
         };
 
@@ -360,6 +396,35 @@ class Ai {
         }
         const text = this.textFilter(req.text());
         return model.resolve(text, req);
+    }
+
+    /**
+     *
+     * @param {IntentAction[]} aiActions
+     * @returns {boolean}
+     */
+    shouldDisambiguate (aiActions) {
+        if (aiActions.length === 0 || !aiActions[0].aboveConfidence) {
+            return false;
+        }
+
+        // there will be no winner, if there are two different intents
+        if (aiActions.length > 1 && aiActions[1].aboveConfidence) {
+
+            const [first, second] = aiActions;
+
+            const margin = 1 - (second.sort / first.sort);
+            const oneHasTitle = first.title || second.title;
+            const similarScore = margin < (1 - Ai.ai.confidence);
+            const intentIsNotTheSame = !first.intent.intent
+                || first.intent.intent !== second.intent.intent;
+
+            if (oneHasTitle && similarScore && intentIsNotTheSame) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

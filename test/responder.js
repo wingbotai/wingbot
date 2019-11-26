@@ -330,7 +330,7 @@ describe('Responder', function () {
 
     });
 
-    describe('#setMessgingType()', function () {
+    describe('#setMessagingType()', function () {
 
         it('sends default message type', function () {
             const { sendFn, opts, messageSender } = createAssets();
@@ -348,7 +348,7 @@ describe('Responder', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
-            res.setMessgingType(Responder.TYPE_NON_PROMOTIONAL_SUBSCRIPTION);
+            res.setMessagingType(Responder.TYPE_NON_PROMOTIONAL_SUBSCRIPTION);
 
             assert.strictEqual(res.text('Hello'), res, 'should return self');
 
@@ -365,7 +365,7 @@ describe('Responder', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
-            res.setMessgingType(Responder.TYPE_MESSAGE_TAG, 'TAG');
+            res.setMessagingType(Responder.TYPE_MESSAGE_TAG, 'TAG');
 
             assert.strictEqual(res.text('Hello'), res, 'should return self');
 

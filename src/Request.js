@@ -37,6 +37,11 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  * @prop {number} sort
  * @prop {boolean} local
  * @prop {boolean} aboveConfidence
+ * @prop {boolean} [winner]
+ * @prop {string} [title]
+ * @prop {Object} meta
+ * @prop {string} [meta.targetAppId]
+ * @prop {string|null} [meta.targetAction]
  */
 
 /**
@@ -147,22 +152,34 @@ class Request extends RequestsFactories {
      * Covert all matched actions for disambiguation purposes
      *
      * @param {number} [limit]
+     * @param {IntentAction[]} [aiActions]
+     * @param {string} [overrideAction]
      * @returns {QuickReply[]}
      */
-    aiActionsForQuickReplies (limit = 5) {
-        this._getMatchingGlobalIntent();
-        return this._aiActions
+    aiActionsForQuickReplies (limit = 5, aiActions = null, overrideAction = null) {
+        if (aiActions === null) {
+            this._getMatchingGlobalIntent();
+        }
+        return (aiActions || this._aiActions)
             .filter(a => a.title)
             .slice(0, limit)
             .map(a => ({
                 title: typeof a.title === 'function'
                     ? a.title(this)
                     : a.title,
-                action: a.action,
+                action: overrideAction || a.action,
                 _senderMeta: {
                     flag: 'd',
                     likelyIntent: a.intent.intent
-                }
+                },
+                ...(
+                    overrideAction
+                        ? {
+                            _action: a.action,
+                            _appId: a.appId
+                        }
+                        : {}
+                )
             }));
     }
 
@@ -621,7 +638,8 @@ class Request extends RequestsFactories {
                     ...gi,
                     intent,
                     aboveConfidence: intent.aboveConfidence,
-                    sort
+                    sort,
+                    winner: false
                 });
             }
         }
@@ -640,19 +658,13 @@ class Request extends RequestsFactories {
         }
 
         // there will be no winner, if there are two different intents
-        if (aiActions.length > 1 && aiActions[1].aboveConfidence) {
+        if (Ai.ai.shouldDisambiguate(aiActions)) {
+            return null;
+        }
 
-            const [first, second] = aiActions;
-
-            const margin = 1 - (second.sort / first.sort);
-            const oneHasTitle = first.title || second.title;
-            const similarScore = margin < (1 - Ai.ai.confidence);
-            const intentIsNotTheSame = !first.intent.intent
-                || first.intent.intent !== second.intent.intent;
-
-            if (oneHasTitle && similarScore && intentIsNotTheSame) {
-                return null;
-            }
+        if (aiActions[0]) {
+            // eslint-disable-next-line no-param-reassign
+            aiActions[0].winner = true;
         }
 
         return aiActions[0];

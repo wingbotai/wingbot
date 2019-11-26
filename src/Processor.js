@@ -24,6 +24,19 @@ const ReturnSender = require('./ReturnSender');
  * @prop {Function} processMessage
  */
 
+/**
+ * @typedef {Object} IntentAction
+ * @prop {string} action
+ * @prop {Intent} intent
+ * @prop {number} sort
+ * @prop {boolean} local
+ * @prop {boolean} aboveConfidence
+ * @prop {boolean} [winner]
+ * @prop {Object} meta
+ * @prop {string} [meta.targetAppId]
+ * @prop {string|null} [meta.targetAction]
+ */
+
 const NAME_FROM_STATE = (state) => {
     if (state.user && state.user.firstName) {
         return `${state.user.firstName} ${state.user.lastName}`;
@@ -259,6 +272,30 @@ class Processor extends EventEmitter {
             result = { status: code, error: e.message };
         }
         return result;
+    }
+
+    /**
+     * Get matching NLP intents
+     *
+     * @param {string|Object} text
+     * @param {string} [pageId]
+     * @returns {Promise<IntentAction[]>}
+     */
+    async aiActionsForText (text, pageId = 'none') {
+        try {
+            const request = typeof text === 'string'
+                ? Request.text('none', text)
+                : text;
+            // @ts-ignore
+            const req = new Request(request, {}, pageId, this.reducer.globalIntents);
+
+            await Ai.ai.preloadIntent(req);
+
+            return req.aiActions();
+        } catch (e) {
+            this.options.log.error('failed to fetch intent actions', e);
+            return [];
+        }
     }
 
     async _processMessage (message, pageId, messageSender, responderData, fromEvent = false) {

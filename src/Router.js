@@ -11,6 +11,10 @@ const { makeAbsolute } = require('./utils');
 const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
 const Request = require('./Request'); // eslint-disable-line no-unused-vars
 
+function defaultPathContext () {
+    return { globalIntentsMeta: {}, path: '/*' };
+}
+
 /**
  * @callback Resolver processing function
  * @param {Request} [req]
@@ -84,7 +88,7 @@ class Router extends ReducerWrapper {
      */
     use (...resolvers) {
 
-        const pathContext = { path: '/*' };
+        const pathContext = defaultPathContext();
 
         const reducers = this.createReducersArray(resolvers, pathContext);
 
@@ -96,7 +100,7 @@ class Router extends ReducerWrapper {
         reducers.forEach(({ globalIntents }) => {
             for (const gi of globalIntents.values()) {
                 const {
-                    id, matcher, action: intentPath, local, title
+                    id, matcher, action: intentPath, local, title, meta = {}
                 } = gi;
                 const action = intentPath === '/*'
                     ? pathContext.path
@@ -108,7 +112,8 @@ class Router extends ReducerWrapper {
                     action,
                     localPath: pathContext.path,
                     local,
-                    title
+                    title,
+                    meta: { ...pathContext.globalIntentsMeta, ...meta }
                 });
             }
         });
@@ -118,7 +123,7 @@ class Router extends ReducerWrapper {
     /* eslint jsdoc/check-param-names: 1 */
 
     // protected method for bot
-    createReducersArray (resolvers, pathContext = { path: '/*' }) {
+    createReducersArray (resolvers, pathContext = defaultPathContext()) {
         return resolvers.map((reducer) => {
 
             // or condition
@@ -128,13 +133,14 @@ class Router extends ReducerWrapper {
 
                 const reducersArray = reducer.map((re) => {
                     const {
-                        resolverPath, reduce, isReducer, globalIntents: gis
+                        resolverPath, reduce, isReducer, globalIntents: gis, globalIntentsMeta = {}
                     } = this._createReducer(
                         re,
                         pathContext.path
                     );
                     gis.forEach(g => globalIntents.set(g.id, g));
                     Object.assign(pathContext, { path: resolverPath });
+                    Object.assign(pathContext.globalIntentsMeta, globalIntentsMeta);
                     isAnyReducer = isAnyReducer || isReducer;
                     return { reduce, isReducer };
                 });
@@ -145,12 +151,15 @@ class Router extends ReducerWrapper {
             }
 
             const {
-                resolverPath, reduce, isReducer, globalIntents
+                resolverPath, reduce, isReducer, globalIntents, globalIntentsMeta = {}
             } = this._createReducer(
                 reducer,
                 pathContext.path
             );
+
             Object.assign(pathContext, { path: resolverPath });
+            Object.assign(pathContext.globalIntentsMeta, globalIntentsMeta);
+
             return { reduce, isReducer, globalIntents };
         });
     }
@@ -159,7 +168,7 @@ class Router extends ReducerWrapper {
         let resolverPath = thePath;
         let reduce = reducer;
         let isReducer = false;
-        const { globalIntents = new Map(), path } = reducer;
+        const { globalIntents = new Map(), path, globalIntentsMeta = {} } = reducer;
 
         if (typeof reducer === 'string' || path) {
             resolverPath = this._normalizePath(path || reducer);
@@ -195,7 +204,7 @@ class Router extends ReducerWrapper {
         }
 
         return {
-            resolverPath, isReducer, reduce, globalIntents
+            resolverPath, isReducer, reduce, globalIntents, globalIntentsMeta
         };
     }
 

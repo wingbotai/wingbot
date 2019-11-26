@@ -26,7 +26,7 @@ class Plugins {
         this._plugins = new Map();
     }
 
-    getPluginFactory (name) {
+    getPluginFactory (name, paramsData = {}) {
         let plugin;
         if (pluginsLib.has(name)) {
             plugin = pluginsLib.get(name);
@@ -36,7 +36,7 @@ class Plugins {
             plugin = this._plugins.get(name);
         }
         if (plugin && plugin.pluginFactory) {
-            return plugin.pluginFactory();
+            return plugin.pluginFactory(paramsData);
         }
         return plugin;
     }

@@ -195,7 +195,7 @@ class Responder {
      * @param {string} [tag]
      * @returns {this}
      */
-    setMessgingType (messagingType, tag = null) {
+    setMessagingType (messagingType, tag = null) {
         this._messagingType = messagingType;
         this._tag = tag;
         return this;
@@ -309,7 +309,9 @@ class Responder {
             if (qrs.length > 0) {
                 this.finalMessageSent = true;
                 messageData.message.quick_replies = qrs;
-                this.setState({ _expectedKeywords: expectedKeywords });
+
+                const { _expectedKeywords: expectedKws = [] } = this.newState;
+                this.setState({ _expectedKeywords: [...expectedKws, ...expectedKeywords] });
                 this._quickReplyCollector = [];
             }
         }
