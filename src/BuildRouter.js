@@ -432,9 +432,6 @@ class BuildRouter extends Router {
     }
 
     buildResolvers (resolvers, route = {}) {
-        const lastIndex = resolvers.length - 1;
-        const lastMessageIndex = this._lastMessageIndex(resolvers);
-
         const {
             path: ctxPath, isFallback, isResponder, expectedPath, id, replies = []
         } = route;
@@ -447,6 +444,9 @@ class BuildRouter extends Router {
                 params: {}
             }, ...useResolvers];
         }
+
+        const lastMessageIndex = this._lastMessageIndex(useResolvers);
+        const lastIndex = useResolvers.length - 1;
 
         return useResolvers.map((resolver, i) => {
             const context = Object.assign({}, this._context, {

@@ -10,7 +10,11 @@ const Tester = require('../src/Tester');
 const Request = require('../src/Request');
 const Router = require('../src/Router');
 const passThreadToBotFactory = require('../src/pluginsLib/passThreadToBot');
+const BuildRouter = require('../src/BuildRouter');
+const Plugins = require('../src/Plugins');
 const Ai = require('../src/Ai');
+// @ts-ignore
+const testbot = require('./replies-bot.json');
 
 describe('<Router> features for Uberbot', () => {
 
@@ -51,6 +55,36 @@ describe('<Router> features for Uberbot', () => {
                 }
             ]);
 
+        });
+
+        it('parses the replies', async () => {
+            const plugins = new Plugins();
+
+            const bot = BuildRouter.fromData(testbot.blocks, plugins);
+
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            t.passedAction('start');
+            t.any()
+                .quickReplyTextContains('bez podminky');
+
+            await t.quickReplyText('bez podminky');
+
+            t.passedAction('deep');
+            t.any()
+                .quickReplyTextContains('back');
+
+            await t.quickReplyText('back');
+
+            t.passedAction('dalsi');
+
+            await t.postBack('start');
+
+            await t.intent('lla');
+
+            t.passedAction('dalsi');
         });
 
     });
