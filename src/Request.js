@@ -168,10 +168,12 @@ class Request extends RequestsFactories {
                     ? a.title(this)
                     : a.title,
                 action: overrideAction || a.action,
-                _senderMeta: {
-                    flag: 'd',
-                    likelyIntent: a.intent.intent
-                },
+                _senderMeta: a.intent
+                    ? {
+                        flag: 'd',
+                        likelyIntent: a.intent.intent
+                    }
+                    : {},
                 ...(
                     overrideAction
                         ? {

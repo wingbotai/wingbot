@@ -365,7 +365,7 @@ class Ai {
         if (mockIntent) {
             req.intents = mockIntent.intents;
             req.entities = mockIntent.entities;
-        } else if (!req.intents && this._keyworders.size !== 0 && req.isText()) {
+        } else if (this._keyworders.size !== 0) {
             const model = this._getModelForRequest(req);
             if (!model) {
                 req.intents = [];
@@ -404,19 +404,22 @@ class Ai {
      * @returns {boolean}
      */
     shouldDisambiguate (aiActions) {
-        if (aiActions.length === 0 || !aiActions[0].aboveConfidence) {
+        if (aiActions.length === 0 || aiActions[0].aboveConfidence === false) {
             return false;
         }
 
         // there will be no winner, if there are two different intents
-        if (aiActions.length > 1 && aiActions[1].aboveConfidence) {
+        if (aiActions.length > 1 && aiActions[1].aboveConfidence !== false) {
 
             const [first, second] = aiActions;
+            const firstScore = first.sort || first.score;
+            const secondScore = second.sort || second.score;
 
-            const margin = 1 - (second.sort / first.sort);
+            const margin = 1 - (secondScore / firstScore);
             const oneHasTitle = first.title || second.title;
             const similarScore = margin < (1 - Ai.ai.confidence);
-            const intentIsNotTheSame = !first.intent.intent
+            const intentIsNotTheSame = !first.intent || !second.intent
+                || !first.intent.intent
                 || first.intent.intent !== second.intent.intent;
 
             if (oneHasTitle && similarScore && intentIsNotTheSame) {

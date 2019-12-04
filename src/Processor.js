@@ -29,6 +29,7 @@ const ReturnSender = require('./ReturnSender');
  * @prop {string} action
  * @prop {Intent} intent
  * @prop {number} sort
+ * @prop {number} [score]
  * @prop {boolean} local
  * @prop {boolean} aboveConfidence
  * @prop {boolean} [winner]
