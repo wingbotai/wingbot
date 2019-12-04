@@ -105,6 +105,8 @@ class BuildRouter extends Router {
 
         this._prebuiltRoutesCount = null;
 
+        this._prebuiltGlobalIntents = null;
+
         this.resources = defaultResourceMap();
 
         this._loadBotAuthorization = block.token || null;
@@ -249,9 +251,17 @@ class BuildRouter extends Router {
             this._routes = this._routes.slice(0, this._prebuiltRoutesCount - 1);
             this._configTs = 0;
         }
+        if (this._prebuiltGlobalIntents !== null) {
+            this.globalIntents = new Map(this._prebuiltGlobalIntents);
+        }
     }
 
     _buildBot (block, setConfigTimestamp = Number.MAX_SAFE_INTEGER) {
+        if (this._prebuiltGlobalIntents === null) {
+            this._prebuiltGlobalIntents = Array.from(this.globalIntents.entries());
+        } else {
+            this.globalIntents = new Map(this._prebuiltGlobalIntents);
+        }
         if (this._prebuiltRoutesCount === null) {
             this._prebuiltRoutesCount = this._routes.length;
         } else {
