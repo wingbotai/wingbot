@@ -3,7 +3,6 @@
  */
 'use strict';
 
-const util = require('util');
 const ReceiptTemplate = require('./templates/ReceiptTemplate');
 const ButtonTemplate = require('./templates/ButtonTemplate');
 const GenericTemplate = require('./templates/GenericTemplate');
@@ -13,6 +12,17 @@ const { makeAbsolute, makeQuickReplies } = require('./utils');
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
 const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
+
+
+/**
+ * @typedef {Object} QuickReply
+ * @prop {string} title
+ * @prop {string} [action]
+ * @prop {Object} [data]
+ * @prop {Object} [setState]
+ * @prop {Regexp|string|string[]} [match]
+ */
+
 
 /**
  * Instance of responder is passed as second parameter of handler (res)
@@ -243,65 +253,43 @@ class Responder {
         this.routePath = routePath;
     }
 
-    /* eslint jsdoc/check-param-names: 0 */
     /**
      * Send text as a response
      *
      * @param {string} text - text to send to user, can contain placeholders (%s)
-     * @param {...Object.<string, string>|Object[]} [quickReplies] - quick replies object
+     * @param {Object.<string, string|QuickReply>|QuickReply[]} [replies] - quick replies object
      * @returns {this}
      *
      * @example
      * // simply
-     * res.text('Hello %s', name, {
+     * res.text('Hello', {
      *     action: 'Quick reply',
      *     another: 'Another quick reply'
      * });
      *
      * // complex
-     * res.text('Hello %s', name, [
+     * res.text('Hello', [
      *     { action: 'action', title: 'Quick reply' },
      *     {
      *         action: 'complexAction', // required
      *         title: 'Another quick reply', // required
+     *         setState: { prop: 'value' }, // optional
      *         match: 'string' || /regexp/, // optional
      *         someData: 'Will be included in payload data' // optional
      *     }
      * ]);
      */
-    text (text, ...quickReplies) {
+    text (text, replies = null) {
         const messageData = {
             recipient: {
                 id: this._senderId
             },
             message: {
-                text: null
+                text: this._t(text)
             }
         };
 
-        let replies = null;
-
-        if (quickReplies.length > 0
-            && typeof quickReplies[quickReplies.length - 1] === 'object'
-            && quickReplies[quickReplies.length - 1] !== null) {
-
-            replies = quickReplies.pop();
-        }
-
-        const translatedText = this._t(text);
-
-        if (quickReplies.length > 0) {
-            messageData.message.text = util.format(
-                translatedText,
-                // filter undefined and null values
-                ...quickReplies.map(a => (a !== null && typeof a !== 'undefined' ? a : ''))
-            );
-        } else {
-            messageData.message.text = translatedText;
-        }
-
         if (replies || this._quickReplyCollector.length !== 0) {
-
             const {
                 quickReplies: qrs, expectedKeywords
             } = makeQuickReplies(replies, this.path, this._t, this._quickReplyCollector);
@@ -377,14 +365,58 @@ class Responder {
         return this;
     }
 
-    expectedIntent (intents, action, data = {}) {
+    /**
+     *
+     * @param {Request} req
+     * @param {boolean} justOnce
+     * @returns {this}
+     */
+    keepPreviousContext (req, justOnce = false) {
+        const {
+            _expectedKeywords: keywords = null,
+            _expected: expected = null
+            // @ts-ignore
+        } = req.state;
+
+        if (expected) {
+            const { action, data = {} } = expected;
+
+            if (!justOnce || !data._expectedFallbackOccured) {
+                this.expected(action, {
+                    ...data,
+                    _expectedFallbackOccured: true
+                });
+            }
+        }
+
+        if (keywords) {
+            this.setState({ _expectedKeywords: keywords });
+        }
+
+        return this;
+    }
+
+    /**
+     *
+     * @param {string|string[]} intents
+     * @param {string} action
+     * @param {Object} data
+     * @param {Object} setState
+     */
+    expectedIntent (intents, action, data = {}, setState = null) {
         const { _expectedKeywords: ex = [] } = this.newState;
 
-        ex.push({
+        const push = {
             action: this.toAbsoluteAction(action),
             match: intents,
             data
-        });
+        };
+
+        if (setState) {
+            Object.assign(push, { setState });
+        }
+
+        ex.push(push);
 
         this.setState({ _expectedKeywords: ex });
         return this;

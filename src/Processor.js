@@ -362,6 +362,11 @@ class Processor extends EventEmitter {
                 res.setBookmark(aByAi);
             }
 
+            // process setState
+            const setState = req.getSetState();
+            Object.assign(req.state, setState);
+            res.setState(setState);
+
             let continueToReducer = true;
             // process plugin middlewares
             for (const middleware of this._middlewares) {

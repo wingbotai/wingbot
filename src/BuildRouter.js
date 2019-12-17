@@ -12,7 +12,6 @@ const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
 const defaultResourceMap = require('./defaultResourceMap');
 
 const MESSAGE_RESOLVER_NAME = 'botbuild.message';
-const REPLIES_RESOLVER_NAME = 'botbuild.replies';
 
 /**
  * @typedef {Object} ConfigStorage
@@ -444,22 +443,13 @@ class BuildRouter extends Router {
 
     buildResolvers (resolvers, route = {}) {
         const {
-            path: ctxPath, isFallback, isResponder, expectedPath, id, replies = []
+            path: ctxPath, isFallback, isResponder, expectedPath, id
         } = route;
 
-        let useResolvers = resolvers;
+        const lastMessageIndex = this._lastMessageIndex(resolvers);
+        const lastIndex = resolvers.length - 1;
 
-        if (replies.some(r => r.aiTags && r.aiTags.length !== 0)) {
-            useResolvers = [{
-                type: REPLIES_RESOLVER_NAME,
-                params: {}
-            }, ...useResolvers];
-        }
-
-        const lastMessageIndex = this._lastMessageIndex(useResolvers);
-        const lastIndex = useResolvers.length - 1;
-
-        return useResolvers.map((resolver, i) => {
+        return resolvers.map((resolver, i) => {
             const context = Object.assign({}, this._context, {
                 isLastIndex: lastIndex === i,
                 isLastMessage: lastMessageIndex === i,
@@ -469,8 +459,7 @@ class BuildRouter extends Router {
                 isFallback,
                 isResponder,
                 expectedPath,
-                routeId: id,
-                replies
+                routeId: id
             });
 
             return this._resolverFactory(resolver, context);

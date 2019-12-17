@@ -85,10 +85,10 @@ describe('Responder', function () {
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
             res.path = '/foo';
 
-            assert.strictEqual(res.text('Hello %s', 'string', {
+            assert.strictEqual(res.text('Hello', {
                 option: {
                     title: 'Text Title',
-                    information: 1
+                    data: { information: 1 }
                 },
                 another: {
                     title: 'Text2',
@@ -102,7 +102,7 @@ describe('Responder', function () {
 
             assert(sendFn.calledOnce);
             assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
-            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello string');
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text Title');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, '{"action":"/foo/option","data":{"information":1}}');
 

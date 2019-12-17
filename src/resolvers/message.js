@@ -32,13 +32,8 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
                 condition
             };
         }
-        if (!reply.title) {
-            return null;
-        }
 
         let { action } = reply;
-
-        const replyData = {};
 
         if (!action) {
             action = linksMap.get(reply.targetRouteId);
@@ -48,28 +43,32 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
             }
         }
 
+        const ret = {
+            action,
+            condition,
+            title: cachedTranslatedCompilator(reply.title),
+            data: {}
+        };
+
         if (reply.trackAsNegative) {
-            Object.assign(replyData, { _trackAsNegative: true });
+            Object.assign(ret.data, { _trackAsNegative: true });
         }
 
         if (reply.setState) {
-            Object.assign(replyData, { _ss: reply.setState });
+            Object.assign(ret, { setState: reply.setState });
         }
 
-        const title = cachedTranslatedCompilator(reply.title);
+        if (reply.aiTags && reply.aiTags.length > 0) {
+            Object.assign(ret, { match: reply.aiTags });
+        }
 
-        return Object.assign(replyData, {
-            action,
-            condition,
-            title
-        });
-    })
-        .filter(r => r !== null);
+        return ret;
+    });
 }
 
 
 function message (params, {
-    isLastIndex, isLastMessage, linksMap, allowForbiddenSnippetWords, replies
+    isLastIndex, isLastMessage, linksMap, allowForbiddenSnippetWords
 }) {
     if (typeof params.text !== 'string' && !Array.isArray(params.text)) {
         throw new Error('Message should be a text!');
@@ -83,14 +82,6 @@ function message (params, {
         throw new Error('Replies should be an array');
     } else if (params.replies && params.replies.length > 0) {
         quickReplies = parseReplies(params.replies, linksMap, allowForbiddenSnippetWords);
-    }
-
-    if (replies) {
-        const repliesWithSuggestions = parseReplies(replies, linksMap, allowForbiddenSnippetWords);
-
-        if (repliesWithSuggestions.length > 0) {
-            quickReplies = [...(quickReplies || []), ...repliesWithSuggestions];
-        }
     }
 
     let condition = null;
@@ -112,8 +103,11 @@ function message (params, {
         const text = textTemplate(data);
 
         if (quickReplies) {
-            const sendReplies = quickReplies
-                .filter(reply => reply.condition(req, res))
+            const okQuickReplies = quickReplies
+                .filter(reply => reply.condition(req, res));
+
+            const sendReplies = okQuickReplies
+                .filter(reply => !!reply.title)
                 .map((reply) => {
                     const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
                         ? Object.assign({}, reply)
@@ -129,6 +123,12 @@ function message (params, {
                 });
 
             res.text(text, sendReplies);
+
+            okQuickReplies
+                .filter(reply => !reply.title && reply.match)
+                .forEach((reply) => {
+                    res.expectedIntent(reply.match, reply.action, reply.data);
+                });
         } else {
             // replies on last index will be present, so the addQuickReply will be working
             const sendReplies = isLastMessage ? [] : undefined;

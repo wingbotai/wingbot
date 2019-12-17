@@ -6,10 +6,12 @@
 const { makeAbsolute } = require('./pathUtils');
 const { tokenize } = require('./tokenizer');
 
-function makeExpectedKeyword (action, title, matcher = null, payloadData = {}) {
+function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, setState = null) {
     let match = null;
 
-    if (matcher instanceof RegExp) {
+    if (Array.isArray(matcher)) {
+        match = matcher;
+    } else if (matcher instanceof RegExp) {
         match = `#${matcher.source}#`;
     } else if (typeof matcher === 'string') {
         match = `#${tokenize(matcher)}`;
@@ -18,12 +20,16 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}) {
         match = `#${tokenize(title)}`;
     }
 
-    return {
+    const ret = {
         action,
         title,
         match,
         data: payloadData
     };
+
+    if (setState) Object.assign(ret, { setState });
+
+    return ret;
 }
 
 /**
@@ -82,6 +88,8 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
                 title,
                 action,
                 match,
+                data = {},
+                setState = null,
                 isLocation = false,
                 isEmail = false,
                 isPhone = false
@@ -112,22 +120,26 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
             }
 
             let payload = absoluteAction;
-            const data = Object.assign({}, reply);
 
-            delete data.title;
-            delete data.action;
-            delete data.match;
+            const hasData = Object.keys(data).length > 0;
+            const hasSetState = setState && Object.keys(setState).length > 0;
 
-            if (Object.keys(data).length > 0) {
+            if (hasData || hasSetState) {
+
                 payload = {
-                    action: absoluteAction,
-                    data
+                    action: absoluteAction
                 };
+
+                if (hasData) Object.assign(payload, { data });
+                if (hasSetState) Object.assign(payload, { setState });
+
                 payload = JSON.stringify(payload);
             }
 
             const translatedTitle = translate(title);
-            const expect = makeExpectedKeyword(absoluteAction, translatedTitle, match, data);
+            const expect = makeExpectedKeyword(
+                absoluteAction, translatedTitle, match, data, setState
+            );
             expectedKeywords.push(expect);
 
             const res = {
@@ -151,8 +163,8 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
  *
  *
  * @param {Object[]} expectedKeywords
- * @param {Request} req
- * @param {Ai} ai
+ * @param {import('../Request')} req
+ * @param {import('../Ai')} ai
  * @returns {null|Object}
  */
 function quickReplyAction (expectedKeywords, req, ai) {

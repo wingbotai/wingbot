@@ -6,10 +6,10 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Processor = require('../src/Processor');
+const Request = require('../src/Request');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const ReducerWrapper = require('../src/ReducerWrapper');
-const { readEvent, deliveryEvent } = require('../src/utils/RequestsFactories');
 
 const EMPTY_STATE = { user: {} };
 
@@ -295,8 +295,8 @@ describe('Processor', function () {
             const opts = makeOptions(stateStorage);
             const proc = new Processor(reducer, opts);
 
-            const readMessage = readEvent(1, 2);
-            const deliveryMessage = deliveryEvent(1, 2);
+            const readMessage = Request.readEvent(1, 2);
+            const deliveryMessage = Request.deliveryEvent(1, 2);
 
             await proc.processMessage(readMessage, 10);
             await proc.processMessage(deliveryMessage, 10);

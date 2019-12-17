@@ -16,6 +16,9 @@ const REMOVED_CAMPAIGN = '<removed campaign>';
 const MAX_TS = 9999999999999;
 const DEFAULT_24_CLEARANCE = 600000; // ten minutes
 
+const SUBSCRIBE = '_ $subscribe';
+const UNSUBSCRIBE = '_ $unsubscribe';
+
 const DEFAULT_CAMPAIGN_DATA = {
     sent: 0,
     failed: 0,
@@ -414,6 +417,18 @@ class Notifications extends EventEmitter {
                         .catch(e => notifications._log.error(e));
                 }
             });
+
+            // process setState variables
+            if (req.state[SUBSCRIBE]) {
+                req.state[SUBSCRIBE].forEach(t => res.subscribe(t));
+                delete req.state[SUBSCRIBE];
+                delete res.newState[SUBSCRIBE];
+            }
+            if (req.state[UNSUBSCRIBE]) {
+                req.state[UNSUBSCRIBE].forEach(t => res.unsubscribe(t));
+                delete req.state[UNSUBSCRIBE];
+                delete res.newState[UNSUBSCRIBE];
+            }
 
             // is action
             const { campaign } = req;
@@ -829,5 +844,8 @@ class Notifications extends EventEmitter {
     }
 
 }
+
+Notifications.SUBSCRIBE = SUBSCRIBE;
+Notifications.UNSUBSCRIBE = UNSUBSCRIBE;
 
 module.exports = Notifications;

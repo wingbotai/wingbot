@@ -5,16 +5,31 @@
 
 const Ai = require('./Ai');
 const { tokenize, quickReplyAction, parseActionPayload } = require('./utils');
-const RequestsFactories = require('./utils/RequestsFactories');
+const getUpdate = require('./utils/getUpdate');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
+const counter = {
+    _t: 0,
+    _d: 0
+};
+
+function makeTimestamp () {
+    let now = Date.now();
+    if (now > counter._d) {
+        counter._t = 0;
+    } else {
+        now += ++counter._t;
+    }
+    counter._d = now;
+    return now;
+}
 
 /**
  * @typedef {Object} Entity
- * @param {string} entity
- * @param {string} value
- * @param {number} score
+ * @prop {string} entity
+ * @prop {string} value
+ * @prop {number} score
  */
 
 /**
@@ -28,6 +43,7 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  * @typedef {Object} Action
  * @prop {string} action
  * @prop {Object} data
+ * @prop {Object|null} [setState]
  */
 
 /**
@@ -53,13 +69,11 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
 /**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
- * @class
+ * @class {Request}
  */
-class Request extends RequestsFactories {
+class Request {
 
     constructor (data, state, pageId, globalIntents = new Map()) {
-        super();
-
         this.campaign = data.campaign || null;
 
         this.taskId = data.taskId || null;
@@ -458,7 +472,7 @@ class Request extends RequestsFactories {
     /**
      * Returns the request expected handler in case have been set last response
      *
-     * @returns {{action:string,data:Object}|null}
+     * @returns {Action|null}
      */
     expected () {
         return this.state._expected || null;
@@ -560,6 +574,33 @@ class Request extends RequestsFactories {
         return this._action && this._action.action;
     }
 
+    /**
+     * Gets incomming setState action variable
+     *
+     * @returns {Object}
+     *
+     * @example
+     * res.setState(req.getSetState());
+     */
+    getSetState () {
+        if (typeof this._action === 'undefined') {
+            this._action = this._resolveAction();
+        }
+
+        const setState = (this._action && this._action.setState)
+            || this.data.setState;
+
+        if (!setState || typeof setState !== 'object') {
+            return {};
+        }
+
+        return Object.keys(setState)
+            .reduce((o, key) => {
+                const value = setState[key];
+                return Object.assign(o, getUpdate(key, value, this.state));
+            }, {});
+    }
+
     _resolveAction () {
         let res = null;
 
@@ -590,7 +631,7 @@ class Request extends RequestsFactories {
         if (!res && this.isText()) {
             const winner = this._getMatchingGlobalIntent();
             res = winner
-                ? { action: winner.action, data: {} }
+                ? { action: winner.action, data: {}, setState: null }
                 : null;
         }
 
@@ -731,6 +772,301 @@ class Request extends RequestsFactories {
 
         const { action } = parseActionPayload(object, true);
         return action;
+    }
+
+
+    static timestamp () {
+        return makeTimestamp();
+    }
+
+    static createReferral (action, data = {}, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            ref: JSON.stringify({
+                action,
+                data
+            }),
+            source: 'SHORTLINK',
+            type: 'OPEN_THREAD'
+        };
+    }
+
+
+    static postBack (
+        senderId,
+        action,
+        data = {},
+        refAction = null,
+        refData = {},
+        timestamp = makeTimestamp()
+    ) {
+        const postback = {
+            payload: {
+                action,
+                data
+            }
+        };
+        if (refAction) {
+            Object.assign(postback, {
+                referral: Request.createReferral(refAction, refData, timestamp)
+            });
+        }
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            postback
+        };
+    }
+
+    static postBackWithSetState (
+        senderId,
+        action,
+        data = {},
+        setState = {},
+        timestamp = makeTimestamp()
+    ) {
+        const postback = {
+            payload: {
+                action,
+                data,
+                setState
+            }
+        };
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            postback
+        };
+    }
+
+    static campaignPostBack (
+        senderId,
+        campaign,
+        timestamp = makeTimestamp(),
+        data = null,
+        taskId = null
+    ) {
+        const postback = Request.postBack(
+            senderId,
+            campaign.action,
+            data || campaign.data,
+            null,
+            {},
+            timestamp
+        );
+        return Object.assign(postback, {
+            campaign,
+            taskId
+        });
+    }
+
+    static text (senderId, text, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                text
+            }
+        };
+    }
+
+    static textWithSetState (senderId, text, setState, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                text
+            },
+            setState
+        };
+    }
+
+    static passThread (senderId, newAppId, data = null, timestamp = makeTimestamp()) {
+        let metadata = data;
+        if (data !== null && typeof data !== 'string') {
+            metadata = JSON.stringify(data);
+        }
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            pass_thread_control: {
+                new_owner_app_id: newAppId,
+                metadata
+            }
+        };
+    }
+
+    static intent (senderId, text, intentName, score = 1, timestamp = makeTimestamp()) {
+        const res = Request.text(senderId, text, timestamp);
+
+        Object.assign(res, { intent: intentName, score });
+
+        return res;
+    }
+
+    static intentWithEntity (
+        senderId,
+        text,
+        intentName,
+        entity,
+        value,
+        score = 1,
+        timestamp = makeTimestamp()
+    ) {
+        const res = Request.text(senderId, text, timestamp);
+
+        Object.assign(res, {
+            intent: intentName,
+            entities: [
+                { entity, value, score }
+            ],
+            score
+        });
+
+        return res;
+    }
+
+    static quickReply (senderId, action, data = {}, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                text: action,
+                quick_reply: {
+                    payload: JSON.stringify({
+                        action,
+                        data
+                    })
+                }
+            }
+        };
+    }
+
+    static quickReplyText (senderId, text, payload, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                text,
+                quick_reply: {
+                    payload
+                }
+            }
+        };
+    }
+
+    static location (senderId, lat, long, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                attachments: [{
+                    type: 'location',
+                    payload: {
+                        coordinates: { lat, long }
+                    }
+                }]
+            }
+        };
+    }
+
+    static referral (senderId, action, data = {}, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            referral: Request.createReferral(action, data, timestamp)
+        };
+    }
+
+    static optin (userRef, action, data = {}, timestamp = makeTimestamp()) {
+        const ref = Buffer.from(JSON.stringify({
+            action,
+            data
+        }));
+        return {
+            timestamp,
+            optin: {
+                ref: ref.toString('base64'),
+                user_ref: userRef
+            }
+        };
+    }
+
+    static fileAttachment (senderId, url, type = 'file', timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                attachments: [{
+                    type,
+                    payload: {
+                        url
+                    }
+                }]
+            }
+        };
+    }
+
+    static sticker (senderId, stickerId, url = '', timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                attachments: [{
+                    type: 'image',
+                    payload: {
+                        url,
+                        sticker_id: stickerId
+                    }
+                }]
+            }
+        };
+    }
+
+    static readEvent (senderId, watermark, timestamp = makeTimestamp()) {
+        return {
+            sender: {
+                id: senderId
+            },
+            timestamp,
+            read: {
+                watermark
+            }
+        };
+    }
+
+    static deliveryEvent (senderId, watermark, timestamp = makeTimestamp()) {
+        return {
+            sender: {
+                id: senderId
+            },
+            timestamp,
+            delivery: {
+                watermark
+            }
+        };
     }
 
 }

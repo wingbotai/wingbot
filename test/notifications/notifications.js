@@ -142,6 +142,11 @@ describe('Notifications', function () {
 
                 // @ts-ignore
                 res.subscribe('anyTag');
+
+                res.expectedIntent('intent', 'check', {}, {
+                    [Notifications.SUBSCRIBE]: ['another'],
+                    [Notifications.UNSUBSCRIBE]: ['anyTag']
+                });
             });
 
             bot.use('check', (req, res, postBack) => {
@@ -166,6 +171,24 @@ describe('Notifications', function () {
 
             t.any()
                 .contains('"anyTag"')
+                .contains('"#all"');
+        });
+
+        it('subscribes user by user data`', async () => {
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            assert.throws(() => t.passedAction('testAction'));
+
+            await wait(100);
+
+            await t.intent('intent');
+
+            await wait(100);
+
+            t.any()
+                .contains('"another"')
                 .contains('"#all"');
         });
 
