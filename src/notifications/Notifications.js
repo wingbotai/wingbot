@@ -16,8 +16,8 @@ const REMOVED_CAMPAIGN = '<removed campaign>';
 const MAX_TS = 9999999999999;
 const DEFAULT_24_CLEARANCE = 600000; // ten minutes
 
-const SUBSCRIBE = '_ $subscribe';
-const UNSUBSCRIBE = '_ $unsubscribe';
+const SUBSCRIBE = '_$subscribe';
+const UNSUBSCRIBE = '_$unsubscribe';
 
 const DEFAULT_CAMPAIGN_DATA = {
     sent: 0,

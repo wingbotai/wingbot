@@ -267,6 +267,20 @@
                 "id": 1507631729901
               },
               {
+                "type": "botbuild.setState",
+                "params": {
+                  "setState": {
+                    "foo": true,
+                    "bar": { "_$textInput": 1 },
+                    "la": { "_$entity": "none" },
+                    "_$subscribe": ["sub"],
+                    "_$unsubscribe": ["un"]
+                  },
+                  "hasCondition": false
+                },
+                "id": 1507632729901
+              },
+              {
                 "type": "botbuild.message",
                 "params": {
                   "conditionFn": "(req, res) => {\n    return !req.state.a;\n}",
