@@ -54,7 +54,7 @@ function makeTimestamp () {
  * @prop {boolean} local
  * @prop {boolean} aboveConfidence
  * @prop {boolean} [winner]
- * @prop {string} [title]
+ * @prop {string|function} [title]
  * @prop {Object} meta
  * @prop {string} [meta.targetAppId]
  * @prop {string|null} [meta.targetAction]

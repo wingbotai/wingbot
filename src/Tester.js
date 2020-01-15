@@ -216,7 +216,8 @@ class Tester {
      */
     passedAction (path) {
         const ok = this.actions
-            .some(action => !action.action.match(/\*/) && actionMatches(action.action, path));
+            .some(action => (action.action === path
+                || (!action.action.match(/\*/) && actionMatches(action.action, path))));
         let actual;
         if (!ok) {
             const set = new Set();

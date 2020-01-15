@@ -91,7 +91,7 @@ function customCode (params, context, blocks) {
         return new RouterWrap(customFn, items, paramsData);
     }
 
-    return async function (req, res, postBack, path, action) {
+    const fn = async function (req, res, postBack, path, action) {
         req.params = paramsData;
 
         // attach block runner
@@ -118,6 +118,12 @@ function customCode (params, context, blocks) {
         }
         return isLastIndex ? null : true;
     };
+
+    if (typeof customFn.globalIntentsMeta === 'object') {
+        fn.globalIntentsMeta = customFn.globalIntentsMeta;
+    }
+
+    return fn;
 }
 
 module.exports = customCode;

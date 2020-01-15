@@ -34,6 +34,7 @@ const ReturnSender = require('./ReturnSender');
  * @prop {boolean} aboveConfidence
  * @prop {boolean} [winner]
  * @prop {Object} meta
+ * @prop {string} title
  * @prop {string} [meta.targetAppId]
  * @prop {string|null} [meta.targetAction]
  */
@@ -280,10 +281,17 @@ class Processor extends EventEmitter {
      *
      * @param {string|Object} text
      * @param {string} [pageId]
+     * @param {boolean} [allowEmptyAction]
      * @returns {Promise<IntentAction[]>}
      */
-    async aiActionsForText (text, pageId = 'none') {
+    async aiActionsForText (text, pageId = 'none', allowEmptyAction = false) {
         try {
+            // @ts-ignore
+            if (this.reducer && typeof this.reducer.preload === 'function') {
+                // @ts-ignore
+                await this.reducer.preload();
+            }
+
             const request = typeof text === 'string'
                 ? Request.text('none', text)
                 : text;
@@ -292,7 +300,31 @@ class Processor extends EventEmitter {
 
             await Ai.ai.preloadIntent(req);
 
-            return req.aiActions();
+            const actions = req.aiActions();
+
+            if (actions.length === 0 && allowEmptyAction && req.intents.length > 0) {
+                const [intent] = req.intents;
+
+                return [
+                    {
+                        intent,
+                        action: null,
+                        sort: intent.score,
+                        local: false,
+                        aboveConfidence: intent.score >= Ai.ai.confidence,
+                        meta: {},
+                        title: null
+                    }
+                ];
+            }
+
+            return actions
+                .map(a => ({
+                    ...a,
+                    title: typeof a.title === 'function'
+                        ? a.title(req)
+                        : a.title
+                }));
         } catch (e) {
             this.options.log.error('failed to fetch intent actions', e);
             return [];

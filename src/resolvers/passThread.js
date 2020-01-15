@@ -18,7 +18,7 @@ function passThread ({ appId }, { isLastIndex }) {
         ? handlebars.compile(appId || '{{defaultPassThreadAppId}}')
         : () => appId;
 
-    return (req, res) => {
+    const fn = (req, res) => {
         const toAppId = appIdTemplate(req.state);
 
         let data = null;
@@ -32,6 +32,15 @@ function passThread ({ appId }, { isLastIndex }) {
 
         return isLastIndex ? Router.END : Router.CONTINUE;
     };
+
+    if (appId && appId.indexOf('{') === -1) {
+        fn.globalIntentsMeta = {
+            targetAppId: appId,
+            targetAction: null
+        };
+    }
+
+    return fn;
 }
 
 module.exports = passThread;

@@ -46,7 +46,9 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
         const ret = {
             action,
             condition,
-            title: cachedTranslatedCompilator(reply.title),
+            title: reply.title
+                ? cachedTranslatedCompilator(reply.title)
+                : null,
             data: {}
         };
 

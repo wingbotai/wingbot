@@ -5,6 +5,9 @@
 
 const Tester = require('./Tester');
 const { tokenize } = require('./utils/tokenizer');
+const { actionMatches } = require('./utils/pathUtils');
+
+const DEFAULT_TEXT_THRESHOLD = 0.8;
 
 /**
  * @typedef {object} TestSource
@@ -50,6 +53,8 @@ class ConversationTester {
      * @param {boolean} [options.disableAssertActions]
      * @param {boolean} [options.disableAssertTexts]
      * @param {boolean} [options.disableAssertQuickReplies]
+     * @param {boolean} [options.useConversationForTextTestCases]
+     * @param {boolean} [options.textThreshold]
      */
     constructor (testsSource, botFactory, options = {}) {
         this._testsSource = testsSource;
@@ -131,9 +136,7 @@ class ConversationTester {
         };
     }
 
-    async _runTestCase (testCase, botconfig = null) {
-        let o = '';
-
+    _createTester (botconfig = null) {
         const bot = this._botFactory(true);
 
         if (botconfig) {
@@ -143,6 +146,66 @@ class ConversationTester {
         const t = new Tester(bot);
 
         t.setExpandRandomTexts();
+
+        return t;
+    }
+
+    async _runTestCase (testCase, botconfig = null) {
+        let o = '';
+
+        const t = this._createTester(botconfig);
+
+        if (testCase.texts) {
+            let passing = 0;
+
+            let longestText = 0;
+
+            const iterate = testCase.texts.map((textCase) => {
+                if (textCase.text.length > longestText) longestText = textCase.text.length;
+                return textCase;
+            });
+
+            const textResults = [];
+
+            const runTestCase = textCase => this
+                .executeTextCase(t, textCase, botconfig, longestText);
+
+            while (iterate.length > 0) {
+                const process = iterate.splice(0, 100);
+
+                const singleResults = await Promise.all(
+                    process.map(runTestCase)
+                );
+
+                textResults.push(...singleResults);
+            }
+
+            const echo = textResults
+                .filter((r) => {
+                    if (r.ok) {
+                        passing++;
+                    }
+                    return !!r.o;
+                })
+                .map(r => r.o)
+                .join('\n');
+
+            // calculate stats
+            const passingPerc = passing / testCase.texts.length;
+
+            const ok = passingPerc >= (this._options.textThreshold || DEFAULT_TEXT_THRESHOLD);
+            const mark = ok ? '✓' : '𐄂';
+
+            let before = '';
+
+            if (echo) {
+                before += `\n${echo}\n\n`;
+            }
+
+            o += `${before}     ${mark} ${testCase.name} ${passing}/${testCase.texts.length} (${(passingPerc * 100).toFixed(0)}%)\n`;
+
+            return { o, ok };
+        }
 
         let fail = null;
         for (const step of testCase.steps) {
@@ -158,6 +221,82 @@ class ConversationTester {
         }
         o += `     ✓ ${testCase.name}\n`;
         return { o, ok: true };
+    }
+
+    /**
+     *
+     * @param {Tester} t
+     * @param {*} textCase
+     * @param {*} botconfig
+     * @param {number} longestText
+     */
+    async executeTextCase (t, textCase, botconfig, longestText) {
+
+        if (this._options.useConversationForTextTestCases) {
+            const tester = this._createTester(botconfig);
+
+
+            try {
+                await tester.text(textCase.text);
+
+                if (textCase.action) {
+                    tester.passedAction(textCase.action);
+                }
+
+                if (textCase.appId) {
+                    tester.any().passThread(textCase.appId);
+                }
+            } catch (e) {
+                const { message } = e;
+
+                return { ok: false, o: `${textCase.text.padEnd(longestText, ' ')} - ${message}` };
+            }
+
+            return { ok: true, o: null };
+        }
+
+        const actions = await t.processor.aiActionsForText(textCase.text, undefined, true);
+
+        const [winner = {
+            score: 0, intent: { intent: '-', score: 0 }, aboveConfidence: false, meta: null, action: null
+        }] = actions;
+
+        const report = (error = '', ok = false) => ({
+            ok,
+            o: `${textCase.text.padEnd(longestText, ' ')}\t${(winner.intent ? winner.intent.score : 0).toFixed(2)}\t${winner.intent ? winner.intent.intent : '-'} | ${error}`
+        });
+
+        if (actions.length === 0) {
+            return report('no NLP result');
+        }
+
+        if (!winner.aboveConfidence) {
+            return report('low score');
+        }
+
+        if (textCase.intent && winner.intent.intent !== textCase.intent) {
+            return report(`expected intent "${textCase.intent}"`);
+        }
+
+        if (textCase.appId) {
+
+            if (!winner.meta || `${winner.meta.targetAppId}` !== `${textCase.appId}`) {
+                return report(`expected handover to "${textCase.appId}" - actual "${(winner.meta && winner.meta.targetAppId) || `action: ${winner.action || '*'}`}"`);
+            }
+
+            if (textCase.action && !actionMatches(`${winner.meta.targetAction}`, `${textCase.action}`)) {
+                return report(`expected action "${textCase.action}" - actual "${winner.meta.targetAction || '-'}"`);
+            }
+
+        } else if (textCase.action && !actionMatches(`${winner.action}`, `${textCase.action}`)) {
+            return report(`expected action "${textCase.action}" - actual "${winner.action || '-'}"`);
+        }
+
+        if (!textCase.action && !textCase.appId && !textCase.intent) {
+            return report(`${textCase.action}`, true);
+        }
+
+        return { ok: true, o: null };
     }
 
     /**
@@ -196,7 +335,6 @@ class ConversationTester {
                     await t.text(action);
                 }
             }
-
 
             if (!this._options.disableAssertActions) {
                 passedAction.split('\n')

@@ -29,6 +29,7 @@ function passThreadToBotFactory (params) {
             action = { action: targetAction, data: {} };
         }
 
+        res.setState({ _threadPassed: true });
         res.passThread(targetAppId, action);
 
         return null; // finish
