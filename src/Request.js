@@ -4,7 +4,8 @@
 'use strict';
 
 const Ai = require('./Ai');
-const { tokenize, quickReplyAction, parseActionPayload } = require('./utils');
+const { tokenize, parseActionPayload } = require('./utils');
+const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickReplies');
 const getUpdate = require('./utils/getUpdate');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
@@ -174,29 +175,26 @@ class Request {
         if (aiActions === null) {
             this._getMatchingGlobalIntent();
         }
+
+        const text = this.text();
+
         return (aiActions || this._aiActions)
             .filter(a => a.title)
             .slice(0, limit)
-            .map(a => ({
-                title: typeof a.title === 'function'
+            .map(a => disambiguationQuickReply(
+                typeof a.title === 'function'
                     ? a.title(this)
                     : a.title,
-                action: overrideAction || a.action,
-                _senderMeta: a.intent
+                a.intent.intent,
+                text,
+                overrideAction || a.action,
+                overrideAction
                     ? {
-                        flag: 'd',
-                        likelyIntent: a.intent.intent
+                        _action: a.action,
+                        _appId: a.appId
                     }
-                    : {},
-                ...(
-                    overrideAction
-                        ? {
-                            _action: a.action,
-                            _appId: a.appId
-                        }
-                        : {}
-                )
-            }));
+                    : {}
+            ));
     }
 
     /**

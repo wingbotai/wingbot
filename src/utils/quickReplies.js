@@ -5,6 +5,7 @@
 
 const { makeAbsolute } = require('./pathUtils');
 const { tokenize } = require('./tokenizer');
+const { FLAG_DISAMBIGUATION_SELECTED } = require('../flags');
 
 function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, setState = null) {
     let match = null;
@@ -34,16 +35,17 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, s
 
 /**
  *
- *
+ * @ignore
  * @param {Object|Object[]|null} replies
  * @param {string} [path]
  * @param {Function} [translate=w => w]
  * @param {Object[]} [quickReplyCollector]
- * @returns {{ quickReplies: Object[], expectedKeywords: Object[] }}
+ * @returns {{quickReplies:Object[],expectedKeywords:Object[],disambiguationIntents:string[]}}
  */
 function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCollector = []) {
 
     const expectedKeywords = [];
+    const disambiguationIntents = [];
 
     let iterate = replies;
 
@@ -52,7 +54,7 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
     if (!iterate
         && quickReplyCollector.every(q => q._justToExisting)) {
 
-        return { quickReplies: [], expectedKeywords };
+        return { quickReplies: [], expectedKeywords, disambiguationIntents };
     }
 
 
@@ -126,6 +128,13 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
 
             if (hasData || hasSetState) {
 
+                if (data._senderMeta
+                    && data._senderMeta.flag === FLAG_DISAMBIGUATION_SELECTED) {
+
+                    const { likelyIntent } = data._senderMeta;
+                    disambiguationIntents.push(likelyIntent);
+                }
+
                 payload = {
                     action: absoluteAction
                 };
@@ -156,12 +165,14 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
             return res;
         });
 
-    return { quickReplies, expectedKeywords };
+    return {
+        quickReplies, expectedKeywords, disambiguationIntents
+    };
 }
 
 /**
  *
- *
+ * @ignore
  * @param {Object[]} expectedKeywords
  * @param {import('../Request')} req
  * @param {import('../Ai')} ai
@@ -192,7 +203,33 @@ function quickReplyAction (expectedKeywords, req, ai) {
     return found[0] || null;
 }
 
+/**
+ * Create a disambiguation quick reply
+ *
+ * @param {string} title - quick reply title
+ * @param {string} likelyIntent - possible intent
+ * @param {string} disambText - users text input
+ * @param {string} action - action to process the disambbiguation
+ * @param {Object} data - optional data
+ */
+function disambiguationQuickReply (title, likelyIntent, disambText, action, data = {}) {
+    return {
+        ...data,
+        title,
+        action,
+        data: {
+            ...data,
+            _senderMeta: {
+                flag: FLAG_DISAMBIGUATION_SELECTED,
+                likelyIntent,
+                disambText
+            }
+        }
+    };
+}
+
 module.exports = {
     makeQuickReplies,
-    quickReplyAction
+    quickReplyAction,
+    disambiguationQuickReply
 };

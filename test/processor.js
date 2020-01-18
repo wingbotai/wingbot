@@ -52,7 +52,7 @@ function makeOptions (stateStorage, tokenStorage = null) {
     const log = createLogger();
 
     return {
-        log, stateStorage, tokenStorage, timeout: 300
+        log, stateStorage, tokenStorage, waitForLockedState: 300
     };
 }
 
@@ -139,7 +139,7 @@ describe('Processor', function () {
                     1,
                     10,
                     {},
-                    300
+                    30000
                 ]);
             });
         });

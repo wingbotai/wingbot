@@ -61,7 +61,10 @@ class Processor extends EventEmitter {
      * @param {Object} [options.stateStorage] - chatbot state storage
      * @param {Object} [options.tokenStorage] - frontend token storage
      * @param {Function} [options.translator] - text translate function
-     * @param {number} [options.timeout] - text translate function
+     * @param {number} [options.timeout] - chat sesstion lock duration (30000)
+     * @param {number} [options.justUpdateTimeout] - simple read and write lock (1000)
+     * @param {number} [options.waitForLockedState] - wait when state is locked (12000)
+     * @param {number} [options.retriesWhenWaiting] - number of attampts (6)
      * @param {Function} [options.nameFromState] - override the name translator
      * @param {boolean|AutoTypingConfig} [options.autoTyping] - enable or disable automatic typing
      * @param {Function} [options.log] - console like error logger
@@ -82,6 +85,9 @@ class Processor extends EventEmitter {
             tokenStorage: null,
             translator: w => w,
             timeout: 30000,
+            waitForLockedState: 12000,
+            retriesWhenWaiting: 6,
+            justUpdateTimeout: 1000,
             log: console,
             defaultState: {},
             autoTyping: false,
@@ -179,7 +185,7 @@ class Processor extends EventEmitter {
         }
         const senderId = message.sender.id;
 
-        this._loadState(senderId, pageId, 500)
+        this._loadState(senderId, pageId, this.options.justUpdateTimeout)
             .then((state) => {
                 Object.assign(state, {
                     lastSendError: new Date(),
@@ -399,6 +405,13 @@ class Processor extends EventEmitter {
             Object.assign(req.state, setState);
             res.setState(setState);
 
+            // attach sender meta
+            const data = req.action(true);
+
+            if (typeof data._senderMeta === 'object') {
+                res._senderMeta = { ...data._senderMeta };
+            }
+
             let continueToReducer = true;
             // process plugin middlewares
             for (const middleware of this._middlewares) {
@@ -437,7 +450,8 @@ class Processor extends EventEmitter {
 
             if (senderUpdate && senderUpdate.senderId) {
                 senderId = senderUpdate.senderId; // eslint-disable-line prefer-destructuring
-                stateObject = await this._loadState(senderId, pageId, 500);
+                stateObject = await this
+                    ._loadState(senderId, pageId, this.options.justUpdateTimeout);
                 state = stateObject.state; // eslint-disable-line prefer-destructuring
             }
 
@@ -495,7 +509,16 @@ class Processor extends EventEmitter {
             ? (req.state._trackAsSkill || null)
             : res.newState._trackAsSkill;
 
-        const params = [req.senderId, act, req.text(), req, lastAction, false, trackingSkill];
+        const params = [
+            req.senderId,
+            act,
+            req.text(),
+            req,
+            lastAction,
+            false,
+            trackingSkill,
+            res.senderMeta
+        ];
 
         process.nextTick(() => {
             try {
@@ -551,7 +574,7 @@ class Processor extends EventEmitter {
             .then(token => token.token);
     }
 
-    _loadState (senderId, pageId, lock = 0) {
+    _loadState (senderId, pageId, lock) {
         if (!senderId) {
             return Promise.resolve({
                 state: Object.assign({}, this.options.defaultState)
@@ -559,16 +582,16 @@ class Processor extends EventEmitter {
         }
 
         return new Promise((resolve, reject) => {
-            let retrys = lock === 0 ? 0 : 8;
+            let retries = this.options.retriesWhenWaiting;
 
             const onLoad = (res) => {
                 if (!res) {
-                    if (retrys-- < 0) {
-                        reject(new Error('Bot processor timed out'));
+                    if (retries-- < 0) {
+                        reject(new Error('Loading state timed out: another event is blocking the state'));
                         return;
                     }
 
-                    this._model(senderId, pageId, lock)
+                    this._model(senderId, pageId, lock, retries)
                         .then(onLoad)
                         .catch(reject);
                 } else {
@@ -580,12 +603,12 @@ class Processor extends EventEmitter {
         });
     }
 
-    _wait (timeout) {
-        const wait = Math.min(timeout + 50, 1000);
+    _wait () {
+        const wait = Math.round(this.options.waitForLockedState / this.options.retriesWhenWaiting);
         return new Promise(r => setTimeout(() => r(null), wait));
     }
 
-    _model (senderId, pageId, timeout) {
+    _model (senderId, pageId, timeout, retries) {
         const { defaultState } = this.options;
         return this.stateStorage
             .getOrCreateAndLock(senderId, pageId, defaultState, timeout)
@@ -593,7 +616,10 @@ class Processor extends EventEmitter {
                 if (!err || err.code !== 11000) {
                     this.options.log.error('Bot processor load error', err);
                 }
-                return this._wait(timeout);
+                if (retries === 0) {
+                    return null;
+                }
+                return this._wait();
             });
     }
 
