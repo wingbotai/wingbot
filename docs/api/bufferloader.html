@@ -1052,10 +1052,23 @@
 <dd></dd>
 </dl>
 
+<h2 id="constants"><a name="constants" class="plugin-anchor" href="#constants"><i class="fa fa-link" aria-hidden="true"></i></a>Constants</h2>
+<dl>
+<dt><a href="#FLAG_DISAMBIGUATION_SELECTED">FLAG_DISAMBIGUATION_SELECTED</a></dt>
+<dd><p>Disambiguation quick reply was selected</p>
+</dd>
+<dt><a href="#FLAG_DISAMBIGUATION_OFFERED">FLAG_DISAMBIGUATION_OFFERED</a></dt>
+<dd><p>Disambiguation occured - user was asked to choose the right meaning</p>
+</dd>
+</dl>
+
 <h2 id="functions"><a name="functions" class="plugin-anchor" href="#functions"><i class="fa fa-link" aria-hidden="true"></i></a>Functions</h2>
 <dl>
 <dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> &#x21D2; <code>Promise.&lt;Buffer&gt;</code></dt>
 <dd><p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
+</dd>
+<dt><a href="#disambiguationQuickReply">disambiguationQuickReply(title, likelyIntent, disambText, action, data)</a></dt>
+<dd><p>Create a disambiguation quick reply</p>
 </dd>
 </dl>
 
@@ -1303,6 +1316,16 @@ For example to remove any confidential data</p>
 
 <h3 id="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateBeforeStore() &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></h3>
 <p><strong>Kind</strong>: instance method of <a href="#ReturnSender"><code>ReturnSender</code></a>  </p>
+<div id="FLAG_DISAMBIGUATION_SELECTED">&#xA0;</div>
+
+<h2 id="flagdisambiguationselected"><a name="flagdisambiguationselected" class="plugin-anchor" href="#flagdisambiguationselected"><i class="fa fa-link" aria-hidden="true"></i></a>FLAG_DISAMBIGUATION_SELECTED</h2>
+<p>Disambiguation quick reply was selected</p>
+<p><strong>Kind</strong>: global constant  </p>
+<div id="FLAG_DISAMBIGUATION_OFFERED">&#xA0;</div>
+
+<h2 id="flagdisambiguationoffered"><a name="flagdisambiguationoffered" class="plugin-anchor" href="#flagdisambiguationoffered"><i class="fa fa-link" aria-hidden="true"></i></a>FLAG_DISAMBIGUATION_OFFERED</h2>
+<p>Disambiguation occured - user was asked to choose the right meaning</p>
+<p><strong>Kind</strong>: global constant  </p>
 <div id="bufferloader">&#xA0;</div>
 
 <h2 id="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><a name="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer" class="plugin-anchor" href="#bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><i class="fa fa-link" aria-hidden="true"></i></a>bufferloader(url, [limit], [limitJustByBody], [redirCount]) &#x21D2; <code>Promise.&lt;Buffer&gt;</code></h2>
@@ -1323,6 +1346,18 @@ For example to remove any confidential data</p>
     }
 });
 </code></pre>
+<div id="disambiguationQuickReply">&#xA0;</div>
+
+<h2 id="disambiguationquickreplytitle-likelyintent-disambtext-action-data"><a name="disambiguationquickreplytitle-likelyintent-disambtext-action-data" class="plugin-anchor" href="#disambiguationquickreplytitle-likelyintent-disambtext-action-data"><i class="fa fa-link" aria-hidden="true"></i></a>disambiguationQuickReply(title, likelyIntent, disambText, action, data)</h2>
+<p>Create a disambiguation quick reply</p>
+<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
+<ul>
+<li>title <code>string</code> - quick reply title</li>
+<li>likelyIntent <code>string</code> - possible intent</li>
+<li>disambText <code>string</code> - users text input</li>
+<li>action <code>string</code> - action to process the disambbiguation</li>
+<li>data <code>Object</code> - optional data</li>
+</ul>
 <div id="State">&#xA0;</div>
 
 <h2 id="state--object"><a name="state--object" class="plugin-anchor" href="#state--object"><i class="fa fa-link" aria-hidden="true"></i></a>State : <code>Object</code></h2>
@@ -1418,7 +1453,7 @@ For example to remove any confidential data</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2019-11-07T17:28:07.351Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-11-07T17:28:17.319Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2020-01-18T18:07:06.912Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-18T18:07:18.072Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

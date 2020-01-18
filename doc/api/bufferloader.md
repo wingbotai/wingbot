@@ -12,11 +12,25 @@
 <dd></dd>
 </dl>
 
+## Constants
+
+<dl>
+<dt><a href="#FLAG_DISAMBIGUATION_SELECTED">FLAG_DISAMBIGUATION_SELECTED</a></dt>
+<dd><p>Disambiguation quick reply was selected</p>
+</dd>
+<dt><a href="#FLAG_DISAMBIGUATION_OFFERED">FLAG_DISAMBIGUATION_OFFERED</a></dt>
+<dd><p>Disambiguation occured - user was asked to choose the right meaning</p>
+</dd>
+</dl>
+
 ## Functions
 
 <dl>
 <dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> ⇒ <code>Promise.&lt;Buffer&gt;</code></dt>
 <dd><p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
+</dd>
+<dt><a href="#disambiguationQuickReply">disambiguationQuickReply(title, likelyIntent, disambText, action, data)</a></dt>
+<dd><p>Create a disambiguation quick reply</p>
 </dd>
 </dl>
 
@@ -271,6 +285,18 @@ For example to remove any confidential data
 
 ### returnSender.modifyStateBeforeStore() ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
 **Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+{% raw %}<div id="FLAG_DISAMBIGUATION_SELECTED">&nbsp;</div>{% endraw %}
+
+## FLAG\_DISAMBIGUATION\_SELECTED
+Disambiguation quick reply was selected
+
+**Kind**: global constant  
+{% raw %}<div id="FLAG_DISAMBIGUATION_OFFERED">&nbsp;</div>{% endraw %}
+
+## FLAG\_DISAMBIGUATION\_OFFERED
+Disambiguation occured - user was asked to choose the right meaning
+
+**Kind**: global constant  
 {% raw %}<div id="bufferloader">&nbsp;</div>{% endraw %}
 
 ## bufferloader(url, [limit], [limitJustByBody], [redirCount]) ⇒ <code>Promise.&lt;Buffer&gt;</code>
@@ -294,6 +320,20 @@ router.use('*', (req, res, postBack) => {
     }
 });
 ```
+{% raw %}<div id="disambiguationQuickReply">&nbsp;</div>{% endraw %}
+
+## disambiguationQuickReply(title, likelyIntent, disambText, action, data)
+Create a disambiguation quick reply
+
+**Kind**: global function  
+**Params**
+
+- title <code>string</code> - quick reply title
+- likelyIntent <code>string</code> - possible intent
+- disambText <code>string</code> - users text input
+- action <code>string</code> - action to process the disambbiguation
+- data <code>Object</code> - optional data
+
 {% raw %}<div id="State">&nbsp;</div>{% endraw %}
 
 ## State : <code>Object</code>

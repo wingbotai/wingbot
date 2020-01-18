@@ -1,3 +1,18 @@
+## Classes
+
+<dl>
+<dt><a href="#Responder">Responder</a></dt>
+<dd><p>Instance of responder is passed as second parameter of handler (res)</p>
+</dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#SenderMeta">SenderMeta</a> : <code>Object</code></dt>
+<dd></dd>
+</dl>
+
 {% raw %}<div id="Responder">&nbsp;</div>{% endraw %}
 
 ## Responder
@@ -9,6 +24,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.newState](#Responder_newState)
     * [.finalMessageSent](#Responder_finalMessageSent)
     * [.startedOutput](#Responder_startedOutput)
+    * [.senderMeta](#Responder_senderMeta) ⇒ [<code>SenderMeta</code>](#SenderMeta)
     * [.data](#Responder_data) : <code>Object</code>
     * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
     * [.setBookmark([action], [winningIntent])](#Responder_setBookmark) ⇒ <code>this</code>
@@ -78,6 +94,12 @@ Is true, when a an output started during the event dispatch
 | --- |
 | <code>boolean</code> | 
 
+{% raw %}<div id="Responder_senderMeta">&nbsp;</div>{% endraw %}
+
+### responder.senderMeta ⇒ [<code>SenderMeta</code>](#SenderMeta)
+Response has been marked with a flag
+
+**Kind**: instance property of [<code>Responder</code>](#Responder)  
 {% raw %}<div id="Responder_data">&nbsp;</div>{% endraw %}
 
 ### responder.data : <code>Object</code>
@@ -512,4 +534,17 @@ Set skill for tracking (will used untill it will be changed)
 **Params**
 
 - skill <code>string</code> | <code>null</code>
+
+{% raw %}<div id="SenderMeta">&nbsp;</div>{% endraw %}
+
+## SenderMeta : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| flag | <code>string</code> \| <code>null</code> | 
+| [likelyIntent] | <code>string</code> | 
+| [disambText] | <code>string</code> | 
+| [disambiguationIntents] | <code>Array.&lt;string&gt;</code> | 
 
