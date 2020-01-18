@@ -32,13 +32,15 @@ const ResponseAssert = require('./src/testTools/ResponseAssert');
 const ButtonTemplate = require('./src/templates/ButtonTemplate');
 const GenericTemplate = require('./src/templates/GenericTemplate');
 const BaseTemplate = require('./src/templates/BaseTemplate');
-const { parseActionPayload } = require('./src/utils');
+const { parseActionPayload } = require('./src/utils/pathUtils');
+const { disambiguationQuickReply } = require('./src/utils/quickReplies');
 const getUpdate = require('./src/utils/getUpdate');
 const {
     bufferloader,
     MemoryStateStorage,
     Translate
 } = require('./src/tools');
+const flags = require('./src/flags');
 
 module.exports = {
     // basic functionality
@@ -59,6 +61,7 @@ module.exports = {
     CachedModel,
     parseActionPayload,
     getUpdate,
+    disambiguationQuickReply,
 
     // Wingbot
     ai: Ai.ai,
@@ -92,5 +95,8 @@ module.exports = {
     BaseTemplate,
 
     // tests
-    ConversationTester
+    ConversationTester,
+
+    // flags
+    ...flags
 };

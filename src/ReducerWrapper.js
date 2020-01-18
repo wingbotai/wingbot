@@ -18,7 +18,7 @@ const EventEmitter = require('events');
  *     res.text('Hello');
  * });
  *
- * reducer.on('action', (senderId, processedAction, text, req, lastAction) => {
+ * reducer.on('action', (senderId, processedAction, text, req, lastAction, skill, senderMeta) => {
  *     // log action
  * });
  */
@@ -70,7 +70,14 @@ class ReducerWrapper extends EventEmitter {
         res._trackAsAction = null;
 
         const params = [
-            req.senderId, act, req.text(), req, lastAction, shouldNotTrack, trackingSkill
+            req.senderId,
+            act,
+            req.text(),
+            req,
+            lastAction,
+            shouldNotTrack,
+            trackingSkill,
+            res.senderMeta
         ];
 
         let { lastInteraction = null } = req.state;

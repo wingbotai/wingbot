@@ -8,7 +8,7 @@ to track chat events simply use
 const { Router } = require('wingbot');
 const botRoot = new Router();
 
-botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill) => {
+botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, senderMeta) => {
 
     if (action) {
         // send info that `action` was passed
@@ -38,19 +38,45 @@ botRoot.use(ai.match('intent'), ...);
 botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill) => {
 
     // logging winning intent
-    if (req.aiIntent) {
-        const { aiIntent, aiIntentScore, aiHandled } = req;
+    if (req.intents && req.intents.length > 0) {
+        const [{ intent, score, entities = [] }] = req.intents;
 
-        // intent = intent name
-        // aiIntentScore = score 0.0 - 1.0
-        // aiHandled = whether the intent was handled or not
-    }
 
-    // logging winning intent score
-    if (req.intent()) {
-        const { intent, score } = req.intent();
     }
 });
 ```
 
 When you need to collect AI feedback from `navigator/makeSure` matchers use `ai.onConfirmMiddleware(<handler>)` middleware.
+
+## Tracking disambiguation
+
+It's good to track when disambbiguation occurs and if user selects the right meaning
+
+```javascript
+const {
+    Router,
+    Processor,
+    FLAG_DISAMBIGUATION_OFFERED,
+    FLAG_DISAMBIGUATION_SELECTED
+} = require('wingbot');
+const botRoot = new Router();
+
+botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, senderMeta) => {
+
+    if (senderMeta.flag === FLAG_DISAMBIGUATION_OFFERED) {
+        const { disambiguationIntents } = senderMeta;
+        // when bot offers disambiguationIntents to let the user to choose
+    }
+});
+
+const processor = new Processor(botRoot);
+
+botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, senderMeta) => {
+
+    if (senderMeta.flag === FLAG_DISAMBIGUATION_SELECTED) {
+        const { likelyIntent, disambText } = senderMeta;
+        // when user means disambText is likelyIntent
+    }
+});
+
+```
