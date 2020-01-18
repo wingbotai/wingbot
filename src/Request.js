@@ -3,7 +3,8 @@
  */
 'use strict';
 
-const { tokenize, quickReplyAction, parseActionPayload } = require('./utils');
+const { tokenize, parseActionPayload } = require('./utils');
+const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickReplies');
 const RequestsFactories = require('./utils/RequestsFactories');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
@@ -150,19 +151,18 @@ class Request extends RequestsFactories {
         if (this._aiActions === null) {
             return [];
         }
+        const text = this.text();
         return this._aiActions
             .filter(a => a.title)
             .slice(0, limit)
-            .map(a => ({
-                title: typeof a.title === 'function'
+            .map(a => disambiguationQuickReply(
+                typeof a.title === 'function'
                     ? a.title(this)
                     : a.title,
-                action: a.action,
-                _senderMeta: {
-                    flag: 'd',
-                    likelyIntent: a.intent.intent
-                }
-            }));
+                a.intent.intent,
+                text,
+                a.action
+            ));
     }
 
     /**

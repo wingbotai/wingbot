@@ -9,10 +9,19 @@ const ButtonTemplate = require('./templates/ButtonTemplate');
 const GenericTemplate = require('./templates/GenericTemplate');
 const ListTemplate = require('./templates/ListTemplate');
 const { makeAbsolute, makeQuickReplies } = require('./utils');
+const { FLAG_DISAMBIGUATION_OFFERED } = require('./flags');
 
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
 const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
+
+/**
+ * @typedef {Object} SenderMeta
+ * @prop {string|null} flag
+ * @prop {string} [likelyIntent]
+ * @prop {string} [disambText]
+ * @prop {string[]} [disambiguationIntents]
+ */
 
 /**
  * Instance of responder is passed as second parameter of handler (res)
@@ -90,6 +99,18 @@ class Responder {
         this.startedOutput = false;
 
         this._trackAsAction = null;
+
+        // both vars are package protected
+        this._senderMeta = { flag: null };
+    }
+
+    /**
+     * Response has been marked with a flag
+     *
+     * @returns {SenderMeta}
+     */
+    get senderMeta () {
+        return this._senderMeta;
     }
 
     // PROTECTED METHOD (called from ReturnSender)
@@ -300,8 +321,15 @@ class Responder {
         if (replies || this._quickReplyCollector.length !== 0) {
 
             const {
-                quickReplies: qrs, expectedKeywords
+                quickReplies: qrs, expectedKeywords, disambiguationIntents
             } = makeQuickReplies(replies, this.path, this._t, this._quickReplyCollector);
+
+            if (disambiguationIntents.length > 0) {
+                this._senderMeta = {
+                    flag: FLAG_DISAMBIGUATION_OFFERED,
+                    disambiguationIntents
+                };
+            }
 
             if (qrs.length > 0) {
                 this.finalMessageSent = true;

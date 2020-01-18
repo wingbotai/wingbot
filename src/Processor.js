@@ -320,6 +320,13 @@ class Processor extends EventEmitter {
             res = new Responder(senderId, messageSender, token, this.options, responderData);
             const postBack = this._createPostBack(postbackAcumulator, req, res);
 
+            // attach sender meta
+            const data = req.action(true);
+
+            if (typeof data._senderMeta === 'object') {
+                res._senderMeta = { ...data._senderMeta };
+            }
+
             let continueToReducer = true;
             // process plugin middlewares
             for (const middleware of this._middlewares) {
@@ -417,7 +424,16 @@ class Processor extends EventEmitter {
             ? (req.state._trackAsSkill || null)
             : res.newState._trackAsSkill;
 
-        const params = [req.senderId, act, req.text(), req, lastAction, false, trackingSkill];
+        const params = [
+            req.senderId,
+            act,
+            req.text(),
+            req,
+            lastAction,
+            false,
+            trackingSkill,
+            res.senderMeta
+        ];
 
         process.nextTick(() => {
             try {
