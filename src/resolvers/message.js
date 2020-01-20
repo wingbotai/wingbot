@@ -109,7 +109,7 @@ function message (params, {
                 .filter(reply => reply.condition(req, res));
 
             const sendReplies = okQuickReplies
-                .filter(reply => !!reply.title)
+                .filter(reply => reply.title || reply.isLocation || reply.isEmail || reply.isPhone)
                 .map((reply) => {
                     const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
                         ? Object.assign({}, reply)
