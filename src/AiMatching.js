@@ -92,19 +92,19 @@ class AiMatching {
         /**
          * When there are additional entities then required add a handicap for each unmatched entity
          * Also works, when an optional entity was not matched
-         * (0.05 by default)
+         * (0.03 by default)
          *
          * @type {number}
          */
-        this.redundantEntityHandicap = 0.05;
+        this.redundantEntityHandicap = 0.03;
 
         /**
          * When there is additional intent, the final score will be lowered by this value
-         * (0.15 by default)
+         * (0.06 by default)
          *
          * @type {number}
          */
-        this.redundantIntentHandicap = 0.15;
+        this.redundantIntentHandicap = 0.06;
 
         /**
          * When more than one AI features (Intent, Entity, Regex) are matching,

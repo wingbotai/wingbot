@@ -477,6 +477,65 @@ class Request {
     }
 
     /**
+     * To be able to keep context of previous interaction (expected action and intents)
+     * Just use this method to let user to answer again.
+     *
+     * @param {boolean} [includeKeywords] - keep intents from quick replies
+     * @param {boolean} [justOnce] - don't do it again
+     * @returns {Object}
+     * @example
+     *
+     * bot.use('start', (req, res) => {
+     *     res.text('What color do you like?', [
+     *         { match: ['@Color=red'], text: 'red', action: 'red' },
+     *         { match: ['@Color=blue'], text: 'blue', action: 'blue' }
+     *     ]);
+     *     res.expected('need-color')
+     * });
+     *
+     * bot.use('need-color', (req, res) => {
+     *     res.setState(req.expectedContext(true, true));
+     *     res.text('Sorry, only red or blue.');
+     * });
+     */
+    expectedContext (includeKeywords = false, justOnce = false) {
+        const {
+            _expected: expected,
+            _expectedKeywords: exKeywords
+        } = this.state;
+
+        const ret = {};
+
+        let shouldIncludeKeywords = includeKeywords;
+
+        if (expected) {
+            const { action, data = {} } = expected;
+
+            if (!data._expectedFallbackOccured || !justOnce) {
+                Object.assign(ret, {
+                    _expected: {
+                        action,
+                        data: {
+                            ...data,
+                            _expectedFallbackOccured: true
+                        }
+                    }
+                });
+            } else if (justOnce && shouldIncludeKeywords) {
+                shouldIncludeKeywords = false;
+            }
+        }
+
+        if (exKeywords && shouldIncludeKeywords) {
+            Object.assign(ret, {
+                _expectedKeywords: exKeywords
+            });
+        }
+
+        return ret;
+    }
+
+    /**
      * Returns action or data of quick reply
      * When `getData` is `true`, object will be returned. Otherwise string or null.
      *

@@ -295,7 +295,7 @@ class Responder {
      *         action: 'complexAction', // required
      *         title: 'Another quick reply', // required
      *         setState: { prop: 'value' }, // optional
-     *         match: 'string' || /regexp/, // optional
+     *         match: 'text' || /regexp/ || ['intent'], // optional
      *         data:  { foo: 1  }'Will be included in payload data' // optional
      *     }
      * ]);

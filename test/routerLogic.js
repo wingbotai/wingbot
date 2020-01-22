@@ -1232,4 +1232,60 @@ describe('<Router> logic', () => {
 
     });
 
+    describe('KEEP PREVIOUS CONTEXT', () => {
+        let t;
+
+        beforeEach(() => {
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                res.text('prompt', {
+                    next: 'next'
+                });
+                res.expected('nothing');
+            });
+
+            bot.use('next', (req, res) => {
+                res.text('yes');
+            });
+
+            bot.use('nothing', (req, res) => {
+                // @ts-ignore
+                res.setState(req.expectedContext(true, true));
+                res.text('nothing');
+            });
+
+            bot.use((req, res) => {
+                res.text('fallback');
+            });
+
+            t = new Tester(bot);
+        });
+
+        it('keeps previous context once', async () => {
+
+            await t.postBack('start');
+
+            await t.text('foo');
+
+            t.any().contains('nothing');
+
+            await t.text('fallback');
+        });
+
+        it('remembers previous value', async () => {
+
+            await t.postBack('start');
+
+            await t.text('foo');
+
+            t.any().contains('nothing');
+
+            await t.text('next');
+
+            t.any().contains('yes');
+        });
+
+    });
+
 });

@@ -62,7 +62,7 @@ class Ai {
          *
          * @type {number}
          */
-        this.confidence = 0.85;
+        this.confidence = 0.8;
 
         /**
          * Lower threshold - for disambiguation

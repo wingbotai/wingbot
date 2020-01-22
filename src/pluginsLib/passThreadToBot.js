@@ -18,7 +18,12 @@ function passThreadToBotFactory (params) {
         let action;
         if (!targetAction) {
 
-            const text = req.text();
+            let text = req.text();
+            const { _senderMeta: sm = {} } = req.action(true);
+
+            if (typeof sm.disambText === 'string') {
+                text = sm.disambText;
+            }
 
             if (!text) {
                 return true; // continue

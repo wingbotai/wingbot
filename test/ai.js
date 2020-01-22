@@ -163,6 +163,37 @@ describe('<Ai>', function () {
             assert.deepEqual(steps, [1, 2, 3, 4]);
         });
 
+        it('works in "expected" with entity', async () => {
+
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                res.text('Started');
+                res.expected('expect');
+            });
+
+            bot.use(ai.global('path', ['in']), (req, res) => {
+                res.text('path');
+            });
+
+            bot.use('expect', ai.match(['@En=Ah']), async (req, res) => {
+                res.text('yes');
+            });
+
+            bot.use('expect', async (req, res) => {
+                res.text('no');
+            });
+
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            await t.intentWithEntity('in', 'En', 'Ah', 'Ahoj');
+
+            t.any()
+                .contains('yes');
+        });
+
         it('supports regexes', async () => {
             const bot = new Router();
 
