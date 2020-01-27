@@ -646,10 +646,8 @@ class Responder {
      * @returns {this}
      */
     passThread (targetAppId, data = null) {
-        let metadata = data;
-        if (data !== null && typeof data !== 'string') {
-            metadata = JSON.stringify(data);
-        }
+        const metadata = this._getMetadataWithHopCount(data);
+
         const messageData = {
             recipient: {
                 id: this._senderId
@@ -906,6 +904,36 @@ class Responder {
             ),
             this.options.autoTyping.maxTime
         );
+    }
+
+    /**
+     * Pass thread to another app
+     *
+     * @param {string|Object} [data]
+     * @param {number} exceptionHopCountThreshold
+     * @returns {string}
+     */
+    _getMetadataWithHopCount (data, exceptionHopCountThreshold = 5) {
+        let metadata = data;
+
+        if (data && typeof data !== 'string') {
+            metadata = JSON.stringify(data);
+        }
+
+        metadata = JSON.parse(metadata || '{}');
+
+        if (metadata.data) {
+            let { $hopCount: hopCount = 0 } = metadata.data;
+            if (hopCount >= exceptionHopCountThreshold) {
+                throw new Error(`More than ${exceptionHopCountThreshold} handovers occured`);
+            } else {
+                metadata.data.$hopCount = ++hopCount;
+            }
+        } else {
+            metadata.data = { $hopCount: 1 };
+        }
+
+        return JSON.stringify(metadata);
     }
 
 }
