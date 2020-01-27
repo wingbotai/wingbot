@@ -502,7 +502,15 @@ class Processor extends EventEmitter {
             const onLoad = (res) => {
                 if (!res) {
                     if (retries-- < 0) {
-                        reject(new Error('Loading state timed out: another event is blocking the state'));
+                        this.stateStorage
+                            .getState(senderId, pageId)
+                            .then((state) => {
+                                this.options.log.warn(`Locked state: ${senderId}, lock: ${lock}, at ${Date.now()}`, state);
+                            })
+                            .catch(() => {});
+
+
+                        reject(new Error(`Loading state timed out: another event is blocking it (${senderId}, lock: ${lock})`));
                         return;
                     }
 
@@ -525,9 +533,25 @@ class Processor extends EventEmitter {
 
     _model (senderId, pageId, timeout, retries) {
         const { defaultState } = this.options;
+
+        const now = Date.now();
+        const warnIfItTookTooLong = (r = null) => {
+            const duration = Date.now() - now;
+            if (duration >= (this.options.waitForLockedState / 2)) {
+                try {
+                    this.options.log.warn(`Loading state (${senderId}) for timeout ${timeout} took too long (${duration}ms).`);
+                } catch (e) {
+                    // noop
+                }
+            }
+            return r;
+        };
+
         return this.stateStorage
             .getOrCreateAndLock(senderId, pageId, defaultState, timeout)
+            .then(warnIfItTookTooLong)
             .catch((err) => {
+                warnIfItTookTooLong();
                 if (!err || err.code !== 11000) {
                     this.options.log.error('Bot processor load error', err);
                 }
