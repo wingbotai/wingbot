@@ -13,6 +13,7 @@ const { FLAG_DISAMBIGUATION_OFFERED } = require('./flags');
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
 const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
+const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 
 
 /**
@@ -646,7 +647,24 @@ class Responder {
      * @returns {this}
      */
     passThread (targetAppId, data = null) {
-        const metadata = this._getMetadataWithHopCount(data);
+        let metadata = data;
+        if (data !== null && typeof data !== 'string') {
+            let { _$hopCount: $hopCount = -1 } = this._data;
+
+            if ($hopCount >= EXCEPTION_HOPCOUNT_THRESHOLD) {
+                throw new Error(`More than ${EXCEPTION_HOPCOUNT_THRESHOLD} handovers occured`);
+            } else {
+                $hopCount++;
+            }
+
+            metadata = JSON.stringify({
+                ...data,
+                data: {
+                    $hopCount,
+                    ...data.data
+                }
+            });
+        }
 
         const messageData = {
             recipient: {
@@ -905,37 +923,6 @@ class Responder {
             this.options.autoTyping.maxTime
         );
     }
-
-    /**
-     * Pass thread to another app
-     *
-     * @param {string|Object} [data]
-     * @param {number} exceptionHopCountThreshold
-     * @returns {string}
-     */
-    _getMetadataWithHopCount (data, exceptionHopCountThreshold = 5) {
-        let metadata = data;
-
-        if (data && typeof data !== 'string') {
-            metadata = JSON.stringify(data);
-        }
-
-        metadata = JSON.parse(metadata || '{}');
-
-        if (metadata.data) {
-            let { $hopCount: hopCount = 0 } = metadata.data;
-            if (hopCount >= exceptionHopCountThreshold) {
-                throw new Error(`More than ${exceptionHopCountThreshold} handovers occured`);
-            } else {
-                metadata.data.$hopCount = ++hopCount;
-            }
-        } else {
-            metadata.data = { $hopCount: 1 };
-        }
-
-        return JSON.stringify(metadata);
-    }
-
 }
 
 Responder.TYPE_MESSAGE_TAG = TYPE_MESSAGE_TAG;
