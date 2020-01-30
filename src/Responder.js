@@ -646,15 +646,20 @@ class Responder {
      */
     passThread (targetAppId, data = null) {
         let metadata = data;
-        if (data !== null && typeof data !== 'string') {
-            let { _$hopCount: $hopCount = -1 } = this._data;
 
-            if ($hopCount >= EXCEPTION_HOPCOUNT_THRESHOLD) {
-                throw new Error(`More than ${EXCEPTION_HOPCOUNT_THRESHOLD} handovers occured`);
-            } else {
-                $hopCount++;
-            }
+        let { _$hopCount: $hopCount = -1 } = this._data;
 
+        if ($hopCount >= EXCEPTION_HOPCOUNT_THRESHOLD) {
+            throw new Error(`More than ${EXCEPTION_HOPCOUNT_THRESHOLD} handovers occured`);
+        } else {
+            $hopCount++;
+        }
+
+        if (data === null) {
+            metadata = JSON.stringify({
+                data: { $hopCount }
+            });
+        } else if (typeof data === 'object') {
             metadata = JSON.stringify({
                 ...data,
                 data: {
@@ -662,17 +667,18 @@ class Responder {
                     ...data.data
                 }
             });
+        } else if (typeof data !== 'string') {
+            metadata = JSON.stringify(data);
         }
 
         const messageData = {
             recipient: {
                 id: this._senderId
             },
-            target_app_id: targetAppId
+            target_app_id: targetAppId,
+            metadata
         };
-        if (metadata) {
-            Object.assign(messageData, { metadata });
-        }
+
         this.finalMessageSent = true;
         this._send(messageData);
         return this;

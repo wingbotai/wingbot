@@ -553,6 +553,7 @@ describe('Responder', function () {
             const object = sendFn.firstCall.args[0];
             assert.deepStrictEqual(object, {
                 messaging_type: 'RESPONSE',
+                metadata: '{"data":{"$hopCount":0}}',
                 recipient: {
                     id: SENDER_ID
                 },
