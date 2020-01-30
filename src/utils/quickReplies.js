@@ -188,7 +188,7 @@ function quickReplyAction (expectedKeywords, req, ai) {
     const exactMatch = expectedKeywords
         .filter(keyword => keyword.title === text);
 
-    if (exactMatch.length === 1) {
+    if (exactMatch.length !== 0) {
         return exactMatch[0];
     }
 
@@ -196,11 +196,11 @@ function quickReplyAction (expectedKeywords, req, ai) {
     const found = expectedKeywords
         .filter(keyword => ai.ruleIsMatching(keyword.match, req));
 
-    if (found.length !== 1) {
+    if (found.length === 0) {
         return null;
     }
 
-    return found[0] || null;
+    return found[0];
 }
 
 /**

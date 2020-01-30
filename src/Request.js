@@ -477,28 +477,13 @@ class Request {
     }
 
     /**
-     * To be able to keep context of previous interaction (expected action and intents)
-     * Just use this method to let user to answer again.
+     * Returns current turn-around context (expected and expected keywords)
      *
-     * @param {boolean} [includeKeywords] - keep intents from quick replies
      * @param {boolean} [justOnce] - don't do it again
+     * @param {boolean} [includeKeywords] - keep intents from quick replies
      * @returns {Object}
-     * @example
-     *
-     * bot.use('start', (req, res) => {
-     *     res.text('What color do you like?', [
-     *         { match: ['@Color=red'], text: 'red', action: 'red' },
-     *         { match: ['@Color=blue'], text: 'blue', action: 'blue' }
-     *     ]);
-     *     res.expected('need-color')
-     * });
-     *
-     * bot.use('need-color', (req, res) => {
-     *     res.setState(req.expectedContext(true, true));
-     *     res.text('Sorry, only red or blue.');
-     * });
      */
-    expectedContext (includeKeywords = false, justOnce = false) {
+    expectedContext (justOnce = false, includeKeywords = false) {
         const {
             _expected: expected,
             _expectedKeywords: exKeywords

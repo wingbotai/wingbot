@@ -395,33 +395,31 @@ class Responder {
     }
 
     /**
+     * To be able to keep context of previous interaction (expected action and intents)
+     * Just use this method to let user to answer again.
      *
      * @param {Request} req
-     * @param {boolean} justOnce
+     * @param {boolean} [justOnce] - don't do it again
+     * @param {boolean} [includeKeywords] - keep intents from quick replies
      * @returns {this}
+     * @example
+     *
+     * bot.use('start', (req, res) => {
+     *     res.text('What color do you like?', [
+     *         { match: ['@Color=red'], text: 'red', action: 'red' },
+     *         { match: ['@Color=blue'], text: 'blue', action: 'blue' }
+     *     ]);
+     *     res.expected('need-color')
+     * });
+     *
+     * bot.use('need-color', (req, res) => {
+     *     res.keepPreviousContext(req);
+     *     res.text('Sorry, only red or blue.');
+     * });
      */
-    keepPreviousContext (req, justOnce = false) {
-        const {
-            _expectedKeywords: keywords = null,
-            _expected: expected = null
-            // @ts-ignore
-        } = req.state;
-
-        if (expected) {
-            const { action, data = {} } = expected;
-
-            if (!justOnce || !data._expectedFallbackOccured) {
-                this.expected(action, {
-                    ...data,
-                    _expectedFallbackOccured: true
-                });
-            }
-        }
-
-        if (keywords) {
-            this.setState({ _expectedKeywords: keywords });
-        }
-
+    keepPreviousContext (req, justOnce = false, includeKeywords = false) {
+        // @ts-ignore
+        this.setState(req.expectedContext(justOnce, includeKeywords));
         return this;
     }
 
