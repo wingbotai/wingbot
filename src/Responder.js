@@ -13,6 +13,7 @@ const { FLAG_DISAMBIGUATION_OFFERED } = require('./flags');
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
 const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
+const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 
 
 /**
@@ -648,8 +649,23 @@ class Responder {
     passThread (targetAppId, data = null) {
         let metadata = data;
         if (data !== null && typeof data !== 'string') {
-            metadata = JSON.stringify(data);
+            let { _$hopCount: $hopCount = -1 } = this._data;
+
+            if ($hopCount >= EXCEPTION_HOPCOUNT_THRESHOLD) {
+                throw new Error(`More than ${EXCEPTION_HOPCOUNT_THRESHOLD} handovers occured`);
+            } else {
+                $hopCount++;
+            }
+
+            metadata = JSON.stringify({
+                ...data,
+                data: {
+                    $hopCount,
+                    ...data.data
+                }
+            });
         }
+
         const messageData = {
             recipient: {
                 id: this._senderId
@@ -907,7 +923,6 @@ class Responder {
             this.options.autoTyping.maxTime
         );
     }
-
 }
 
 Responder.TYPE_MESSAGE_TAG = TYPE_MESSAGE_TAG;

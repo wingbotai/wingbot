@@ -574,8 +574,93 @@ describe('Responder', function () {
                     id: SENDER_ID
                 },
                 target_app_id: '123',
+                metadata: '{"a":1,"data":{"$hopCount":0}}'
+            });
+        });
+
+        it('should not modify string metadata', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.passThread('123', '{"a":1}');
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
                 metadata: '{"a":1}'
             });
+        });
+
+        it('should not incremement object metadata $hopCount', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.passThread('123', { a: 1, data: { $hopCount: 1 } });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
+                metadata: '{"a":1,"data":{"$hopCount":1}}'
+            });
+        });
+
+        it('should increment $hopCount and merge with metadata', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts, { _$hopCount: 0 });
+
+            res.passThread('123', { a: 1, data: {} });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
+                metadata: '{"a":1,"data":{"$hopCount":1}}'
+            });
+        });
+
+        it('should incremement $hopCount', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts, { _$hopCount: 0 });
+
+            res.passThread('123', { a: 1 });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
+                metadata: '{"a":1,"data":{"$hopCount":1}}'
+            });
+        });
+
+        it('should throw exeption on cross threshold $hopCount', function () {
+            const { opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts, { _$hopCount: 5 });
+
+            assert.throws(
+                () => {
+                    res.passThread('123', { a: 1 });
+                },
+                Error,
+                'More than 5 handovers occured'
+            );
         });
 
     });
