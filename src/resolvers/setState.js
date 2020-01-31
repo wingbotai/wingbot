@@ -49,7 +49,7 @@ function setState (params, { isLastIndex, allowForbiddenSnippetWords }) {
             let set;
 
             if (k === SUBSCRIBE && Array.isArray(val) && typeof res.subscribe === 'function') {
-                val.forEach(v => res.subcribe(v));
+                val.forEach(v => res.subscribe(v));
             } else if (k === UNSUBSCRIBE && Array.isArray(val) && typeof res.unsubscribe === 'function') {
                 val.forEach(v => res.unsubscribe(v));
             } else if (val && typeof val === 'object') {
