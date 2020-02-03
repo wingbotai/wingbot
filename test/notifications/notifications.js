@@ -102,7 +102,7 @@ describe('Notifications', function () {
         return new Promise(res => setTimeout(res, ms));
     }
 
-    describe('#middleware()', () => {
+    describe('#beforeProcessMessage()', () => {
 
         let bot;
         /** @type {Notifications} */
@@ -117,8 +117,6 @@ describe('Notifications', function () {
                 .createCampaign('Test', 'testAction', {}, {
                     id: 'identifiedCampaign', exclude: ['left']
                 });
-
-            bot.use(notifications.middleware());
 
             bot.use('testAction', (req, res) => {
                 res.text('Hello');
@@ -160,6 +158,7 @@ describe('Notifications', function () {
 
         it('remembers subcribtions', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -176,6 +175,7 @@ describe('Notifications', function () {
 
         it('subscribes user by user data`', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -194,6 +194,7 @@ describe('Notifications', function () {
 
         it('is possible to trigger action in right time and it\'s not added again', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -247,6 +248,7 @@ describe('Notifications', function () {
 
         it('does not sent a message, when user leaves target group', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -268,6 +270,7 @@ describe('Notifications', function () {
 
         it('does not sent a message, when campaign has been removed or deactivated', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -284,6 +287,7 @@ describe('Notifications', function () {
 
         it('does not sent a message, when campaign has a condition', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -305,6 +309,7 @@ describe('Notifications', function () {
 
         it('should not send a campaign twice to single user', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -334,6 +339,7 @@ describe('Notifications', function () {
 
         it('should send a campaign twice to single user when enabled', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -368,6 +374,7 @@ describe('Notifications', function () {
 
         it('does not fail, when campaign has been removed - uses <removed> as name of campaign', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 
@@ -410,6 +417,7 @@ describe('Notifications', function () {
 
         it('makes able to send sliding campaigns', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             let slidingCampaign = await notifications.createCampaign('sliding one', 'testAction', {}, {
                 sliding: true,
@@ -459,6 +467,7 @@ describe('Notifications', function () {
 
         it('is able to shedule campaigns', async () => {
             const t = new Tester(bot);
+            t.processor.plugin(notifications);
 
             await t.postBack('start');
 

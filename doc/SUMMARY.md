@@ -54,6 +54,7 @@
     * [Local Intents](tutorial/nlpRouting.md#local-intents-and-fallbacks-dialogue-context)
     * [Interaction Context](tutorial/nlpRouting.md#processing-an-expected-response-interaction-context)
     * [Bookmarks](tutorial/nlpRouting.md#bookmarks-global-intents-under-control)
+* [Extending the Processor](tutorial/extendingProcessor.md)
 
 ## API
 

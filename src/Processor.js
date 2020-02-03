@@ -20,8 +20,10 @@ const ReturnSender = require('./ReturnSender');
 
 /**
  * @typedef {Object} Plugin
- * @prop {Function} middleware
- * @prop {Function} processMessage
+ * @prop {Function} [processMessage]
+ * @prop {Function} [beforeAiPreload]
+ * @prop {Function} [beforeProcessMessage]
+ * @prop {Function} [afterProcessMessage]
  */
 
 /**
@@ -122,7 +124,12 @@ class Processor extends EventEmitter {
      */
     plugin (plugin) {
         this._plugins.push(plugin);
-        this._middlewares.push(plugin.middleware());
+        // @ts-ignore
+        if (typeof plugin.middleware === 'function') {
+            this.options.log.warn('Middleware functions in Processor plugins are deprecated');
+            // @ts-ignore
+            this._middlewares.push(plugin.middleware());
+        }
     }
 
     _createPostBack (postbackAcumulator, req, res) {
@@ -220,6 +227,8 @@ class Processor extends EventEmitter {
 
         try {
             for (const plugin of this._plugins) {
+                if (typeof plugin.processMessage !== 'function') continue;
+
                 const res = await plugin.processMessage(message, pageId, messageSender);
                 if (typeof res !== 'object' || typeof res.status !== 'number') {
                     throw new Error('The plugin should always return the status code');
@@ -392,6 +401,21 @@ class Processor extends EventEmitter {
             res = new Responder(senderId, messageSender, token, this.options, responderData);
             const postBack = this._createPostBack(postbackAcumulator, req, res);
 
+            let continueDispatching = true;
+
+            // run plugins
+            for (const plugin of this._plugins) {
+                if (typeof plugin.beforeAiPreload !== 'function') continue;
+
+                let out = plugin.beforeAiPreload(req, res);
+                if (out instanceof Promise) out = await out;
+
+                if (!out) { // end
+                    continueDispatching = false;
+                    break;
+                }
+            }
+
             await Ai.ai.preloadIntent(req);
 
             // @deprecated backward compatibility
@@ -412,20 +436,35 @@ class Processor extends EventEmitter {
                 res._senderMeta = { ...data._senderMeta };
             }
 
-            let continueToReducer = true;
-            // process plugin middlewares
-            for (const middleware of this._middlewares) {
-                let middlewareRes = middleware(req, res, postBack);
-                if (middlewareRes instanceof Promise) {
-                    middlewareRes = await middlewareRes;
-                }
-                if (middlewareRes === null) { // end
-                    continueToReducer = false;
-                    break;
+            if (continueDispatching) {
+                // process plugin middlewares
+                for (const plugin of this._plugins) {
+                    if (typeof plugin.beforeProcessMessage !== 'function') continue;
+
+                    let out = plugin.beforeProcessMessage(req, res);
+                    if (out instanceof Promise) out = await out;
+
+                    if (!out) { // end
+                        continueDispatching = false;
+                        break;
+                    }
                 }
             }
 
-            if (continueToReducer) {
+            if (continueDispatching) {
+                // process plugin middlewares
+                for (const middleware of this._middlewares) {
+                    let out = middleware(req, res, postBack);
+                    if (out instanceof Promise) out = await out;
+
+                    if (out === null) { // end
+                        continueDispatching = false;
+                        break;
+                    }
+                }
+            }
+
+            if (continueDispatching) {
                 if (this.options.autoSeen && (!req.isReferral() || req.action()) && fromEvent) {
                     res.seen();
                 }
@@ -442,6 +481,14 @@ class Processor extends EventEmitter {
 
                 if (fromEvent) {
                     this._emitEvent(req, res);
+                }
+            }
+
+            if (continueDispatching) {
+                for (const plugin of this._plugins) {
+                    if (typeof plugin.afterProcessMessage !== 'function') continue;
+
+                    await Promise.resolve(plugin.afterProcessMessage(req, res));
                 }
             }
 

@@ -1,7 +1,7 @@
 {
   "name": "wingbot",
-  "version": "3.0.0-alpha.25",
-  "description": "Facebook Messenger Chatbot Framework",
+  "version": "3.0.0-alpha.26",
+  "description": "Chatbot Conversation Engine",
   "main": "index.js",
   "scripts": {
     "tsd:update": "jsdoc -t ./node_modules/tsd-jsdoc/dist/ -r ./src",
