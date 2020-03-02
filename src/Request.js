@@ -962,6 +962,19 @@ class Request {
         };
     }
 
+    static intentWithSetState (senderId, intent, setState, timestamp = makeTimestamp()) {
+
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            intent,
+            score: 1,
+            setState
+        };
+    }
+
     static addIntentToRequest (request, intent, entities = [], score = 1) {
         Object.assign(request, {
             intent, score

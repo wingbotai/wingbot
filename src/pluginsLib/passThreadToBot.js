@@ -7,6 +7,7 @@ function passThreadToBotFactory (params) {
 
     const {
         targetAppId = '',
+        targetIntent = '',
         targetAction = '' // empty target action means - pass as text
     } = params;
 
@@ -18,8 +19,11 @@ function passThreadToBotFactory (params) {
         let action;
         const data = req.action(true);
 
-        if (!targetAction) {
-
+        if (targetAction) {
+            action = { action: targetAction, data };
+        } else if (targetIntent) {
+            action = { intent: targetAction, data };
+        } else {
             let text = req.text();
             const { _senderMeta: sm = {} } = req.action(true);
 
@@ -32,8 +36,6 @@ function passThreadToBotFactory (params) {
             }
 
             action = { action: null, data, text };
-        } else {
-            action = { action: targetAction, data };
         }
 
         res.setState({ _threadPassed: true });
