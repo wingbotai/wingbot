@@ -246,6 +246,8 @@ class Processor extends EventEmitter {
         if (typeof message !== 'object' || message === null
             || !((message.sender && message.sender.id) || message.optin)
             || !(message.message || message.referral || message.optin
+                || typeof message.intent === 'string'
+                || (Array.isArray(message.entities) && message.entities.length !== 0)
                 || message.pass_thread_control || message.postback
                 || message.take_thread_control)) {
 
@@ -594,7 +596,8 @@ class Processor extends EventEmitter {
         const state = Object.assign({}, previousState, res.newState);
 
         const isUserEvent = req.isMessage() || req.isPostBack()
-            || req.isReferral() || req.isAttachment();
+            || req.isReferral() || req.isAttachment()
+            || req.isTextOrIntent();
 
         // reset expectations
         if (isUserEvent && !res.newState._expected) {

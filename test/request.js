@@ -340,19 +340,19 @@ describe('Request', function () {
     describe('#intent()', () => {
 
         it('should return intent, when present', async () => {
-            const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
+            const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
             await Ai.ai.preloadIntent(req);
             assert.strictEqual(req.intent(), 'foo');
         });
 
         it('should return intent data, when present', async () => {
-            const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
+            const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
             await Ai.ai.preloadIntent(req);
             assert.deepStrictEqual(req.intent(true), { intent: 'foo', score: 1 });
         });
 
         it('should return null, when present, but score is too low', async () => {
-            const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
+            const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
             await Ai.ai.preloadIntent(req);
             assert.strictEqual(req.intent(1.1), null);
             assert.strictEqual(req.intent(0.1), 'foo');
@@ -366,7 +366,7 @@ describe('Request', function () {
         });
 
         it('should return null, when AI middleware is not used', async () => {
-            const req = new Request(Request.intent(SENDER_ID, 'any', 'foo'), STATE);
+            const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
 
             assert.strictEqual(req.intent(), null);
             assert.strictEqual(req.intent(true), null);

@@ -81,7 +81,7 @@ class Tester {
         // attach the plugin tester
         this.processor.plugin({
             processMessage: () => ({ status: 204 }),
-            middleware: () => (req, res) => {
+            beforeProcessMessage: (req, res) => {
                 req.params = {};
                 Object.assign(res, {
                     run: (blockName) => {
@@ -293,16 +293,11 @@ class Tester {
      *
      * @memberOf Tester
      */
-    intent (intent, text = null, score = null) {
-        let useText;
+    intent (intent, text = null, score = undefined) {
         if (text) {
-            useText = text;
-        } else if (Array.isArray(intent)) {
-            [useText] = intent;
-        } else {
-            useText = intent;
+            return this.processMessage(Request.intentWithText(this.senderId, text, intent, score));
         }
-        return this.processMessage(Request.intent(this.senderId, useText, intent, score));
+        return this.processMessage(Request.intent(this.senderId, intent, score));
     }
 
     /**

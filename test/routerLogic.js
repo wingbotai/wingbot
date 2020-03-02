@@ -1288,4 +1288,37 @@ describe('<Router> logic', () => {
 
     });
 
+    describe('LOCAL INTENT REQUEST', async () => {
+
+        let t;
+
+        beforeEach(() => {
+            const bot = new Router();
+
+            bot.use(ai.global('start', ['known']), (req, res) => {
+                res.text('known intent');
+            });
+
+            bot.use((req, res) => {
+                // @ts-ignore
+                res.text(`${req.intent()} intent`);
+            });
+
+            t = new Tester(bot);
+        });
+
+        it('works as expected', async () => {
+            await t.intent('known');
+
+            t.any()
+                .contains('known');
+
+            await t.intent('unknown');
+
+            t.any()
+                .contains('unknown');
+        });
+
+    });
+
 });

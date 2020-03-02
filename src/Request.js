@@ -421,6 +421,10 @@ class Request {
             || this._stickerToSmile() !== '';
     }
 
+    isTextOrIntent () {
+        return this.isText() || this.intents.length > 0 || this.entities.length > 0;
+    }
+
     /**
      * Returns true, when the attachment is a sticker
      *
@@ -679,7 +683,7 @@ class Request {
             res = parseActionPayload(this.state._expected);
         }
 
-        if (!res && this.isText()) {
+        if (!res && this.isTextOrIntent()) {
             const winner = this._getMatchingGlobalIntent();
             res = winner
                 ? { action: winner.action, data: {}, setState: null }
@@ -698,7 +702,7 @@ class Request {
         if (this._aiActions) {
             return this._aiWinner;
         }
-        if (!this.isText()) {
+        if (!this.isTextOrIntent()) {
             this._aiActions = [];
             return null;
         }
@@ -940,6 +944,36 @@ class Request {
         };
     }
 
+    static intentWithText (senderId, text, intent, score = 1, timestamp = makeTimestamp()) {
+        const res = Request.text(senderId, text, timestamp);
+
+        return Request.addIntentToRequest(res, intent, [], score);
+    }
+
+    static intent (senderId, intent, score = 1, timestamp = makeTimestamp()) {
+
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            intent,
+            score
+        };
+    }
+
+    static addIntentToRequest (request, intent, entities = [], score = 1) {
+        Object.assign(request, {
+            intent, score
+        });
+
+        if (entities.length !== 0) {
+            Object.assign(request, { entities });
+        }
+
+        return request;
+    }
+
     static passThread (senderId, newAppId, data = null, timestamp = makeTimestamp()) {
         let metadata = data;
         if (data !== null && typeof data !== 'string') {
@@ -957,18 +991,10 @@ class Request {
         };
     }
 
-    static intent (senderId, text, intentName, score = 1, timestamp = makeTimestamp()) {
-        const res = Request.text(senderId, text, timestamp);
-
-        Object.assign(res, { intent: intentName, score });
-
-        return res;
-    }
-
     static intentWithEntity (
         senderId,
         text,
-        intentName,
+        intent,
         entity,
         value,
         score = 1,
@@ -976,15 +1002,7 @@ class Request {
     ) {
         const res = Request.text(senderId, text, timestamp);
 
-        Object.assign(res, {
-            intent: intentName,
-            entities: [
-                { entity, value, score }
-            ],
-            score
-        });
-
-        return res;
+        return Request.addIntentToRequest(res, intent, [{ entity, value, score }], score);
     }
 
     static quickReply (senderId, action, data = {}, timestamp = makeTimestamp()) {

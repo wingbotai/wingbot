@@ -285,7 +285,7 @@ class Ai {
         const matcher = this._createIntentMatcher(intent);
 
         return async (req) => {
-            if (!req.isText()) {
+            if (!req.isTextOrIntent()) {
                 return false;
             }
 
@@ -358,14 +358,19 @@ class Ai {
     }
 
     async preloadIntent (req) {
-        if (!req.isText()) {
-            return;
-        }
         const mockIntent = this._getMockIntent(req);
+
         if (mockIntent) {
             req.intents = mockIntent.intents;
             req.entities = mockIntent.entities;
-        } else if (this._keyworders.size !== 0) {
+            return;
+        }
+
+        if (!req.isText()) {
+            return;
+        }
+
+        if (this._keyworders.size !== 0) {
             const model = this._getModelForRequest(req);
             if (!model) {
                 req.intents = [];

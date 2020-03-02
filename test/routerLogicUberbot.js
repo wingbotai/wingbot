@@ -31,7 +31,7 @@ describe('<Router> features for Uberbot', () => {
 
             const t = new Tester(bot);
 
-            const actions = await t.processor.aiActionsForText(Request.intent(t.senderId, 'any', 'fooIntent'));
+            const actions = await t.processor.aiActionsForText(Request.intentWithText(t.senderId, 'any', 'fooIntent'));
 
             assert.deepEqual(actions, [
                 {

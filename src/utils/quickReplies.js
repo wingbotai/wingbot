@@ -181,15 +181,15 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
 function quickReplyAction (expectedKeywords, req, ai) {
     const text = req.text();
 
-    if (!text) {
+    if (text) {
+        const exactMatch = expectedKeywords
+            .filter(keyword => keyword.title === text);
+
+        if (exactMatch.length !== 0) {
+            return exactMatch[0];
+        }
+    } else if (!req.isTextOrIntent()) {
         return null;
-    }
-
-    const exactMatch = expectedKeywords
-        .filter(keyword => keyword.title === text);
-
-    if (exactMatch.length !== 0) {
-        return exactMatch[0];
     }
 
     // @todo sort by score / disamb
