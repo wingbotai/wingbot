@@ -8,7 +8,7 @@ to track chat events simply use
 const { Router } = require('wingbot');
 const botRoot = new Router();
 
-botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, senderMeta) => {
+botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, res) => {
 
     if (action) {
         // send info that `action` was passed
@@ -35,7 +35,7 @@ const botRoot = new Router();
 
 botRoot.use(ai.match('intent'), ...);
 
-botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill) => {
+botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, res) => {
 
     // logging winning intent
     if (req.intents && req.intents.length > 0) {
@@ -61,7 +61,7 @@ const {
 } = require('wingbot');
 const botRoot = new Router();
 
-botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, senderMeta) => {
+botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, res) => {
 
     if (senderMeta.flag === FLAG_DISAMBIGUATION_OFFERED) {
         const { disambiguationIntents } = senderMeta;

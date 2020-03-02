@@ -16,6 +16,8 @@ function passThreadToBotFactory (params) {
     */
     const fn = async (req, res) => {
         let action;
+        const data = req.action(true);
+
         if (!targetAction) {
 
             let text = req.text();
@@ -29,9 +31,9 @@ function passThreadToBotFactory (params) {
                 return true; // continue
             }
 
-            action = { action: null, data: {}, text };
+            action = { action: null, data, text };
         } else {
-            action = { action: targetAction, data: {} };
+            action = { action: targetAction, data };
         }
 
         res.setState({ _threadPassed: true });

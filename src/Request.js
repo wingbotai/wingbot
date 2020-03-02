@@ -154,6 +154,15 @@ class Request {
     }
 
     /**
+     * Returns true, if the incomming event is standby
+     *
+     * @returns {boolean}
+     */
+    isStandby () {
+        return !!this.data.isStandby;
+    }
+
+    /**
      * Get all matched actions from NLP intents
      *
      * @returns {IntentAction[]}

@@ -37,6 +37,38 @@ describe('Responder', function () {
             assert(opts.translator.calledOnce);
         });
 
+        it('should send nice text with persona', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            assert.strictEqual(res.setPersona('a'), res, 'should return self');
+
+            res.text('Hello');
+
+            assert(sendFn.calledOnce);
+            assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
+            assert.equal(sendFn.firstCall.args[0].persona_id, 'a');
+
+            assert(opts.translator.calledOnce);
+        });
+
+        it('should send nice text with persona', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            assert.strictEqual(res.setPersona({ a: 1 }), res, 'should return self');
+
+            res.text('Hello');
+
+            assert(sendFn.calledOnce);
+            assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
+            assert.deepEqual(sendFn.firstCall.args[0].persona, { a: 1 });
+
+            assert(opts.translator.calledOnce);
+        });
+
         it('should send nice text with quick replies', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);

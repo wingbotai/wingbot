@@ -66,6 +66,18 @@ describe('Request', function () {
 
     });
 
+    describe('#isStandby()', function () {
+
+        it('should know, whats standby', function () {
+            const req = new Request({
+                ...Request.postBack(SENDER_ID, ACTION, DATA),
+                isStandby: true
+            }, STATE);
+            assert.strictEqual(req.isStandby(), true);
+        });
+
+    });
+
     describe('#isOptin()', function () {
 
         it('should know, whats optin', function () {

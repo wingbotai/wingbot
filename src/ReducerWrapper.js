@@ -77,7 +77,7 @@ class ReducerWrapper extends EventEmitter {
             lastAction,
             shouldNotTrack,
             trackingSkill,
-            res.senderMeta
+            res
         ];
 
         let { lastInteraction = null } = req.state;

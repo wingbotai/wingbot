@@ -113,6 +113,8 @@ class Responder {
 
         // both vars are package protected
         this._senderMeta = { flag: null };
+
+        this._persona = null;
     }
 
     /**
@@ -133,6 +135,16 @@ class Responder {
         if (!data.messagingType) {
             Object.assign(data, {
                 messaging_type: this._messagingType
+            });
+        }
+
+        if (typeof this._persona === 'string') {
+            Object.assign(data, {
+                persona_id: this._persona
+            });
+        } else if (this._persona && typeof this._persona === 'object') {
+            Object.assign(data, {
+                persona: this._persona
             });
         }
 
@@ -230,6 +242,17 @@ class Responder {
     setMessagingType (messagingType, tag = null) {
         this._messagingType = messagingType;
         this._tag = tag;
+        return this;
+    }
+
+    /**
+     * Tets the persona for following requests
+     *
+     * @param {Object|string|null} personaId
+     * @returns {this}
+     */
+    setPersona (personaId = null) {
+        this._persona = personaId;
         return this;
     }
 

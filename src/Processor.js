@@ -564,7 +564,7 @@ class Processor extends EventEmitter {
             lastAction,
             false,
             trackingSkill,
-            res.senderMeta
+            res
         ];
 
         process.nextTick(() => {
