@@ -20,9 +20,9 @@ function passThreadToBotFactory (params) {
         const data = req.action(true);
 
         if (targetAction) {
-            action = { action: targetAction, data };
+            action = { action: targetAction.trim(), data };
         } else if (targetIntent) {
-            action = { intent: targetAction, data };
+            action = { intent: targetIntent.trim(), data };
         } else {
             let text = req.text();
             const { _senderMeta: sm = {} } = req.action(true);
