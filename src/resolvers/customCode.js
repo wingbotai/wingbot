@@ -71,7 +71,8 @@ class RouterWrap extends EventEmitter {
 }
 
 function customCode (params, context, blocks) {
-    const customFn = blocks.getPluginFactory(params.codeBlockId);
+    const paramsData = typeof params.params === 'object' ? params.params : {};
+    const customFn = blocks.getPluginFactory(params.codeBlockId, paramsData);
 
     const { router, isLastIndex } = context;
 
@@ -84,15 +85,13 @@ function customCode (params, context, blocks) {
             return Object.assign(obj, { [itemName]: reducers });
         }, {});
 
-    const paramsData = typeof params.params === 'object' ? params.params : {};
-
     if (typeof customFn === 'object') {
         // this is an attached router
 
         return new RouterWrap(customFn, items, paramsData);
     }
 
-    return async function (req, res, postBack, path, action) {
+    const fn = async function (req, res, postBack, path, action) {
         req.params = paramsData;
 
         // attach block runner
@@ -119,6 +118,12 @@ function customCode (params, context, blocks) {
         }
         return isLastIndex ? null : true;
     };
+
+    if (typeof customFn.globalIntentsMeta === 'object') {
+        fn.globalIntentsMeta = customFn.globalIntentsMeta;
+    }
+
+    return fn;
 }
 
 module.exports = customCode;

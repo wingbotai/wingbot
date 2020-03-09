@@ -1,7 +1,7 @@
 {
   "name": "wingbot",
-  "version": "2.30.1",
-  "description": "Facebook Messenger Chatbot Framework",
+  "version": "3.0.0",
+  "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
     "tsd:update": "jsdoc -t ./node_modules/tsd-jsdoc/dist/ -r ./src",
@@ -18,14 +18,16 @@
     "url": "git+ssh://git@github.com/wingbotai/wingbot.git"
   },
   "keywords": [
-    "Facebook",
-    "Messenger",
+    "Enterprise",
+    "Messaging",
     "Chatbot",
     "Framework",
-    "Bot"
+    "Bot",
+    "Messenger",
+    "Facebook"
   ],
   "engines": {
-    "node": "^8.0.0"
+    "node": ">=8.0.0"
   },
   "author": "wingbot.ai",
   "license": "MIT",

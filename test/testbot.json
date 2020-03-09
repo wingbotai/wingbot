@@ -190,11 +190,11 @@
             "path": "back",
             "resolvers": [
               {
-                "type": "botbuild.exit",
+                "type": "botbuild.postback",
                 "params": {
-                  "exitName": "onBack"
+                  "routeId": 1507123353009
                 },
-                "id": 1507123086946
+                "id": 1507123359282
               }
             ],
             "id": 1507123084071
@@ -265,6 +265,20 @@
                   "hasCondition": true
                 },
                 "id": 1507631729901
+              },
+              {
+                "type": "botbuild.setState",
+                "params": {
+                  "setState": {
+                    "foo": true,
+                    "bar": { "_$textInput": 1 },
+                    "la": { "_$entity": "none" },
+                    "_$subscribe": ["sub"],
+                    "_$unsubscribe": ["un"]
+                  },
+                  "hasCondition": false
+                },
+                "id": 1507632729901
               },
               {
                 "type": "botbuild.message",
@@ -436,19 +450,7 @@
               {
                 "type": "botbuild.include",
                 "params": {
-                  "items": {
-                    "onBack": {
-                      "resolvers": [
-                        {
-                          "type": "botbuild.postback",
-                          "params": {
-                            "routeId": 1507123353009
-                          },
-                          "id": 1507123359282
-                        }
-                      ]
-                    }
-                  },
+                  "items": {},
                   "staticBlockId": "510219f7-5022-440c-a8c2-387e4978e70f"
                 },
                 "id": 1507123013692
@@ -504,7 +506,7 @@
                   "replies": [
                     {
                       "title": "digg it",
-                      "targetRouteId": "1507122998196/1507123395255"
+                      "targetRouteId": "1507123395255"
                     }
                   ],
                   "text": "Lets try to go deeper"

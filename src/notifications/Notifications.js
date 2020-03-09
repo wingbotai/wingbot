@@ -16,6 +16,9 @@ const REMOVED_CAMPAIGN = '<removed campaign>';
 const MAX_TS = 9999999999999;
 const DEFAULT_24_CLEARANCE = 600000; // ten minutes
 
+const SUBSCRIBE = '_$subscribe';
+const UNSUBSCRIBE = '_$unsubscribe';
+
 const DEFAULT_CAMPAIGN_DATA = {
     sent: 0,
     failed: 0,
@@ -391,111 +394,122 @@ class Notifications extends EventEmitter {
         });
     }
 
-    middleware () {
+    async beforeProcessMessage (req, res) {
         const notifications = this;
-        return async (req, res) => {
-            // load sliding campaigns and postpone/insert their actions
-            const [{ data: slidingCampaigns }] = await Promise.all([
-                this._storage.getCampaigns({
-                    sliding: true, active: true
-                }),
-                this._preloadSubscribtions(req.senderId, req.pageId, req, res)
-            ]);
 
-            Object.assign(res, {
-                subscribe (tag) {
-                    notifications
-                        .subscribe(req.senderId, req.pageId, tag, req, res, slidingCampaigns)
-                        .catch(e => notifications._log.error(e));
-                },
-                unsubscribe (tag = null) {
-                    notifications
-                        .unsubscribe(req.senderId, req.pageId, tag, req, res, slidingCampaigns)
-                        .catch(e => notifications._log.error(e));
-                }
-            });
+        // load sliding campaigns and postpone/insert their actions
+        const [{ data: slidingCampaigns }] = await Promise.all([
+            this._storage.getCampaigns({
+                sliding: true, active: true
+            }),
+            this._preloadSubscribtions(req.senderId, req.pageId, req, res)
+        ]);
 
-            // is action
-            const { campaign } = req;
+        Object.assign(res, {
+            subscribe (tag) {
+                notifications
+                    .subscribe(req.senderId, req.pageId, tag, req, res, slidingCampaigns)
+                    .catch(e => notifications._log.error(e));
+            },
+            unsubscribe (tag = null) {
+                notifications
+                    .unsubscribe(req.senderId, req.pageId, tag, req, res, slidingCampaigns)
+                    .catch(e => notifications._log.error(e));
+            }
+        });
 
-            if (!campaign) {
-                // track campaign success
-                const { _ntfLastCampaignId: lastCampaignId, _ntfLastTask: taskId } = req.state;
-                const {
-                    _trackAsNegative: isNegative = false,
-                    _localpostback: isLocal = false
-                } = req.action(true);
+        // process setState variables
+        if (req.state[SUBSCRIBE]) {
+            req.state[SUBSCRIBE].forEach(t => res.subscribe(t));
+            delete req.state[SUBSCRIBE];
+            delete res.newState[SUBSCRIBE];
+        }
+        if (req.state[UNSUBSCRIBE]) {
+            req.state[UNSUBSCRIBE].forEach(t => res.unsubscribe(t));
+            delete req.state[UNSUBSCRIBE];
+            delete res.newState[UNSUBSCRIBE];
+        }
 
-                if (lastCampaignId && !isLocal) {
-                    res.setState({
-                        _ntfLastCampaignId: null,
-                        _ntfLastCampaignName: null,
-                        _ntfLastTask: null
-                    });
+        // is action
+        const { campaign } = req;
+
+        if (!campaign) {
+            // track campaign success
+            const { _ntfLastCampaignId: lastCampaignId, _ntfLastTask: taskId } = req.state;
+            const {
+                _trackAsNegative: isNegative = false,
+                _localpostback: isLocal = false
+            } = req.action(true);
+
+            if (lastCampaignId && !isLocal) {
+                res.setState({
+                    _ntfLastCampaignId: null,
+                    _ntfLastCampaignName: null,
+                    _ntfLastTask: null
+                });
 
 
-                    this._reportCampaignSuccess(
-                        isNegative ? 'negative' : 'positive',
-                        lastCampaignId,
-                        req.state._ntfLastCampaignName,
-                        { senderId: req.senderId, pageId: req.pageId },
-                        taskId
-                    );
-                }
-
-                await this._postponeTasksOnInteraction(slidingCampaigns, req, res);
-
-                return true;
+                this._reportCampaignSuccess(
+                    isNegative ? 'negative' : 'positive',
+                    lastCampaignId,
+                    req.state._ntfLastCampaignName,
+                    { senderId: req.senderId, pageId: req.pageId },
+                    taskId
+                );
             }
 
-            // ensure again the user has corresponding tags
-            if (!this._isTargetGroup(campaign, req.subscribtions, req.pageId)) {
-                return null; // Router.END;
+            await this._postponeTasksOnInteraction(slidingCampaigns, req, res);
+
+            return true;
+        }
+
+        // ensure again the user has corresponding tags
+        if (!this._isTargetGroup(campaign, req.subscribtions, req.pageId)) {
+            return false;
+        }
+
+        if (!campaign.allowRepeat) {
+            const task = await this._storage.getSentTask(req.pageId, req.senderId, campaign.id);
+
+            if (task) {
+                return false;
             }
+        }
 
-            if (!campaign.allowRepeat) {
-                const task = await this._storage.getSentTask(req.pageId, req.senderId, campaign.id);
+        if (campaign.hasCondition) {
+            const fn = customFn(campaign.condition, `Campaign "${campaign.name}" condition`);
 
-                if (task) {
-                    return null; // Router.END;
-                }
+            const fnRes = fn(req, res);
+
+            if (!fnRes) {
+                return false;
             }
+        }
 
-            if (campaign.hasCondition) {
-                const fn = customFn(campaign.condition, `Campaign "${campaign.name}" condition`);
+        res.setMessagingType(campaign.type || 'UPDATE');
 
-                const fnRes = fn(req, res);
-
-                if (!fnRes) {
-                    return null; // Router.END;
-                }
-            }
-
-            res.setMessgingType(campaign.type || 'UPDATE');
-
-            if (!campaign.in24hourWindow) {
-                this._setLastCampaign(res, campaign, req.taskId);
-                return true;
-            }
-
-            const { _ntfLastInteraction = Date.now(), _ntfOverMessageSent } = req.state;
-            const inTimeFrame = Date.now() < (_ntfLastInteraction + WINDOW_24_HOURS);
-
-            // do not send one message over, because of future campaigns
-            if (inTimeFrame) {
-                this._setLastCampaign(res, campaign, req.taskId);
-                return true;
-            }
-
-            if (!this._sendMoreMessagesOver24 && !inTimeFrame && _ntfOverMessageSent) {
-                return null; // Router.END;
-            }
-
-            res.setState({ _ntfOverMessageSent: true });
-
+        if (!campaign.in24hourWindow) {
             this._setLastCampaign(res, campaign, req.taskId);
             return true;
-        };
+        }
+
+        const { _ntfLastInteraction = Date.now(), _ntfOverMessageSent } = req.state;
+        const inTimeFrame = Date.now() < (_ntfLastInteraction + WINDOW_24_HOURS);
+
+        // do not send one message over, because of future campaigns
+        if (inTimeFrame) {
+            this._setLastCampaign(res, campaign, req.taskId);
+            return true;
+        }
+
+        if (!this._sendMoreMessagesOver24 && !inTimeFrame && _ntfOverMessageSent) {
+            return false;
+        }
+
+        res.setState({ _ntfOverMessageSent: true });
+
+        this._setLastCampaign(res, campaign, req.taskId);
+        return true;
     }
 
     _isTargetGroup (campaign, subscribtions, pageId) {
@@ -829,5 +843,8 @@ class Notifications extends EventEmitter {
     }
 
 }
+
+Notifications.SUBSCRIBE = SUBSCRIBE;
+Notifications.UNSUBSCRIBE = UNSUBSCRIBE;
 
 module.exports = Notifications;

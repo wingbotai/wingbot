@@ -7,6 +7,7 @@ const EventEmitter = require('events');
 const { MemoryStateStorage } = require('./tools');
 const Responder = require('./Responder');
 const Request = require('./Request');
+const Ai = require('./Ai');
 const ReturnSender = require('./ReturnSender');
 
 /**
@@ -19,8 +20,25 @@ const ReturnSender = require('./ReturnSender');
 
 /**
  * @typedef {Object} Plugin
- * @prop {Function} middleware
- * @prop {Function} processMessage
+ * @prop {Function} [processMessage]
+ * @prop {Function} [beforeAiPreload]
+ * @prop {Function} [beforeProcessMessage]
+ * @prop {Function} [afterProcessMessage]
+ */
+
+/**
+ * @typedef {Object} IntentAction
+ * @prop {string} action
+ * @prop {Intent} intent
+ * @prop {number} sort
+ * @prop {number} [score]
+ * @prop {boolean} local
+ * @prop {boolean} aboveConfidence
+ * @prop {boolean} [winner]
+ * @prop {Object} meta
+ * @prop {string} title
+ * @prop {string} [meta.targetAppId]
+ * @prop {string|null} [meta.targetAction]
  */
 
 const NAME_FROM_STATE = (state) => {
@@ -106,7 +124,12 @@ class Processor extends EventEmitter {
      */
     plugin (plugin) {
         this._plugins.push(plugin);
-        this._middlewares.push(plugin.middleware());
+        // @ts-ignore
+        if (typeof plugin.middleware === 'function') {
+            this.options.log.warn('Middleware functions in Processor plugins are deprecated');
+            // @ts-ignore
+            this._middlewares.push(plugin.middleware());
+        }
     }
 
     _createPostBack (postbackAcumulator, req, res) {
@@ -204,6 +227,8 @@ class Processor extends EventEmitter {
 
         try {
             for (const plugin of this._plugins) {
+                if (typeof plugin.processMessage !== 'function') continue;
+
                 const res = await plugin.processMessage(message, pageId, messageSender);
                 if (typeof res !== 'object' || typeof res.status !== 'number') {
                     throw new Error('The plugin should always return the status code');
@@ -221,6 +246,8 @@ class Processor extends EventEmitter {
         if (typeof message !== 'object' || message === null
             || !((message.sender && message.sender.id) || message.optin)
             || !(message.message || message.referral || message.optin
+                || typeof message.intent === 'string'
+                || (Array.isArray(message.entities) && message.entities.length !== 0)
                 || message.pass_thread_control || message.postback
                 || message.take_thread_control)) {
 
@@ -264,6 +291,61 @@ class Processor extends EventEmitter {
             result = { status: code, error: e.message };
         }
         return result;
+    }
+
+    /**
+     * Get matching NLP intents
+     *
+     * @param {string|Object} text
+     * @param {string} [pageId]
+     * @param {boolean} [allowEmptyAction]
+     * @returns {Promise<IntentAction[]>}
+     */
+    async aiActionsForText (text, pageId = 'none', allowEmptyAction = false) {
+        try {
+            // @ts-ignore
+            if (this.reducer && typeof this.reducer.preload === 'function') {
+                // @ts-ignore
+                await this.reducer.preload();
+            }
+
+            const request = typeof text === 'string'
+                ? Request.text('none', text)
+                : text;
+            // @ts-ignore
+            const req = new Request(request, {}, pageId, this.reducer.globalIntents);
+
+            await Ai.ai.preloadIntent(req);
+
+            const actions = req.aiActions();
+
+            if (actions.length === 0 && allowEmptyAction && req.intents.length > 0) {
+                const [intent] = req.intents;
+
+                return [
+                    {
+                        intent,
+                        action: null,
+                        sort: intent.score,
+                        local: false,
+                        aboveConfidence: intent.score >= Ai.ai.confidence,
+                        meta: {},
+                        title: null
+                    }
+                ];
+            }
+
+            return actions
+                .map(a => ({
+                    ...a,
+                    title: typeof a.title === 'function'
+                        ? a.title(req)
+                        : a.title
+                }));
+        } catch (e) {
+            this.options.log.error('failed to fetch intent actions', e);
+            return [];
+        }
     }
 
     async _processMessage (message, pageId, messageSender, responderData, fromEvent = false) {
@@ -316,9 +398,38 @@ class Processor extends EventEmitter {
             // prepare request and responder
             let { state } = stateObject;
 
-            req = new Request(message, state, pageId);
+            // @ts-ignore
+            req = new Request(message, state, pageId, this.reducer.globalIntents);
             res = new Responder(senderId, messageSender, token, this.options, responderData);
             const postBack = this._createPostBack(postbackAcumulator, req, res);
+
+            let continueDispatching = true;
+
+            // run plugins
+            for (const plugin of this._plugins) {
+                if (typeof plugin.beforeAiPreload !== 'function') continue;
+
+                let out = plugin.beforeAiPreload(req, res);
+                if (out instanceof Promise) out = await out;
+
+                if (!out) { // end
+                    continueDispatching = false;
+                    break;
+                }
+            }
+
+            await Ai.ai.preloadIntent(req);
+
+            // @deprecated backward compatibility
+            const aByAi = req.actionByAi();
+            if (aByAi && aByAi !== req.action()) {
+                res.setBookmark(aByAi);
+            }
+
+            // process setState
+            const setState = req.getSetState();
+            Object.assign(req.state, setState);
+            res.setState(setState);
 
             // attach sender meta
             const data = req.action(true);
@@ -327,20 +438,35 @@ class Processor extends EventEmitter {
                 res._senderMeta = { ...data._senderMeta };
             }
 
-            let continueToReducer = true;
-            // process plugin middlewares
-            for (const middleware of this._middlewares) {
-                let middlewareRes = middleware(req, res, postBack);
-                if (middlewareRes instanceof Promise) {
-                    middlewareRes = await middlewareRes;
-                }
-                if (middlewareRes === null) { // end
-                    continueToReducer = false;
-                    break;
+            if (continueDispatching) {
+                // process plugin middlewares
+                for (const plugin of this._plugins) {
+                    if (typeof plugin.beforeProcessMessage !== 'function') continue;
+
+                    let out = plugin.beforeProcessMessage(req, res);
+                    if (out instanceof Promise) out = await out;
+
+                    if (!out) { // end
+                        continueDispatching = false;
+                        break;
+                    }
                 }
             }
 
-            if (continueToReducer) {
+            if (continueDispatching) {
+                // process plugin middlewares
+                for (const middleware of this._middlewares) {
+                    let out = middleware(req, res, postBack);
+                    if (out instanceof Promise) out = await out;
+
+                    if (out === null) { // end
+                        continueDispatching = false;
+                        break;
+                    }
+                }
+            }
+
+            if (continueDispatching) {
                 if (this.options.autoSeen && (!req.isReferral() || req.action()) && fromEvent) {
                     res.seen();
                 }
@@ -357,6 +483,14 @@ class Processor extends EventEmitter {
 
                 if (fromEvent) {
                     this._emitEvent(req, res);
+                }
+            }
+
+            if (continueDispatching) {
+                for (const plugin of this._plugins) {
+                    if (typeof plugin.afterProcessMessage !== 'function') continue;
+
+                    await Promise.resolve(plugin.afterProcessMessage(req, res));
                 }
             }
 
@@ -432,7 +566,7 @@ class Processor extends EventEmitter {
             lastAction,
             false,
             trackingSkill,
-            res.senderMeta
+            res
         ];
 
         process.nextTick(() => {
@@ -462,7 +596,8 @@ class Processor extends EventEmitter {
         const state = Object.assign({}, previousState, res.newState);
 
         const isUserEvent = req.isMessage() || req.isPostBack()
-            || req.isReferral() || req.isAttachment();
+            || req.isReferral() || req.isAttachment()
+            || req.isTextOrIntent();
 
         // reset expectations
         if (isUserEvent && !res.newState._expected) {

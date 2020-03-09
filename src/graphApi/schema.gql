@@ -148,6 +148,12 @@ type ValidationResult {
 
 type TestResult {
     output: String
+    summaryOutput: String
+    step: Int
+    stepCount: Int
+    passed: Int
+    failed: Int
+    skipped: Int
 }
 
 input CreateCampaignInput {
@@ -252,6 +258,7 @@ type Query {
     "run conversation test"
     conversationTest(
         bot: Any
+        step: Int
     ): TestResult
 }
 

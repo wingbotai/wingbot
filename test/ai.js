@@ -14,7 +14,7 @@ const WingbotModel = require('../src/wingbot/WingbotModel');
 const DEFAULT_SCORE = 0.96;
 
 function createResponse (intent = 'hello', score = 0.96) {
-    return { tags: intent ? [{ intent, score }] : [] };
+    return { tags: intent ? [{ intent, score: intent === 'low' ? 0.5 : score }] : [] };
 }
 
 function fakeReq (text = 'text') {
@@ -23,7 +23,7 @@ function fakeReq (text = 'text') {
             action () { return null; },
             data: { timestamp: Date.now() },
             text () { return text; },
-            isText () { return !!text; },
+            isTextOrIntent () { return !!text; },
             intents: null,
             isQuickReply () { return false; }
         },
@@ -93,8 +93,8 @@ describe('<Ai>', function () {
         });
 
         it('should skip request when the confidence is low', async function () {
-            const mid = ai.match('hello', 1);
-            const args = fakeReq('hello');
+            const mid = ai.match('low');
+            const args = fakeReq('low');
             const res = await mid(...args);
 
             assert.ok(this.fakeRequest.called);
@@ -130,8 +130,7 @@ describe('<Ai>', function () {
 
             const steps = [];
 
-            // @ts-ignore
-            bot.use(['action-name', ai.localMatch('test-intent')], (req, res) => {
+            bot.use(ai.local('action-name', 'test-intent'), (req, res) => {
                 steps.push(3);
                 res.text('Bar');
             });
@@ -162,6 +161,37 @@ describe('<Ai>', function () {
                 .contains('Foo');
 
             assert.deepEqual(steps, [1, 2, 3, 4]);
+        });
+
+        it('works in "expected" with entity', async () => {
+
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                res.text('Started');
+                res.expected('expect');
+            });
+
+            bot.use(ai.global('path', ['in']), (req, res) => {
+                res.text('path');
+            });
+
+            bot.use('expect', ai.match(['@En=Ah']), async (req, res) => {
+                res.text('yes');
+            });
+
+            bot.use('expect', async (req, res) => {
+                res.text('no');
+            });
+
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            await t.intentWithEntity('in', 'En', 'Ah', 'Ahoj');
+
+            t.any()
+                .contains('yes');
         });
 
         it('supports regexes', async () => {
@@ -236,7 +266,7 @@ describe('<Ai>', function () {
             const match = testAi.match('testIntent');
 
             const req = {
-                isText: () => true,
+                isTextOrIntent: () => true,
                 isQuickReply: () => false,
                 action: () => null,
                 data: { timestamp: Date.now() }
@@ -259,9 +289,9 @@ describe('<Ai>', function () {
 
             const match = testAi.match('testIntent');
 
-            const data = Request.intent('any', 'hoho', 'testIntent');
+            const data = Request.intentWithText('any', 'hoho', 'testIntent');
             const req = {
-                isText: () => true, isQuickReply: () => false, data, action: () => null
+                isTextOrIntent: () => true, isQuickReply: () => false, data, action: () => null
             };
 
             return match(req, { bookmark: () => null })

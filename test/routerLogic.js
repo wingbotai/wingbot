@@ -18,12 +18,12 @@ describe('<Router> logic', () => {
             const nested = new Router();
 
             // @ts-ignore
-            nested.use(['has-path', ai.globalMatch('foo')], (req, res) => {
+            nested.use(ai.global('has-path', 'foo'), (req, res) => {
                 res.text('foo text');
             });
 
             // @ts-ignore
-            nested.use(['has-tag', ai.globalMatch('#tag')], (req, res) => {
+            nested.use(ai.global('has-tag', '#tag'), (req, res) => {
                 res.text('tag text');
             });
 
@@ -58,45 +58,16 @@ describe('<Router> logic', () => {
                 .contains('tag text');
         });
 
-        it('should pass global without a path', async () => {
-            const nested = new Router();
-
-            nested.use((req, res) => {
-                res.text('been there');
-                return Router.CONTINUE;
-            });
-
-            // @ts-ignore
-            nested.use(ai.globalMatch('foo'), (req, res) => {
-                res.text('foo text');
-            });
-
-            const bot = new Router();
-
-            bot.use('include', nested);
-
-            bot.use((req, res) => {
-                res.text('fallback');
-            });
-
-            const t = new Tester(bot);
-
-            await t.intent('foo', 'txt');
-
-            t.any()
-                .contains('foo text');
-        });
-
         it('globalizes intent behind the asterisk router', async () => {
             const subNested = new Router();
 
             // @ts-ignore
-            subNested.use(['has-path', ai.globalMatch('foo')], (req, res) => {
+            subNested.use(ai.global('has-path', 'foo'), (req, res) => {
                 res.text('foo text');
             });
 
             // @ts-ignore will be ignored
-            subNested.use(['has-another-path', ai.globalMatch('foo')], (req, res) => {
+            subNested.use(ai.global('has-another-path', 'foo'), (req, res) => {
                 res.text('foo text');
             });
 
@@ -120,7 +91,7 @@ describe('<Router> logic', () => {
             const nested = new Router();
 
             // @ts-ignore
-            nested.use(['has-path', ai.globalMatch('foo')], (req, res) => {
+            nested.use(ai.global('has-path', 'foo'), (req, res) => {
                 res.text('foo text');
             });
 
@@ -153,7 +124,7 @@ describe('<Router> logic', () => {
             const nested = new Router();
 
             // @ts-ignore
-            nested.use(['has-path', ai.localMatch('foo')], (req, res) => {
+            nested.use(ai.local('has-path', 'foo'), (req, res) => {
                 res.text('foo text');
             });
 
@@ -209,7 +180,7 @@ describe('<Router> logic', () => {
             });
 
             // @ts-ignore
-            nested.use(['has-path', ai.localMatch('foo')], (req, res) => {
+            nested.use(ai.local('has-path', 'foo'), (req, res) => {
                 res.text('foo text');
             });
 
@@ -243,7 +214,7 @@ describe('<Router> logic', () => {
             const first = new Router();
 
             // @ts-ignore
-            first.use(['glob', ai.globalMatch('glob')], (req, res) => {
+            first.use(ai.global('glob', 'glob'), (req, res) => {
                 res.text('glob match');
             });
 
@@ -263,7 +234,7 @@ describe('<Router> logic', () => {
             });
 
             // @ts-ignore
-            second.use(['glob', ai.localMatch('glob')], (req, res) => {
+            second.use(ai.local('glob', 'glob'), (req, res) => {
                 res.text('local match');
             });
 
@@ -425,7 +396,7 @@ describe('<Router> logic', () => {
             const first = new Router();
 
             // @ts-ignore
-            first.use(['f-global', ai.globalMatch('f-global')], (req, res) => {
+            first.use(ai.global('f-global', 'f-global'), (req, res) => {
                 res.text('global f intent globally');
             });
 
@@ -440,32 +411,32 @@ describe('<Router> logic', () => {
             });
 
             // @ts-ignore
-            nested.use(['another', ai.globalMatch('another')], (req, res) => {
+            nested.use(ai.global('another', 'another'), (req, res) => {
                 res.text('another');
             });
 
             // @ts-ignore
-            nested.use(['local-intent', ai.localMatch('local-intent')], (req, res) => {
+            nested.use(ai.local('local-intent', 'local-intent'), (req, res) => {
                 res.text('local intent');
             });
 
             // @ts-ignore
-            nested.use(['nested-simple', ai.globalMatch(['simple-intent'])], (req, res) => {
+            nested.use(ai.global('nested-simple', ['simple-intent']), (req, res) => {
                 res.text('simple intent');
             });
 
             // @ts-ignore
-            nested.use(['nested-hard', ai.globalMatch(['simple-intent', '@hard'])], (req, res) => {
+            nested.use(ai.global('nested-hard', ['simple-intent', '@hard']), (req, res) => {
                 res.text('hard intent');
             });
 
             // @ts-ignore
-            nested.use(['f-global-locally', ai.localMatch('f-global')], (req, res) => {
+            nested.use(ai.local('f-global-locally', 'f-global'), (req, res) => {
                 res.text('f global intent locally');
             });
 
             // @ts-ignore
-            nested.use(['g-global-locally', ai.localMatch('g-int')], (req, res) => {
+            nested.use(ai.local('g-global-locally', 'g-int'), (req, res) => {
                 res.text('g global intent locally');
             });
 
@@ -477,17 +448,17 @@ describe('<Router> logic', () => {
             const withGlobalIntent = new Router();
 
             // @ts-ignore
-            withGlobalIntent.use(['g-int', ai.globalMatch('g-int')], (req, res) => {
+            withGlobalIntent.use(ai.global('g-int', 'g-int'), (req, res) => {
                 res.text('global intent globally');
             });
 
             // @ts-ignore
-            withGlobalIntent.use(['g-int-with-entity', ai.globalMatch(['g-int', '@entity'])], (req, res) => {
+            withGlobalIntent.use(ai.global('g-int-with-entity', ['g-int', '@entity']), (req, res) => {
                 res.text('with entity');
             });
 
             // @ts-ignore
-            withGlobalIntent.use(['ex-int', ai.globalMatch('ex-int')], (req, res) => {
+            withGlobalIntent.use(ai.global('ex-int', 'ex-int'), (req, res) => {
                 res.text('ex intent globally');
                 res.expected('test');
             });
@@ -620,7 +591,6 @@ describe('<Router> logic', () => {
         beforeEach(() => {
             const bot = new Router();
 
-            const ENABLE_EXIT_SNIPEPT = false;
             const backExistsCondition = (req, res) => {
                 const { lastInteraction: l, beforeLastInteraction: b } = req.state;
                 const c = l === res.data.lastInteractionSet ? b : l;
@@ -706,31 +676,22 @@ describe('<Router> logic', () => {
 
             first.use('try', (req, res) => {
                 res.text('Ahoj', {
-                    toSecond: 'to second'
+                    '/second/try': 'to second'
                 });
             });
 
-            first.use('toSecond', () => 'theexit');
-
-            bot.use('first', first)
-                .onExit('theexit', (data, req, res, postBack) => {
-                    if (ENABLE_EXIT_SNIPEPT) {
-                        const { lastInteraction } = req.state;
-                        res.setState({ lastInteraction });
-                    }
-                    postBack('second/try');
-                });
+            bot.use('first', first);
 
             const second = new Router();
 
             second.use('try', (req, res) => {
                 res.text('Ahoj', {
-                    toExit: 'to exit'
+                    '/sub/a': 'to exit'
                 });
                 res.expected('ex');
             });
 
-            second.use('ex', ai.match('ex'), (req, res, postBack) => postBack('toExit'));
+            second.use('ex', ai.match('ex'), (req, res, postBack) => postBack('/sub/a'));
 
             second.use('book', (req, res) => {
                 res.text('Book');
@@ -744,16 +705,7 @@ describe('<Router> logic', () => {
                 return true;
             });
 
-            second.use('toExit', () => ['theexit', {}]);
-
-            bot.use('second', second)
-                .onExit('theexit', (data, req, res, postBack) => {
-                    if (ENABLE_EXIT_SNIPEPT) {
-                        const { lastInteraction } = req.state;
-                        res.setState({ lastInteraction });
-                    }
-                    postBack('sub/a');
-                });
+            bot.use('second', second);
 
             const subrouter = new Router();
 
@@ -764,13 +716,13 @@ describe('<Router> logic', () => {
             });
 
             // @ts-ignore
-            subrouter.use(['a', ai.globalMatch('aint')], (req, res, postBack) => {
+            subrouter.use(ai.global('a', 'aint'), (req, res, postBack) => {
                 res.text('A');
                 postBack('zpt');
             });
 
             // @ts-ignore
-            subrouter.use(['b', ai.globalMatch('bint')], (req, res, postBack) => {
+            subrouter.use(ai.global('b', 'bint'), (req, res, postBack) => {
                 res.text('B');
                 postBack('zpt');
                 res.expected('bokmarking');
@@ -784,7 +736,7 @@ describe('<Router> logic', () => {
             });
 
             // @ts-ignore
-            subrouter.use(['x', ai.globalMatch('xint')], (req, res) => {
+            subrouter.use(ai.global('x', 'xint'), (req, res) => {
                 res.text('X');
             });
 
@@ -795,34 +747,17 @@ describe('<Router> logic', () => {
 
             subrouter.use('zpt', (req, res) => {
                 res.text('Z', {
-                    '/back': 'back quick reply',
-                    bck: 'too bac'
+                    '/back': 'back quick reply'
                 });
                 res.expected('bokmarking');
             });
 
-            subrouter.use('bck', () => 'toBack');
+            subrouter.use('toA', (r, s, postBack) => postBack('/sub/a'));
 
-            subrouter.use('toA', () => 'toA');
-
-            bot.use('sub', subrouter)
-                .onExit('toA', (data, req, res, postBack) => {
-                    if (ENABLE_EXIT_SNIPEPT) {
-                        const { lastInteraction } = req.state;
-                        res.setState({ lastInteraction });
-                    }
-                    postBack('sub/a');
-                })
-                .onExit('toBack', (data, req, res, postBack) => {
-                    if (ENABLE_EXIT_SNIPEPT) {
-                        const { lastInteraction } = req.state;
-                        res.setState({ lastInteraction });
-                    }
-                    postBack('back');
-                });
+            bot.use('sub', subrouter);
 
             // @ts-ignore
-            bot.use([ai.globalMatch('whatIsColor'), 'whatIsColor'], (req, res) => {
+            bot.use(ai.global('whatIsColor', 'whatIsColor'), (req, res) => {
                 if (backExistsCondition(req, res)) {
                     res.text('has');
                 } else {
@@ -834,7 +769,7 @@ describe('<Router> logic', () => {
             });
 
             // @ts-ignore
-            bot.use([ai.globalMatch('back'), 'back'], (req, res, postBack) => {
+            bot.use(ai.global('back', 'back'), (req, res, postBack) => {
                 if (req.state.beforeLastInteraction
                     && req.state.beforeLastInteraction !== '/*'
                     && req.state.beforeLastInteraction !== res.currentAction()) {
@@ -867,7 +802,7 @@ describe('<Router> logic', () => {
 
             await t.postBack('first/try');
 
-            await t.quickReply('toSecond');
+            await t.quickReply('second/try');
             t.passedAction('second/try');
 
             await t.postBack('back');
@@ -879,10 +814,10 @@ describe('<Router> logic', () => {
 
             await t.postBack('first/try');
 
-            await t.quickReply('toSecond');
+            await t.quickReply('second/try');
             t.passedAction('second/try');
 
-            await t.quickReply('toExit');
+            await t.quickReply('/sub/a');
 
             await t.quickReply('back');
             t.passedAction('second/try');
@@ -894,9 +829,9 @@ describe('<Router> logic', () => {
 
             await t.quickReply('second/try');
 
-            await t.quickReply('toExit');
+            await t.quickReply('/sub/a');
 
-            await t.quickReply('bck');
+            await t.quickReply('back');
             t.passedAction('second/try');
         });
 
@@ -1204,6 +1139,184 @@ describe('<Router> logic', () => {
             await t.text('keyword');
 
             t.any().contains('fallback');
+        });
+
+    });
+
+    describe('new globals', () => {
+
+        it('works', async () => {
+            const bot = new Router();
+
+            const nested = new Router();
+
+            nested.use(ai.global('path', 'intent'), (req, res) => {
+                res.text('foo');
+                res.expectedIntent('bar', 'next');
+            });
+
+            nested.use('next', (req, res) => {
+                res.text('gotbar');
+            });
+
+            bot.use('nested', nested);
+
+            const t = new Tester(bot);
+
+            await t.intent('intent');
+
+            t.passedAction('nested/path');
+
+            await t.intent('bar');
+
+            t.any().contains('gotbar');
+        });
+
+        it('makes bookmarking great again', async () => {
+            const nested = new Router();
+
+            // @ts-ignore
+            nested.use(ai.global('has-path', 'foo'), (req, res) => {
+                res.text('foo text');
+            });
+
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                res.text('prompt')
+                    .expected('prompt');
+            });
+
+            bot.use('prompt', async (req, res, postBack) => {
+                const a = req.actionByAi();
+                res.text(`BM ${a}`);
+                await postBack(a, {}, true);
+            });
+
+            bot.use('include', nested);
+
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            await t.intent('foo');
+
+            t.any()
+                .contains('BM /include/has-path')
+                .contains('foo text');
+        });
+
+        it('works with full text quick replies', async () => {
+
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                res.text('prompt', {
+                    next: 'Dlouhý text 1'
+                });
+            });
+
+            bot.use('next', (req, res) => {
+                res.text('ahoj');
+            });
+
+            const t = new Tester(bot);
+
+            await t.postBack('start');
+
+            await t.text('dlouhy text 1');
+
+            t.any()
+                .contains('ahoj');
+        });
+
+    });
+
+    describe('KEEP PREVIOUS CONTEXT', () => {
+        let t;
+
+        beforeEach(() => {
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                res.text('prompt', {
+                    next: 'next'
+                });
+                res.expected('nothing');
+            });
+
+            bot.use('next', (req, res) => {
+                res.text('yes');
+            });
+
+            bot.use('nothing', (req, res) => {
+                // @ts-ignore
+                res.setState(req.expectedContext(true, true));
+                res.text('nothing');
+            });
+
+            bot.use((req, res) => {
+                res.text('fallback');
+            });
+
+            t = new Tester(bot);
+        });
+
+        it('keeps previous context once', async () => {
+
+            await t.postBack('start');
+
+            await t.text('foo');
+
+            t.any().contains('nothing');
+
+            await t.text('fallback');
+        });
+
+        it('remembers previous value', async () => {
+
+            await t.postBack('start');
+
+            await t.text('foo');
+
+            t.any().contains('nothing');
+
+            await t.text('next');
+
+            t.any().contains('yes');
+        });
+
+    });
+
+    describe('LOCAL INTENT REQUEST', async () => {
+
+        let t;
+
+        beforeEach(() => {
+            const bot = new Router();
+
+            bot.use(ai.global('start', ['known']), (req, res) => {
+                res.text('known intent');
+            });
+
+            bot.use((req, res) => {
+                // @ts-ignore
+                res.text(`${req.intent()} intent`);
+            });
+
+            t = new Tester(bot);
+        });
+
+        it('works as expected', async () => {
+            await t.intent('known');
+
+            t.any()
+                .contains('known');
+
+            await t.intent('unknown');
+
+            t.any()
+                .contains('unknown');
         });
 
     });

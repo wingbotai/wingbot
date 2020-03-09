@@ -3,7 +3,6 @@
  */
 'use strict';
 
-const util = require('util');
 const ReceiptTemplate = require('./templates/ReceiptTemplate');
 const ButtonTemplate = require('./templates/ButtonTemplate');
 const GenericTemplate = require('./templates/GenericTemplate');
@@ -14,6 +13,18 @@ const { FLAG_DISAMBIGUATION_OFFERED } = require('./flags');
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
 const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
+const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
+
+
+/**
+ * @typedef {Object} QuickReply
+ * @prop {string} title
+ * @prop {string} [action]
+ * @prop {Object} [data]
+ * @prop {Object} [setState]
+ * @prop {Regexp|string|string[]} [match]
+ */
+
 
 /**
  * @typedef {Object} SenderMeta
@@ -102,6 +113,8 @@ class Responder {
 
         // both vars are package protected
         this._senderMeta = { flag: null };
+
+        this._persona = null;
     }
 
     /**
@@ -125,6 +138,16 @@ class Responder {
             });
         }
 
+        if (typeof this._persona === 'string') {
+            Object.assign(data, {
+                persona_id: this._persona
+            });
+        } else if (this._persona && typeof this._persona === 'object') {
+            Object.assign(data, {
+                persona: this._persona
+            });
+        }
+
         if (!data.tag && this._tag) {
             Object.assign(data, {
                 tag: this._tag
@@ -140,6 +163,7 @@ class Responder {
      * @param {string} [action]
      * @param {Object} [winningIntent]
      * @returns {this}
+     * @deprecated
      * @example
      * bot.use(['action-name', /keyword/], (req, res) => {
      *     if (req.action() !== res.currentAction()) {
@@ -161,6 +185,7 @@ class Responder {
     /**
      * Returns the action of bookmark
      *
+     * @deprecated
      * @returns {string|null}
      */
     bookmark () {
@@ -173,6 +198,7 @@ class Responder {
      * @param {Function} postBack - the postback func
      * @param {Object} [data] - data for bookmark action
      * @returns {Promise<null|boolean>}
+     * @deprecated
      * @example
      * // there should be a named intent intent matcher (ai.match() and 'action-name')
      *
@@ -213,9 +239,20 @@ class Responder {
      * @param {string} [tag]
      * @returns {this}
      */
-    setMessgingType (messagingType, tag = null) {
+    setMessagingType (messagingType, tag = null) {
         this._messagingType = messagingType;
         this._tag = tag;
+        return this;
+    }
+
+    /**
+     * Tets the persona for following requests
+     *
+     * @param {Object|string|null} personaId
+     * @returns {this}
+     */
+    setPersona (personaId = null) {
+        this._persona = personaId;
         return this;
     }
 
@@ -261,65 +298,43 @@ class Responder {
         this.routePath = routePath;
     }
 
-    /* eslint jsdoc/check-param-names: 0 */
     /**
      * Send text as a response
      *
      * @param {string} text - text to send to user, can contain placeholders (%s)
-     * @param {...Object.<string, string>|Object[]} [quickReplies] - quick replies object
+     * @param {Object.<string, string|QuickReply>|QuickReply[]} [replies] - quick replies object
      * @returns {this}
      *
      * @example
      * // simply
-     * res.text('Hello %s', name, {
+     * res.text('Hello', {
      *     action: 'Quick reply',
      *     another: 'Another quick reply'
      * });
      *
      * // complex
-     * res.text('Hello %s', name, [
+     * res.text('Hello', [
      *     { action: 'action', title: 'Quick reply' },
      *     {
      *         action: 'complexAction', // required
      *         title: 'Another quick reply', // required
-     *         match: 'string' || /regexp/, // optional
-     *         someData: 'Will be included in payload data' // optional
+     *         setState: { prop: 'value' }, // optional
+     *         match: 'text' || /regexp/ || ['intent'], // optional
+     *         data:  { foo: 1  }'Will be included in payload data' // optional
      *     }
      * ]);
      */
-    text (text, ...quickReplies) {
+    text (text, replies = null) {
         const messageData = {
             recipient: {
                 id: this._senderId
             },
             message: {
-                text: null
+                text: this._t(text)
             }
         };
 
-        let replies = null;
-
-        if (quickReplies.length > 0
-            && typeof quickReplies[quickReplies.length - 1] === 'object'
-            && quickReplies[quickReplies.length - 1] !== null) {
-
-            replies = quickReplies.pop();
-        }
-
-        const translatedText = this._t(text);
-
-        if (quickReplies.length > 0) {
-            messageData.message.text = util.format(
-                translatedText,
-                // filter undefined and null values
-                ...quickReplies.map(a => (a !== null && typeof a !== 'undefined' ? a : ''))
-            );
-        } else {
-            messageData.message.text = translatedText;
-        }
-
         if (replies || this._quickReplyCollector.length !== 0) {
-
             const {
                 quickReplies: qrs, expectedKeywords, disambiguationIntents
             } = makeQuickReplies(replies, this.path, this._t, this._quickReplyCollector);
@@ -334,7 +349,9 @@ class Responder {
             if (qrs.length > 0) {
                 this.finalMessageSent = true;
                 messageData.message.quick_replies = qrs;
-                this.setState({ _expectedKeywords: expectedKeywords });
+
+                const { _expectedKeywords: expectedKws = [] } = this.newState;
+                this.setState({ _expectedKeywords: [...expectedKws, ...expectedKeywords] });
                 this._quickReplyCollector = [];
             }
         }
@@ -397,6 +414,61 @@ class Responder {
             }, data, prep));
         }
 
+        return this;
+    }
+
+    /**
+     * To be able to keep context of previous interaction (expected action and intents)
+     * Just use this method to let user to answer again.
+     *
+     * @param {Request} req
+     * @param {boolean} [justOnce] - don't do it again
+     * @param {boolean} [includeKeywords] - keep intents from quick replies
+     * @returns {this}
+     * @example
+     *
+     * bot.use('start', (req, res) => {
+     *     res.text('What color do you like?', [
+     *         { match: ['@Color=red'], text: 'red', action: 'red' },
+     *         { match: ['@Color=blue'], text: 'blue', action: 'blue' }
+     *     ]);
+     *     res.expected('need-color')
+     * });
+     *
+     * bot.use('need-color', (req, res) => {
+     *     res.keepPreviousContext(req);
+     *     res.text('Sorry, only red or blue.');
+     * });
+     */
+    keepPreviousContext (req, justOnce = false, includeKeywords = false) {
+        // @ts-ignore
+        this.setState(req.expectedContext(justOnce, includeKeywords));
+        return this;
+    }
+
+    /**
+     *
+     * @param {string|string[]} intents
+     * @param {string} action
+     * @param {Object} data
+     * @param {Object} setState
+     */
+    expectedIntent (intents, action, data = {}, setState = null) {
+        const { _expectedKeywords: ex = [] } = this.newState;
+
+        const push = {
+            action: this.toAbsoluteAction(action),
+            match: intents,
+            data
+        };
+
+        if (setState) {
+            Object.assign(push, { setState });
+        }
+
+        ex.push(push);
+
+        this.setState({ _expectedKeywords: ex });
         return this;
     }
 
@@ -597,18 +669,39 @@ class Responder {
      */
     passThread (targetAppId, data = null) {
         let metadata = data;
-        if (data !== null && typeof data !== 'string') {
+
+        let { _$hopCount: $hopCount = -1 } = this._data;
+
+        if ($hopCount >= EXCEPTION_HOPCOUNT_THRESHOLD) {
+            throw new Error(`More than ${EXCEPTION_HOPCOUNT_THRESHOLD} handovers occured`);
+        } else {
+            $hopCount++;
+        }
+
+        if (data === null) {
+            metadata = JSON.stringify({
+                data: { $hopCount }
+            });
+        } else if (typeof data === 'object') {
+            metadata = JSON.stringify({
+                ...data,
+                data: {
+                    $hopCount,
+                    ...data.data
+                }
+            });
+        } else if (typeof data !== 'string') {
             metadata = JSON.stringify(data);
         }
+
         const messageData = {
             recipient: {
                 id: this._senderId
             },
-            target_app_id: targetAppId
+            target_app_id: targetAppId,
+            metadata
         };
-        if (metadata) {
-            Object.assign(messageData, { metadata });
-        }
+
         this.finalMessageSent = true;
         this._send(messageData);
         return this;
@@ -857,7 +950,6 @@ class Responder {
             this.options.autoTyping.maxTime
         );
     }
-
 }
 
 Responder.TYPE_MESSAGE_TAG = TYPE_MESSAGE_TAG;

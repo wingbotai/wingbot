@@ -5,10 +5,35 @@
 
 const Tester = require('./Tester');
 const { tokenize } = require('./utils/tokenizer');
+const { actionMatches } = require('./utils/pathUtils');
+
+const DEFAULT_TEXT_THRESHOLD = 0.8;
 
 /**
  * @typedef {object} TestSource
  * @prop {function} getTestCases
+ */
+
+/**
+ * @typedef {object} TestCase
+ * @prop {string} list
+ * @prop {string} name
+ * @prop {TestCaseStep[]} steps
+ */
+
+/**
+ * @typedef {object} TextCase
+ * @prop {string} list
+ * @prop {string} name
+ * @prop {TextTest[]} texts
+ */
+
+/**
+ * @typedef {object} TextTest
+ * @prop {string} appId
+ * @prop {string} text
+ * @prop {string} action
+ * @prop {string} intent
  */
 
 /**
@@ -23,10 +48,16 @@ const { tokenize } = require('./utils/tokenizer');
  */
 
 /**
- * @typedef {object} TestCase
- * @prop {string} list
+ * @typedef {object} List
+ * @prop {number} id
  * @prop {string} name
- * @prop {TestCaseStep[]} steps
+ * @prop {string} type
+ * @prop {TestCase[]|TextTest[]} testCases
+ */
+
+/**
+ * @typedef {object} TestsDefinition
+ * @prop {List[]} lists
  */
 
 /**
@@ -34,7 +65,11 @@ const { tokenize } = require('./utils/tokenizer');
  * @prop {number} total
  * @prop {number} passed
  * @prop {number} failed
+ * @prop {number} skipped
  * @prop {string} output
+ * @prop {string} summaryOutput
+ * @prop {number} step
+ * @prop {number} stepCount
  */
 
 /**
@@ -50,11 +85,21 @@ class ConversationTester {
      * @param {boolean} [options.disableAssertActions]
      * @param {boolean} [options.disableAssertTexts]
      * @param {boolean} [options.disableAssertQuickReplies]
+     * @param {boolean} [options.useConversationForTextTestCases]
+     * @param {boolean} [options.textThreshold]
+     * @param {number} [options.stepCasesPerStep]
+     * @param {number} [options.textCasesPerStep]
+     * @param {number} [options.textCaseParallel]
      */
     constructor (testsSource, botFactory, options = {}) {
         this._testsSource = testsSource;
         this._botFactory = botFactory;
-        this._options = options;
+        this._options = {
+            stepCasesPerStep: 20,
+            textCasesPerStep: 80,
+            textCaseParallel: 20,
+            ...options
+        };
         this._output = '';
     }
 
@@ -62,78 +107,177 @@ class ConversationTester {
      * Runs the conversation test
      *
      * @param {Object} validationRequestBody
+     * @param {number} step
      * @returns {Promise<TestsOutput>}
      */
-    async test (validationRequestBody = null) {
+    async test (validationRequestBody = null, step = null) {
         this._output = '';
         const testCases = await this._testsSource.getTestCases();
+        const steps = this._getSteps(testCases);
+        const stepCases = this._getStepCases(steps, step);
+        const stepCount = Number.isInteger(step) ? steps.length : 1;
 
-        testCases.sort((a, b) => `${a.list}`.toLocaleLowerCase().localeCompare(`${b.list}`.toLocaleLowerCase()));
-
+        const botconfig = validationRequestBody;
         let failed = 0;
         let passed = 0;
-        let botconfig = validationRequestBody;
-
-        const resultsByList = new Map();
+        let skipped = 0;
+        let summaryOutput = '';
 
         try {
-            const bot = this._botFactory(true);
-            if (!botconfig && typeof bot.loadBot === 'function') {
-                botconfig = await bot.loadBot();
+            const results = [];
+            for (const stepCase of stepCases) {
+                let stepResult;
+                if (stepCase.type === 'texts') {
+                    stepResult = await this._runTextCaseTests(stepCase, botconfig);
+                }
+                if (stepCase.type === 'steps') {
+                    stepResult = await this._runStepCaseTests(stepCase, botconfig);
+                }
+                results.push(stepResult);
             }
 
-            // just to try
-            if (typeof bot.buildWithSnapshot === 'function') {
-                bot.buildWithSnapshot(botconfig.blocks, Number.MAX_SAFE_INTEGER);
-            }
-
+            const resultsByList = new Map();
             let list = null;
-
-            const results = await Promise.all(
-                testCases.map(t => this._runTestCase(t, botconfig))
-            );
-
             let i = 0;
-            for (const testCase of testCases) {
-                if (testCase.list !== list) {
-                    ({ list } = testCase);
+            for (const stepCase of stepCases) {
+                if (stepCase.list !== list) {
+                    ({ list } = stepCase);
                     this._output += `\n- ${list}\n`;
                     resultsByList.set(list, {
                         failed: 0,
                         passed: 0
                     });
                 }
-                const result = results[i];
-                if (!result.ok) {
-                    failed++;
-                    resultsByList.get(testCase.list).failed++;
-                } else {
-                    passed++;
-                    resultsByList.get(testCase.list).passed++;
+                const stepResults = results[i];
+                for (const result of stepResults) {
+                    if (!result.ok) {
+                        failed++;
+                        resultsByList.get(stepCase.list).failed++;
+                    } else {
+                        passed++;
+                        resultsByList.get(stepCase.list).passed++;
+                    }
+                    this._output += result.o;
                 }
-                this._output += result.o;
                 i++;
             }
 
-            this._output += `\nPASSED: ${passed}, FAILED: ${failed}, SKIPPED: ${testCases.length - (passed + failed)}\n\n`;
+            skipped = stepCases.length - (passed + failed);
+
+            if (!step) {
+                summaryOutput += `\nPASSED: ${passed}, FAILED: ${failed}, SKIPPED: ${skipped}\n\n`;
+            }
 
             for (const [listName, listResults] of resultsByList.entries()) {
-                this._output += ` ${listResults.failed ? '𐄂' : '✓'} ${listName}: (✓: ${listResults.passed}, 𐄂: ${listResults.failed})\n`;
+                summaryOutput += ` ${listResults.failed ? '✗' : '✓'} ${listName}: (✓: ${listResults.passed}, ✗: ${listResults.failed})\n`;
             }
+
+            if (!step) {
+                this._output += summaryOutput;
+            }
+
         } catch (e) {
             this._output += `\nBot test failed: ${e.message}\n`;
         }
         return {
             output: this._output,
-            total: testCases.length,
+            summaryOutput,
+            total: stepCases.reduce((total, stepCase) => total + stepCase.testCases.length, 0),
             passed,
-            failed
+            failed,
+            skipped,
+            step,
+            stepCount
         };
     }
 
-    async _runTestCase (testCase, botconfig = null) {
-        let o = '';
+    _getLists (testCases) {
+        const getType = (cases) => {
+            const [testCase] = cases;
+            if (testCase.texts) return 'texts';
+            if (testCase.steps) return 'steps';
+            // eslint-disable-next-line no-console
+            return console.warn('unexpected testCase:', testCase);
+        };
+        const getTestCases = (cases) => {
+            const type = getType(cases);
+            if (type === 'texts') {
+                return cases.reduce(
+                    (tests, testCase) => tests.concat(
+                        testCase.texts.map(text => ({
+                            name: testCase.name,
+                            ...text
+                        }))
+                    ),
+                    []
+                );
+            }
+            if (type === 'steps') {
+                return cases.map(testCase => ({
+                    name: testCase.name,
+                    steps: testCase.steps
+                }));
+            }
+            // eslint-disable-next-line no-console
+            return console.warn('unexpected type:', type);
+        };
 
+        const listCases = this._getListCases(testCases);
+        const lists = [];
+        let id = 0;
+        for (const [list, cases] of listCases.entries()) {
+            lists.push({
+                id,
+                name: list,
+                type: getType(cases),
+                testCases: getTestCases(cases)
+            });
+            id++;
+        }
+
+        return {
+            lists
+        };
+    }
+
+    _getListCases (testCases) {
+        return testCases.reduce(
+            (map, testCase) => map.set(
+                testCase.list, [...(map.get(testCase.list) || []), testCase]
+            ),
+            new Map()
+        );
+    }
+
+    _getSteps (testCases) {
+        const { textCasesPerStep, stepCasesPerStep } = this._options;
+        const { lists } = this._getLists(testCases);
+
+        const steps = [];
+        for (const list of lists) {
+            while (list.testCases.length > 0) {
+                const tests = list.testCases
+                    .splice(0, list.type === 'texts' ? textCasesPerStep : stepCasesPerStep);
+
+                steps.push({
+                    listId: list.id,
+                    list: list.name,
+                    type: list.type,
+                    testCases: tests
+                });
+            }
+        }
+
+        return steps;
+    }
+
+    _getStepCases (steps, step) {
+        if (!Number.isInteger(step)) return steps;
+
+        return steps[step - 1] ? [steps[step - 1]] : [];
+    }
+
+    _createTester (botconfig = null) {
         const bot = this._botFactory(true);
 
         if (botconfig) {
@@ -144,26 +288,164 @@ class ConversationTester {
 
         t.setExpandRandomTexts();
 
-        let fail = null;
-        for (const step of testCase.steps) {
-            // eslint-disable-next-line no-await-in-loop
-            fail = await this.executeStep(t, step);
-            if (fail) break;
+        return t;
+    }
+
+    async _runTextCaseTests (stepCase, botconfig = null) {
+        const t = this._createTester(botconfig);
+        let out = '';
+        let passing = 0;
+        let longestText = 0;
+
+        const iterate = stepCase.testCases.map((textCase) => {
+            if (textCase.text.length > longestText) longestText = textCase.text.length;
+            return textCase;
+        });
+
+        const textResults = [];
+
+        const { textCaseParallel } = this._options;
+        const runTestCase = textCase => this
+            .executeTextCase(t, textCase, botconfig, longestText);
+
+        while (iterate.length > 0) {
+            const cases = iterate.splice(0, textCaseParallel);
+
+            const singleResults = await Promise.all(
+                cases.map(runTestCase)
+            );
+
+            textResults.push(...singleResults);
         }
 
-        if (fail) {
-            o += `FAILED ${testCase.name}\n\n`;
-            o += `${fail}\n\n`;
-            return { o, ok: false };
+        const echo = textResults
+            .filter((r) => {
+                if (r.ok) passing++;
+                return !!r.o;
+            })
+            .map(r => r.o)
+            .join('\n');
+
+        // calculate stats
+        const passingPerc = passing / stepCase.testCases.length;
+
+        const ok = passingPerc >= (this._options.textThreshold || DEFAULT_TEXT_THRESHOLD);
+        const mark = ok ? '✓' : '✗';
+
+        let before = '';
+
+        if (echo) {
+            before += `\n${echo}\n\n`;
         }
-        o += `     ✓ ${testCase.name}\n`;
-        return { o, ok: true };
+
+        out += `${before}     ${mark} ${stepCase.list} ${passing}/${stepCase.testCases.length} (${(passingPerc * 100).toFixed(0)}%)\n`;
+
+        return [{ o: out, ok }];
+    }
+
+    async _runStepCaseTests (stepCase, botconfig) {
+        const t = this._createTester(botconfig);
+        const out = [];
+
+        for (const testCase of stepCase.testCases) {
+            let o = '';
+            let fail = null;
+            for (const step of testCase.steps) {
+                // eslint-disable-next-line no-await-in-loop
+                fail = await this.executeStep(t, step);
+                if (fail) break;
+            }
+            if (fail) {
+                o += `FAILED ${testCase.name}\n\n`;
+                o += `${fail}\n\n`;
+                out.push({ o, ok: false });
+            } else {
+                o += `     ✓ ${testCase.name}\n`;
+                out.push({ o, ok: true });
+            }
+        }
+
+        return out;
     }
 
     /**
      *
      * @param {Tester} t
-     * @param {*} step
+     * @param {TextTest} textCase
+     * @param {*} botconfig
+     * @param {number} longestText
+     */
+    async executeTextCase (t, textCase, botconfig, longestText) {
+        if (this._options.useConversationForTextTestCases) {
+            const tester = this._createTester(botconfig);
+
+            try {
+                await tester.text(textCase.text);
+
+                if (textCase.action) {
+                    tester.passedAction(textCase.action);
+                }
+
+                if (textCase.appId) {
+                    tester.any().passThread(textCase.appId);
+                }
+            } catch (e) {
+                const { message } = e;
+
+                return { ok: false, o: `${textCase.text.padEnd(longestText, ' ')} - ${message}` };
+            }
+
+            return { ok: true, o: null };
+        }
+
+        const actions = await t.processor.aiActionsForText(textCase.text, undefined, true);
+
+        const [winner = {
+            score: 0, intent: { intent: '-', score: 0 }, aboveConfidence: false, meta: null, action: null
+        }] = actions;
+
+        const report = (error = '', ok = false) => ({
+            ok,
+            o: `${textCase.text.padEnd(longestText, ' ')}\t${(winner.intent ? winner.intent.score : 0).toFixed(2)}\t${winner.intent ? winner.intent.intent : '-'} | ${error}`
+        });
+
+        if (actions.length === 0) {
+            return report('no NLP result');
+        }
+
+        if (!winner.aboveConfidence) {
+            return report('low score');
+        }
+
+        if (textCase.intent && winner.intent.intent !== textCase.intent) {
+            return report(`expected intent "${textCase.intent}"`);
+        }
+
+        if (textCase.appId) {
+
+            if (!winner.meta || `${winner.meta.targetAppId}` !== `${textCase.appId}`) {
+                return report(`expected handover to "${textCase.appId}" - actual "${(winner.meta && winner.meta.targetAppId) || `action: ${winner.action || '*'}`}"`);
+            }
+
+            if (textCase.action && !actionMatches(`${winner.meta.targetAction}`, `${textCase.action}`)) {
+                return report(`expected action "${textCase.action}" - actual "${winner.meta.targetAction || '-'}"`);
+            }
+
+        } else if (textCase.action && !actionMatches(`${winner.action}`, `${textCase.action}`)) {
+            return report(`expected action "${textCase.action}" - actual "${winner.action || '-'}"`);
+        }
+
+        if (!textCase.action && !textCase.appId && !textCase.intent) {
+            return report(`${textCase.action}`, true);
+        }
+
+        return { ok: true, o: null };
+    }
+
+    /**
+     *
+     * @param {Tester} t
+     * @param {TestCaseStep} step
      */
     async executeStep (t, step) {
         try {
@@ -196,7 +478,6 @@ class ConversationTester {
                     await t.text(action);
                 }
             }
-
 
             if (!this._options.disableAssertActions) {
                 passedAction.split('\n')

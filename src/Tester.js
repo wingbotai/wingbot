@@ -81,7 +81,7 @@ class Tester {
         // attach the plugin tester
         this.processor.plugin({
             processMessage: () => ({ status: 204 }),
-            middleware: () => (req, res) => {
+            beforeProcessMessage: (req, res) => {
                 req.params = {};
                 Object.assign(res, {
                     run: (blockName) => {
@@ -216,7 +216,8 @@ class Tester {
      */
     passedAction (path) {
         const ok = this.actions
-            .some(action => !action.action.match(/\*/) && actionMatches(action.action, path));
+            .some(action => (action.action === path
+                || (!action.action.match(/\*/) && actionMatches(action.action, path))));
         let actual;
         if (!ok) {
             const set = new Set();
@@ -292,16 +293,11 @@ class Tester {
      *
      * @memberOf Tester
      */
-    intent (intent, text = null, score = null) {
-        let useText;
+    intent (intent, text = null, score = undefined) {
         if (text) {
-            useText = text;
-        } else if (Array.isArray(intent)) {
-            [useText] = intent;
-        } else {
-            useText = intent;
+            return this.processMessage(Request.intentWithText(this.senderId, text, intent, score));
         }
-        return this.processMessage(Request.intent(this.senderId, useText, intent, score));
+        return this.processMessage(Request.intent(this.senderId, intent, score));
     }
 
     /**
@@ -319,19 +315,6 @@ class Tester {
     intentWithEntity (intent, entity, value = entity, text = intent, score = 1) {
         return this.processMessage(Request
             .intentWithEntity(this.senderId, text, intent, entity, value, score));
-    }
-
-    /**
-     * Makes pass thread control request
-     *
-     * @param {string|Object} [data] - action
-     * @param {string} [appId] - specific app id
-     * @returns {Promise}
-     *
-     * @memberOf Tester
-     */
-    passThread (data = null, appId = 'random-app') {
-        return this.processMessage(Request.passThread(this.senderId, appId, data));
     }
 
     /**

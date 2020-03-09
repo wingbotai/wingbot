@@ -6,6 +6,7 @@
 const assert = require('assert');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
+const Request = require('../src/Request');
 
 describe('Tester', function () {
 
@@ -23,7 +24,10 @@ describe('Tester', function () {
             });
         });
 
-        music.use('/back', () => 'exit');
+        music.use('/back', (a, res, postBack) => {
+            res.setData({ x: 1 });
+            postBack('/start');
+        });
 
         music.use('/play', (req, res, postBack) => {
             res.image('/image.png');
@@ -46,20 +50,20 @@ describe('Tester', function () {
                 go: {
                     title: 'Go',
                     match: /(^|\s)(faa|fee)(\s|$)/,
-                    foo: 1
+                    data: { foo: 1 }
                 }
             });
         });
 
         read.use('/go', (req, res) => {
             const { foo = 0 } = req.action(true);
-            res.text('See: %s', foo);
+            res.text(`See: ${foo}`);
             res.expected('out', { bar: 1 });
         });
 
         read.use('out', (req, res) => {
             const { bar = 0 } = req.action(true);
-            res.text('Yeah: %s', bar);
+            res.text(`Yeah: ${bar}`);
             res.text(req.text());
         });
 
@@ -86,16 +90,9 @@ describe('Tester', function () {
             });
         });
 
-        r.use('/music', music)
-            .onExit('exit', (data, req, res, postBack) => {
-                res.setData({ x: 1 });
-                postBack('/start');
-            });
+        r.use('/music', music);
 
-        r.use('/read', read)
-            .onExit('exit', (data, req, res, postBack) => {
-                postBack('/start');
-            });
+        r.use('/read', read);
 
 
         const t = new Tester(r);
@@ -298,7 +295,7 @@ describe('Tester', function () {
         t.any().passThread();
         t.res(0).passThread();
 
-        await t.passThread({ theData: 'PASS' });
+        await t.postBack('pass-thread');
 
         t.passedAction('pass-thread');
 
@@ -338,7 +335,7 @@ describe('Tester', function () {
                 {
                     action: 'quick',
                     title: 'look',
-                    val: '1'
+                    data: { val: '1' }
                 }
             ]);
         });
@@ -423,6 +420,92 @@ describe('Tester', function () {
             ({ message } = e);
         }
         assert.ok(message && message.indexOf('Quick reply not found') !== -1);
+    });
+
+    describe('setState', () => {
+
+        /** @type {Tester} */
+        let t;
+
+        beforeEach(() => {
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                res.text('Ahoj', [
+                    { action: 'a', title: 'Bye', setState: { foo: 2 } }
+                ]);
+
+                res.expectedIntent('intent', 'b', {}, { foo: 3 });
+            });
+
+            bot.use('b', (req, res) => {
+                const { foo } = req.state;
+                const { foo: fooFromSetState } = res.newState;
+
+                res.text(`b:${foo}:${fooFromSetState}`);
+            });
+
+            bot.use(['a', /^a$/], (req, res) => {
+                const { foo } = req.state;
+                const { foo: fooFromSetState } = res.newState;
+
+                res.text(`${foo}:${fooFromSetState}`);
+            });
+
+            t = new Tester(bot);
+        });
+
+        it('works from postback', async () => {
+            await t.processMessage(Request.postBackWithSetState(t.senderId, 'a', {}, { 'foo.bar': 1 }));
+
+            t.any().contains('[object Object]:[object Object]');
+
+            const { state } = t.getState();
+            assert.deepEqual(state, { ...state, foo: { bar: 1 } });
+        });
+
+        it('works from text', async () => {
+            await t.processMessage(Request.textWithSetState(t.senderId, 'a', { foo: 1 }));
+
+            t.any().contains('1:1');
+
+            const { state } = t.getState();
+            assert.deepEqual(state, { ...state, foo: 1 });
+        });
+
+        it('works from quick reply', async () => {
+            await t.postBack('start');
+
+            await t.quickReplyText('Bye');
+
+            t.any().contains('2:2');
+
+            const { state } = t.getState();
+            assert.deepEqual(state, { ...state, foo: 2 });
+        });
+
+        it('works from quick reply by text', async () => {
+            await t.postBack('start');
+
+            await t.text('Bye');
+
+            t.any().contains('2:2');
+
+            const { state } = t.getState();
+            assert.deepEqual(state, { ...state, foo: 2 });
+        });
+
+        it('works from quick reply by intent', async () => {
+            await t.postBack('start');
+
+            await t.intent('intent');
+
+            t.any().contains('b:3:3');
+
+            const { state } = t.getState();
+            assert.deepEqual(state, { ...state, foo: 3 });
+        });
+
     });
 
 });

@@ -11,11 +11,11 @@ const expected = require('./expected');
 const customCode = require('./customCode');
 const inlineCode = require('./inlineCode');
 const carousel = require('./carousel');
-const exit = require('./exit');
 const passThread = require('./passThread');
 const media = require('./media');
 const button = require('./button');
 const subscribtions = require('./subscribtions');
+const setState = require('./setState');
 
 module.exports = {
     path,
@@ -24,11 +24,11 @@ module.exports = {
     postback,
     expected,
     customCode,
-    exit,
     inlineCode,
     passThread,
     media,
     carousel,
     button,
-    subscribtions
+    subscribtions,
+    setState
 };

@@ -46,28 +46,23 @@ bot.use('/', (req, res) => {
         .expected('name');
 });
 
-// leave exit point
-bot.use('/leave', () => Router.exit('leave'));
-
-bot.use('/name', (req, res) => {
+bot.use('name', (req, res, postBack) => {
     const name = req.text();
     if (!name || name.split(' ').length < 2) {
         res.text('Fullname must have two words or more.')
             .text('Please try it again', {
-                leave: 'Don\'t want'
+                '/start': 'Don\'t want'
             });
         // just stop dispatching (equal to "return undefined;")
         return Router.END;
     }
-    // pass data to exit point
-    return Router.exit('setName', { name });
+
+    res.setState({ name });
+    postBack('/');
 });
 
 module.exports = bot;
 ```
-
-And here is how to connect the block into the application.
-**All exit points must be covered by handlers: `.onExit()`** to ensure continuous conversation.
 
 ```javascript
 // index.js
@@ -79,7 +74,7 @@ settings.getStartedButton('/start');
 
 const bot = new Router();
 
-bot.use('/start', (req, res) => {
+bot.use('start', (req, res) => {
     if (req.state.name) {
         res.text(`Hello, I'am ${req.state.name}`, {
             setName: 'That\'s bad name'
@@ -91,14 +86,7 @@ bot.use('/start', (req, res) => {
     }
 });
 
-bot.use('/setName', setName)
-    // react on setName exit point
-    .onExit('setName', ({ name }, req, res, postBack) => {
-        res.setState({ name });
-        postBack('/');
-    })
-    // react on leave exit point
-    .onExit('leave', (data, req, res, postBack) => postBack('/start'));
+bot.use('setName', setName);
 
 module.exports = bot;
 ```

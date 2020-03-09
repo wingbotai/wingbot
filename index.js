@@ -17,7 +17,6 @@ const { asserts } = require('./src/testTools');
 const BuildRouter = require('./src/BuildRouter');
 const ReturnSender = require('./src/ReturnSender');
 const Plugins = require('./src/Plugins');
-const { callbackMiddleware, sustainCallback } = require('./src/middlewares/callback');
 const NotificationsStorage = require('./src/notifications/NotificationsStorage');
 const Notifications = require('./src/notifications/Notifications');
 const MemoryBotConfigStorage = require('./src/tools/MemoryBotConfigStorage');
@@ -67,13 +66,7 @@ module.exports = {
     ai: Ai.ai,
     Plugins,
     BuildRouter,
-    // @deprecated
-    validateBot: validateBotApi,
     WingbotModel,
-
-    // middlewares
-    callbackMiddleware,
-    sustainCallback,
 
     // Notifications
     Notifications,

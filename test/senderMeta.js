@@ -32,8 +32,8 @@ describe('senderMeta', () => {
 
             let trackedMeta;
 
-            bot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, meta) => {
-                trackedMeta = meta;
+            bot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill, res) => {
+                trackedMeta = res.senderMeta;
             });
 
             const t = new Tester(bot);

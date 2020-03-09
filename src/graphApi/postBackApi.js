@@ -4,7 +4,7 @@
 'use strict';
 
 const apiAuthorizer = require('./apiAuthorizer');
-const RequestsFactories = require('../utils/RequestsFactories');
+const Request = require('../Request');
 
 /**
  * @typedef {Object} PostBackAPI
@@ -33,7 +33,7 @@ function postBackApi (processor, acl) {
                 return null;
             }
 
-            const event = RequestsFactories.postBack(args.senderId, args.action, args.data);
+            const event = Request.postBack(args.senderId, args.action, args.data);
 
             return processor.processMessage(event, args.senderId, args.pageId);
         }

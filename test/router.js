@@ -206,41 +206,6 @@ describe('Router', function () {
             shouldBeCalled(route, req, res);
         });
 
-        it('should allow to set exit actions', async function () {
-            const route = sinon.spy(() => 'exit');
-            const noRoute = sinon.spy();
-
-            const unusedExit = sinon.spy(() => Router.CONTINUE);
-            const exit = sinon.spy(() => 'globalAction');
-            const noExit = sinon.spy();
-
-            const req = createMockReq('', '/nested/inner');
-            const res = createMockRes(req);
-
-            const router = new Router();
-            const nestedRouter = new Router();
-
-            nestedRouter.use('/inner', route)
-                .onExit('unusedExit', unusedExit)
-                .onExit('exit', exit);
-
-            router.use('/nested', nestedRouter);
-            router.use('/', noRoute);
-
-            const globalResult = await router.reduce(req, res, () => {});
-
-            // assert routes
-            assert(!noRoute.called, 'route should not be called');
-            shouldBeCalled(route, req, res);
-
-            // assert exits
-            assert(unusedExit.notCalled);
-            assert(exit.called);
-            assert(!noExit.called);
-
-            assert.deepEqual(globalResult, ['globalAction', {}]);
-        });
-
         it('should pass expected actions to nested routers', async function () {
             const route = sinon.spy(() => {});
             const noRoute = sinon.spy();

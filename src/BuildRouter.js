@@ -4,11 +4,14 @@
 'use strict';
 
 const requestNative = require('request-promise-native');
+const path = require('path');
 const Router = require('./Router');
 const Ai = require('./Ai');
 const expected = require('./resolvers/expected');
 const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
 const defaultResourceMap = require('./defaultResourceMap');
+
+const MESSAGE_RESOLVER_NAME = 'botbuild.message';
 
 /**
  * @typedef {Object} ConfigStorage
@@ -43,16 +46,15 @@ class BuildRouter extends Router {
      * @param {Function} [request] - the building context
      * @example
      *
-     * // usage under serverless environment
+     * // usage of plugins
      *
-     * const { Settings, BuildRouter, Blocks } = require('wingbot');
-     * const { createHandler, createProcessor } = require(''wingbot/serverlessAWS');
+     * const { BuildRouter, Plugins } = require('wingbot');
      * const dynamoDb = require('./lib/dynamodb');
      * const config = require('./config');
      *
-     * const blocks = new Blocks();
+     * const plugins = new Plugins();
      *
-     * blocks.code('exampleBlock', async (req, res, postBack, context, params) => {
+     * plugins.register('exampleBlock', async (req, res, postBack) => {
      *     await res.run('responseBlockName');
      * });
      *
@@ -60,27 +62,9 @@ class BuildRouter extends Router {
      *     botId: 'b7a71c27-c295-4ab0-b64e-6835b50a0db0',
      *     snapshot: 'master',
      *     token: 'adjsadlkadjj92n9u9'
-     * }, blocks);
+     * }, plugins);
      *
-     * const processor = createProcessor(bot, {
-     *     appUrl: config.pageUrl,
-     *     pageToken: config.facebook.pageToken,
-     *     appSecret: config.facebook.appSecret,
-     *     autoTyping: true,
-     *     dynamo: {
-     *         db: dynamoDb,
-     *         tablePrefix: `${config.prefix}-`
-     *     }
-     * });
-     *
-     * const settings = new Settings(config.facebook.pageToken, log);
-     *
-     * if (config.isProduction) {
-     *     settings.getStartedButton('/start');
-     *     settings.whitelistDomain(config.pageUrl);
-     * }
-     *
-     * module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
+     * module.exports = bot;
      */
     constructor (block, plugins, context = {}, request = requestNative) {
         super();
@@ -262,6 +246,7 @@ class BuildRouter extends Router {
         } else {
             this.globalIntents = new Map(this._prebuiltGlobalIntents);
         }
+
         if (this._prebuiltRoutesCount === null) {
             this._prebuiltRoutesCount = this._routes.length;
         } else {
@@ -303,10 +288,10 @@ class BuildRouter extends Router {
                 return;
             }
 
-            const path = `${referredRoutePath}_responder`
+            const expectedPath = `${referredRoutePath}_responder`
                 .replace(/^\//, '');
 
-            Object.assign(route, { path });
+            Object.assign(route, { path: expectedPath });
 
             // set expectedPath to referredRoute
 
@@ -317,8 +302,41 @@ class BuildRouter extends Router {
 
             const referredRoute = routes.find(r => r.id === route.respondsToRouteId);
 
-            Object.assign(referredRoute, { expectedPath: path });
+            Object.assign(referredRoute, { expectedPath });
         });
+    }
+
+    _createLinksMap (block) {
+        const linksMap = new Map();
+
+        block.routes
+            .filter(route => !route.isResponder)
+            .forEach(route => linksMap.set(route.id, route.path));
+
+        const { linksMap: prevLinksMap } = this._context;
+
+        if (prevLinksMap) {
+            for (const [from, to] of prevLinksMap.entries()) {
+                if (!linksMap.has(from)) {
+
+                    path.posix.join('..', to);
+
+                    linksMap.set(from, path.posix.join('..', to));
+                }
+            }
+        }
+
+        block.routes.forEach((route) => {
+            let resolver;
+            for (resolver of route.resolvers) {
+                if (resolver.type !== 'botbuild.include') {
+                    continue;
+                }
+                this._findEntryPointsInResolver(linksMap, resolver, route, this._context);
+            }
+        });
+
+        return linksMap;
     }
 
     _findEntryPointsInResolver (linksMap, resolver, route, context) {
@@ -340,28 +358,8 @@ class BuildRouter extends Router {
                 return;
             }
 
-            linksMap.set(`${route.id}/${blockRoute.id}`, `${basePath}${blockRoute.path}`);
+            linksMap.set(`${blockRoute.id}`, `${basePath}${blockRoute.path}`);
         });
-    }
-
-    _createLinksMap (block) {
-        const linksMap = new Map();
-
-        block.routes
-            .filter(route => !route.isResponder)
-            .forEach(route => linksMap.set(route.id, route.path));
-
-        block.routes.forEach((route) => {
-            let resolver;
-            for (resolver of route.resolvers) {
-                if (resolver.type !== 'botbuild.include') {
-                    continue;
-                }
-                this._findEntryPointsInResolver(linksMap, resolver, route, this._context);
-            }
-        });
-
-        return linksMap;
     }
 
     _buildRouteHead (route) {
@@ -382,18 +380,18 @@ class BuildRouter extends Router {
                 }
 
                 if (route.aiGlobal) {
-                    aiResolver = Ai.ai.globalMatch(route.aiTags, aiTitle);
+                    aiResolver = Ai.ai.global(route.path, route.aiTags, aiTitle);
                 } else if (route.isResponder) {
                     aiResolver = Ai.ai.match(route.aiTags);
                 } else {
-                    aiResolver = Ai.ai.localMatch(route.aiTags, aiTitle);
+                    aiResolver = Ai.ai.local(route.path, route.aiTags, aiTitle);
                 }
             }
 
             if (aiResolver && route.isResponder) {
                 resolvers.push(route.path, aiResolver);
             } else if (aiResolver) {
-                resolvers.push([route.path, aiResolver]);
+                resolvers.push(aiResolver);
             } else if (route.path) {
                 resolvers.push(route.path);
             }
@@ -408,54 +406,41 @@ class BuildRouter extends Router {
 
     _buildRoutes (routes) {
         routes.forEach((route) => {
-            const register = this.use(...[
+            this.use(...[
                 ...this._buildRouteHead(route),
                 ...this.buildResolvers(route.resolvers, route)
             ]);
-            this._attachExitPoints(register, route.resolvers);
         });
     }
 
-    _attachExitPoints (register, routeResolvers) {
-        routeResolvers.forEach((resolver) => {
-            if (resolver.type !== 'botbuild.include') {
-                return;
+    _lastMessageIndex (resolvers) {
+        for (let i = resolvers.length - 1; i >= 0; i--) {
+            if (resolvers[i].type === MESSAGE_RESOLVER_NAME) {
+                return i;
             }
-
-            Object.keys(resolver.params.items)
-                .forEach((exitName) => {
-                    const { resolvers } = resolver.params.items[exitName];
-                    register.onExit(exitName, this._buildExitPointResolver(resolvers));
-                });
-        });
-    }
-
-    _buildExitPointResolver (resolvers) {
-        const builtResolvers = this.buildResolvers(resolvers);
-        const reducers = this.createReducersArray(builtResolvers);
-        return (data, req, res, postBack) => {
-            const { path } = res;
-            const action = req.action();
-            return this.processReducers(reducers, req, res, postBack, path, action, true);
-        };
+        }
+        return -1;
     }
 
     buildResolvers (resolvers, route = {}) {
-        const lastIndex = resolvers.length - 1;
-
         const {
-            path, isFallback, isResponder, expectedPath
+            path: ctxPath, isFallback, isResponder, expectedPath, id
         } = route;
+
+        const lastMessageIndex = this._lastMessageIndex(resolvers);
+        const lastIndex = resolvers.length - 1;
 
         return resolvers.map((resolver, i) => {
             const context = Object.assign({}, this._context, {
                 isLastIndex: lastIndex === i,
+                isLastMessage: lastMessageIndex === i,
                 router: this,
                 linksMap: this._linksMap,
-                path,
+                path: ctxPath,
                 isFallback,
                 isResponder,
-                expectedPath
+                expectedPath,
+                routeId: id
             });
 
             return this._resolverFactory(resolver, context);

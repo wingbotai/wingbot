@@ -37,6 +37,38 @@ describe('Responder', function () {
             assert(opts.translator.calledOnce);
         });
 
+        it('should send nice text with persona', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            assert.strictEqual(res.setPersona('a'), res, 'should return self');
+
+            res.text('Hello');
+
+            assert(sendFn.calledOnce);
+            assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
+            assert.equal(sendFn.firstCall.args[0].persona_id, 'a');
+
+            assert(opts.translator.calledOnce);
+        });
+
+        it('should send nice text with persona', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            assert.strictEqual(res.setPersona({ a: 1 }), res, 'should return self');
+
+            res.text('Hello');
+
+            assert(sendFn.calledOnce);
+            assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
+            assert.deepEqual(sendFn.firstCall.args[0].persona, { a: 1 });
+
+            assert(opts.translator.calledOnce);
+        });
+
         it('should send nice text with quick replies', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
@@ -85,10 +117,10 @@ describe('Responder', function () {
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
             res.path = '/foo';
 
-            assert.strictEqual(res.text('Hello %s', 'string', {
+            assert.strictEqual(res.text('Hello', {
                 option: {
                     title: 'Text Title',
-                    information: 1
+                    data: { information: 1 }
                 },
                 another: {
                     title: 'Text2',
@@ -102,7 +134,7 @@ describe('Responder', function () {
 
             assert(sendFn.calledOnce);
             assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
-            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello string');
+            assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text Title');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, '{"action":"/foo/option","data":{"information":1}}');
 
@@ -110,13 +142,13 @@ describe('Responder', function () {
 
             assert.deepEqual(res.newState._expectedKeywords, [
                 {
-                    action: '/foo/option', match: '^text-title$', data: { information: 1 }, title: '-Text Title'
+                    action: '/foo/option', match: '#text-title', data: { information: 1 }, title: '-Text Title'
                 },
                 {
-                    action: '/foo/another', match: 'some|another', data: {}, title: '-Text2'
+                    action: '/foo/another', match: '#some|another#', data: {}, title: '-Text2'
                 },
                 {
-                    action: '/foo/textMatch', match: '^custom-text$', data: {}, title: '-Text2'
+                    action: '/foo/textMatch', match: '#custom-text', data: {}, title: '-Text2'
                 }
             ]);
         });
@@ -330,7 +362,7 @@ describe('Responder', function () {
 
     });
 
-    describe('#setMessgingType()', function () {
+    describe('#setMessagingType()', function () {
 
         it('sends default message type', function () {
             const { sendFn, opts, messageSender } = createAssets();
@@ -348,7 +380,7 @@ describe('Responder', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
-            res.setMessgingType(Responder.TYPE_NON_PROMOTIONAL_SUBSCRIPTION);
+            res.setMessagingType(Responder.TYPE_NON_PROMOTIONAL_SUBSCRIPTION);
 
             assert.strictEqual(res.text('Hello'), res, 'should return self');
 
@@ -365,7 +397,7 @@ describe('Responder', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
-            res.setMessgingType(Responder.TYPE_MESSAGE_TAG, 'TAG');
+            res.setMessagingType(Responder.TYPE_MESSAGE_TAG, 'TAG');
 
             assert.strictEqual(res.text('Hello'), res, 'should return self');
 
@@ -553,6 +585,7 @@ describe('Responder', function () {
             const object = sendFn.firstCall.args[0];
             assert.deepStrictEqual(object, {
                 messaging_type: 'RESPONSE',
+                metadata: '{"data":{"$hopCount":0}}',
                 recipient: {
                     id: SENDER_ID
                 },
@@ -574,8 +607,93 @@ describe('Responder', function () {
                     id: SENDER_ID
                 },
                 target_app_id: '123',
+                metadata: '{"a":1,"data":{"$hopCount":0}}'
+            });
+        });
+
+        it('should not modify string metadata', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.passThread('123', '{"a":1}');
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
                 metadata: '{"a":1}'
             });
+        });
+
+        it('should not incremement object metadata $hopCount', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.passThread('123', { a: 1, data: { $hopCount: 1 } });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
+                metadata: '{"a":1,"data":{"$hopCount":1}}'
+            });
+        });
+
+        it('should increment $hopCount and merge with metadata', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts, { _$hopCount: 0 });
+
+            res.passThread('123', { a: 1, data: {} });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
+                metadata: '{"a":1,"data":{"$hopCount":1}}'
+            });
+        });
+
+        it('should incremement $hopCount', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts, { _$hopCount: 0 });
+
+            res.passThread('123', { a: 1 });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                target_app_id: '123',
+                metadata: '{"a":1,"data":{"$hopCount":1}}'
+            });
+        });
+
+        it('should throw exeption on cross threshold $hopCount', function () {
+            const { opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts, { _$hopCount: 5 });
+
+            assert.throws(
+                () => {
+                    res.passThread('123', { a: 1 });
+                },
+                Error,
+                'More than 5 handovers occured'
+            );
         });
 
     });

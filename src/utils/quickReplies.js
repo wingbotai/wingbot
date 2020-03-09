@@ -7,24 +7,30 @@ const { makeAbsolute } = require('./pathUtils');
 const { tokenize } = require('./tokenizer');
 const { FLAG_DISAMBIGUATION_SELECTED } = require('../flags');
 
-function makeExpectedKeyword (action, title, matcher = null, payloadData = {}) {
+function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, setState = null) {
     let match = null;
 
-    if (matcher instanceof RegExp) {
-        match = matcher.toString().replace(/^\/|\/$/g, '');
+    if (Array.isArray(matcher)) {
+        match = matcher;
+    } else if (matcher instanceof RegExp) {
+        match = `#${matcher.source}#`;
     } else if (typeof matcher === 'string') {
-        match = `^${tokenize(matcher)}$`;
+        match = `#${tokenize(matcher)}`;
     } else {
         // make matcher from title
-        match = `^${tokenize(title)}$`;
+        match = `#${tokenize(title)}`;
     }
 
-    return {
+    const ret = {
         action,
         title,
         match,
         data: payloadData
     };
+
+    if (setState) Object.assign(ret, { setState });
+
+    return ret;
 }
 
 /**
@@ -84,6 +90,8 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
                 title,
                 action,
                 match,
+                data = {},
+                setState = null,
                 isLocation = false,
                 isEmail = false,
                 isPhone = false
@@ -114,13 +122,12 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
             }
 
             let payload = absoluteAction;
-            const data = Object.assign({}, reply);
 
-            delete data.title;
-            delete data.action;
-            delete data.match;
+            const hasData = Object.keys(data).length > 0;
+            const hasSetState = setState && Object.keys(setState).length > 0;
 
-            if (Object.keys(data).length > 0) {
+            if (hasData || hasSetState) {
+
                 if (data._senderMeta
                     && data._senderMeta.flag === FLAG_DISAMBIGUATION_SELECTED) {
 
@@ -129,14 +136,19 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
                 }
 
                 payload = {
-                    action: absoluteAction,
-                    data
+                    action: absoluteAction
                 };
+
+                if (hasData) Object.assign(payload, { data });
+                if (hasSetState) Object.assign(payload, { setState });
+
                 payload = JSON.stringify(payload);
             }
 
             const translatedTitle = translate(title);
-            const expect = makeExpectedKeyword(absoluteAction, translatedTitle, match, data);
+            const expect = makeExpectedKeyword(
+                absoluteAction, translatedTitle, match, data, setState
+            );
             expectedKeywords.push(expect);
 
             const res = {
@@ -162,34 +174,33 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
  *
  * @ignore
  * @param {Object[]} expectedKeywords
- * @param {string} normalizedText
- * @param {string} text
+ * @param {import('../Request')} req
+ * @param {import('../Ai')} ai
  * @returns {null|Object}
  */
-function quickReplyAction (expectedKeywords, normalizedText, text) {
-    if (!text) {
+function quickReplyAction (expectedKeywords, req, ai) {
+    const text = req.text();
+
+    if (text) {
+        const exactMatch = expectedKeywords
+            .filter(keyword => keyword.title === text);
+
+        if (exactMatch.length !== 0) {
+            return exactMatch[0];
+        }
+    } else if (!req.isTextOrIntent()) {
         return null;
     }
 
-    const exactMatch = expectedKeywords
-        .filter(keyword => keyword.title === text);
-
-    if (exactMatch.length === 1) {
-        return exactMatch[0];
-    }
-
-    if (!normalizedText) {
-        return null;
-    }
-
+    // @todo sort by score / disamb
     const found = expectedKeywords
-        .filter(keyword => normalizedText.match(new RegExp(keyword.match)));
+        .filter(keyword => ai.ruleIsMatching(keyword.match, req));
 
-    if (found.length !== 1) {
+    if (found.length === 0) {
         return null;
     }
 
-    return found[0] || null;
+    return found[0];
 }
 
 /**
@@ -206,10 +217,13 @@ function disambiguationQuickReply (title, likelyIntent, disambText, action, data
         ...data,
         title,
         action,
-        _senderMeta: {
-            flag: FLAG_DISAMBIGUATION_SELECTED,
-            likelyIntent,
-            disambText
+        data: {
+            ...data,
+            _senderMeta: {
+                flag: FLAG_DISAMBIGUATION_SELECTED,
+                likelyIntent,
+                disambText
+            }
         }
     };
 }

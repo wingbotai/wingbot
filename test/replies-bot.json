@@ -1,0 +1,142 @@
+{
+    "nlpAuth": null,
+    "nlpModel": null,
+    "blocks": [
+      {
+        "routes": [
+          {
+            "path": "start",
+            "resolvers": [
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [
+                      {
+                        "title": "bez podminky",
+                        "targetRouteId": "f9c426e0-1520-11ea-963b-177a31f20084",
+                        "id": "9c27e090-151f-11ea-aedf-1dbbebb0fa70"
+                      },
+                      {
+                        "aiTags": [
+                          "lla"
+                        ],
+                        "targetRouteId": "a914bee0-151f-11ea-aedf-1dbbebb0fa70",
+                        "id": "b45ffb20-151f-11ea-aedf-1dbbebb0fa70"
+                      }
+                  ],
+                  "hasCondition": false,
+                  "text": [
+                    "Welcome, I'am a chatbot!"
+                  ]
+                }
+              }
+            ],
+            "name": "Start",
+            "isEntryPoint": true,
+            "id": "bf4ac261-07ee-11ea-bada-25e295ec896c",
+            "isFallback": false
+          },
+          {
+            "path": "dalsi",
+            "resolvers": [
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [],
+                  "text": [
+                    "dalsi"
+                  ]
+                }
+              }
+            ],
+            "replies": [],
+            "name": "dalsi",
+            "isEntryPoint": true,
+            "id": "a914bee0-151f-11ea-aedf-1dbbebb0fa70",
+            "isFallback": false
+          },
+          {
+            "path": "deep",
+            "resolvers": [
+              {
+                "type": "botbuild.include",
+                "params": {
+                  "items": {},
+                  "staticBlockId": "f81df0f0-1520-11ea-963b-177a31f20084"
+                },
+                "id": "f81df0f0-1520-11ea-963b-177a31f20084"
+              }
+            ],
+            "id": "f81df0f0-1520-11ea-963b-177a31f20084"
+          },
+          {
+            "path": "fallback",
+            "resolvers": [
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [
+                    {
+                      "title": "Back to Start",
+                      "targetRouteId": "bf4ac261-07ee-11ea-bada-25e295ec896c",
+                      "id": 1573853258118
+                    }
+                  ],
+                  "hasCondition": false,
+                  "text": [
+                    "Sorry, but i don't understand"
+                  ]
+                }
+              }
+            ],
+            "replies": [],
+            "name": "Fallback",
+            "isEntryPoint": false,
+            "id": "bf4ac263-07ee-11ea-bada-25e295ec896c",
+            "isFallback": true
+          }
+        ],
+        "staticBlockId": "bf4ac260-07ee-11ea-bada-25e295ec896c",
+        "isRoot": true,
+        "blockName": "Root"
+      },
+      {
+        "blockName": "Deep",
+        "routes": [
+          {
+            "path": "deep",
+            "resolvers": [
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [
+                    {
+                        "title": "back",
+                        "targetRouteId": "a914bee0-151f-11ea-aedf-1dbbebb0fa70",
+                        "id": "04399c90-1521-11ea-963b-177a31f20084"
+                    }
+                  ],
+                  "text": [
+                    "in deep"
+                  ]
+                }
+              }
+            ],
+            "name": "deep",
+            "isEntryPoint": true,
+            "id": "f9c426e0-1520-11ea-963b-177a31f20084",
+            "isFallback": false
+          }
+        ],
+        "staticBlockId": "f81df0f0-1520-11ea-963b-177a31f20084"
+      }
+    ],
+    "name": "save",
+    "botId": "bbee3fae-aaf3-45b8-9fdb-51188a6b6d96",
+    "type": null,
+    "lastmod": 1575307284083,
+    "url": null,
+    "token": "mJHCfyRHUJdhKEvtX40yM9Sqe92AM8GPxS3Dkwht4YbufIzyvbYo6HSWxtBK8rybEsauXbi6WbkpP9VYIonydMkJBHoWpe1Jb1GVO0PUeme2pEwSwIo66jFZwNeE5cSj",
+    "id": "save",
+    "handlerUrl": null
+  }

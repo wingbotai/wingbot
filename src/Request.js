@@ -3,18 +3,34 @@
  */
 'use strict';
 
+const Ai = require('./Ai');
 const { tokenize, parseActionPayload } = require('./utils');
 const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickReplies');
-const RequestsFactories = require('./utils/RequestsFactories');
+const getUpdate = require('./utils/getUpdate');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
+const counter = {
+    _t: 0,
+    _d: 0
+};
+
+function makeTimestamp () {
+    let now = Date.now();
+    if (now > counter._d) {
+        counter._t = 0;
+    } else {
+        now += ++counter._t;
+    }
+    counter._d = now;
+    return now;
+}
 
 /**
  * @typedef {Object} Entity
- * @param {string} entity
- * @param {string} value
- * @param {number} score
+ * @prop {string} entity
+ * @prop {string} value
+ * @prop {number} score
  */
 
 /**
@@ -28,6 +44,7 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  * @typedef {Object} Action
  * @prop {string} action
  * @prop {Object} data
+ * @prop {Object|null} [setState]
  */
 
 /**
@@ -37,6 +54,11 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
  * @prop {number} sort
  * @prop {boolean} local
  * @prop {boolean} aboveConfidence
+ * @prop {boolean} [winner]
+ * @prop {string|function} [title]
+ * @prop {Object} meta
+ * @prop {string} [meta.targetAppId]
+ * @prop {string|null} [meta.targetAction]
  */
 
 /**
@@ -48,18 +70,18 @@ const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{
 /**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
- * @class
+ * @class {Request}
  */
-class Request extends RequestsFactories {
+class Request {
 
-    constructor (data, state, pageId) {
-        super();
-
+    constructor (data, state, pageId, globalIntents = new Map()) {
         this.campaign = data.campaign || null;
 
         this.taskId = data.taskId || null;
 
         this.data = data;
+
+        this.globalIntents = globalIntents;
 
         /**
          * @prop {object} params - plugin configuration
@@ -114,9 +136,9 @@ class Request extends RequestsFactories {
         this.entities = [];
 
         /**
-         * @prop {Intent[]|null} intents list of resolved intents
+         * @prop {Intent[]} intents list of resolved intents
          */
-        this.intents = null;
+        this.intents = [];
 
         /**
          * @prop {Action}
@@ -127,6 +149,17 @@ class Request extends RequestsFactories {
         this._winningIntent = null;
 
         this._aiActions = null;
+
+        this._aiWinner = null;
+    }
+
+    /**
+     * Returns true, if the incomming event is standby
+     *
+     * @returns {boolean}
+     */
+    isStandby () {
+        return !!this.data.isStandby;
     }
 
     /**
@@ -135,9 +168,7 @@ class Request extends RequestsFactories {
      * @returns {IntentAction[]}
      */
     aiActions () {
-        if (this._aiActions === null) {
-            return [];
-        }
+        this._getMatchingGlobalIntent();
         return this._aiActions;
     }
 
@@ -145,14 +176,18 @@ class Request extends RequestsFactories {
      * Covert all matched actions for disambiguation purposes
      *
      * @param {number} [limit]
+     * @param {IntentAction[]} [aiActions]
+     * @param {string} [overrideAction]
      * @returns {QuickReply[]}
      */
-    aiActionsForQuickReplies (limit = 5) {
-        if (this._aiActions === null) {
-            return [];
+    aiActionsForQuickReplies (limit = 5, aiActions = null, overrideAction = null) {
+        if (aiActions === null) {
+            this._getMatchingGlobalIntent();
         }
+
         const text = this.text();
-        return this._aiActions
+
+        return (aiActions || this._aiActions)
             .filter(a => a.title)
             .slice(0, limit)
             .map(a => disambiguationQuickReply(
@@ -161,7 +196,13 @@ class Request extends RequestsFactories {
                     : a.title,
                 a.intent.intent,
                 text,
-                a.action
+                overrideAction || a.action,
+                overrideAction
+                    ? {
+                        _action: a.action,
+                        _appId: a.appId
+                    }
+                    : {}
             ));
     }
 
@@ -172,10 +213,10 @@ class Request extends RequestsFactories {
      * @returns {boolean}
      */
     hasAiActionsForDisambiguation (minimum = 1) {
-        return this._aiActions !== null
-            && this._aiActions
-                .filter(a => a.title)
-                .length >= minimum;
+        this._getMatchingGlobalIntent();
+        return this._aiActions
+            .filter(a => a.title)
+            .length >= minimum;
     }
 
     /**
@@ -185,7 +226,7 @@ class Request extends RequestsFactories {
      * @returns {null|string|Intent}
      */
     intent (getDataOrScore = false) {
-        if (!this.intents || this.intents.length === 0) {
+        if (this.intents.length === 0) {
             return null;
         }
 
@@ -380,6 +421,10 @@ class Request extends RequestsFactories {
             || this._stickerToSmile() !== '';
     }
 
+    isTextOrIntent () {
+        return this.isText() || this.intents.length > 0 || this.entities.length > 0;
+    }
+
     /**
      * Returns true, when the attachment is a sticker
      *
@@ -438,10 +483,54 @@ class Request extends RequestsFactories {
     /**
      * Returns the request expected handler in case have been set last response
      *
-     * @returns {{action:string,data:Object}|null}
+     * @returns {Action|null}
      */
     expected () {
         return this.state._expected || null;
+    }
+
+    /**
+     * Returns current turn-around context (expected and expected keywords)
+     *
+     * @param {boolean} [justOnce] - don't do it again
+     * @param {boolean} [includeKeywords] - keep intents from quick replies
+     * @returns {Object}
+     */
+    expectedContext (justOnce = false, includeKeywords = false) {
+        const {
+            _expected: expected,
+            _expectedKeywords: exKeywords
+        } = this.state;
+
+        const ret = {};
+
+        let shouldIncludeKeywords = includeKeywords;
+
+        if (expected) {
+            const { action, data = {} } = expected;
+
+            if (!data._expectedFallbackOccured || !justOnce) {
+                Object.assign(ret, {
+                    _expected: {
+                        action,
+                        data: {
+                            ...data,
+                            _expectedFallbackOccured: true
+                        }
+                    }
+                });
+            } else if (justOnce && shouldIncludeKeywords) {
+                shouldIncludeKeywords = false;
+            }
+        }
+
+        if (exKeywords && shouldIncludeKeywords) {
+            Object.assign(ret, {
+                _expectedKeywords: exKeywords
+            });
+        }
+
+        return ret;
     }
 
     /**
@@ -480,16 +569,6 @@ class Request extends RequestsFactories {
      */
     isReferral () {
         return this._referral !== null;
-    }
-
-    /**
-     * Returns true, if request pass thread control
-     *
-     * @deprecated use passTreadAction option in Facebook plugin instead
-     * @returns {boolean}
-     */
-    isPassThread () {
-        return this.data.target_app_id || this.data.pass_thread_control;
     }
 
     /**
@@ -550,6 +629,33 @@ class Request extends RequestsFactories {
         return this._action && this._action.action;
     }
 
+    /**
+     * Gets incomming setState action variable
+     *
+     * @returns {Object}
+     *
+     * @example
+     * res.setState(req.getSetState());
+     */
+    getSetState () {
+        if (typeof this._action === 'undefined') {
+            this._action = this._resolveAction();
+        }
+
+        const setState = (this._action && this._action.setState)
+            || this.data.setState;
+
+        if (!setState || typeof setState !== 'object') {
+            return {};
+        }
+
+        return Object.keys(setState)
+            .reduce((o, key) => {
+                const value = setState[key];
+                return Object.assign(o, getUpdate(key, value, this.state));
+            }, {});
+    }
+
     _resolveAction () {
         let res = null;
 
@@ -569,17 +675,6 @@ class Request extends RequestsFactories {
             res = parseActionPayload(this.message.quick_reply);
         }
 
-        // @deprecated
-        if (!res && this.isPassThread()) {
-            if (this.data.pass_thread_control.metadata) {
-                const payload = this.data.pass_thread_control.metadata;
-                res = parseActionPayload({ payload }, true);
-            }
-            if (!res || !res.action) {
-                res = { action: 'pass-thread', data: res ? res.data : {} };
-            }
-        }
-
         if (!res && this.state._expectedKeywords) {
             res = this._actionByExpectedKeywords();
         }
@@ -588,7 +683,89 @@ class Request extends RequestsFactories {
             res = parseActionPayload(this.state._expected);
         }
 
+        if (!res && this.isTextOrIntent()) {
+            const winner = this._getMatchingGlobalIntent();
+            res = winner
+                ? { action: winner.action, data: {}, setState: null }
+                : null;
+        }
+
         return res;
+    }
+
+    actionByAi () {
+        const winner = this._getMatchingGlobalIntent();
+        return winner ? winner.action : null;
+    }
+
+    _getMatchingGlobalIntent () {
+        if (this._aiActions) {
+            return this._aiWinner;
+        }
+        if (!this.isTextOrIntent()) {
+            this._aiActions = [];
+            return null;
+        }
+
+        const aiActions = [];
+
+        // to match the local context intent
+        let localRegexToMatch = null;
+        if (this.state._lastVisitedPath) {
+            localRegexToMatch = new RegExp(`^${this.state._lastVisitedPath}/[^/]+`);
+        } else {
+            let expected = this.expected();
+            if (expected) {
+                // @ts-ignore
+                expected = expected.action.replace(/\/?[^/]+$/, '');
+                localRegexToMatch = new RegExp(`^${expected}/[^/]+$`);
+            }
+        }
+
+        const localEnhancement = (1 - Ai.ai.confidence) / 2;
+        for (const gi of this.globalIntents.values()) {
+            const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.action);
+            if (gi.local && !pathMatches) {
+                continue;
+            }
+            const intent = gi.matcher(this, null, true);
+            if (intent !== null) {
+                const sort = intent.score + (pathMatches ? localEnhancement : 0);
+                // console.log(sort, wi.intent);
+                aiActions.push({
+                    ...gi,
+                    intent,
+                    aboveConfidence: intent.aboveConfidence,
+                    sort,
+                    winner: false
+                });
+            }
+        }
+
+        aiActions.sort((l, r) => r.sort - l.sort);
+        const winner = this._winner(aiActions);
+
+        this._aiActions = aiActions;
+        this._aiWinner = winner;
+        return winner;
+    }
+
+    _winner (aiActions) {
+        if (aiActions.length === 0 || !aiActions[0].aboveConfidence) {
+            return null;
+        }
+
+        // there will be no winner, if there are two different intents
+        if (Ai.ai.shouldDisambiguate(aiActions)) {
+            return null;
+        }
+
+        if (aiActions[0]) {
+            // eslint-disable-next-line no-param-reassign
+            aiActions[0].winner = true;
+        }
+
+        return aiActions[0];
     }
 
     _actionByExpectedKeywords () {
@@ -597,8 +774,8 @@ class Request extends RequestsFactories {
         if (!res && this.state._expectedKeywords) {
             const payload = quickReplyAction(
                 this.state._expectedKeywords,
-                this.text(true),
-                this.text()
+                this,
+                Ai.ai
             );
             if (payload) {
                 res = parseActionPayload(payload);
@@ -650,6 +827,328 @@ class Request extends RequestsFactories {
 
         const { action } = parseActionPayload(object, true);
         return action;
+    }
+
+
+    static timestamp () {
+        return makeTimestamp();
+    }
+
+    static createReferral (action, data = {}, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            ref: JSON.stringify({
+                action,
+                data
+            }),
+            source: 'SHORTLINK',
+            type: 'OPEN_THREAD'
+        };
+    }
+
+
+    static postBack (
+        senderId,
+        action,
+        data = {},
+        refAction = null,
+        refData = {},
+        timestamp = makeTimestamp()
+    ) {
+        const postback = {
+            payload: {
+                action,
+                data
+            }
+        };
+        if (refAction) {
+            Object.assign(postback, {
+                referral: Request.createReferral(refAction, refData, timestamp)
+            });
+        }
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            postback
+        };
+    }
+
+    static postBackWithSetState (
+        senderId,
+        action,
+        data = {},
+        setState = {},
+        timestamp = makeTimestamp()
+    ) {
+        const postback = {
+            payload: {
+                action,
+                data,
+                setState
+            }
+        };
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            postback
+        };
+    }
+
+    static campaignPostBack (
+        senderId,
+        campaign,
+        timestamp = makeTimestamp(),
+        data = null,
+        taskId = null
+    ) {
+        const postback = Request.postBack(
+            senderId,
+            campaign.action,
+            data || campaign.data,
+            null,
+            {},
+            timestamp
+        );
+        return Object.assign(postback, {
+            campaign,
+            taskId
+        });
+    }
+
+    static text (senderId, text, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                text
+            }
+        };
+    }
+
+    static textWithSetState (senderId, text, setState, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                text
+            },
+            setState
+        };
+    }
+
+    static intentWithText (senderId, text, intent, score = 1, timestamp = makeTimestamp()) {
+        const res = Request.text(senderId, text, timestamp);
+
+        return Request.addIntentToRequest(res, intent, [], score);
+    }
+
+    static intent (senderId, intent, score = 1, timestamp = makeTimestamp()) {
+
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            intent,
+            score
+        };
+    }
+
+    static intentWithSetState (senderId, intent, setState, timestamp = makeTimestamp()) {
+
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            intent,
+            score: 1,
+            setState
+        };
+    }
+
+    static addIntentToRequest (request, intent, entities = [], score = 1) {
+        Object.assign(request, {
+            intent, score
+        });
+
+        if (entities.length !== 0) {
+            Object.assign(request, { entities });
+        }
+
+        return request;
+    }
+
+    static passThread (senderId, newAppId, data = null, timestamp = makeTimestamp()) {
+        let metadata = data;
+        if (data !== null && typeof data !== 'string') {
+            metadata = JSON.stringify(data);
+        }
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            pass_thread_control: {
+                new_owner_app_id: newAppId,
+                metadata
+            }
+        };
+    }
+
+    static intentWithEntity (
+        senderId,
+        text,
+        intent,
+        entity,
+        value,
+        score = 1,
+        timestamp = makeTimestamp()
+    ) {
+        const res = Request.text(senderId, text, timestamp);
+
+        return Request.addIntentToRequest(res, intent, [{ entity, value, score }], score);
+    }
+
+    static quickReply (senderId, action, data = {}, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                text: action,
+                quick_reply: {
+                    payload: JSON.stringify({
+                        action,
+                        data
+                    })
+                }
+            }
+        };
+    }
+
+    static quickReplyText (senderId, text, payload, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                text,
+                quick_reply: {
+                    payload
+                }
+            }
+        };
+    }
+
+    static location (senderId, lat, long, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                attachments: [{
+                    type: 'location',
+                    payload: {
+                        coordinates: { lat, long }
+                    }
+                }]
+            }
+        };
+    }
+
+    static referral (senderId, action, data = {}, timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            referral: Request.createReferral(action, data, timestamp)
+        };
+    }
+
+    static optin (userRef, action, data = {}, timestamp = makeTimestamp()) {
+        const ref = Buffer.from(JSON.stringify({
+            action,
+            data
+        }));
+        return {
+            timestamp,
+            optin: {
+                ref: ref.toString('base64'),
+                user_ref: userRef
+            }
+        };
+    }
+
+    static fileAttachment (senderId, url, type = 'file', timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                attachments: [{
+                    type,
+                    payload: {
+                        url
+                    }
+                }]
+            }
+        };
+    }
+
+    static sticker (senderId, stickerId, url = '', timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            message: {
+                attachments: [{
+                    type: 'image',
+                    payload: {
+                        url,
+                        sticker_id: stickerId
+                    }
+                }]
+            }
+        };
+    }
+
+    static readEvent (senderId, watermark, timestamp = makeTimestamp()) {
+        return {
+            sender: {
+                id: senderId
+            },
+            timestamp,
+            read: {
+                watermark
+            }
+        };
+    }
+
+    static deliveryEvent (senderId, watermark, timestamp = makeTimestamp()) {
+        return {
+            sender: {
+                id: senderId
+            },
+            timestamp,
+            delivery: {
+                watermark
+            }
+        };
     }
 
 }

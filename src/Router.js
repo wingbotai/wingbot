@@ -5,12 +5,15 @@
 
 
 const pathToRegexp = require('path-to-regexp');
-const Ai = require('./Ai');
 const ReducerWrapper = require('./ReducerWrapper');
 const { makeAbsolute } = require('./utils');
 
 const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
 const Request = require('./Request'); // eslint-disable-line no-unused-vars
+
+function defaultPathContext () {
+    return { globalIntentsMeta: {}, path: '/*' };
+}
 
 /**
  * @callback Resolver processing function
@@ -19,9 +22,13 @@ const Request = require('./Request'); // eslint-disable-line no-unused-vars
  * @param {Function} [postBack]
  */
 
+/**
+ * @typedef {Object} BotPath
+ * @prop {string} path
+ */
 
 /**
- * @typedef {string|Resolver|RegExp|Router} Middleware flow control statement or function
+ * @typedef {Resolver|string|RegExp|Router|BotPath} Middleware flow control statement or function
  */
 
 /**
@@ -57,7 +64,7 @@ class Router extends ReducerWrapper {
      * Appends middleware, action handler or another router
      *
      * @param {...Middleware|Middleware[]} resolvers - list of resolvers
-     * @returns {{onExit:Function}}
+     * @returns {this}
      *
      * @example
      * // middleware
@@ -75,29 +82,17 @@ class Router extends ReducerWrapper {
      * });
      *
      * // use multiple reducers
-     * router.use('/path', reducer1, reducer2)
-     *    .onExit('exitAction', (data, req, res, postBack) => {
-     *        postBack('anotherAction', { someData: true })
-     *    });
-     *
-     * // append router with exit action
-     * router.use('/path', subRouter)
-     *    .onExit('exitAction', (data, req, res, postBack) => {
-     *        postBack('anotherAction', { someData: true })
-     *    });
+     * router.use('/path', reducer1, reducer2);
      *
      * @memberOf Router
      */
     use (...resolvers) {
 
-        const pathContext = { path: '/*' };
+        const pathContext = defaultPathContext();
 
         const reducers = this.createReducersArray(resolvers, pathContext);
 
-        const exitPoints = new Map();
-
         this._routes.push({
-            exitPoints,
             reducers,
             path: pathContext.path
         });
@@ -105,7 +100,7 @@ class Router extends ReducerWrapper {
         reducers.forEach(({ globalIntents }) => {
             for (const gi of globalIntents.values()) {
                 const {
-                    id, matcher, action: intentPath, local, title
+                    id, matcher, action: intentPath, local, title, meta = {}
                 } = gi;
                 const action = intentPath === '/*'
                     ? pathContext.path
@@ -117,22 +112,18 @@ class Router extends ReducerWrapper {
                     action,
                     localPath: pathContext.path,
                     local,
-                    title
+                    title,
+                    meta: { ...pathContext.globalIntentsMeta, ...meta }
                 });
             }
         });
 
-        return {
-            onExit (actionName, listener) {
-                exitPoints.set(actionName, listener);
-                return this;
-            }
-        };
+        return this;
     }
     /* eslint jsdoc/check-param-names: 1 */
 
     // protected method for bot
-    createReducersArray (resolvers, pathContext = { path: '/*' }) {
+    createReducersArray (resolvers, pathContext = defaultPathContext()) {
         return resolvers.map((reducer) => {
 
             // or condition
@@ -142,13 +133,14 @@ class Router extends ReducerWrapper {
 
                 const reducersArray = reducer.map((re) => {
                     const {
-                        resolverPath, reduce, isReducer, globalIntents: gis
+                        resolverPath, reduce, isReducer, globalIntents: gis, globalIntentsMeta = {}
                     } = this._createReducer(
                         re,
                         pathContext.path
                     );
                     gis.forEach(g => globalIntents.set(g.id, g));
                     Object.assign(pathContext, { path: resolverPath });
+                    Object.assign(pathContext.globalIntentsMeta, globalIntentsMeta);
                     isAnyReducer = isAnyReducer || isReducer;
                     return { reduce, isReducer };
                 });
@@ -159,12 +151,15 @@ class Router extends ReducerWrapper {
             }
 
             const {
-                resolverPath, reduce, isReducer, globalIntents
+                resolverPath, reduce, isReducer, globalIntents, globalIntentsMeta = {}
             } = this._createReducer(
                 reducer,
                 pathContext.path
             );
+
             Object.assign(pathContext, { path: resolverPath });
+            Object.assign(pathContext.globalIntentsMeta, globalIntentsMeta);
+
             return { reduce, isReducer, globalIntents };
         });
     }
@@ -173,37 +168,16 @@ class Router extends ReducerWrapper {
         let resolverPath = thePath;
         let reduce = reducer;
         let isReducer = false;
-        const router = this;
-        const { globalIntents = new Map() } = reducer;
+        const { globalIntents = new Map(), path, globalIntentsMeta = {} } = reducer;
 
-        if (typeof reducer === 'string') {
-            resolverPath = this._normalizePath(reducer);
+        if (typeof reducer === 'string' || path) {
+            resolverPath = this._normalizePath(path || reducer);
             const pathMatch = pathToRegexp(resolverPath, [], { end: resolverPath === '' });
 
             reduce = (req, res, relativePostBack, pathContext, action) => {
-                const act = req.action();
                 const actionMatches = action && (resolverPath === '/*' || pathMatch.exec(action));
 
-                // when the action matches, execute the bookmark
-                if (actionMatches && !act && res.bookmark()) {
-                    return res.runBookmark(relativePostBack);
-                }
-
                 if (actionMatches) {
-                    return Router.CONTINUE;
-                }
-
-                if (action && act) {
-                    return Router.BREAK;
-                }
-
-                const match = router._getMatchingGlobalIntent(req, res);
-
-                if (match
-                    && pathMatch.exec(match.localPath)
-                    // @todo evaluate in testing
-                    /* && match.localPath !== match.path */) {
-
                     return Router.CONTINUE;
                 }
 
@@ -230,28 +204,8 @@ class Router extends ReducerWrapper {
         }
 
         return {
-            resolverPath, isReducer, reduce, globalIntents
+            resolverPath, isReducer, reduce, globalIntents, globalIntentsMeta
         };
-    }
-
-    async _callExitPoint (route, req, res, postBack, path, exitPointName, data = {}) {
-        res.setPath(path);
-
-        if (!route.exitPoints.has(exitPointName)) {
-            return [exitPointName, data];
-        }
-
-        let result = route.exitPoints.get(exitPointName)(data, req, res, postBack);
-
-        if (result instanceof Promise) {
-            result = await result;
-        }
-
-        if (typeof result === 'string' || Array.isArray(result)) {
-            return result;
-        }
-
-        return Router.END;
     }
 
     _relativePostBack (origPostBack, path) {
@@ -264,101 +218,10 @@ class Router extends ReducerWrapper {
         };
     }
 
-    _getMatchingGlobalIntent (req, res) {
-        if (!req.isText()) {
-            return null;
-        }
-        if (req._aiActions) {
-            const actions = req._aiActions
-                .filter(a => a.aboveConfidence && this.globalIntents.has(a.id));
-
-            const winner = this._winner(actions);
-
-            return winner && this.globalIntents.get(winner.id);
-        }
-
-        const aiActions = [];
-
-        // to match the local context intent
-        let localRegexToMatch = null;
-        if (req.state._lastVisitedPath) {
-            localRegexToMatch = new RegExp(`^${req.state._lastVisitedPath}/[^/]+`);
-        } else {
-            let expected = req.expected();
-            if (expected) {
-                expected = expected.action.replace(/\/?[^/]+$/, '');
-                localRegexToMatch = new RegExp(`^${expected}/[^/]+$`);
-            }
-        }
-
-        const localEnhancement = (1 - Ai.ai.confidence) / 2;
-        for (const gi of this.globalIntents.values()) {
-            const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.action);
-            if (gi.local && !pathMatches) {
-                continue;
-            }
-            const intent = gi.matcher(req, res, true);
-            if (intent !== null) {
-                const sort = intent.score + (pathMatches ? localEnhancement : 0);
-                // console.log(sort, wi.intent);
-                aiActions.push({
-                    ...gi,
-                    intent,
-                    aboveConfidence: intent.aboveConfidence,
-                    sort
-                });
-            }
-        }
-
-        aiActions.sort((l, r) => r.sort - l.sort);
-        req._aiActions = aiActions;
-
-        const winner = this._winner(aiActions);
-        req._match = req._match || winner;
-        return winner;
-    }
-
-    _winner (aiActions) {
-        if (aiActions.length === 0 || !aiActions[0].aboveConfidence) {
-            return null;
-        }
-
-        // there will be no winner, if there are two different intents
-        if (aiActions.length > 1 && aiActions[1].aboveConfidence) {
-
-            const [first, second] = aiActions;
-
-            const margin = 1 - (second.sort / first.sort);
-            const oneHasTitle = first.title || second.title;
-            const similarScore = margin < (1 - Ai.ai.confidence);
-            const intentIsNotTheSame = !first.intent.intent
-                || first.intent.intent !== second.intent.intent;
-
-            if (oneHasTitle && similarScore && intentIsNotTheSame) {
-                return null;
-            }
-        }
-
-        return aiActions[0];
-    }
-
     async reduce (req, res, postBack = () => {}, path = '/') {
         const action = this._action(req, path);
         const relativePostBack = this._relativePostBack(postBack, path);
         let iterationResult;
-
-        await Ai.ai.preloadIntent(req);
-
-        // if there's intent && action = is expected and there'a no bookmark
-        if (req.isText()
-            && !res.bookmark()) {
-
-            const match = this._getMatchingGlobalIntent(req, res);
-
-            if (match) {
-                res.setBookmark(match.action, match.intent);
-            }
-        }
 
         for (const route of this._routes) {
             iterationResult = await this._reduceTheArray(
@@ -385,8 +248,7 @@ class Router extends ReducerWrapper {
     async processReducers (reducers, req, res, postBack, path, action, doNotTrack = false) {
         const routeToReduce = {
             reducers,
-            path: res.routePath,
-            exitPoints: new Map()
+            path: res.routePath
         };
 
         return this._reduceTheArray(
@@ -436,8 +298,6 @@ class Router extends ReducerWrapper {
                 }
             }
 
-            const resultIsExit = typeof result === 'string' || Array.isArray(result);
-
             if (!reducer.isReducer
                     && [Router.BREAK, Router.CONTINUE].indexOf(result) === -1) {
                 pathContext = `${path === '/' ? '' : path}${route.path}`;
@@ -445,7 +305,7 @@ class Router extends ReducerWrapper {
                 // store the last visited path
                 res.setState({ _lastVisitedPath: path === '/' ? null : path });
                 // console.log({ action: req.action(), pathContext, path });
-                this._emitAction(req, res, pathContext, doNotTrack || resultIsExit);
+                this._emitAction(req, res, pathContext, doNotTrack);
             }
 
             if (result === breakOn) {
@@ -453,20 +313,6 @@ class Router extends ReducerWrapper {
                     return Router.CONTINUE;
                 }
                 break; // skip the rest path reducers, continue with next route
-
-            } else if (resultIsExit) {
-                const [exitPoint, data = {}] = Array.isArray(result) ? result : [result];
-
-                // NOTE exit point can cause call of an upper exit point
-                return this._callExitPoint(
-                    route,
-                    req,
-                    res,
-                    relativePostBack,
-                    path,
-                    exitPoint,
-                    data
-                );
 
             } else if (result !== continueOn) {
 
@@ -528,21 +374,5 @@ Router.BREAK = false;
  * @property {null}
  */
 Router.END = null;
-
-/**
- * Create the exit point
- * Its same as returning `['action', { data }]`
- *
- * @param {string} action - the exit action
- * @param {Object} [data] - the data
- * @returns {Array}
- * @example
- * router.use((req, res) => {
- *     return Router.exit('exitName');
- * });
- */
-Router.exit = function (action, data = {}) {
-    return [action, data];
-};
 
 module.exports = Router;

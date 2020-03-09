@@ -32,6 +32,23 @@ let uq = 1;
  * @typedef {string|EntityExpression} IntentRule
  */
 
+
+/**
+ * @typedef {Object} BotPath
+ * @prop {string} path
+ */
+
+/**
+ * @typedef {Object} IntentAction
+ * @prop {string} action
+ * @prop {Intent} intent
+ * @prop {number} sort
+ * @prop {boolean} local
+ * @prop {boolean} aboveConfidence
+ * @prop {boolean} [winner]
+ * @prop {string} [title]
+ */
+
 /**
  * @class Ai
  */
@@ -45,7 +62,7 @@ class Ai {
          *
          * @type {number}
          */
-        this.confidence = 0.85;
+        this.confidence = 0.8;
 
         /**
          * Lower threshold - for disambiguation
@@ -70,13 +87,6 @@ class Ai {
         this.getPrefix = (prefix, req) => prefix; // eslint-disable-line
 
         this._mockIntent = null;
-
-        /**
-         * Backward compatibility - to be able to use older "callback" middleware
-         *
-         * @type {boolean}
-         */
-        this.disableBookmarking = false;
 
         /**
          * Preprocess text for NLP
@@ -162,27 +172,84 @@ class Ai {
     }
 
     /**
-     * Middleware, which ensures, that AI data are properly loaded in Request
+     * Returns matching middleware, that will export the intent to the root router
+     * so the intent will be matched in a global context
      *
+     * @param {string} path
+     * @param {IntentRule|IntentRule[]} intents
+     * @param {string} [title] - disambiguation title
+     * @param {Object} [meta] - metadata for multibot environments
+     * @param {Object} [meta.targetAppId] - target application id
+     * @param {Object} [meta.targetAction] - target action
+     * @returns {Object} - the middleware
+     * @memberOf Ai
      * @example
-     * const { ai, Router } = require('wingbot');
+     * const { Router, ai } = require('wingbot');
      *
-     * const bot = new Router();
+     * ai.register('app-model');
      *
-     * bot.use(ai.load());
+     * bot.use(ai.global('route-path', 'intent1'), (req, res) => {
+     *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
+     *
+     *     res.text('Oh, intent 1 :)');
+     * });
      */
-    load () {
-        return async (req) => {
-            if (!req.isText() || req.isQuickReply()) {
-                return true;
-            }
+    global (path, intents, title = null, meta = {}) {
+        const matcher = this._createIntentMatcher(intents);
+        const id = uq++;
 
-            if (!req.intents) {
-                await this._loadIntents(req);
-            }
-
-            return true;
+        const resolver = {
+            path,
+            globalIntents: new Map([[id, {
+                id,
+                matcher,
+                local: false,
+                action: '/*',
+                title,
+                meta
+            }]])
         };
+
+        return resolver;
+    }
+
+    /**
+     * Returns matching middleware, that will export the intent to the root router
+     * so the intent will be matched in a context of local dialogue
+     *
+     * @param {string} path
+     * @param {IntentRule|IntentRule[]} intents
+     * @param {string} [title] - disambiguation title
+     * @returns {Object} - the middleware
+     * @memberOf Ai
+     * @example
+     * const { Router, ai } = require('wingbot');
+     *
+     * ai.register('app-model');
+     *
+     * bot.use(ai.global('route-path', 'intent1'), (req, res) => {
+     *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
+     *
+     *     res.text('Oh, intent 1 :)');
+     * });
+     */
+    local (path, intents, title = null) {
+        const matcher = this._createIntentMatcher(intents);
+        const id = uq++;
+
+        const resolver = {
+            path,
+            globalIntents: new Map([[id, {
+                id,
+                matcher,
+                local: true,
+                action: '/*',
+                title,
+                meta: {}
+            }]])
+        };
+
+        return resolver;
     }
 
     /**
@@ -201,7 +268,6 @@ class Ai {
      * - emojis (`'#😄🙃😛'`)
      *
      * @param {IntentRule|IntentRule[]} intent
-     * @param {number} [confidence]
      * @returns {Function} - the middleware
      * @memberOf Ai
      * @example
@@ -215,11 +281,11 @@ class Ai {
      *     res.text('Oh, intent 1 :)');
      * });
      */
-    match (intent, confidence = null) {
-        const matcher = this._createIntentMatcher(intent, confidence);
+    match (intent) {
+        const matcher = this._createIntentMatcher(intent);
 
-        return async (req, res) => {
-            if (!req.isText() || req.isQuickReply()) {
+        return async (req) => {
+            if (!req.isTextOrIntent()) {
                 return false;
             }
 
@@ -227,154 +293,41 @@ class Ai {
                 await this._loadIntents(req);
             }
 
-            return matcher(req, res);
-        };
-    }
+            const winningIntent = matcher(req);
 
-    /**
-     * Returns matching middleware, that will export the intent to the root router
-     * so the intent will be matched in a local context (nested Router)
-     *
-     * @param {IntentRule|IntentRule[]} intent
-     * @param {string} [title]
-     * @param {number} [confidence]
-     * @returns {Function} - the middleware
-     * @memberOf Ai
-     * @example
-     * const { Router, ai } = require('wingbot');
-     *
-     * ai.register('app-model');
-     *
-     * bot.use(ai.localMatch('intent1'), (req, res) => {
-     *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
-     *
-     *     res.text('Oh, intent 1 :)');
-     * });
-     */
-    localMatch (intent, title = null, confidence = null) {
-        const matcher = this._createIntentMatcher(intent, confidence);
-
-        const resolver = async (req, res) => {
-            if (!req.isText() || req.isQuickReply()) {
+            if (!winningIntent || winningIntent.score < this.confidence) {
                 return false;
             }
 
-            if (!req.intents) {
-                await this._loadIntents(req);
-            }
-
-            return matcher(req, res);
-        };
-
-        const id = uq++;
-
-        resolver.globalIntents = new Map([[id, {
-            id,
-            matcher,
-            local: true,
-            action: '/*',
-            title
-        }]]);
-
-        return resolver;
-    }
-
-    /**
-     * Returns matching middleware, that will export the intent to the root router
-     * so the intent will be matched in a global context
-     *
-     * @param {IntentRule|IntentRule[]} intent
-     * @param {string} [title]
-     * @param {number} [confidence]
-     * @returns {Function} - the middleware
-     * @memberOf Ai
-     * @example
-     * const { Router, ai } = require('wingbot');
-     *
-     * ai.register('app-model');
-     *
-     * bot.use(ai.globalMatch('intent1'), (req, res) => {
-     *     console.log(req.intent(true)); // { intent: 'intent1', score: 0.9604 }
-     *
-     *     res.text('Oh, intent 1 :)');
-     * });
-     */
-    globalMatch (intent, title = null, confidence = null) {
-        const matcher = this._createIntentMatcher(intent, confidence);
-
-        const resolver = async (req, res) => {
-            if (!req.isText() || req.isQuickReply()) {
-                return false;
-            }
-
-            if (!req.intents) {
-                await this._loadIntents(req);
-            }
-
-            return matcher(req, res);
-        };
-
-        const id = uq++;
-
-        resolver.globalIntents = new Map([[id, {
-            id,
-            matcher,
-            action: '/*',
-            title,
-            local: false
-        }]]);
-
-        return resolver;
-    }
-
-    _createIntentMatcher (intent, confidence = null) {
-        const rules = this.matcher.preprocessRule(intent);
-
-        return (req, res, needResult = false) => {
-            const winningIntent = this.matcher.match(req, rules);
-
-            const useConfidence = confidence === null
-                ? this.confidence
-                : confidence;
-
-            if (needResult) {
-                if (!winningIntent || this.threshold > winningIntent.score) {
-                    return null;
-                }
-
-                const aboveConfidence = winningIntent.score >= useConfidence;
-
-                return {
-                    ...winningIntent,
-                    aboveConfidence
-                };
-            }
-
-            if (!winningIntent || winningIntent.score < useConfidence) {
-                return false;
-            }
-
-            const action = req.action();
-
-            if (res.bookmark()) {
-                const ca = res.currentAction();
-                // let fallbacks without action to pass
-                if (action !== ca && !`${ca}`.match(/\*$/)) {
-                    return false;
-                }
-            }
-
-            // do not continue, when there is another action expected
-            if (!this.disableBookmarking
-                && action
-                && action !== res.currentAction()) {
-
-                return false;
-            }
-
+            // @todo k cemu? logy? asi ne, zmazat
             req._winningIntent = winningIntent;
 
             return true;
+        };
+    }
+
+    ruleIsMatching (intent, req) {
+        const rules = this.matcher.preprocessRule(intent);
+        const winningIntent = this.matcher.match(req, rules);
+        return winningIntent && winningIntent.score >= this.confidence;
+    }
+
+    _createIntentMatcher (intent) {
+        const rules = this.matcher.preprocessRule(intent);
+
+        return (req) => {
+            const winningIntent = this.matcher.match(req, rules);
+
+            if (!winningIntent || this.threshold > winningIntent.score) {
+                return null;
+            }
+
+            const aboveConfidence = winningIntent.score >= this.confidence;
+
+            return {
+                ...winningIntent,
+                aboveConfidence
+            };
         };
     }
 
@@ -405,14 +358,19 @@ class Ai {
     }
 
     async preloadIntent (req) {
-        if (req.intents || !req.isText() || req.isQuickReply()) {
-            return;
-        }
         const mockIntent = this._getMockIntent(req);
+
         if (mockIntent) {
             req.intents = mockIntent.intents;
             req.entities = mockIntent.entities;
-        } else if (!req.intents && this._keyworders.size !== 0 && req.isText()) {
+            return;
+        }
+
+        if (!req.isText()) {
+            return;
+        }
+
+        if (this._keyworders.size !== 0) {
             const model = this._getModelForRequest(req);
             if (!model) {
                 req.intents = [];
@@ -443,6 +401,38 @@ class Ai {
         }
         const text = this.textFilter(req.text());
         return model.resolve(text, req);
+    }
+
+    /**
+     *
+     * @param {IntentAction[]} aiActions
+     * @returns {boolean}
+     */
+    shouldDisambiguate (aiActions) {
+        if (aiActions.length === 0 || aiActions[0].aboveConfidence === false) {
+            return false;
+        }
+
+        // there will be no winner, if there are two different intents
+        if (aiActions.length > 1 && aiActions[1].aboveConfidence !== false) {
+
+            const [first, second] = aiActions;
+            const firstScore = first.sort || first.score;
+            const secondScore = second.sort || second.score;
+
+            const margin = 1 - (secondScore / firstScore);
+            const oneHasTitle = first.title || second.title;
+            const similarScore = margin < (1 - Ai.ai.confidence);
+            const intentIsNotTheSame = !first.intent || !second.intent
+                || !first.intent.intent
+                || first.intent.intent !== second.intent.intent;
+
+            if (oneHasTitle && similarScore && intentIsNotTheSame) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
