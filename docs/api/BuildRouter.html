@@ -799,6 +799,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.9" data-path="../tutorial/extendingProcessor.html">
+            
+                <a href="../tutorial/extendingProcessor.html">
+            
+                    
+                    Extending the Processor
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1106,44 +1119,25 @@
 <li>[request] <code>function</code> - the building context</li>
 </ul>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">// usage under serverless environment
+<pre><code class="lang-javascript"><span class="hljs-comment">// usage of plugins</span>
 
-const { Settings, BuildRouter, Blocks } = require(&apos;wingbot&apos;);
-const { createHandler, createProcessor } = require(&apos;&apos;wingbot/serverlessAWS&apos;);
-const dynamoDb = require(&apos;./lib/dynamodb&apos;);
-const config = require(&apos;./config&apos;);
+<span class="hljs-keyword">const</span> { BuildRouter, Plugins } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> dynamoDb = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;./lib/dynamodb&apos;</span>);
+<span class="hljs-keyword">const</span> config = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;./config&apos;</span>);
 
-const blocks = new Blocks();
+<span class="hljs-keyword">const</span> plugins = <span class="hljs-keyword">new</span> Plugins();
 
-blocks.code(&apos;exampleBlock&apos;, async (req, res, postBack, context, params) =&gt; {
-    await res.run(&apos;responseBlockName&apos;);
+plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <span class="hljs-keyword">async</span> (req, res, postBack) =&gt; {
+    <span class="hljs-keyword">await</span> res.run(<span class="hljs-string">&apos;responseBlockName&apos;</span>);
 });
 
-const bot = new BuildRouter({
-    botId: &apos;b7a71c27-c295-4ab0-b64e-6835b50a0db0&apos;,
-    snapshot: &apos;master&apos;,
-    token: &apos;adjsadlkadjj92n9u9&apos;
-}, blocks);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> BuildRouter({
+    botId: <span class="hljs-string">&apos;b7a71c27-c295-4ab0-b64e-6835b50a0db0&apos;</span>,
+    snapshot: <span class="hljs-string">&apos;master&apos;</span>,
+    token: <span class="hljs-string">&apos;adjsadlkadjj92n9u9&apos;</span>
+}, plugins);
 
-const processor = createProcessor(bot, {
-    appUrl: config.pageUrl,
-    pageToken: config.facebook.pageToken,
-    appSecret: config.facebook.appSecret,
-    autoTyping: true,
-    dynamo: {
-        db: dynamoDb,
-        tablePrefix: `${config.prefix}-`
-    }
-});
-
-const settings = new Settings(config.facebook.pageToken, log);
-
-if (config.isProduction) {
-    settings.getStartedButton(&apos;/start&apos;);
-    settings.whitelistDomain(config.pageUrl);
-}
-
-module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <div id="BuildRouter_keepConfigFor">&#xA0;</div>
 
@@ -1224,44 +1218,25 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
 <li>[request] <code>function</code> - the building context</li>
 </ul>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">// usage under serverless environment
+<pre><code class="lang-javascript"><span class="hljs-comment">// usage of plugins</span>
 
-const { Settings, BuildRouter, Blocks } = require(&apos;wingbot&apos;);
-const { createHandler, createProcessor } = require(&apos;&apos;wingbot/serverlessAWS&apos;);
-const dynamoDb = require(&apos;./lib/dynamodb&apos;);
-const config = require(&apos;./config&apos;);
+<span class="hljs-keyword">const</span> { BuildRouter, Plugins } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> dynamoDb = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;./lib/dynamodb&apos;</span>);
+<span class="hljs-keyword">const</span> config = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;./config&apos;</span>);
 
-const blocks = new Blocks();
+<span class="hljs-keyword">const</span> plugins = <span class="hljs-keyword">new</span> Plugins();
 
-blocks.code(&apos;exampleBlock&apos;, async (req, res, postBack, context, params) =&gt; {
-    await res.run(&apos;responseBlockName&apos;);
+plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <span class="hljs-keyword">async</span> (req, res, postBack) =&gt; {
+    <span class="hljs-keyword">await</span> res.run(<span class="hljs-string">&apos;responseBlockName&apos;</span>);
 });
 
-const bot = new BuildRouter({
-    botId: &apos;b7a71c27-c295-4ab0-b64e-6835b50a0db0&apos;,
-    snapshot: &apos;master&apos;,
-    token: &apos;adjsadlkadjj92n9u9&apos;
-}, blocks);
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> BuildRouter({
+    botId: <span class="hljs-string">&apos;b7a71c27-c295-4ab0-b64e-6835b50a0db0&apos;</span>,
+    snapshot: <span class="hljs-string">&apos;master&apos;</span>,
+    token: <span class="hljs-string">&apos;adjsadlkadjj92n9u9&apos;</span>
+}, plugins);
 
-const processor = createProcessor(bot, {
-    appUrl: config.pageUrl,
-    pageToken: config.facebook.pageToken,
-    appSecret: config.facebook.appSecret,
-    autoTyping: true,
-    dynamo: {
-        db: dynamoDb,
-        tablePrefix: `${config.prefix}-`
-    }
-});
-
-const settings = new Settings(config.facebook.pageToken, log);
-
-if (config.isProduction) {
-    settings.getStartedButton(&apos;/start&apos;);
-    settings.whitelistDomain(config.pageUrl);
-}
-
-module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
+<span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
 <div id="BuildRouter_keepConfigFor">&#xA0;</div>
 
@@ -1408,7 +1383,7 @@ module.exports.handleRequest = createHandler(processor, config.facebook.botToken
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2020-01-18T18:07:08.054Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-18T18:07:18.072Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2020-03-09T14:03:27.359Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

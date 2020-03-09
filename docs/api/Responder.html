@@ -799,6 +799,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.9" data-path="../tutorial/extendingProcessor.html">
+            
+                <a href="../tutorial/extendingProcessor.html">
+            
+                    
+                    Extending the Processor
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1048,6 +1061,8 @@
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
+<dt><a href="#QuickReply">QuickReply</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="#SenderMeta">SenderMeta</a> : <code>Object</code></dt>
 <dd></dd>
 </dl>
@@ -1065,15 +1080,18 @@
 <li><a href="#Responder_senderMeta">.senderMeta</a> &#x21D2; <a href="#SenderMeta"><code>SenderMeta</code></a></li>
 <li><a href="#Responder_data">.data</a> : <code>Object</code></li>
 <li><a href="#Responder_run">.run(blockName)</a> &#x21D2; <code>Promise</code></li>
-<li><a href="#Responder_setBookmark">.setBookmark([action], [winningIntent])</a> &#x21D2; <code>this</code></li>
-<li><a href="#Responder_bookmark">.bookmark()</a> &#x21D2; <code>string</code> | <code>null</code></li>
-<li><a href="#Responder_runBookmark">.runBookmark(postBack, [data])</a> &#x21D2; <code>Promise.&lt;(null|boolean)&gt;</code></li>
-<li><a href="#Responder_setMessgingType">.setMessgingType(messagingType, [tag])</a> &#x21D2; <code>this</code></li>
+<li><del><a href="#Responder_setBookmark">.setBookmark([action], [winningIntent])</a> &#x21D2; <code>this</code></del></li>
+<li><del><a href="#Responder_bookmark">.bookmark()</a> &#x21D2; <code>string</code> | <code>null</code></del></li>
+<li><del><a href="#Responder_runBookmark">.runBookmark(postBack, [data])</a> &#x21D2; <code>Promise.&lt;(null|boolean)&gt;</code></del></li>
+<li><a href="#Responder_setMessagingType">.setMessagingType(messagingType, [tag])</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_setPersona">.setPersona(personaId)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_isResponseType">.isResponseType()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Responder_setData">.setData(data)</a> &#x21D2; <code>this</code></li>
-<li><a href="#Responder_text">.text(text, [...quickReplies])</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_text">.text(text, [replies])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_setState">.setState(object)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_addQuickReply">.addQuickReply(action, [title], [data], [prepend], [justToExisting])</a></li>
+<li><a href="#Responder_keepPreviousContext">.keepPreviousContext(req, [justOnce], [includeKeywords])</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_expectedIntent">.expectedIntent(intents, action, data, setState)</a></li>
 <li><a href="#Responder_expected">.expected(action, data)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_toAbsoluteAction">.toAbsoluteAction(action)</a> &#x21D2; <code>string</code></li>
 <li><a href="#Responder_currentAction">.currentAction()</a> &#x21D2; <code>string</code></li>
@@ -1181,7 +1199,8 @@ into the conversation state.</p>
 </table>
 <div id="Responder_setBookmark">&#xA0;</div>
 
-<h3 id="respondersetbookmarkaction-winningintent-&#x21D2;-this"><a name="respondersetbookmarkaction-winningintent-&#x21D2;-this" class="plugin-anchor" href="#respondersetbookmarkaction-winningintent-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setBookmark([action], [winningIntent]) &#x21D2; <code>this</code></h3>
+<h3 id="respondersetbookmarkaction-winningintent-&#x21D2;-this"><a name="respondersetbookmarkaction-winningintent-&#x21D2;-this" class="plugin-anchor" href="#respondersetbookmarkaction-winningintent-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a><del>responder.setBookmark([action], [winningIntent]) &#x21D2; <code>this</code></del></h3>
+<p><strong><em>Deprecated</em></strong></p>
 <p>Stores current action to be able to all it again</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
@@ -1202,12 +1221,14 @@ into the conversation state.</p>
 </code></pre>
 <div id="Responder_bookmark">&#xA0;</div>
 
-<h3 id="responderbookmark-&#x21D2;-string--null"><a name="responderbookmark-&#x21D2;-string--null" class="plugin-anchor" href="#responderbookmark-&#x21D2;-string--null"><i class="fa fa-link" aria-hidden="true"></i></a>responder.bookmark() &#x21D2; <code>string</code> | <code>null</code></h3>
+<h3 id="responderbookmark-&#x21D2;-string--null"><a name="responderbookmark-&#x21D2;-string--null" class="plugin-anchor" href="#responderbookmark-&#x21D2;-string--null"><i class="fa fa-link" aria-hidden="true"></i></a><del>responder.bookmark() &#x21D2; <code>string</code> | <code>null</code></del></h3>
+<p><strong><em>Deprecated</em></strong></p>
 <p>Returns the action of bookmark</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
 <div id="Responder_runBookmark">&#xA0;</div>
 
-<h3 id="responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean"><a name="responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean" class="plugin-anchor" href="#responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean"><i class="fa fa-link" aria-hidden="true"></i></a>responder.runBookmark(postBack, [data]) &#x21D2; <code>Promise.&lt;(null|boolean)&gt;</code></h3>
+<h3 id="responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean"><a name="responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean" class="plugin-anchor" href="#responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean"><i class="fa fa-link" aria-hidden="true"></i></a><del>responder.runBookmark(postBack, [data]) &#x21D2; <code>Promise.&lt;(null|boolean)&gt;</code></del></h3>
+<p><strong><em>Deprecated</em></strong></p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>postBack <code>function</code> - the postback func</li>
@@ -1233,13 +1254,21 @@ bot.use(&apos;onName&apos;, (req, res, postBack) =&gt; {
     res.text(`Your name is: ${res.text()}`);
 })
 </code></pre>
-<div id="Responder_setMessgingType">&#xA0;</div>
+<div id="Responder_setMessagingType">&#xA0;</div>
 
-<h3 id="respondersetmessgingtypemessagingtype-tag-&#x21D2;-this"><a name="respondersetmessgingtypemessagingtype-tag-&#x21D2;-this" class="plugin-anchor" href="#respondersetmessgingtypemessagingtype-tag-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setMessgingType(messagingType, [tag]) &#x21D2; <code>this</code></h3>
+<h3 id="respondersetmessagingtypemessagingtype-tag-&#x21D2;-this"><a name="respondersetmessagingtypemessagingtype-tag-&#x21D2;-this" class="plugin-anchor" href="#respondersetmessagingtypemessagingtype-tag-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setMessagingType(messagingType, [tag]) &#x21D2; <code>this</code></h3>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>messagingType <code>string</code></li>
 <li>[tag] <code>string</code> <code> = null</code></li>
+</ul>
+<div id="Responder_setPersona">&#xA0;</div>
+
+<h3 id="respondersetpersonapersonaid-&#x21D2;-this"><a name="respondersetpersonapersonaid-&#x21D2;-this" class="plugin-anchor" href="#respondersetpersonapersonaid-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setPersona(personaId) &#x21D2; <code>this</code></h3>
+<p>Tets the persona for following requests</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>personaId <code>Object</code> | <code>string</code> | <code>null</code> <code> = </code></li>
 </ul>
 <div id="Responder_isResponseType">&#xA0;</div>
 
@@ -1266,28 +1295,29 @@ bot.use(<span class="hljs-string">&apos;bar&apos;</span>, (req, res) =&gt; {
 </code></pre>
 <div id="Responder_text">&#xA0;</div>
 
-<h3 id="respondertexttext-quickreplies-&#x21D2;-this"><a name="respondertexttext-quickreplies-&#x21D2;-this" class="plugin-anchor" href="#respondertexttext-quickreplies-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.text(text, [...quickReplies]) &#x21D2; <code>this</code></h3>
+<h3 id="respondertexttext-replies-&#x21D2;-this"><a name="respondertexttext-replies-&#x21D2;-this" class="plugin-anchor" href="#respondertexttext-replies-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.text(text, [replies]) &#x21D2; <code>this</code></h3>
 <p>Send text as a response</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>text <code>string</code> - text to send to user, can contain placeholders (%s)</li>
-<li>[...quickReplies] <code>...Object.&lt;string, string&gt;</code> | <code>Array.&lt;Object&gt;</code> - quick replies object</li>
+<li>[replies] <code>Object.&lt;string, (string|QuickReply)&gt;</code> | <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a> <code> = </code> - quick replies object</li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// simply</span>
-res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, {
+res.text(<span class="hljs-string">&apos;Hello&apos;</span>, {
     action: <span class="hljs-string">&apos;Quick reply&apos;</span>,
     another: <span class="hljs-string">&apos;Another quick reply&apos;</span>
 });
 
 <span class="hljs-comment">// complex</span>
-res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
+res.text(<span class="hljs-string">&apos;Hello&apos;</span>, [
     { action: <span class="hljs-string">&apos;action&apos;</span>, title: <span class="hljs-string">&apos;Quick reply&apos;</span> },
     {
         action: <span class="hljs-string">&apos;complexAction&apos;</span>, <span class="hljs-comment">// required</span>
         title: <span class="hljs-string">&apos;Another quick reply&apos;</span>, <span class="hljs-comment">// required</span>
-        match: <span class="hljs-string">&apos;string&apos;</span> || <span class="hljs-regexp">/regexp/</span>, <span class="hljs-comment">// optional</span>
-        someData: <span class="hljs-string">&apos;Will be included in payload data&apos;</span> <span class="hljs-comment">// optional</span>
+        setState: { prop: <span class="hljs-string">&apos;value&apos;</span> }, <span class="hljs-comment">// optional</span>
+        match: <span class="hljs-string">&apos;text&apos;</span> || <span class="hljs-regexp">/regexp/</span> || [<span class="hljs-string">&apos;intent&apos;</span>], <span class="hljs-comment">// optional</span>
+        data:  { foo: <span class="hljs-number">1</span>  }<span class="hljs-string">&apos;Will be included in payload data&apos;</span> <span class="hljs-comment">// optional</span>
     }
 ]);
 </code></pre>
@@ -1325,6 +1355,41 @@ res.text(<span class="hljs-string">&apos;Hello %s&apos;</span>, name, [
     }); <span class="hljs-comment">// will be merged and sent with previously added quick replies</span>
 });
 </code></pre>
+<div id="Responder_keepPreviousContext">&#xA0;</div>
+
+<h3 id="responderkeeppreviouscontextreq-justonce-includekeywords-&#x21D2;-this"><a name="responderkeeppreviouscontextreq-justonce-includekeywords-&#x21D2;-this" class="plugin-anchor" href="#responderkeeppreviouscontextreq-justonce-includekeywords-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.keepPreviousContext(req, [justOnce], [includeKeywords]) &#x21D2; <code>this</code></h3>
+<p>To be able to keep context of previous interaction (expected action and intents)
+Just use this method to let user to answer again.</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>req <code>Request</code></li>
+<li>[justOnce] <code>boolean</code> <code> = false</code> - don&apos;t do it again</li>
+<li>[includeKeywords] <code>boolean</code> <code> = false</code> - keep intents from quick replies</li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;start&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;What color do you like?&apos;</span>, [
+        { match: [<span class="hljs-string">&apos;@Color=red&apos;</span>], text: <span class="hljs-string">&apos;red&apos;</span>, action: <span class="hljs-string">&apos;red&apos;</span> },
+        { match: [<span class="hljs-string">&apos;@Color=blue&apos;</span>], text: <span class="hljs-string">&apos;blue&apos;</span>, action: <span class="hljs-string">&apos;blue&apos;</span> }
+    ]);
+    res.expected(<span class="hljs-string">&apos;need-color&apos;</span>)
+});
+
+bot.use(<span class="hljs-string">&apos;need-color&apos;</span>, (req, res) =&gt; {
+    res.keepPreviousContext(req);
+    res.text(<span class="hljs-string">&apos;Sorry, only red or blue.&apos;</span>);
+});
+</code></pre>
+<div id="Responder_expectedIntent">&#xA0;</div>
+
+<h3 id="responderexpectedintentintents-action-data-setstate"><a name="responderexpectedintentintents-action-data-setstate" class="plugin-anchor" href="#responderexpectedintentintents-action-data-setstate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expectedIntent(intents, action, data, setState)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
+<ul>
+<li>intents <code>string</code> | <code>Array.&lt;string&gt;</code></li>
+<li>action <code>string</code></li>
+<li>data <code>Object</code></li>
+<li>setState <code>Object</code> <code> = </code></li>
+</ul>
 <div id="Responder_expected">&#xA0;</div>
 
 <h3 id="responderexpectedaction-data-&#x21D2;-this"><a name="responderexpectedaction-data-&#x21D2;-this" class="plugin-anchor" href="#responderexpectedaction-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expected(action, data) &#x21D2; <code>this</code></h3>
@@ -1532,6 +1597,42 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 <ul>
 <li>skill <code>string</code> | <code>null</code></li>
 </ul>
+<div id="QuickReply">&#xA0;</div>
+
+<h2 id="quickreply--object"><a name="quickreply--object" class="plugin-anchor" href="#quickreply--object"><i class="fa fa-link" aria-hidden="true"></i></a>QuickReply : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>[action]</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>Object</code></td>
+</tr>
+<tr>
+<td>[setState]</td>
+<td><code>Object</code></td>
+</tr>
+<tr>
+<td>[match]</td>
+<td><code>Regexp</code> \</td>
+<td><code>string</code> \</td>
+<td><code>Array.&lt;string&gt;</code></td>
+</tr>
+</tbody>
+</table>
 <div id="SenderMeta">&#xA0;</div>
 
 <h2 id="sendermeta--object"><a name="sendermeta--object" class="plugin-anchor" href="#sendermeta--object"><i class="fa fa-link" aria-hidden="true"></i></a>SenderMeta : <code>Object</code></h2>
@@ -1606,7 +1707,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2020-01-18T18:07:04.337Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-18T18:07:18.072Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2020-03-09T14:03:27.332Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -10,7 +10,9 @@
 <dl>
 <dt><a href="#Resolver">Resolver</a> : <code>function</code></dt>
 <dd></dd>
-<dt><a href="#Middleware">Middleware</a> : <code>string</code> | <code><a href="#Resolver">Resolver</a></code> | <code>RegExp</code> | <code><a href="#Router">Router</a></code></dt>
+<dt><a href="#BotPath">BotPath</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Middleware">Middleware</a> : <code><a href="#Resolver">Resolver</a></code> | <code>string</code> | <code>RegExp</code> | <code><a href="#Router">Router</a></code> | <code><a href="#BotPath">BotPath</a></code></dt>
 <dd><p>flow control statement or function</p>
 </dd>
 </dl>
@@ -24,12 +26,11 @@
 * [Router](#Router) ⇐ <code>ReducerWrapper</code>
     * [new Router()](#new_Router_new)
     * _instance_
-        * [.use(...resolvers)](#Router_use) ⇒ <code>Object</code>
+        * [.use(...resolvers)](#Router_use) ⇒ <code>this</code>
     * _static_
         * [.CONTINUE](#Router_CONTINUE)
         * [.BREAK](#Router_BREAK)
         * [.END](#Router_END)
-        * [.exit(action, [data])](#Router_exit) ⇒ <code>Array</code>
 
 {% raw %}<div id="new_Router_new">&nbsp;</div>{% endraw %}
 
@@ -38,7 +39,7 @@ Cascading router
 
 {% raw %}<div id="Router_use">&nbsp;</div>{% endraw %}
 
-### router.use(...resolvers) ⇒ <code>Object</code>
+### router.use(...resolvers) ⇒ <code>this</code>
 Appends middleware, action handler or another router
 
 **Kind**: instance method of [<code>Router</code>](#Router)  
@@ -63,16 +64,7 @@ router.use('action', req => req.text() === 'a', (req, res) => {
 });
 
 // use multiple reducers
-router.use('/path', reducer1, reducer2)
-   .onExit('exitAction', (data, req, res, postBack) => {
-       postBack('anotherAction', { someData: true })
-   });
-
-// append router with exit action
-router.use('/path', subRouter)
-   .onExit('exitAction', (data, req, res, postBack) => {
-       postBack('anotherAction', { someData: true })
-   });
+router.use('/path', reducer1, reducer2);
 ```
 {% raw %}<div id="Router_CONTINUE">&nbsp;</div>{% endraw %}
 
@@ -113,24 +105,6 @@ Its same as returning `undefined`
 | --- |
 | <code>null</code> | 
 
-{% raw %}<div id="Router_exit">&nbsp;</div>{% endraw %}
-
-### Router.exit(action, [data]) ⇒ <code>Array</code>
-Create the exit point
-Its same as returning `['action', { data }]`
-
-**Kind**: static method of [<code>Router</code>](#Router)  
-**Params**
-
-- action <code>string</code> - the exit action
-- [data] <code>Object</code> - the data
-
-**Example**  
-```javascript
-router.use((req, res) => {
-    return Router.exit('exitName');
-});
-```
 {% raw %}<div id="Resolver">&nbsp;</div>{% endraw %}
 
 ## Resolver : <code>function</code>
@@ -141,9 +115,19 @@ router.use((req, res) => {
 - [res] <code>Responder</code>
 - [postBack] <code>function</code>
 
+{% raw %}<div id="BotPath">&nbsp;</div>{% endraw %}
+
+## BotPath : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| path | <code>string</code> | 
+
 {% raw %}<div id="Middleware">&nbsp;</div>{% endraw %}
 
-## Middleware : <code>string</code> \| [<code>Resolver</code>](#Resolver) \| <code>RegExp</code> \| [<code>Router</code>](#Router)
+## Middleware : [<code>Resolver</code>](#Resolver) \| <code>string</code> \| <code>RegExp</code> \| [<code>Router</code>](#Router) \| [<code>BotPath</code>](#BotPath)
 flow control statement or function
 
 **Kind**: global typedef  

@@ -799,6 +799,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.9" data-path="../tutorial/extendingProcessor.html">
+            
+                <a href="../tutorial/extendingProcessor.html">
+            
+                    
+                    Extending the Processor
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1049,7 +1062,9 @@
 <dl>
 <dt><a href="#Resolver">Resolver</a> : <code>function</code></dt>
 <dd></dd>
-<dt><a href="#Middleware">Middleware</a> : <code>string</code> | <code>Resolver</code> | <code>RegExp</code> | <code>Router</code></dt>
+<dt><a href="#BotPath">BotPath</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#Middleware">Middleware</a> : <code>Resolver</code> | <code>string</code> | <code>RegExp</code> | <code>Router</code> | <code>BotPath</code></dt>
 <dd><p>flow control statement or function</p>
 </dd>
 </dl>
@@ -1062,14 +1077,13 @@
 <li><a href="#Router">Router</a> &#x21D0; <code>ReducerWrapper</code><ul>
 <li><a href="#new_Router_new">new Router()</a></li>
 <li><em>instance</em><ul>
-<li><a href="#Router_use">.use(...resolvers)</a> &#x21D2; <code>Object</code></li>
+<li><a href="#Router_use">.use(...resolvers)</a> &#x21D2; <code>this</code></li>
 </ul>
 </li>
 <li><em>static</em><ul>
 <li><a href="#Router_CONTINUE">.CONTINUE</a></li>
 <li><a href="#Router_BREAK">.BREAK</a></li>
 <li><a href="#Router_END">.END</a></li>
-<li><a href="#Router_exit">.exit(action, [data])</a> &#x21D2; <code>Array</code></li>
 </ul>
 </li>
 </ul>
@@ -1081,7 +1095,7 @@
 <p>Cascading router</p>
 <div id="Router_use">&#xA0;</div>
 
-<h3 id="routeruseresolvers-&#x21D2;-object"><a name="routeruseresolvers-&#x21D2;-object" class="plugin-anchor" href="#routeruseresolvers-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>router.use(...resolvers) &#x21D2; <code>Object</code></h3>
+<h3 id="routeruseresolvers-&#x21D2;-this"><a name="routeruseresolvers-&#x21D2;-this" class="plugin-anchor" href="#routeruseresolvers-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>router.use(...resolvers) &#x21D2; <code>this</code></h3>
 <p>Appends middleware, action handler or another router</p>
 <p><strong>Kind</strong>: instance method of <a href="#Router"><code>Router</code></a><br><strong>Params</strong></p>
 <ul>
@@ -1103,16 +1117,7 @@ router.use(<span class="hljs-string">&apos;action&apos;</span>, req =&gt; req.te
 });
 
 <span class="hljs-comment">// use multiple reducers</span>
-router.use(<span class="hljs-string">&apos;/path&apos;</span>, reducer1, reducer2)
-   .onExit(<span class="hljs-string">&apos;exitAction&apos;</span>, (data, req, res, postBack) =&gt; {
-       postBack(<span class="hljs-string">&apos;anotherAction&apos;</span>, { someData: <span class="hljs-literal">true</span> })
-   });
-
-<span class="hljs-comment">// append router with exit action</span>
-router.use(<span class="hljs-string">&apos;/path&apos;</span>, subRouter)
-   .onExit(<span class="hljs-string">&apos;exitAction&apos;</span>, (data, req, res, postBack) =&gt; {
-       postBack(<span class="hljs-string">&apos;anotherAction&apos;</span>, { someData: <span class="hljs-literal">true</span> })
-   });
+router.use(<span class="hljs-string">&apos;/path&apos;</span>, reducer1, reducer2);
 </code></pre>
 <div id="Router_CONTINUE">&#xA0;</div>
 
@@ -1168,21 +1173,6 @@ Its same as returning <code>undefined</code></p>
 </tr>
 </tbody>
 </table>
-<div id="Router_exit">&#xA0;</div>
-
-<h3 id="routerexitaction-data-&#x21D2;-array"><a name="routerexitaction-data-&#x21D2;-array" class="plugin-anchor" href="#routerexitaction-data-&#x21D2;-array"><i class="fa fa-link" aria-hidden="true"></i></a>Router.exit(action, [data]) &#x21D2; <code>Array</code></h3>
-<p>Create the exit point
-Its same as returning <code>[&apos;action&apos;, { data }]</code></p>
-<p><strong>Kind</strong>: static method of <a href="#Router"><code>Router</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code> - the exit action</li>
-<li>[data] <code>Object</code> - the data</li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">router.use((req, res) =&gt; {
-    <span class="hljs-keyword">return</span> Router.exit(<span class="hljs-string">&apos;exitName&apos;</span>);
-});
-</code></pre>
 <div id="Resolver">&#xA0;</div>
 
 <h2 id="resolver--function"><a name="resolver--function" class="plugin-anchor" href="#resolver--function"><i class="fa fa-link" aria-hidden="true"></i></a>Resolver : <code>function</code></h2>
@@ -1192,9 +1182,27 @@ Its same as returning <code>[&apos;action&apos;, { data }]</code></p>
 <li>[res] <code>Responder</code></li>
 <li>[postBack] <code>function</code></li>
 </ul>
+<div id="BotPath">&#xA0;</div>
+
+<h2 id="botpath--object"><a name="botpath--object" class="plugin-anchor" href="#botpath--object"><i class="fa fa-link" aria-hidden="true"></i></a>BotPath : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Middleware">&#xA0;</div>
 
-<h2 id="middleware--string--resolver--regexp--router"><a name="middleware--string--resolver--regexp--router" class="plugin-anchor" href="#middleware--string--resolver--regexp--router"><i class="fa fa-link" aria-hidden="true"></i></a>Middleware : <code>string</code> | <a href="#Resolver"><code>Resolver</code></a> | <code>RegExp</code> | <a href="#Router"><code>Router</code></a></h2>
+<h2 id="middleware--resolver--string--regexp--router--botpath"><a name="middleware--resolver--string--regexp--router--botpath" class="plugin-anchor" href="#middleware--resolver--string--regexp--router--botpath"><i class="fa fa-link" aria-hidden="true"></i></a>Middleware : <a href="#Resolver"><code>Resolver</code></a> | <code>string</code> | <code>RegExp</code> | <a href="#Router"><code>Router</code></a> | <a href="#BotPath"><code>BotPath</code></a></h2>
 <p>flow control statement or function</p>
 <p><strong>Kind</strong>: global typedef  </p>
 
@@ -1240,7 +1248,7 @@ Its same as returning <code>[&apos;action&apos;, { data }]</code></p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Router","level":"3.3","depth":1,"next":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"previous":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Router.md","mtime":"2020-01-18T18:07:05.266Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-18T18:07:18.072Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Router","level":"3.3","depth":1,"next":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"previous":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Router.md","mtime":"2020-03-09T14:03:27.336Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

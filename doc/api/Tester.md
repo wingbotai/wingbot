@@ -17,9 +17,17 @@
 <dl>
 <dt><a href="#TestSource">TestSource</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#TestCase">TestCase</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TextCase">TextCase</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TextTest">TextTest</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#TestCaseStep">TestCaseStep</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#TestCase">TestCase</a> : <code>object</code></dt>
+<dt><a href="#List">List</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TestsDefinition">TestsDefinition</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#TestsOutput">TestsOutput</a> : <code>object</code></dt>
 <dd></dd>
@@ -48,7 +56,6 @@
         * [.text(text)](#Tester_text) ⇒ <code>Promise</code>
         * [.intent(intent, [text], [score])](#Tester_intent) ⇒ <code>Promise</code>
         * [.intentWithEntity(intent, entity, [value], [text], [score])](#Tester_intentWithEntity) ⇒ <code>Promise</code>
-        * [.passThread([data], [appId])](#Tester_passThread) ⇒ <code>Promise</code>
         * [.optin(action, [data], [userRef])](#Tester_optin) ⇒ <code>Promise</code>
         * [.quickReply(action, [data])](#Tester_quickReply) ⇒ <code>Promise</code>
         * [.quickReplyText(text)](#Tester_quickReplyText) ⇒ <code>Promise.&lt;boolean&gt;</code>
@@ -177,7 +184,7 @@ Makes recognised AI intent request
 
 - intent <code>string</code> | <code>Array.&lt;string&gt;</code>
 - [text] <code>string</code> <code> = null</code>
-- [score] <code>number</code> <code> = </code>
+- [score] <code>number</code>
 
 {% raw %}<div id="Tester_intentWithEntity">&nbsp;</div>{% endraw %}
 
@@ -192,17 +199,6 @@ Makes recognised AI intent request with entity
 - [value] <code>string</code>
 - [text] <code>string</code>
 - [score] <code>number</code> <code> = 1</code>
-
-{% raw %}<div id="Tester_passThread">&nbsp;</div>{% endraw %}
-
-### tester.passThread([data], [appId]) ⇒ <code>Promise</code>
-Makes pass thread control request
-
-**Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
-
-- [data] <code>string</code> | <code>Object</code> <code> = null</code> - action
-- [appId] <code>string</code> <code> = &quot;random-app&quot;</code> - specific app id
 
 {% raw %}<div id="Tester_optin">&nbsp;</div>{% endraw %}
 
@@ -444,7 +440,8 @@ Automated Conversation tests runner
 
 * [ConversationTester](#ConversationTester)
     * [new ConversationTester(testsSource, botFactory, [options])](#new_ConversationTester_new)
-    * [.test(validationRequestBody)](#ConversationTester_test) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
+    * [.test(validationRequestBody, step)](#ConversationTester_test) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
+    * [.executeTextCase(t, textCase, botconfig, longestText)](#ConversationTester_executeTextCase)
     * [.executeStep(t, step)](#ConversationTester_executeStep)
 
 {% raw %}<div id="new_ConversationTester_new">&nbsp;</div>{% endraw %}
@@ -458,16 +455,33 @@ Automated Conversation tests runner
     - [.disableAssertActions] <code>boolean</code>
     - [.disableAssertTexts] <code>boolean</code>
     - [.disableAssertQuickReplies] <code>boolean</code>
+    - [.useConversationForTextTestCases] <code>boolean</code>
+    - [.textThreshold] <code>boolean</code>
+    - [.stepCasesPerStep] <code>number</code>
+    - [.textCasesPerStep] <code>number</code>
+    - [.textCaseParallel] <code>number</code>
 
 {% raw %}<div id="ConversationTester_test">&nbsp;</div>{% endraw %}
 
-### conversationTester.test(validationRequestBody) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
+### conversationTester.test(validationRequestBody, step) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
 Runs the conversation test
 
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
 **Params**
 
 - validationRequestBody <code>Object</code> <code> = </code>
+- step <code>number</code> <code> = </code>
+
+{% raw %}<div id="ConversationTester_executeTextCase">&nbsp;</div>{% endraw %}
+
+### conversationTester.executeTextCase(t, textCase, botconfig, longestText)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+**Params**
+
+- t [<code>Tester</code>](#Tester)
+- textCase [<code>TextTest</code>](#TextTest)
+- botconfig <code>\*</code>
+- longestText <code>number</code>
 
 {% raw %}<div id="ConversationTester_executeStep">&nbsp;</div>{% endraw %}
 
@@ -476,7 +490,7 @@ Runs the conversation test
 **Params**
 
 - t [<code>Tester</code>](#Tester)
-- step <code>\*</code>
+- step [<code>TestCaseStep</code>](#TestCaseStep)
 
 {% raw %}<div id="TestSource">&nbsp;</div>{% endraw %}
 
@@ -487,6 +501,43 @@ Runs the conversation test
 | Name | Type |
 | --- | --- |
 | getTestCases | <code>function</code> | 
+
+{% raw %}<div id="TestCase">&nbsp;</div>{% endraw %}
+
+## TestCase : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| list | <code>string</code> | 
+| name | <code>string</code> | 
+| steps | [<code>Array.&lt;TestCaseStep&gt;</code>](#TestCaseStep) | 
+
+{% raw %}<div id="TextCase">&nbsp;</div>{% endraw %}
+
+## TextCase : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| list | <code>string</code> | 
+| name | <code>string</code> | 
+| texts | [<code>Array.&lt;TextTest&gt;</code>](#TextTest) | 
+
+{% raw %}<div id="TextTest">&nbsp;</div>{% endraw %}
+
+## TextTest : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| appId | <code>string</code> | 
+| text | <code>string</code> | 
+| action | <code>string</code> | 
+| intent | <code>string</code> | 
 
 {% raw %}<div id="TestCaseStep">&nbsp;</div>{% endraw %}
 
@@ -504,17 +555,28 @@ Runs the conversation test
 | quickRepliesContains | <code>string</code> | 
 | stepDescription | <code>string</code> | 
 
-{% raw %}<div id="TestCase">&nbsp;</div>{% endraw %}
+{% raw %}<div id="List">&nbsp;</div>{% endraw %}
 
-## TestCase : <code>object</code>
+## List : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type |
 | --- | --- |
-| list | <code>string</code> | 
+| id | <code>number</code> | 
 | name | <code>string</code> | 
-| steps | [<code>Array.&lt;TestCaseStep&gt;</code>](#TestCaseStep) | 
+| type | <code>string</code> | 
+| testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextTest&gt;</code>](#TextTest) | 
+
+{% raw %}<div id="TestsDefinition">&nbsp;</div>{% endraw %}
+
+## TestsDefinition : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| lists | [<code>Array.&lt;List&gt;</code>](#List) | 
 
 {% raw %}<div id="TestsOutput">&nbsp;</div>{% endraw %}
 
@@ -527,5 +589,9 @@ Runs the conversation test
 | total | <code>number</code> | 
 | passed | <code>number</code> | 
 | failed | <code>number</code> | 
+| skipped | <code>number</code> | 
 | output | <code>string</code> | 
+| summaryOutput | <code>string</code> | 
+| step | <code>number</code> | 
+| stepCount | <code>number</code> | 
 

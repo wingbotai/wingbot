@@ -60,16 +60,15 @@ Create new router from configuration
 
 **Example**  
 ```javascript
-// usage under serverless environment
+// usage of plugins
 
-const { Settings, BuildRouter, Blocks } = require('wingbot');
-const { createHandler, createProcessor } = require(''wingbot/serverlessAWS');
+const { BuildRouter, Plugins } = require('wingbot');
 const dynamoDb = require('./lib/dynamodb');
 const config = require('./config');
 
-const blocks = new Blocks();
+const plugins = new Plugins();
 
-blocks.code('exampleBlock', async (req, res, postBack, context, params) => {
+plugins.register('exampleBlock', async (req, res, postBack) => {
     await res.run('responseBlockName');
 });
 
@@ -77,27 +76,9 @@ const bot = new BuildRouter({
     botId: 'b7a71c27-c295-4ab0-b64e-6835b50a0db0',
     snapshot: 'master',
     token: 'adjsadlkadjj92n9u9'
-}, blocks);
+}, plugins);
 
-const processor = createProcessor(bot, {
-    appUrl: config.pageUrl,
-    pageToken: config.facebook.pageToken,
-    appSecret: config.facebook.appSecret,
-    autoTyping: true,
-    dynamo: {
-        db: dynamoDb,
-        tablePrefix: `${config.prefix}-`
-    }
-});
-
-const settings = new Settings(config.facebook.pageToken, log);
-
-if (config.isProduction) {
-    settings.getStartedButton('/start');
-    settings.whitelistDomain(config.pageUrl);
-}
-
-module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
+module.exports = bot;
 ```
 {% raw %}<div id="BuildRouter_keepConfigFor">&nbsp;</div>{% endraw %}
 
@@ -168,16 +149,15 @@ Create new router from configuration
 
 **Example**  
 ```javascript
-// usage under serverless environment
+// usage of plugins
 
-const { Settings, BuildRouter, Blocks } = require('wingbot');
-const { createHandler, createProcessor } = require(''wingbot/serverlessAWS');
+const { BuildRouter, Plugins } = require('wingbot');
 const dynamoDb = require('./lib/dynamodb');
 const config = require('./config');
 
-const blocks = new Blocks();
+const plugins = new Plugins();
 
-blocks.code('exampleBlock', async (req, res, postBack, context, params) => {
+plugins.register('exampleBlock', async (req, res, postBack) => {
     await res.run('responseBlockName');
 });
 
@@ -185,27 +165,9 @@ const bot = new BuildRouter({
     botId: 'b7a71c27-c295-4ab0-b64e-6835b50a0db0',
     snapshot: 'master',
     token: 'adjsadlkadjj92n9u9'
-}, blocks);
+}, plugins);
 
-const processor = createProcessor(bot, {
-    appUrl: config.pageUrl,
-    pageToken: config.facebook.pageToken,
-    appSecret: config.facebook.appSecret,
-    autoTyping: true,
-    dynamo: {
-        db: dynamoDb,
-        tablePrefix: `${config.prefix}-`
-    }
-});
-
-const settings = new Settings(config.facebook.pageToken, log);
-
-if (config.isProduction) {
-    settings.getStartedButton('/start');
-    settings.whitelistDomain(config.pageUrl);
-}
-
-module.exports.handleRequest = createHandler(processor, config.facebook.botToken);
+module.exports = bot;
 ```
 {% raw %}<div id="BuildRouter_keepConfigFor">&nbsp;</div>{% endraw %}
 

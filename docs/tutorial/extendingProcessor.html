@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Intents, entities and fallbacks · Wingbot</title>
+        <title>Extending the Processor · Wingbot</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -61,10 +61,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="nlpRouting.html" />
+    <link rel="next" href="../api/Request.html" />
     
     
-    <link rel="prev" href="templates.html" />
+    <link rel="prev" href="nlpRouting.html" />
     
 
     </head>
@@ -715,7 +715,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="2.8" data-path="nlpRouting.html">
+        <li class="chapter " data-level="2.8" data-path="nlpRouting.html">
             
                 <a href="nlpRouting.html">
             
@@ -799,7 +799,7 @@
             
         </li>
     
-        <li class="chapter " data-level="2.9" data-path="extendingProcessor.html">
+        <li class="chapter active" data-level="2.9" data-path="extendingProcessor.html">
             
                 <a href="extendingProcessor.html">
             
@@ -1037,7 +1037,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Intents, entities and fallbacks</a>
+        <a href=".." >Extending the Processor</a>
     </h1>
 </div>
 
@@ -1052,226 +1052,76 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="routing-with-nlp-intents-entities-and-fallbacks"><a name="routing-with-nlp-intents-entities-and-fallbacks" class="plugin-anchor" href="#routing-with-nlp-intents-entities-and-fallbacks"><i class="fa fa-link" aria-hidden="true"></i></a>Routing with NLP: intents, entities and fallbacks</h1>
-<h2 id="introduction"><a name="introduction" class="plugin-anchor" href="#introduction"><i class="fa fa-link" aria-hidden="true"></i></a>Introduction</h2>
-<p>State of the art NLP services detects following structures</p>
+                                <h1 id="extenting-the-wingbots-abilities-using-processor-plugin"><a name="extenting-the-wingbots-abilities-using-processor-plugin" class="plugin-anchor" href="#extenting-the-wingbots-abilities-using-processor-plugin"><i class="fa fa-link" aria-hidden="true"></i></a>Extenting the wingbot&apos;s abilities using Processor plugin</h1>
+<p>To be able to:</p>
 <ul>
-<li><strong>intents</strong> - what user wants to do (verb)</li>
-<li><strong>entities</strong> - what&apos;s an object of intent (noun)</li>
+<li>add methods to <code>Request</code> or <code>Responder</code></li>
+<li>modify state before save</li>
 </ul>
-<p>Let&apos;s have an example: <code>I want a ticket to Berlin</code>.</p>
+<p>you can use a Processor plugin</p>
+<h2 id="processor-plugin"><a name="processor-plugin" class="plugin-anchor" href="#processor-plugin"><i class="fa fa-link" aria-hidden="true"></i></a>Processor plugin</h2>
+<p>Processor plugin has following interface and <strong>all functions can be async or not.</strong></p>
 <ul>
-<li><code>Berlin</code> is possibly <strong>an entity</strong></li>
-<li><code>need-ticket</code> could be <strong>an intent</strong></li>
-</ul>
-<h2 id="basic-concept"><a name="basic-concept" class="plugin-anchor" href="#basic-concept"><i class="fa fa-link" aria-hidden="true"></i></a>Basic concept</h2>
-<p>How to match the previous exaple?</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-
-bot.use(ai.match([<span class="hljs-string">&apos;need-ticket&apos;</span>, <span class="hljs-string">&apos;@town&apos;</span>]), (req, res) =&gt; {
-    res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
-});
-</code></pre>
-<p>The logic behind the evaluation is simple. If <strong>one of intents</strong> are matching and <strong>all entities</strong> are detected, the
-interaction will be executed.</p>
-<p><code>(intent OR intent OR ...) AND entity AND entity</code></p>
-<h2 id="defining-entities"><a name="defining-entities" class="plugin-anchor" href="#defining-entities"><i class="fa fa-link" aria-hidden="true"></i></a>Defining entities</h2>
-<ol>
-<li><p><strong>Required entity</strong></p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-bot.use(ai.match(<span class="hljs-string">&apos;@town&apos;</span>), (req, res) =&gt; {
-   res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
-});
-</code></pre>
-</li>
-<li><p><strong>Optional entity</strong></p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-bot.use(ai.match([{ entity: <span class="hljs-string">&apos;town&apos;</span>, optional: <span class="hljs-literal">true</span> }]), (req, res) =&gt; {
-   res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
-});
-</code></pre>
-</li>
-<li><p><strong>Entity value</strong></p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-
-<span class="hljs-comment">// using string expression</span>
-bot.use(ai.match(<span class="hljs-string">&apos;@town=Prague&apos;</span>), (req, res) =&gt; {
-   res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
-});
-
-<span class="hljs-comment">// using object</span>
-bot.use(ai.match([{ entity: <span class="hljs-string">&apos;town&apos;</span>, compare: <span class="hljs-string">&apos;Prague&apos;</span> }]), (req, res) =&gt; {
-   res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
-});
-</code></pre>
-</li>
-<li><p><strong>Numeric range</strong></p>
-<p>Number should be equal to 200 or less.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-bot.use(ai.match([
-   { entity: <span class="hljs-string">&apos;amount&apos;</span>, op: <span class="hljs-string">&apos;range &apos;</span>, compare: [<span class="hljs-literal">null</span>, <span class="hljs-number">200</span>] }
- ]), (req, res) =&gt; {
-   res.text(<span class="hljs-string">&apos;Matched!&apos;</span>);
-});
-</code></pre>
-</li>
-</ol>
-<h2 id="detecting-entities-using-expressions"><a name="detecting-entities-using-expressions" class="plugin-anchor" href="#detecting-entities-using-expressions"><i class="fa fa-link" aria-hidden="true"></i></a>Detecting entities using expressions</h2>
-<ol>
-<li>Entity is present: <code>@town</code></li>
-<li>Entity is optional: <code>@town?</code></li>
-<li>Entity is present and value matches: <code>@town=Prague</code></li>
-<li>Entity is present and value does not match: <code>@town!=Prague</code></li>
-<li>Entity is present and value is greater than: <code>@number&gt;10</code></li>
-<li>Entity is present and value is greater or equal to: <code>@number&gt;=10</code></li>
-<li>Entity is present and value is less than: <code>@number&lt;10</code></li>
-<li>Entity is present and value is less or equal to: <code>@number&lt;=10</code></li>
-<li>Entity is present and value is within range: <code>@number&lt;&gt;10,20</code></li>
-<li>Entity is present and value matches one of: <code>@town=Prague,Berlin</code></li>
-<li>Entity is present and value does not match one of: <code>@town!=Prague,Berlin</code></li>
-</ol>
-<h2 id="context-of-intent-detection"><a name="context-of-intent-detection" class="plugin-anchor" href="#context-of-intent-detection"><i class="fa fa-link" aria-hidden="true"></i></a>Context of intent detection</h2>
-<p>Context is usefull for routing text messages to the right interaction. In general, the context is defined by There are three types of context:</p>
+<li><p><strong>#processMessage(message, pageId, messageSender)</strong></p>
+<p>  Called immediately after the messaging event arrives to Processor. Has following signature:</p>
 <ul>
-<li><strong>Global:</strong> intent is detected globally, so it user can &quot;switch&quot; the context, when global intent is detected.</li>
-<li><strong>Dialogue (local):</strong> the context is limited to current dialogue (Router)</li>
-<li><strong>Interaction:</strong> With <code>res.expected(&apos;target&apos;)</code> you can strictly set a target interaction. So the following text response will be processed by the target interaction.</li>
+<li><code>message: object</code> - the messaging event object</li>
+<li><code>pageId: string</code> - id of page (channel), where the event occured</li>
+<li><code>messageSender: Sender</code> - an instance of Sender class, which allows to send responses</li>
+<li><strong>returns:</strong> <code>{status:number}</code> - status 200 will stop the dispatching and will be returned</li>
 </ul>
-<h2 id="global-intents-and-fallbacks"><a name="global-intents-and-fallbacks" class="plugin-anchor" href="#global-intents-and-fallbacks"><i class="fa fa-link" aria-hidden="true"></i></a>Global intents and fallbacks</h2>
-<p>When using the global intent, the following interaction is <strong>always triggered</strong> (except an expected interaction is set). This is, how the global intent is defined.</p>
-<p>The <strong>global fallback</strong> works as a default interaction. When no interaction is matched, bot replies with the global fallback. It should be defined in a root router.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-
-<span class="hljs-comment">/**
- * CONVERSATION ABOUT TICKETS
- */</span>
-<span class="hljs-keyword">const</span> tickets = <span class="hljs-keyword">new</span> Router();
-
-<span class="hljs-comment">// array works as OR - either intent or postback triggers the interaction</span>
-tickets.use([<span class="hljs-string">&apos;need&apos;</span>, ai.globalMatch(<span class="hljs-string">&apos;need-ticket&apos;</span>)], (req, res) =&gt; {
-    res.text(<span class="hljs-string">&apos;So you want a ticket!&apos;</span>)
-});
-
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-
-bot.use(<span class="hljs-string">&apos;tickets&apos;</span>, tickets);
-
-<span class="hljs-comment">// global fallback</span>
-bot.use((req, res) =&gt; {
-    res.text(<span class="hljs-string">&apos;Ok, do you want beverages or tickes?&apos;</span>, {
-        <span class="hljs-string">&apos;tickets/need&apos;</span>: <span class="hljs-string">&apos;Tickets&apos;</span>,
-        <span class="hljs-string">&apos;beverages/coffee&apos;</span>: <span class="hljs-string">&apos;Coffee&apos;</span>,
-        <span class="hljs-string">&apos;beverages/tee&apos;</span>: <span class="hljs-string">&apos;Tee&apos;</span>
-    })
-});
-</code></pre>
-<p>So the only reasonable use case for global intent is to make an interaction from a nested router globally avaialble (can be triggered from any other dialogue/Router)</p>
-<h2 id="local-intents-and-fallbacks-dialogue-context"><a name="local-intents-and-fallbacks-dialogue-context" class="plugin-anchor" href="#local-intents-and-fallbacks-dialogue-context"><i class="fa fa-link" aria-hidden="true"></i></a>Local intents and fallbacks (dialogue context)</h2>
-<p>The local intent can be triggered only, when the last interaction the user visits is in the same dialogue (Router) as the local intent is defined.</p>
-<p>Also, the local fallback is triggered the same way. It&apos;s usefull when you want to take the user back to current dialogue.</p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-
-<span class="hljs-keyword">const</span> tickets = <span class="hljs-keyword">new</span> Router();
-
-tickets.use([<span class="hljs-string">&apos;need&apos;</span>, ai.globalMatch(<span class="hljs-string">&apos;need-ticket&apos;</span>)], (req, res) =&gt; {
-    res.text(<span class="hljs-string">&apos;So you want a ticket!&apos;</span>)
-});
-
-<span class="hljs-comment">// the local intent</span>
-tickets.use([<span class="hljs-string">&apos;cost&apos;</span>, ai.localMatch(<span class="hljs-string">&apos;how-much&apos;</span>)], (req, res) =&gt; {
-    res.text(<span class="hljs-string">&apos;But I need to know, where you want to go first. So where?&apos;</span>);
-});
-
-<span class="hljs-comment">// local fallback</span>
-beverages.use((req, res, postBack) =&gt; {
-    res.text(<span class="hljs-string">&apos;No, this is about the ticket. Let\&apos;s try it again.&apos;</span>);
-    <span class="hljs-comment">// redirect to the &quot;need&quot; interaction</span>
-    postBack(<span class="hljs-string">&apos;need&apos;</span>);
-});
-
-<span class="hljs-comment">/**
- * LET&apos;S PUT IT TOGETHER
- */</span>
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
-
-bot.use(<span class="hljs-string">&apos;tickets&apos;</span>, tickets);
-
-<span class="hljs-comment">// global fallback</span>
-bot.use((req, res) =&gt; {
-    res.text(<span class="hljs-string">&apos;Ok, do you want beverages or tickes?&apos;</span>, {
-        <span class="hljs-string">&apos;tickets/need&apos;</span>: <span class="hljs-string">&apos;Tickets&apos;</span>,
-        <span class="hljs-string">&apos;beverages/coffee&apos;</span>: <span class="hljs-string">&apos;Coffee&apos;</span>,
-        <span class="hljs-string">&apos;beverages/tee&apos;</span>: <span class="hljs-string">&apos;Tee&apos;</span>
-    })
-});
-</code></pre>
-<p>In this example, the bot responds to <code>how-much</code> intent only when a previous interaction is one of those in the tickets router.</p>
-<h2 id="processing-an-expected-response-interaction-context"><a name="processing-an-expected-response-interaction-context" class="plugin-anchor" href="#processing-an-expected-response-interaction-context"><i class="fa fa-link" aria-hidden="true"></i></a>Processing an expected response (interaction context)</h2>
-<p>To just process a response on a single interaction, there is a <code>res.expected(&lt;action&gt;)</code> method. It defines, which interaction will be triggred, when the user responds with text. You can</p>
-<ol>
-<li><p><strong>Process the a raw text (response fallback)</strong></p>
-<p>It&apos;s usefull when asking the user for an input. The text will be always processed with the <code>email-response</code> interaction.</p>
-<p>How to handle correct user responses, like: <code>john.doe@gmail.com</code>.</p>
-<pre><code class="lang-javascript">tickets.use(<span class="hljs-string">&apos;ask-for-email&apos;</span>, (req, res) =&gt; {
- res.text(<span class="hljs-string">&apos;Will you give me your email?&apos;</span>)
-   .expected(<span class="hljs-string">&apos;email-response&apos;</span>);
-});
-
-tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, (req, res) =&gt; {
- <span class="hljs-keyword">const</span> email = req.text();
- res.text(<span class="hljs-string">`Ok, saving <span class="hljs-subst">${email}</span> as your email.`</span>)
-   .setState({ email });
-});
-</code></pre>
 </li>
-<li><p><strong>Handling a specific intent</strong></p>
-<p>What if the user does not wont to give you an email? Let&apos;s detect a negative response.</p>
-<p>How to handle specifc user responses, like: <code>no, not</code>.</p>
-<pre><code class="lang-javascript">tickets.use(<span class="hljs-string">&apos;ask-for-email&apos;</span>, (req, res) =&gt; {
- res.text(<span class="hljs-string">&apos;Will you give me your email?&apos;</span>)
-   .expected(<span class="hljs-string">&apos;email-response&apos;</span>);
-});
-
-tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, ai.match(<span class="hljs-string">&apos;negative&apos;</span>), (req, res) =&gt; {
- res.text(<span class="hljs-string">&apos;It\&apos;s ok. I do not insist on having your email.&apos;</span>);
-});
-
-tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, (req, res) =&gt; {
- <span class="hljs-keyword">const</span> email = req.text();
- res.text(<span class="hljs-string">`Ok, saving <span class="hljs-subst">${email}</span> as your email.`</span>)
-   .setState({ email });
-});
-</code></pre>
+<li><p><strong>#beforeAiPreload(req, res): boolean</strong></p>
+<p>  Called immediately after loading the state and before the intent or entities are attached and also before the &quot;setState&quot; from quick replies is processed.</p>
+<p>  Returning <code>false</code> stops the dispatching.</p>
 </li>
-</ol>
-<h2 id="bookmarks-global-intents-under-control"><a name="bookmarks-global-intents-under-control" class="plugin-anchor" href="#bookmarks-global-intents-under-control"><i class="fa fa-link" aria-hidden="true"></i></a>Bookmarks: Global intents under control</h2>
-<p>When using <strong>an interaction context</strong> - the expected interaction is specified, the global intents are not triggered, but <strong>they&apos;re accessible under bookmarks</strong>. Let&apos;s follow up the previous example.</p>
-<pre><code class="lang-javascript">tickets.use(<span class="hljs-string">&apos;ask-for-email&apos;</span>, (req, res) =&gt; {
-    res.text(<span class="hljs-string">&apos;Will you give me your email?&apos;</span>)
-        .expected(<span class="hljs-string">&apos;email-response&apos;</span>);
-});
+<li><p><strong>#beforeProcessMessage(req, res): boolean</strong></p>
+<p>  Called just before passing a message through bot.</p>
+<p>  Returning <code>false</code> stops the dispatching.</p>
+</li>
+<li><p><strong>#afterProcessMessage(req, res)</strong></p>
+<p>  Called after the bot completes dispatching an event. Allows to modify state before it&apos;ll be stored.</p>
+</li>
+</ul>
+<h2 id="using-the-plugin"><a name="using-the-plugin" class="plugin-anchor" href="#using-the-plugin"><i class="fa fa-link" aria-hidden="true"></i></a>Using the plugin</h2>
+<p>This example shows how to implement own state property and it&apos;s setter, so the data will be persisted.</p>
+<pre><code class="lang-javascript">
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MySpecialStatePlugin</span> </span>{
 
-
-tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, <span class="hljs-keyword">async</span> (req, res, postBack) =&gt; {
-    <span class="hljs-comment">// if there is a bookmark</span>
-    <span class="hljs-keyword">if</span> (res.bookmark()) {
-        <span class="hljs-comment">// respond with the bookmark</span>
-        <span class="hljs-keyword">await</span> res.runBookmark(postBack);
-
-        <span class="hljs-comment">// stop</span>
-        <span class="hljs-keyword">return</span> Router.END;
+    beforeProcessMessage (req, res) {
+        <span class="hljs-built_in">Object</span>.assign(req, {
+            mySpecialState: req.state._mySpecState
+        });
+        <span class="hljs-built_in">Object</span>.assign(res, {
+            _updateMySpecialState: {},
+            setMySpecialState (data) {
+                <span class="hljs-built_in">Object</span>.assign(<span class="hljs-keyword">this</span>._updateMySpecialState, data);
+            }
+        })
     }
 
-    <span class="hljs-keyword">const</span> email = req.text();
+    afterProcessMessage (req, res) {
+        res.setState({
+            _mySpecState: {
+                ...req.mySpecialState,
+                ...res._updateMySpecialState
+            }
+        });
+    }
 
-    res.text(<span class="hljs-string">`Ok, saving <span class="hljs-subst">${email}</span> as your email.`</span>)
-        .setState({ email });
+}
+
+<span class="hljs-comment">// using the plugin</span>
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+
+bot.use(<span class="hljs-string">&apos;start&apos;</span>, (req, res) =&gt; {
+    res.setMySpecialState({ visitedStart: <span class="hljs-literal">true</span> });
 });
+
+<span class="hljs-comment">// register the plugin in processor</span>
+<span class="hljs-keyword">const</span> processor = <span class="hljs-keyword">new</span> Processor(bot);
+
+processor.plugin(<span class="hljs-keyword">new</span> MySpecialStatePlugin());
 </code></pre>
 
                                 
@@ -1300,12 +1150,12 @@ tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, <span c
 
             
                 
-                <a href="templates.html#working-with-webviews" class="navigation navigation-prev " aria-label="Previous page: Webviews">
+                <a href="nlpRouting.html#bookmarks-global-intents-under-control" class="navigation navigation-prev " aria-label="Previous page: Bookmarks">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="nlpRouting.html#defining-entities" class="navigation navigation-next " aria-label="Next page: Entities">
+                <a href="../api/Request.html" class="navigation navigation-next " aria-label="Next page: Request">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1316,7 +1166,7 @@ tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, <span c
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Intents, entities and fallbacks","level":"2.8","depth":1,"next":{"title":"Entities","level":"2.8.1","depth":2,"anchor":"#defining-entities","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#defining-entities","articles":[]},"previous":{"title":"Webviews","level":"2.7.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/nlpRouting.md","mtime":"2019-07-19T13:48:06.433Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Extending the Processor","level":"2.9","depth":1,"next":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"previous":{"title":"Bookmarks","level":"2.8.5","depth":2,"anchor":"#bookmarks-global-intents-under-control","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#bookmarks-global-intents-under-control","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/extendingProcessor.md","mtime":"2020-03-09T13:08:58.403Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

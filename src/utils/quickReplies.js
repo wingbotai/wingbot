@@ -174,8 +174,8 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
  *
  * @ignore
  * @param {Object[]} expectedKeywords
- * @param {import('../Request')} req
- * @param {import('../Ai')} ai
+ * @param {Request} req
+ * @param {Ai} ai
  * @returns {null|Object}
  */
 function quickReplyAction (expectedKeywords, req, ai) {

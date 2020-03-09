@@ -799,6 +799,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.9" data-path="extendingProcessor.html">
+            
+                <a href="extendingProcessor.html">
+            
+                    
+                    Extending the Processor
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1077,27 +1090,23 @@ bot.use(<span class="hljs-string">&apos;/&apos;</span>, (req, res) =&gt; {
         .expected(<span class="hljs-string">&apos;name&apos;</span>);
 });
 
-<span class="hljs-comment">// leave exit point</span>
-bot.use(<span class="hljs-string">&apos;/leave&apos;</span>, () =&gt; Router.exit(<span class="hljs-string">&apos;leave&apos;</span>));
-
-bot.use(<span class="hljs-string">&apos;/name&apos;</span>, (req, res) =&gt; {
+bot.use(<span class="hljs-string">&apos;name&apos;</span>, (req, res, postBack) =&gt; {
     <span class="hljs-keyword">const</span> name = req.text();
     <span class="hljs-keyword">if</span> (!name || name.split(<span class="hljs-string">&apos; &apos;</span>).length &lt; <span class="hljs-number">2</span>) {
         res.text(<span class="hljs-string">&apos;Fullname must have two words or more.&apos;</span>)
             .text(<span class="hljs-string">&apos;Please try it again&apos;</span>, {
-                leave: <span class="hljs-string">&apos;Don\&apos;t want&apos;</span>
+                <span class="hljs-string">&apos;/start&apos;</span>: <span class="hljs-string">&apos;Don\&apos;t want&apos;</span>
             });
         <span class="hljs-comment">// just stop dispatching (equal to &quot;return undefined;&quot;)</span>
         <span class="hljs-keyword">return</span> Router.END;
     }
-    <span class="hljs-comment">// pass data to exit point</span>
-    <span class="hljs-keyword">return</span> Router.exit(<span class="hljs-string">&apos;setName&apos;</span>, { name });
+
+    res.setState({ name });
+    postBack(<span class="hljs-string">&apos;/&apos;</span>);
 });
 
 <span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
-<p>And here is how to connect the block into the application.
-<strong>All exit points must be covered by handlers: <code>.onExit()</code></strong> to ensure continuous conversation.</p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// index.js</span>
 <span class="hljs-keyword">const</span> { Router, Settings } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 <span class="hljs-keyword">const</span> setName = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;./setName&apos;</span>);
@@ -1107,7 +1116,7 @@ settings.getStartedButton(<span class="hljs-string">&apos;/start&apos;</span>);
 
 <span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-bot.use(<span class="hljs-string">&apos;/start&apos;</span>, (req, res) =&gt; {
+bot.use(<span class="hljs-string">&apos;start&apos;</span>, (req, res) =&gt; {
     <span class="hljs-keyword">if</span> (req.state.name) {
         res.text(<span class="hljs-string">`Hello, I&apos;am <span class="hljs-subst">${req.state.name}</span>`</span>, {
             setName: <span class="hljs-string">&apos;That\&apos;s bad name&apos;</span>
@@ -1119,14 +1128,7 @@ bot.use(<span class="hljs-string">&apos;/start&apos;</span>, (req, res) =&gt; {
     }
 });
 
-bot.use(<span class="hljs-string">&apos;/setName&apos;</span>, setName)
-    <span class="hljs-comment">// react on setName exit point</span>
-    .onExit(<span class="hljs-string">&apos;setName&apos;</span>, ({ name }, req, res, postBack) =&gt; {
-        res.setState({ name });
-        postBack(<span class="hljs-string">&apos;/&apos;</span>);
-    })
-    <span class="hljs-comment">// react on leave exit point</span>
-    .onExit(<span class="hljs-string">&apos;leave&apos;</span>, (data, req, res, postBack) =&gt; postBack(<span class="hljs-string">&apos;/start&apos;</span>));
+bot.use(<span class="hljs-string">&apos;setName&apos;</span>, setName);
 
 <span class="hljs-built_in">module</span>.exports = bot;
 </code></pre>
@@ -1189,7 +1191,7 @@ bot.use(<span class="hljs-string">&apos;/setName&apos;</span>, setName)
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Nesting - Reusable Blocks","level":"2.6","depth":1,"next":{"title":"Concept","level":"2.6.1","depth":2,"anchor":"#basic-concept","path":"tutorial/nestingRouters.md","ref":"tutorial/nestingRouters.md#basic-concept","articles":[]},"previous":{"title":"Redirecting with Postback","level":"2.5.4","depth":2,"anchor":"#redirecting-flow-with-post-back","path":"tutorial/advancedRouting.md","ref":"tutorial/advancedRouting.md#redirecting-flow-with-post-back","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/nestingRouters.md","mtime":"2018-04-17T16:51:28.999Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-18T18:07:18.072Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Nesting - Reusable Blocks","level":"2.6","depth":1,"next":{"title":"Concept","level":"2.6.1","depth":2,"anchor":"#basic-concept","path":"tutorial/nestingRouters.md","ref":"tutorial/nestingRouters.md#basic-concept","articles":[]},"previous":{"title":"Redirecting with Postback","level":"2.5.4","depth":2,"anchor":"#redirecting-flow-with-post-back","path":"tutorial/advancedRouting.md","ref":"tutorial/advancedRouting.md#redirecting-flow-with-post-back","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/nestingRouters.md","mtime":"2020-03-09T13:08:58.404Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

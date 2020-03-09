@@ -799,6 +799,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.9" data-path="../tutorial/extendingProcessor.html">
+            
+                <a href="../tutorial/extendingProcessor.html">
+            
+                    
+                    Extending the Processor
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1056,9 +1069,17 @@
 <dl>
 <dt><a href="#TestSource">TestSource</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#TestCase">TestCase</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TextCase">TextCase</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TextTest">TextTest</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#TestCaseStep">TestCaseStep</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#TestCase">TestCase</a> : <code>object</code></dt>
+<dt><a href="#List">List</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TestsDefinition">TestsDefinition</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#TestsOutput">TestsOutput</a> : <code>object</code></dt>
 <dd></dd>
@@ -1087,7 +1108,6 @@
 <li><a href="#Tester_text">.text(text)</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_intent">.intent(intent, [text], [score])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_intentWithEntity">.intentWithEntity(intent, entity, [value], [text], [score])</a> &#x21D2; <code>Promise</code></li>
-<li><a href="#Tester_passThread">.passThread([data], [appId])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_optin">.optin(action, [data], [userRef])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_quickReply">.quickReply(action, [data])</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_quickReplyText">.quickReplyText(text)</a> &#x21D2; <code>Promise.&lt;boolean&gt;</code></li>
@@ -1202,7 +1222,7 @@ It joins them into a single sting</p>
 <ul>
 <li>intent <code>string</code> | <code>Array.&lt;string&gt;</code></li>
 <li>[text] <code>string</code> <code> = null</code></li>
-<li>[score] <code>number</code> <code> = </code></li>
+<li>[score] <code>number</code></li>
 </ul>
 <div id="Tester_intentWithEntity">&#xA0;</div>
 
@@ -1215,15 +1235,6 @@ It joins them into a single sting</p>
 <li>[value] <code>string</code></li>
 <li>[text] <code>string</code></li>
 <li>[score] <code>number</code> <code> = 1</code></li>
-</ul>
-<div id="Tester_passThread">&#xA0;</div>
-
-<h3 id="testerpassthreaddata-appid-&#x21D2;-promise"><a name="testerpassthreaddata-appid-&#x21D2;-promise" class="plugin-anchor" href="#testerpassthreaddata-appid-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>tester.passThread([data], [appId]) &#x21D2; <code>Promise</code></h3>
-<p>Makes pass thread control request</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[data] <code>string</code> | <code>Object</code> <code> = null</code> - action</li>
-<li>[appId] <code>string</code> <code> = &quot;random-app&quot;</code> - specific app id</li>
 </ul>
 <div id="Tester_optin">&#xA0;</div>
 
@@ -1433,7 +1444,8 @@ It joins them into a single sting</p>
 <ul>
 <li><a href="#ConversationTester">ConversationTester</a><ul>
 <li><a href="#new_ConversationTester_new">new ConversationTester(testsSource, botFactory, [options])</a></li>
-<li><a href="#ConversationTester_test">.test(validationRequestBody)</a> &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></li>
+<li><a href="#ConversationTester_test">.test(validationRequestBody, step)</a> &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></li>
+<li><a href="#ConversationTester_executeTextCase">.executeTextCase(t, textCase, botconfig, longestText)</a></li>
 <li><a href="#ConversationTester_executeStep">.executeStep(t, step)</a></li>
 </ul>
 </li>
@@ -1449,16 +1461,32 @@ It joins them into a single sting</p>
 <li>[.disableAssertActions] <code>boolean</code></li>
 <li>[.disableAssertTexts] <code>boolean</code></li>
 <li>[.disableAssertQuickReplies] <code>boolean</code></li>
+<li>[.useConversationForTextTestCases] <code>boolean</code></li>
+<li>[.textThreshold] <code>boolean</code></li>
+<li>[.stepCasesPerStep] <code>number</code></li>
+<li>[.textCasesPerStep] <code>number</code></li>
+<li>[.textCaseParallel] <code>number</code></li>
 </ul>
 </li>
 </ul>
 <div id="ConversationTester_test">&#xA0;</div>
 
-<h3 id="conversationtestertestvalidationrequestbody-&#x21D2;-promisetestsoutput"><a name="conversationtestertestvalidationrequestbody-&#x21D2;-promisetestsoutput" class="plugin-anchor" href="#conversationtestertestvalidationrequestbody-&#x21D2;-promisetestsoutput"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.test(validationRequestBody) &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></h3>
+<h3 id="conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput"><a name="conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput" class="plugin-anchor" href="#conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.test(validationRequestBody, step) &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></h3>
 <p>Runs the conversation test</p>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>validationRequestBody <code>Object</code> <code> = </code></li>
+<li>step <code>number</code> <code> = </code></li>
+</ul>
+<div id="ConversationTester_executeTextCase">&#xA0;</div>
+
+<h3 id="conversationtesterexecutetextcaset-textcase-botconfig-longesttext"><a name="conversationtesterexecutetextcaset-textcase-botconfig-longesttext" class="plugin-anchor" href="#conversationtesterexecutetextcaset-textcase-botconfig-longesttext"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.executeTextCase(t, textCase, botconfig, longestText)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>t <a href="#Tester"><code>Tester</code></a></li>
+<li>textCase <a href="#TextTest"><code>TextTest</code></a></li>
+<li>botconfig <code>*</code></li>
+<li>longestText <code>number</code></li>
 </ul>
 <div id="ConversationTester_executeStep">&#xA0;</div>
 
@@ -1466,7 +1494,7 @@ It joins them into a single sting</p>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>t <a href="#Tester"><code>Tester</code></a></li>
-<li>step <code>*</code></li>
+<li>step <a href="#TestCaseStep"><code>TestCaseStep</code></a></li>
 </ul>
 <div id="TestSource">&#xA0;</div>
 
@@ -1483,6 +1511,88 @@ It joins them into a single sting</p>
 <tr>
 <td>getTestCases</td>
 <td><code>function</code></td>
+</tr>
+</tbody>
+</table>
+<div id="TestCase">&#xA0;</div>
+
+<h2 id="testcase--object"><a name="testcase--object" class="plugin-anchor" href="#testcase--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestCase : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>steps</td>
+<td><a href="#TestCaseStep"><code>Array.&lt;TestCaseStep&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="TextCase">&#xA0;</div>
+
+<h2 id="textcase--object"><a name="textcase--object" class="plugin-anchor" href="#textcase--object"><i class="fa fa-link" aria-hidden="true"></i></a>TextCase : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>texts</td>
+<td><a href="#TextTest"><code>Array.&lt;TextTest&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="TextTest">&#xA0;</div>
+
+<h2 id="texttest--object"><a name="texttest--object" class="plugin-anchor" href="#texttest--object"><i class="fa fa-link" aria-hidden="true"></i></a>TextTest : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>intent</td>
+<td><code>string</code></td>
 </tr>
 </tbody>
 </table>
@@ -1528,9 +1638,9 @@ It joins them into a single sting</p>
 </tr>
 </tbody>
 </table>
-<div id="TestCase">&#xA0;</div>
+<div id="List">&#xA0;</div>
 
-<h2 id="testcase--object"><a name="testcase--object" class="plugin-anchor" href="#testcase--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestCase : <code>object</code></h2>
+<h2 id="list--object"><a name="list--object" class="plugin-anchor" href="#list--object"><i class="fa fa-link" aria-hidden="true"></i></a>List : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1541,16 +1651,39 @@ It joins them into a single sting</p>
 </thead>
 <tbody>
 <tr>
-<td>list</td>
-<td><code>string</code></td>
+<td>id</td>
+<td><code>number</code></td>
 </tr>
 <tr>
 <td>name</td>
 <td><code>string</code></td>
 </tr>
 <tr>
-<td>steps</td>
-<td><a href="#TestCaseStep"><code>Array.&lt;TestCaseStep&gt;</code></a></td>
+<td>type</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>testCases</td>
+<td><a href="#TestCase"><code>Array.&lt;TestCase&gt;</code></a> \</td>
+<td><a href="#TextTest"><code>Array.&lt;TextTest&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="TestsDefinition">&#xA0;</div>
+
+<h2 id="testsdefinition--object"><a name="testsdefinition--object" class="plugin-anchor" href="#testsdefinition--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestsDefinition : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lists</td>
+<td><a href="#List"><code>Array.&lt;List&gt;</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -1579,8 +1712,24 @@ It joins them into a single sting</p>
 <td><code>number</code></td>
 </tr>
 <tr>
+<td>skipped</td>
+<td><code>number</code></td>
+</tr>
+<tr>
 <td>output</td>
 <td><code>string</code></td>
+</tr>
+<tr>
+<td>summaryOutput</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>step</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>stepCount</td>
+<td><code>number</code></td>
 </tr>
 </tbody>
 </table>
@@ -1627,7 +1776,7 @@ It joins them into a single sting</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2020-01-18T18:07:06.266Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-18T18:07:18.072Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2020-03-09T14:03:27.343Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

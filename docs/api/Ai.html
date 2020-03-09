@@ -799,6 +799,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.9" data-path="../tutorial/extendingProcessor.html">
+            
+                <a href="../tutorial/extendingProcessor.html">
+            
+                    
+                    Extending the Processor
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1062,6 +1075,10 @@
 </dd>
 <dt><a href="#IntentRule">IntentRule</a> : <code>string</code> | <code>EntityExpression</code></dt>
 <dd></dd>
+<dt><a href="#BotPath">BotPath</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#IntentAction">IntentAction</a> : <code>Object</code></dt>
+<dd></dd>
 <dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
@@ -1101,16 +1118,15 @@
 <li><a href="#Ai_confidence">.confidence</a> : <code>number</code></li>
 <li><a href="#Ai_threshold">.threshold</a> : <code>number</code></li>
 <li><a href="#Ai_logger">.logger</a> : <code>Object</code></li>
-<li><a href="#Ai_disableBookmarking">.disableBookmarking</a> : <code>boolean</code></li>
 <li><a href="#Ai_matcher">.matcher</a> : <a href="#AiMatching"><code>AiMatching</code></a></li>
 <li><a href="#Ai_getPrefix">.getPrefix(prefix, req)</a></li>
 <li><a href="#Ai_textFilter">.textFilter(text)</a> : <a href="#textFilter"><code>textFilter</code></a></li>
 <li><a href="#Ai_mockIntent">.mockIntent([intent], [score])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Ai_register">.register(model, prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></li>
-<li><a href="#Ai_load">.load()</a></li>
-<li><a href="#Ai_match">.match(intent, [confidence])</a> &#x21D2; <code>function</code></li>
-<li><a href="#Ai_localMatch">.localMatch(intent, [title], [confidence])</a> &#x21D2; <code>function</code></li>
-<li><a href="#Ai_globalMatch">.globalMatch(intent, [title], [confidence])</a> &#x21D2; <code>function</code></li>
+<li><a href="#Ai_global">.global(path, intents, [title], [meta])</a> &#x21D2; <code>Object</code></li>
+<li><a href="#Ai_local">.local(path, intents, [title])</a> &#x21D2; <code>Object</code></li>
+<li><a href="#Ai_match">.match(intent)</a> &#x21D2; <code>function</code></li>
+<li><a href="#Ai_shouldDisambiguate">.shouldDisambiguate(aiActions)</a> &#x21D2; <code>boolean</code></li>
 </ul>
 </li>
 </ul>
@@ -1128,11 +1144,6 @@
 
 <h3 id="ailogger--object"><a name="ailogger--object" class="plugin-anchor" href="#ailogger--object"><i class="fa fa-link" aria-hidden="true"></i></a>ai.logger : <code>Object</code></h3>
 <p>The logger (console by default)</p>
-<p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
-<div id="Ai_disableBookmarking">&#xA0;</div>
-
-<h3 id="aidisablebookmarking--boolean"><a name="aidisablebookmarking--boolean" class="plugin-anchor" href="#aidisablebookmarking--boolean"><i class="fa fa-link" aria-hidden="true"></i></a>ai.disableBookmarking : <code>boolean</code></h3>
-<p>Backward compatibility - to be able to use older &quot;callback&quot; middleware</p>
 <p><strong>Kind</strong>: instance property of <a href="#Ai"><code>Ai</code></a>  </p>
 <div id="Ai_matcher">&#xA0;</div>
 
@@ -1200,20 +1211,58 @@ describe(<span class="hljs-string">&apos;bot&apos;</span>, <span class="hljs-fun
 <li>model <code>string</code> | <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code> - wingbot model name or AI plugin</li>
 <li>prefix <code>string</code> <code> = &quot;default&quot;</code> - model prefix</li>
 </ul>
-<div id="Ai_load">&#xA0;</div>
+<div id="Ai_global">&#xA0;</div>
 
-<h3 id="aiload"><a name="aiload" class="plugin-anchor" href="#aiload"><i class="fa fa-link" aria-hidden="true"></i></a>ai.load()</h3>
-<p>Middleware, which ensures, that AI data are properly loaded in Request</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { ai, Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<h3 id="aiglobalpath-intents-title-meta-&#x21D2;-object"><a name="aiglobalpath-intents-title-meta-&#x21D2;-object" class="plugin-anchor" href="#aiglobalpath-intents-title-meta-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>ai.global(path, intents, [title], [meta]) &#x21D2; <code>Object</code></h3>
+<p>Returns matching middleware, that will export the intent to the root router
+so the intent will be matched in a global context</p>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>Object</code> - - the middleware<br><strong>Params</strong></p>
+<ul>
+<li>path <code>string</code></li>
+<li>intents <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
+<li>[title] <code>string</code> <code> = null</code> - disambiguation title</li>
+<li>[meta] <code>Object</code> - metadata for multibot environments<ul>
+<li>[.targetAppId] <code>Object</code> - target application id</li>
+<li>[.targetAction] <code>Object</code> - target action</li>
+</ul>
+</li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
-<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+ai.register(<span class="hljs-string">&apos;app-model&apos;</span>);
 
-bot.use(ai.load());
+bot.use(ai.global(<span class="hljs-string">&apos;route-path&apos;</span>, <span class="hljs-string">&apos;intent1&apos;</span>), (req, res) =&gt; {
+    <span class="hljs-built_in">console</span>.log(req.intent(<span class="hljs-literal">true</span>)); <span class="hljs-comment">// { intent: &apos;intent1&apos;, score: 0.9604 }</span>
+
+    res.text(<span class="hljs-string">&apos;Oh, intent 1 :)&apos;</span>);
+});
+</code></pre>
+<div id="Ai_local">&#xA0;</div>
+
+<h3 id="ailocalpath-intents-title-&#x21D2;-object"><a name="ailocalpath-intents-title-&#x21D2;-object" class="plugin-anchor" href="#ailocalpath-intents-title-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>ai.local(path, intents, [title]) &#x21D2; <code>Object</code></h3>
+<p>Returns matching middleware, that will export the intent to the root router
+so the intent will be matched in a context of local dialogue</p>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>Object</code> - - the middleware<br><strong>Params</strong></p>
+<ul>
+<li>path <code>string</code></li>
+<li>intents <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
+<li>[title] <code>string</code> <code> = null</code> - disambiguation title</li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+
+ai.register(<span class="hljs-string">&apos;app-model&apos;</span>);
+
+bot.use(ai.global(<span class="hljs-string">&apos;route-path&apos;</span>, <span class="hljs-string">&apos;intent1&apos;</span>), (req, res) =&gt; {
+    <span class="hljs-built_in">console</span>.log(req.intent(<span class="hljs-literal">true</span>)); <span class="hljs-comment">// { intent: &apos;intent1&apos;, score: 0.9604 }</span>
+
+    res.text(<span class="hljs-string">&apos;Oh, intent 1 :)&apos;</span>);
+});
 </code></pre>
 <div id="Ai_match">&#xA0;</div>
 
-<h3 id="aimatchintent-confidence-&#x21D2;-function"><a name="aimatchintent-confidence-&#x21D2;-function" class="plugin-anchor" href="#aimatchintent-confidence-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.match(intent, [confidence]) &#x21D2; <code>function</code></h3>
+<h3 id="aimatchintent-&#x21D2;-function"><a name="aimatchintent-&#x21D2;-function" class="plugin-anchor" href="#aimatchintent-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.match(intent) &#x21D2; <code>function</code></h3>
 <p>Returns matching middleware</p>
 <p><strong>supports:</strong></p>
 <ul>
@@ -1230,7 +1279,6 @@ bot.use(ai.load());
 <p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware<br><strong>Params</strong></p>
 <ul>
 <li>intent <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
-<li>[confidence] <code>number</code> <code> = </code></li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
@@ -1243,50 +1291,13 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
     res.text(<span class="hljs-string">&apos;Oh, intent 1 :)&apos;</span>);
 });
 </code></pre>
-<div id="Ai_localMatch">&#xA0;</div>
+<div id="Ai_shouldDisambiguate">&#xA0;</div>
 
-<h3 id="ailocalmatchintent-title-confidence-&#x21D2;-function"><a name="ailocalmatchintent-title-confidence-&#x21D2;-function" class="plugin-anchor" href="#ailocalmatchintent-title-confidence-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.localMatch(intent, [title], [confidence]) &#x21D2; <code>function</code></h3>
-<p>Returns matching middleware, that will export the intent to the root router
-so the intent will be matched in a local context (nested Router)</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware<br><strong>Params</strong></p>
+<h3 id="aishoulddisambiguateaiactions-&#x21D2;-boolean"><a name="aishoulddisambiguateaiactions-&#x21D2;-boolean" class="plugin-anchor" href="#aishoulddisambiguateaiactions-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>ai.shouldDisambiguate(aiActions) &#x21D2; <code>boolean</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Params</strong></p>
 <ul>
-<li>intent <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
-<li>[title] <code>string</code> <code> = null</code></li>
-<li>[confidence] <code>number</code> <code> = </code></li>
+<li>aiActions <a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></li>
 </ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-
-ai.register(<span class="hljs-string">&apos;app-model&apos;</span>);
-
-bot.use(ai.localMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (req, res) =&gt; {
-    <span class="hljs-built_in">console</span>.log(req.intent(<span class="hljs-literal">true</span>)); <span class="hljs-comment">// { intent: &apos;intent1&apos;, score: 0.9604 }</span>
-
-    res.text(<span class="hljs-string">&apos;Oh, intent 1 :)&apos;</span>);
-});
-</code></pre>
-<div id="Ai_globalMatch">&#xA0;</div>
-
-<h3 id="aiglobalmatchintent-title-confidence-&#x21D2;-function"><a name="aiglobalmatchintent-title-confidence-&#x21D2;-function" class="plugin-anchor" href="#aiglobalmatchintent-title-confidence-&#x21D2;-function"><i class="fa fa-link" aria-hidden="true"></i></a>ai.globalMatch(intent, [title], [confidence]) &#x21D2; <code>function</code></h3>
-<p>Returns matching middleware, that will export the intent to the root router
-so the intent will be matched in a global context</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware<br><strong>Params</strong></p>
-<ul>
-<li>intent <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
-<li>[title] <code>string</code> <code> = null</code></li>
-<li>[confidence] <code>number</code> <code> = </code></li>
-</ul>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-
-ai.register(<span class="hljs-string">&apos;app-model&apos;</span>);
-
-bot.use(ai.globalMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (req, res) =&gt; {
-    <span class="hljs-built_in">console</span>.log(req.intent(<span class="hljs-literal">true</span>)); <span class="hljs-comment">// { intent: &apos;intent1&apos;, score: 0.9604 }</span>
-
-    res.text(<span class="hljs-string">&apos;Oh, intent 1 :)&apos;</span>);
-});
-</code></pre>
 <div id="WingbotModel">&#xA0;</div>
 
 <h2 id="wingbotmodel"><a name="wingbotmodel" class="plugin-anchor" href="#wingbotmodel"><i class="fa fa-link" aria-hidden="true"></i></a>WingbotModel</h2>
@@ -1385,13 +1396,13 @@ bot.use(ai.globalMatch(<span class="hljs-string">&apos;intent1&apos;</span>), (r
 <h3 id="aimatchingredundantentityhandicap--number"><a name="aimatchingredundantentityhandicap--number" class="plugin-anchor" href="#aimatchingredundantentityhandicap--number"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.redundantEntityHandicap : <code>number</code></h3>
 <p>When there are additional entities then required add a handicap for each unmatched entity
 Also works, when an optional entity was not matched
-(0.05 by default)</p>
+(0.03 by default)</p>
 <p><strong>Kind</strong>: instance property of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
 <div id="AiMatching_redundantIntentHandicap">&#xA0;</div>
 
 <h3 id="aimatchingredundantintenthandicap--number"><a name="aimatchingredundantintenthandicap--number" class="plugin-anchor" href="#aimatchingredundantintenthandicap--number"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.redundantIntentHandicap : <code>number</code></h3>
 <p>When there is additional intent, the final score will be lowered by this value
-(0.15 by default)</p>
+(0.06 by default)</p>
 <p><strong>Kind</strong>: instance property of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
 <div id="AiMatching_multiMatchGain">&#xA0;</div>
 
@@ -1525,6 +1536,66 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 
 <h2 id="intentrule--string--entityexpression"><a name="intentrule--string--entityexpression" class="plugin-anchor" href="#intentrule--string--entityexpression"><i class="fa fa-link" aria-hidden="true"></i></a>IntentRule : <code>string</code> | <a href="#EntityExpression"><code>EntityExpression</code></a></h2>
 <p><strong>Kind</strong>: global typedef  </p>
+<div id="BotPath">&#xA0;</div>
+
+<h2 id="botpath--object"><a name="botpath--object" class="plugin-anchor" href="#botpath--object"><i class="fa fa-link" aria-hidden="true"></i></a>BotPath : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="IntentAction">&#xA0;</div>
+
+<h2 id="intentaction--object"><a name="intentaction--object" class="plugin-anchor" href="#intentaction--object"><i class="fa fa-link" aria-hidden="true"></i></a>IntentAction : <code>Object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>intent</td>
+<td><a href="#Intent"><code>Intent</code></a></td>
+</tr>
+<tr>
+<td>sort</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>local</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>aboveConfidence</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[winner]</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[title]</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Entity">&#xA0;</div>
 
 <h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>Object</code></h2>
@@ -1760,7 +1831,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-01-18T18:07:07.495Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-01-18T18:07:18.072Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-03-09T14:03:27.357Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
