@@ -48,7 +48,7 @@ You can specify:
 
 - **inputs** - configuration of each plugin
 
-    There are two types: `text`, `select` and `postback`. Input data are accessible in `params` as a 5th parameter of plugin and in `req.params`.
+    There are two types: `text`, `select`, `array` and `postback`. Input data are accessible in `params` as a 5th parameter of plugin and in `req.params`.
 
 - **items** - the response blocks
 
@@ -79,38 +79,45 @@ module.exports = plugins;
 
 ## Plugin as a nested Router
 
-For more sophisticated use cases you can use the router as a plugin.
+For more sophisticated use cases you can use the router as a plugin. **But don't forget to register it as a factory!**
 
 ```javascript
 const { Plugins, Router } = require('wingbot');
 
 const plugins = new Plugins();
 
-const exampleBlock = new Router();
+function exampleBlockFactory (params) {
+  // load the plugin configuration
+  const { text } = params;
 
-// an incomming route
-exampleBlock.use('/', (req, res, postBack) => {
-    // load the plugin configuration
-    const { text } = req.params;
+  // there you're able to validate the params
 
-    // send the text as a response
-    res.text(text);
+  const exampleBlock = new Router();
 
-    // make some async job
-    postBack('after-timeout', async () => {
-        await new Promise(r => setTimeout(r, 1000));
-        return { myVar: 'foo' };
-    });
-});
+  // an incomming route
+  exampleBlock.use('/', (req, res, postBack) => {
 
-// following action
-exampleBlock.use('after-timeout', async (req, res) => {
-    const { myVar } = req.action(true);
+      // send the text as a response
+      res.text(text);
 
-    await res.run('responseBlockName');
-});
+      // make some async job
+      postBack('after-timeout', async () => {
+          await new Promise(r => setTimeout(r, 1000));
+          return { myVar: 'foo' };
+      });
+  });
 
-plugins.register('exampleBlock', exampleBlock);
+  // following action
+  exampleBlock.use('after-timeout', async (req, res) => {
+      const { myVar } = req.action(true);
+
+      await res.run('responseBlockName');
+  });
+
+  return exampleBlock;
+}
+
+plugins.registerFactory('exampleBlock', exampleBlockFactory);
 
 module.exports = plugins;
 ```
@@ -138,4 +145,55 @@ describe('exampleBlock plugin', function () {
     });
 
 });
+```
+
+## Nested forms in plugin configuration
+
+if you want to gather **array of objects** for your plugin's configuration, you can use an `array` input type.
+
+- `keyPropertyName: string` - required identifying property of each object
+- `column: { name: string, label: string }[]` - to make the table more readable, theres ability to show additional label columns
+
+```json
+{
+  "type": "array",
+  "name": "products",
+  "label": "List of products",
+  "keyPropertyName": "ean",
+  "columns": [ // optional
+    {
+      "name": "product_name",
+      "label": "Product name"
+    }
+  ],
+  "inputs": [
+    {
+      "type": "text",
+      "name": "ean",
+      "label": "Unique identification of product"
+    },
+    {
+      "type": "text",
+      "name": "product_name",
+      "label": "Product name"
+    }
+  ]
+}
+```
+
+This input will produce a params object like this:
+
+```javascript
+{
+  products: [
+    {
+      ean: '123132321',
+      product_name: 'Foo'
+    },
+    {
+      ean: '8989898',
+      product_name: 'Bar'
+    }
+  ]
+}
 ```

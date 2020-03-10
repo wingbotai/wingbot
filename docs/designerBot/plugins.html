@@ -1093,7 +1093,7 @@
 <p>You can specify:</p>
 <ul>
 <li><p><strong>inputs</strong> - configuration of each plugin</p>
-<p>  There are two types: <code>text</code>, <code>select</code> and <code>postback</code>. Input data are accessible in <code>params</code> as a 5th parameter of plugin and in <code>req.params</code>.</p>
+<p>  There are two types: <code>text</code>, <code>select</code>, <code>array</code> and <code>postback</code>. Input data are accessible in <code>params</code> as a 5th parameter of plugin and in <code>req.params</code>.</p>
 </li>
 <li><p><strong>items</strong> - the response blocks</p>
 <p>  Blocks of conversation elements to respond with. How to <strong>pass the data</strong> to messages? You can use <code>res.setData({ myVar: &apos;foo&apos; })</code> and use the Handlebars template in message like ``</p>
@@ -1119,36 +1119,43 @@ plugins.register(&apos;exampleBlock&apos;, async (req, res, postBack) =&gt; {
 module.exports = plugins;
 </code></pre>
 <h2 id="plugin-as-a-nested-router"><a name="plugin-as-a-nested-router" class="plugin-anchor" href="#plugin-as-a-nested-router"><i class="fa fa-link" aria-hidden="true"></i></a>Plugin as a nested Router</h2>
-<p>For more sophisticated use cases you can use the router as a plugin.</p>
+<p>For more sophisticated use cases you can use the router as a plugin. <strong>But don&apos;t forget to register it as a factory!</strong></p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Plugins, Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> plugins = <span class="hljs-keyword">new</span> Plugins();
 
-<span class="hljs-keyword">const</span> exampleBlock = <span class="hljs-keyword">new</span> Router();
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">exampleBlockFactory</span> (<span class="hljs-params">params</span>) </span>{
+  <span class="hljs-comment">// load the plugin configuration</span>
+  <span class="hljs-keyword">const</span> { text } = params;
 
-<span class="hljs-comment">// an incomming route</span>
-exampleBlock.use(<span class="hljs-string">&apos;/&apos;</span>, (req, res, postBack) =&gt; {
-    <span class="hljs-comment">// load the plugin configuration</span>
-    <span class="hljs-keyword">const</span> { text } = req.params;
+  <span class="hljs-comment">// there you&apos;re able to validate the params</span>
 
-    <span class="hljs-comment">// send the text as a response</span>
-    res.text(text);
+  <span class="hljs-keyword">const</span> exampleBlock = <span class="hljs-keyword">new</span> Router();
 
-    <span class="hljs-comment">// make some async job</span>
-    postBack(<span class="hljs-string">&apos;after-timeout&apos;</span>, <span class="hljs-keyword">async</span> () =&gt; {
-        <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(r =&gt; setTimeout(r, <span class="hljs-number">1000</span>));
-        <span class="hljs-keyword">return</span> { myVar: <span class="hljs-string">&apos;foo&apos;</span> };
-    });
-});
+  <span class="hljs-comment">// an incomming route</span>
+  exampleBlock.use(<span class="hljs-string">&apos;/&apos;</span>, (req, res, postBack) =&gt; {
 
-<span class="hljs-comment">// following action</span>
-exampleBlock.use(<span class="hljs-string">&apos;after-timeout&apos;</span>, <span class="hljs-keyword">async</span> (req, res) =&gt; {
-    <span class="hljs-keyword">const</span> { myVar } = req.action(<span class="hljs-literal">true</span>);
+      <span class="hljs-comment">// send the text as a response</span>
+      res.text(text);
 
-    <span class="hljs-keyword">await</span> res.run(<span class="hljs-string">&apos;responseBlockName&apos;</span>);
-});
+      <span class="hljs-comment">// make some async job</span>
+      postBack(<span class="hljs-string">&apos;after-timeout&apos;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+          <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(r =&gt; setTimeout(r, <span class="hljs-number">1000</span>));
+          <span class="hljs-keyword">return</span> { myVar: <span class="hljs-string">&apos;foo&apos;</span> };
+      });
+  });
 
-plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, exampleBlock);
+  <span class="hljs-comment">// following action</span>
+  exampleBlock.use(<span class="hljs-string">&apos;after-timeout&apos;</span>, <span class="hljs-keyword">async</span> (req, res) =&gt; {
+      <span class="hljs-keyword">const</span> { myVar } = req.action(<span class="hljs-literal">true</span>);
+
+      <span class="hljs-keyword">await</span> res.run(<span class="hljs-string">&apos;responseBlockName&apos;</span>);
+  });
+
+  <span class="hljs-keyword">return</span> exampleBlock;
+}
+
+plugins.registerFactory(<span class="hljs-string">&apos;exampleBlock&apos;</span>, exampleBlockFactory);
 
 <span class="hljs-built_in">module</span>.exports = plugins;
 </code></pre>
@@ -1172,6 +1179,51 @@ describe(<span class="hljs-string">&apos;exampleBlock plugin&apos;</span>, <span
     });
 
 });
+</code></pre>
+<h2 id="nested-forms-in-plugin-configuration"><a name="nested-forms-in-plugin-configuration" class="plugin-anchor" href="#nested-forms-in-plugin-configuration"><i class="fa fa-link" aria-hidden="true"></i></a>Nested forms in plugin configuration</h2>
+<p>if you want to gather <strong>array of objects</strong> for your plugin&apos;s configuration, you can use an <code>array</code> input type.</p>
+<ul>
+<li><code>keyPropertyName: string</code> - required identifying property of each object</li>
+<li><code>column: { name: string, label: string }[]</code> - to make the table more readable, theres ability to show additional label columns</li>
+</ul>
+<pre><code class="lang-json">{
+  <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;array&quot;</span>,
+  <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;products&quot;</span>,
+  <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;List of products&quot;</span>,
+  <span class="hljs-string">&quot;keyPropertyName&quot;</span>: <span class="hljs-string">&quot;ean&quot;</span>,
+  <span class="hljs-string">&quot;columns&quot;</span>: [ <span class="hljs-comment">// optional</span>
+    {
+      <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;product_name&quot;</span>,
+      <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;Product name&quot;</span>
+    }
+  ],
+  <span class="hljs-string">&quot;inputs&quot;</span>: [
+    {
+      <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;text&quot;</span>,
+      <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;ean&quot;</span>,
+      <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;Unique identification of product&quot;</span>
+    },
+    {
+      <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;text&quot;</span>,
+      <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;product_name&quot;</span>,
+      <span class="hljs-string">&quot;label&quot;</span>: <span class="hljs-string">&quot;Product name&quot;</span>
+    }
+  ]
+}
+</code></pre>
+<p>This input will produce a params object like this:</p>
+<pre><code class="lang-javascript">{
+  products: [
+    {
+      ean: <span class="hljs-string">&apos;123132321&apos;</span>,
+      product_name: <span class="hljs-string">&apos;Foo&apos;</span>
+    },
+    {
+      ean: <span class="hljs-string">&apos;8989898&apos;</span>,
+      product_name: <span class="hljs-string">&apos;Bar&apos;</span>
+    }
+  ]
+}
 </code></pre>
 
                                 
@@ -1216,7 +1268,7 @@ describe(<span class="hljs-string">&apos;exampleBlock plugin&apos;</span>, <span
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Plugins","level":"1.4","depth":1,"next":{"title":"Testing","level":"1.5","depth":1,"path":"tutorial/testing.md","ref":"tutorial/testing.md","articles":[]},"previous":{"title":"Loading data from APIs","level":"1.3.4","depth":2,"anchor":"#loading-data-from-apis","path":"designerBot/scripting.md","ref":"designerBot/scripting.md#loading-data-from-apis","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"designerBot/plugins.md","mtime":"2019-09-18T14:29:45.749Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-09T14:04:15.954Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Plugins","level":"1.4","depth":1,"next":{"title":"Testing","level":"1.5","depth":1,"path":"tutorial/testing.md","ref":"tutorial/testing.md","articles":[]},"previous":{"title":"Loading data from APIs","level":"1.3.4","depth":2,"anchor":"#loading-data-from-apis","path":"designerBot/scripting.md","ref":"designerBot/scripting.md#loading-data-from-apis","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"designerBot/plugins.md","mtime":"2020-03-10T07:39:40.416Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-10T07:39:52.957Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
