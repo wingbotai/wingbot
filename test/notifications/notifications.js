@@ -307,6 +307,38 @@ describe('Notifications', function () {
             assert.throws(() => t.passedAction('testAction'));
         });
 
+        it('does not sent a message, when the campaign is limited to 24h', async () => {
+            const t = new Tester(bot);
+            t.processor.plugin(notifications);
+
+            await t.postBack('start');
+
+            await wait(10);
+
+            t.setState({ _ntfLastInteraction: Date.now() - 24 * 3600000 });
+
+            await notifications._storage.updateCampaign(campaign.id, {
+                hasCondition: false,
+                in24hourWindow: true
+            });
+
+            await notifications.runCampaign(campaign);
+
+            t.cleanup();
+
+            await notifications.processQueue(t);
+
+            const c = await notifications._storage
+                .getUnsuccessfulSubscribersByCampaign(campaign.id);
+
+            assert.throws(() => t.passedAction('testAction'));
+
+            assert.deepEqual(c, [{
+                pageId: t.pageId,
+                senderId: t.senderId
+            }]);
+        });
+
         it('should not send a campaign twice to single user', async () => {
             const t = new Tester(bot);
             t.processor.plugin(notifications);

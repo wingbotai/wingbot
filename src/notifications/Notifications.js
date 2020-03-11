@@ -118,7 +118,6 @@ class Notifications extends EventEmitter {
      * @param {NotificationsStorage} notificationStorage
      * @param {Object} options
      * @param {console} [options.log] - logger
-     * @param {boolean} [options.sendMoreMessagesOver24] - use true to disable the 24h window check
      * @param {number} [options.default24Clearance] - use this clearance to ensure delivery in 24h
      * @param {string} [options.allAudienceTag] - tag to mark all users
      */
@@ -128,7 +127,6 @@ class Notifications extends EventEmitter {
         this._storage = notificationStorage;
         this._log = options.log || console;
         this.limit = DEFAULT_LIMIT;
-        this._sendMoreMessagesOver24 = options.sendMoreMessagesOver24;
         this._default24Clearance = options.default24Clearance || DEFAULT_24_CLEARANCE;
         this._allAudienceTag = typeof options.allAudienceTag !== 'undefined'
             ? options.allAudienceTag
@@ -493,7 +491,7 @@ class Notifications extends EventEmitter {
             return true;
         }
 
-        const { _ntfLastInteraction = Date.now(), _ntfOverMessageSent } = req.state;
+        const { _ntfLastInteraction = Date.now() } = req.state;
         const inTimeFrame = Date.now() < (_ntfLastInteraction + WINDOW_24_HOURS);
 
         // do not send one message over, because of future campaigns
@@ -502,14 +500,9 @@ class Notifications extends EventEmitter {
             return true;
         }
 
-        if (!this._sendMoreMessagesOver24 && !inTimeFrame && _ntfOverMessageSent) {
-            return false;
-        }
-
-        res.setState({ _ntfOverMessageSent: true });
-
-        this._setLastCampaign(res, campaign, req.taskId);
-        return true;
+        throw Object.assign(new Error('User fell out of 24h window'), {
+            code: 402
+        });
     }
 
     _isTargetGroup (campaign, subscribtions, pageId) {
@@ -785,7 +778,8 @@ class Notifications extends EventEmitter {
                 && result.responses[result.responses.length - 1].message_id;
         } catch (e) {
             this._log.error('send notification error', e);
-            status = 500;
+            const { code = 500 } = e;
+            status = code;
             result = { status };
         }
 
@@ -808,6 +802,7 @@ class Notifications extends EventEmitter {
                 await this._finishTask('notSent', campaign, task, ts);
                 break;
             case 403:
+            case 402:
                 await this._finishTask('leaved', campaign, task, ts);
                 break;
             case 500:
