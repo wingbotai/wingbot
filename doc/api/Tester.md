@@ -43,6 +43,7 @@
     * _instance_
         * [.testData](#Tester_testData) : <code>Object</code>
         * [.allowEmptyResponse](#Tester_allowEmptyResponse) : <code>boolean</code>
+        * [.senderLogger](#Tester_senderLogger) : <code>console</code>
         * [.setExpandRandomTexts()](#Tester_setExpandRandomTexts)
         * [.cleanup()](#Tester_cleanup)
         * [.processMessage(message, senderId, pageId)](#Tester_processMessage) ⇒ <code>Promise.&lt;any&gt;</code>
@@ -79,6 +80,12 @@ predefined test data to use
 
 ### tester.allowEmptyResponse : <code>boolean</code>
 allow tester to process empty responses
+
+**Kind**: instance property of [<code>Tester</code>](#Tester)  
+{% raw %}<div id="Tester_senderLogger">&nbsp;</div>{% endraw %}
+
+### tester.senderLogger : <code>console</code>
+use own loggger
 
 **Kind**: instance property of [<code>Tester</code>](#Tester)  
 {% raw %}<div id="Tester_setExpandRandomTexts">&nbsp;</div>{% endraw %}

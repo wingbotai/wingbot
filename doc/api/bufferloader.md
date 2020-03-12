@@ -21,6 +21,9 @@
 <dt><a href="#FLAG_DISAMBIGUATION_OFFERED">FLAG_DISAMBIGUATION_OFFERED</a></dt>
 <dd><p>Disambiguation occured - user was asked to choose the right meaning</p>
 </dd>
+<dt><a href="#FLAG_DO_NOT_LOG">FLAG_DO_NOT_LOG</a></dt>
+<dd><p>Do not log the event</p>
+</dd>
 </dl>
 
 ## Functions
@@ -262,6 +265,7 @@ bot.use((req, res) => {
 
 - options <code>Object</code>
     - [.textFilter] [<code>textFilter</code>](#textFilter) - filter for saving the texts
+    - [.logStandbyEvents] <code>boolean</code> - log the standby events
 - userId <code>string</code>
 - incommingMessage <code>Object</code>
 - logger <code>console</code> - console like logger
@@ -295,6 +299,12 @@ Disambiguation quick reply was selected
 
 ## FLAG\_DISAMBIGUATION\_OFFERED
 Disambiguation occured - user was asked to choose the right meaning
+
+**Kind**: global constant  
+{% raw %}<div id="FLAG_DO_NOT_LOG">&nbsp;</div>{% endraw %}
+
+## FLAG\_DO\_NOT\_LOG
+Do not log the event
 
 **Kind**: global constant  
 {% raw %}<div id="bufferloader">&nbsp;</div>{% endraw %}

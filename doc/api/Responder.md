@@ -30,6 +30,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.data](#Responder_data) : <code>Object</code>
     * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
     * [.setNotificationRecipient(recipient)](#Responder_setNotificationRecipient)
+    * [.doNotLogTheEvent()](#Responder_doNotLogTheEvent) ⇒ <code>this</code>
     * ~~[.setBookmark([action], [winningIntent])](#Responder_setBookmark) ⇒ <code>this</code>~~
     * ~~[.bookmark()](#Responder_bookmark) ⇒ <code>string</code> \| <code>null</code>~~
     * ~~[.runBookmark(postBack, [data])](#Responder_runBookmark) ⇒ <code>Promise.&lt;(null\|boolean)&gt;</code>~~
@@ -138,6 +139,12 @@ Usefull for sending a one-time notification
 
 - recipient <code>Object</code>
 
+{% raw %}<div id="Responder_doNotLogTheEvent">&nbsp;</div>{% endraw %}
+
+### responder.doNotLogTheEvent() ⇒ <code>this</code>
+Disables logging the event to history
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
 {% raw %}<div id="Responder_setBookmark">&nbsp;</div>{% endraw %}
 
 ### ~~responder.setBookmark([action], [winningIntent]) ⇒ <code>this</code>~~
@@ -612,7 +619,7 @@ Override action tracking
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 **Params**
 
-- action <code>string</code> | <code>boolean</code>
+- action <code>string</code> | <code>boolean</code> - use false to not emit analytics events
 
 {% raw %}<div id="Responder_trackAsSkill">&nbsp;</div>{% endraw %}
 
