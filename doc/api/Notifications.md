@@ -181,7 +181,6 @@ Creates a new instance on notification service
 - notificationStorage <code>NotificationsStorage</code>
 - options <code>Object</code>
     - [.log] <code>console</code> - logger
-    - [.sendMoreMessagesOver24] <code>boolean</code> - use true to disable the 24h window check
     - [.default24Clearance] <code>number</code> - use this clearance to ensure delivery in 24h
     - [.allAudienceTag] <code>string</code> - tag to mark all users
 

@@ -29,6 +29,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.senderMeta](#Responder_senderMeta) ⇒ [<code>SenderMeta</code>](#SenderMeta)
     * [.data](#Responder_data) : <code>Object</code>
     * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
+    * [.setNotificationRecipient(recipient)](#Responder_setNotificationRecipient)
     * ~~[.setBookmark([action], [winningIntent])](#Responder_setBookmark) ⇒ <code>this</code>~~
     * ~~[.bookmark()](#Responder_bookmark) ⇒ <code>string</code> \| <code>null</code>~~
     * ~~[.runBookmark(postBack, [data])](#Responder_runBookmark) ⇒ <code>Promise.&lt;(null\|boolean)&gt;</code>~~
@@ -47,6 +48,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.image(imageUrl, [reusable])](#Responder_image) ⇒ <code>this</code>
     * [.video(videoUrl, [reusable])](#Responder_video) ⇒ <code>this</code>
     * [.file(fileUrl, [reusable])](#Responder_file) ⇒ <code>this</code>
+    * [.oneTimeNotificationRequest(title, action, [tag], [data])](#Responder_oneTimeNotificationRequest) ⇒ <code>this</code>
     * [.wait([ms])](#Responder_wait) ⇒ <code>this</code>
     * [.typingOn()](#Responder_typingOn) ⇒ <code>this</code>
     * [.typingOff()](#Responder_typingOff) ⇒ <code>this</code>
@@ -124,6 +126,17 @@ Run a code block defined by a plugin
 | Type |
 | --- |
 | <code>function</code> | 
+
+{% raw %}<div id="Responder_setNotificationRecipient">&nbsp;</div>{% endraw %}
+
+### responder.setNotificationRecipient(recipient)
+Replaces recipient and disables autotyping
+Usefull for sending a one-time notification
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
+- recipient <code>Object</code>
 
 {% raw %}<div id="Responder_setBookmark">&nbsp;</div>{% endraw %}
 
@@ -432,6 +445,21 @@ res.file('/img/foo.pdf');
 // file at url
 res.file('https://google.com/img/foo.pdf');
 ```
+{% raw %}<div id="Responder_oneTimeNotificationRequest">&nbsp;</div>{% endraw %}
+
+### responder.oneTimeNotificationRequest(title, action, [tag], [data]) ⇒ <code>this</code>
+One-time Notification request
+
+use tag to be able to use the specific token with a specific campaign
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
+- title <code>string</code> - propmt text
+- action <code>string</code> - target action, when user subscribes
+- [tag] <code>string</code> <code> = null</code> - subscribtion tag, which will be matched against a campaign
+- [data] <code>Object</code>
+
 {% raw %}<div id="Responder_wait">&nbsp;</div>{% endraw %}
 
 ### responder.wait([ms]) ⇒ <code>this</code>
