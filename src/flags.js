@@ -13,7 +13,13 @@ const FLAG_DISAMBIGUATION_SELECTED = 'd';
  */
 const FLAG_DISAMBIGUATION_OFFERED = 'o';
 
+/**
+ * Do not log the event
+ */
+const FLAG_DO_NOT_LOG = '!';
+
 module.exports = {
     FLAG_DISAMBIGUATION_SELECTED,
-    FLAG_DISAMBIGUATION_OFFERED
+    FLAG_DISAMBIGUATION_OFFERED,
+    FLAG_DO_NOT_LOG
 };

@@ -106,6 +106,11 @@ class Tester {
          * @type {boolean} allow tester to process empty responses
          */
         this.allowEmptyResponse = false;
+
+        /**
+         * @type {console} use own loggger
+         */
+        this.senderLogger = undefined;
     }
 
     /**
@@ -139,7 +144,7 @@ class Tester {
      * @returns {Promise<any>}
      */
     async processMessage (message, senderId = this.senderId, pageId = this.pageId) {
-        const messageSender = new ReturnSender({}, senderId, message);
+        const messageSender = new ReturnSender({}, senderId, message, this.senderLogger);
         messageSender.simulatesOptIn = true;
 
         const res = await this.processor

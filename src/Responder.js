@@ -8,7 +8,7 @@ const ButtonTemplate = require('./templates/ButtonTemplate');
 const GenericTemplate = require('./templates/GenericTemplate');
 const ListTemplate = require('./templates/ListTemplate');
 const { makeAbsolute, makeQuickReplies } = require('./utils');
-const { FLAG_DISAMBIGUATION_OFFERED } = require('./flags');
+const { FLAG_DISAMBIGUATION_OFFERED, FLAG_DO_NOT_LOG } = require('./flags');
 
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
@@ -137,6 +137,16 @@ class Responder {
      */
     get senderMeta () {
         return this._senderMeta;
+    }
+
+    /**
+     * Disables logging the event to history
+     *
+     * @returns {this}
+     */
+    doNotLogTheEvent () {
+        this._senderMeta = { flag: FLAG_DO_NOT_LOG };
+        return this;
     }
 
     // PROTECTED METHOD (called from ReturnSender)
@@ -904,7 +914,7 @@ class Responder {
     /**
      * Override action tracking
      *
-     * @param {string|boolean} action
+     * @param {string|boolean} action - use false to not emit analytics events
      * @returns {this}
      */
     trackAs (action) {

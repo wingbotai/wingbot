@@ -4,6 +4,7 @@
 'use strict';
 
 const ai = require('./Ai');
+const { FLAG_DO_NOT_LOG } = require('./flags');
 
 /**
  * Text filter function
@@ -19,6 +20,7 @@ class ReturnSender {
      *
      * @param {Object} options
      * @param {textFilter} [options.textFilter] - filter for saving the texts
+     * @param {boolean} [options.logStandbyEvents] - log the standby events
      * @param {string} userId
      * @param {Object} incommingMessage
      * @param {console} logger - console like logger
@@ -32,7 +34,10 @@ class ReturnSender {
 
         this._isWorking = false;
 
-        this._sendLogs = logger !== null;
+        const isStandbyEvent = incommingMessage.isStandby;
+
+        this._sendLogs = logger !== null
+            && (!isStandbyEvent || options.logStandbyEvents);
 
         this._userId = userId;
 
@@ -254,7 +259,7 @@ class ReturnSender {
                 throw this._catchedBeforeFinish;
             }
 
-            if (this._sendLogs) {
+            if (this._sendLogs && meta.flag !== FLAG_DO_NOT_LOG) {
                 this._sendLogs = false;
                 const sent = this._sent.map(s => this._filterMessage(s));
                 const processedEvent = req

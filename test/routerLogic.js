@@ -1071,6 +1071,33 @@ describe('<Router> logic', () => {
             t.any().contains('No last action');
         });
 
+        it('first bookmark', async () => {
+            const bot = new Router();
+
+            bot.use(ai.local('loc', 'int'), (req, res) => {
+                res.text('hello');
+            });
+
+            bot.use('q', (req, res) => {
+                res.text('phone?')
+                    .expected('ex');
+            });
+
+            bot.use('ex', (req, res) => {
+                if (res.bookmark()) {
+                    res.text('bookmark');
+                }
+            });
+
+            const ts = new Tester(bot);
+
+            await ts.postBack('q');
+
+            await ts.intent('int');
+
+            ts.any().contains('bookmark');
+        });
+
     });
 
     describe('re-expected in fallback', () => {

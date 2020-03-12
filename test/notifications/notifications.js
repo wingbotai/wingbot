@@ -211,6 +211,8 @@ describe('Notifications', function () {
 
             await notifications.runCampaign(campaign);
 
+            await wait(50);
+
             await notifications.processQueue(t);
 
             await wait(200);
@@ -221,7 +223,11 @@ describe('Notifications', function () {
 
             t.cleanup();
 
+            await wait(50);
+
             await notifications.processQueue(t);
+
+            await wait(50);
 
             assert.throws(() => t.passedAction('testAction'));
 
@@ -320,7 +326,11 @@ describe('Notifications', function () {
 
             t.cleanup();
 
+            await wait(50);
+
             await notifications.processQueue(t);
+
+            await wait(50);
 
             t.passedAction('testAction');
             assert.equal(t.responses.length, 1);

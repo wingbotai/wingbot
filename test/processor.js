@@ -314,7 +314,7 @@ describe('Processor', function () {
             const opts = makeOptions(stateStorage);
             const proc = new Processor(reducer, opts);
 
-            return proc.processMessage()
+            return proc.processMessage({})
                 .then(() => {
                     assert(opts.log.warn.calledOnce);
                     return proc.processMessage({});
