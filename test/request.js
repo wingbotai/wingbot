@@ -105,7 +105,7 @@ describe('Request', function () {
 
         it('should return action data from postback', function () {
             const req = new Request(Request.postBack(SENDER_ID, ACTION, DATA), STATE);
-            assert.deepEqual(req.action(true), DATA);
+            assert.deepEqual(req.actionData(), DATA);
         });
 
         it('should return referral action name from postback', function () {
@@ -121,7 +121,7 @@ describe('Request', function () {
                 Request.postBack(SENDER_ID, ACTION, DATA, REF_ACTION, REF_DATA),
                 STATE
             );
-            assert.deepEqual(req.action(true), REF_DATA);
+            assert.deepEqual(req.actionData(), REF_DATA);
         });
 
         it('should return action name from referral', function () {
@@ -131,7 +131,7 @@ describe('Request', function () {
 
         it('should return action data from postback', function () {
             const req = new Request(Request.referral(SENDER_ID, ACTION, DATA), STATE);
-            assert.deepEqual(req.action(true), DATA);
+            assert.deepEqual(req.actionData(), DATA);
         });
 
         it('should return action name from optin', function () {
@@ -141,7 +141,7 @@ describe('Request', function () {
 
         it('should return action data from optin', function () {
             const req = new Request(Request.optin(SENDER_ID, ACTION, DATA), STATE);
-            assert.deepEqual(req.action(true), DATA);
+            assert.deepEqual(req.actionData(), DATA);
         });
 
         it('should return action name from quick reply', function () {
@@ -151,7 +151,7 @@ describe('Request', function () {
 
         it('should return action data from quick reply', function () {
             const req = new Request(Request.quickReply(SENDER_ID, ACTION, DATA), STATE);
-            assert.deepEqual(req.action(true), DATA);
+            assert.deepEqual(req.actionData(), DATA);
         });
 
         it('should return action name from _expected state', function () {
@@ -163,7 +163,7 @@ describe('Request', function () {
         it('should return action data from _expected state', function () {
             const data = Request.quickReply(SENDER_ID, null);
             const req = new Request(data, { _expected: ACTION });
-            assert.deepEqual(req.action(true), {});
+            assert.deepEqual(req.actionData(), {});
         });
 
         it('should return action name from _expected text', function () {

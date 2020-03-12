@@ -438,7 +438,7 @@ describe('Processor', function () {
             });
 
             bot.use('process', (req, res) => {
-                res.text(`result is ${req.action(true).test}`);
+                res.text(`result is ${req.actionData().test}`);
             });
 
             const t = new Tester(bot);
@@ -470,14 +470,14 @@ describe('Processor', function () {
             mockPlugin = {
                 processMessage: sinon.spy(message => ({ status: message.sender.id })),
                 middleware: sinon.spy(() => middleware),
-                beforeAiPreload: sinon.spy(req => (req.data.beforeAiPreload !== undefined
-                    ? req.data.beforeAiPreload
+                beforeAiPreload: sinon.spy(req => (req.event.beforeAiPreload !== undefined
+                    ? req.event.beforeAiPreload
                     : true)),
-                beforeProcessMessage: sinon.spy(req => (req.data.beforeProcessMessage !== undefined
-                    ? req.data.beforeProcessMessage
+                beforeProcessMessage: sinon.spy(req => (req.event.beforeProcessMessage !== undefined
+                    ? req.event.beforeProcessMessage
                     : true)),
-                afterProcessMessage: sinon.spy(req => (req.data.afterProcessMessage !== undefined
-                    ? req.data.afterProcessMessage
+                afterProcessMessage: sinon.spy(req => (req.event.afterProcessMessage !== undefined
+                    ? req.event.afterProcessMessage
                     : true))
             };
 

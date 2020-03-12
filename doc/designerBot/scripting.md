@@ -36,7 +36,7 @@ There is a **conversation state** accessible with `req.state`, which is stored u
 
 And there are **Responder data**, which persists only during the messaging event processing. Theese are usefull especially for displaying data in responses.
 
-> Do not confuse **Responder data** (`res.data`) with **Request data** (`req.data`), which contains transformed messaging event, or **action data** (`req.action(true)`) which contains additional action (postback, ref, e.t.c.) metadata
+> Do not confuse **Responder data** (`res.data`) with **Request data** (`req.event`), which contains transformed messaging event, or **action data** (`req.actionData()`) which contains additional action (postback, ref, e.t.c.) metadata
 
 - `res.data` - temporary responder data, empty object at the beginning of messaging event processing
 - `res.setData()` - stores data into the Responder data
@@ -68,7 +68,7 @@ How the framework puts data into the template?
 
 ```
 const templateData = Object.assign({}, req.state, res.newState, res.data, {
-    _action: req.action(true)
+    _action: req.actionData()
 });
 ```
 
@@ -107,7 +107,7 @@ or just process the data
 
 ```javascript
 (req, res) => {
-    const { err, data } = req.action(true);
+    const { err, data } = req.actionData();
 
     // do something with data
 }

@@ -337,14 +337,14 @@ class Ai {
     }
 
     _getMockIntent (req) {
-        const intentFromData = req.data && req.data.intent;
+        const intentFromData = req.event && req.event.intent;
 
         if (!this._mockIntent && !intentFromData) {
             return null;
         }
 
         const { intent, score = null, entities = [] } = intentFromData
-            ? req.data
+            ? req.event
             : this._mockIntent;
 
         const intents = Array.isArray(intent)

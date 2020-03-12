@@ -103,7 +103,7 @@ function stateData (req, res = null) {
         {},
         req.state,
         res ? res.newState : {},
-        req.action(true),
+        req.actionData(),
         res ? res.data : {}
     );
 }

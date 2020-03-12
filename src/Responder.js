@@ -115,6 +115,19 @@ class Responder {
         this._senderMeta = { flag: null };
 
         this._persona = null;
+
+        this._recipient = { id: senderId };
+    }
+
+    /**
+     * Replaces recipient and disables autotyping
+     * Usefull for sending a one-time notification
+     *
+     * @param {Object} recipient
+     */
+    setNotificationRecipient (recipient) {
+        this._recipient = recipient;
+        this.options.autoTyping = false;
     }
 
     /**
@@ -327,7 +340,7 @@ class Responder {
     text (text, replies = null) {
         const messageData = {
             recipient: {
-                id: this._senderId
+                ...this._recipient
             },
             message: {
                 text: this._t(text)
@@ -581,7 +594,7 @@ class Responder {
 
         const messageData = {
             recipient: {
-                id: this._senderId
+                ...this._recipient
             },
             message: {
                 attachment: {
@@ -600,10 +613,35 @@ class Responder {
         return this;
     }
 
+    /**
+     * One-time Notification request
+     *
+     * use tag to be able to use the specific token with a specific campaign
+     *
+     * @param {string} title - propmt text
+     * @param {string} action - target action, when user subscribes
+     * @param {string} [tag] - subscribtion tag, which will be matched against a campaign
+     * @param {Object} [data]
+     * @returns {this}
+     */
+    oneTimeNotificationRequest (title, action, tag = null, data = {}) {
+        return this.template({
+            template_type: 'one_time_notif_req',
+            title: this._t(title),
+            payload: JSON.stringify({
+                action: makeAbsolute(action, this.path),
+                data: {
+                    ...data,
+                    _ntfTag: tag
+                }
+            })
+        });
+    }
+
     template (payload) {
         const messageData = {
             recipient: {
-                id: this._senderId
+                ...this._recipient
             },
             message: {
                 attachment: {
@@ -613,10 +651,7 @@ class Responder {
             }
         };
 
-        const autoTyping = typeof payload.text === 'string'
-            ? payload.text
-            : null;
-
+        const autoTyping = payload.text || payload.title || null;
         this._autoTypingIfEnabled(autoTyping);
         this._send(messageData);
         return this;
@@ -696,7 +731,7 @@ class Responder {
 
         const messageData = {
             recipient: {
-                id: this._senderId
+                ...this._recipient
             },
             target_app_id: targetAppId,
             metadata
@@ -726,7 +761,7 @@ class Responder {
         }
         const messageData = {
             recipient: {
-                id: this._senderId
+                ...this._recipient
             },
             request_thread_control: metadata
         };
@@ -755,7 +790,7 @@ class Responder {
         }
         const messageData = {
             recipient: {
-                id: this._senderId
+                ...this._recipient
             },
             take_thread_control: metadata
         };
@@ -898,7 +933,7 @@ class Responder {
     _senderAction (action) {
         const messageData = {
             recipient: {
-                id: this._senderId
+                ...this._recipient
             },
             sender_action: action
         };

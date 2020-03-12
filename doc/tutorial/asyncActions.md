@@ -52,7 +52,7 @@ function asyncAction () {
 }
 
 bot.use('/asyncComplete', (req, res) => {
-    const { result, err } = req.action(true);
+    const { result, err } = req.actionData();
     if (err) {
         res.text('Async action failed');
     } else {

@@ -17,7 +17,7 @@ function passThreadToBotFactory (params) {
     */
     const fn = async (req, res) => {
         let action;
-        const data = req.action(true);
+        const data = req.actionData();
 
         if (targetAction) {
             action = { action: targetAction.trim(), data };
@@ -25,7 +25,7 @@ function passThreadToBotFactory (params) {
             action = { intent: targetIntent.trim(), data };
         } else {
             let text = req.text();
-            const { _senderMeta: sm = {} } = req.action(true);
+            const { _senderMeta: sm = {} } = req.actionData();
 
             if (typeof sm.disambText === 'string') {
                 text = sm.disambText;

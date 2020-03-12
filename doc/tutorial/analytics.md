@@ -19,7 +19,7 @@ botRoot.on('action', (senderId, action, text, req, lastAction, doNotTrack, skill
     }
 
     // or use whole request event
-    myMagicTracker(req.data);
+    myMagicTracker(req.event);
 });
 ```
 

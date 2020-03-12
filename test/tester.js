@@ -56,13 +56,13 @@ describe('Tester', function () {
         });
 
         read.use('/go', (req, res) => {
-            const { foo = 0 } = req.action(true);
+            const { foo = 0 } = req.actionData();
             res.text(`See: ${foo}`);
             res.expected('out', { bar: 1 });
         });
 
         read.use('out', (req, res) => {
-            const { bar = 0 } = req.action(true);
+            const { bar = 0 } = req.actionData();
             res.text(`Yeah: ${bar}`);
             res.text(req.text());
         });
@@ -283,7 +283,7 @@ describe('Tester', function () {
         });
 
         r.use('/pass-thread', (req, res) => {
-            const { theData } = req.action(true);
+            const { theData } = req.actionData();
             res.text(theData);
         });
 
@@ -341,7 +341,7 @@ describe('Tester', function () {
         });
 
         r.use('/quick', (req, res) => {
-            const { val } = req.action(true);
+            const { val } = req.actionData();
 
             res.text(`v${val}`);
         });

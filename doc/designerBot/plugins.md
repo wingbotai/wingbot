@@ -109,7 +109,7 @@ function exampleBlockFactory (params) {
 
   // following action
   exampleBlock.use('after-timeout', async (req, res) => {
-      const { myVar } = req.action(true);
+      const { myVar } = req.actionData();
 
       await res.run('responseBlockName');
   });

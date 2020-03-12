@@ -43,7 +43,8 @@ function getText (response) {
         return message.text;
     }
     if (message.attachment && message.attachment.payload) {
-        return message.attachment.payload.text;
+        return message.attachment.payload.title
+            || message.attachment.payload.text;
     }
     return null;
 }

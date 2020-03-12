@@ -428,6 +428,25 @@ class Notifications extends EventEmitter {
             delete res.newState[UNSUBSCRIBE];
         }
 
+        // is optin with token
+        if (req.isOptin() && req.event.optin.one_time_notif_token) {
+            const { one_time_notif_token: token } = req.event.optin;
+            const { _ntfOneTimeTokens: tokens = [] } = req.state;
+            const { _ntfTag: tag = null, ...data } = req.actionData();
+
+            if (tag) {
+                res.subscribe(tag);
+            }
+
+            res.setState({
+                _ntfOneTimeTokens: [...tokens, {
+                    token,
+                    tag,
+                    data
+                }]
+            });
+        }
+
         // is action
         const { campaign } = req;
 
@@ -437,7 +456,7 @@ class Notifications extends EventEmitter {
             const {
                 _trackAsNegative: isNegative = false,
                 _localpostback: isLocal = false
-            } = req.action(true);
+            } = req.actionData();
 
             if (lastCampaignId && !isLocal) {
                 res.setState({
@@ -486,6 +505,12 @@ class Notifications extends EventEmitter {
 
         res.setMessagingType(campaign.type || 'UPDATE');
 
+        // one time token with campaign token
+        if (this._findAndUseToken(req, res, campaign)) {
+            this._setLastCampaign(res, campaign, req.taskId);
+            return true;
+        }
+
         if (!campaign.in24hourWindow) {
             this._setLastCampaign(res, campaign, req.taskId);
             return true;
@@ -500,9 +525,37 @@ class Notifications extends EventEmitter {
             return true;
         }
 
+        // one time token WITHOUT campaign token
+        if (this._findAndUseToken(req, res)) {
+            this._setLastCampaign(res, campaign, req.taskId);
+            return true;
+        }
+
         throw Object.assign(new Error('User fell out of 24h window'), {
             code: 402
         });
+    }
+
+    _findAndUseToken (req, res, campaign = null) {
+        // one time token logic
+        const { _ntfOneTimeTokens: tokens = [] } = req.state;
+        // the campaign uses same tag as the token has
+        const useToken = tokens.find((t) => {
+            if (campaign) {
+                return campaign.include.includes(t.tag);
+            }
+            return t.tag === null;
+        });
+        if (useToken) {
+            // pop the token
+            res.setState({
+                _ntfOneTimeTokens: tokens.filter(t => t.token !== useToken.token)
+            });
+            res.setNotificationRecipient({
+                one_time_notif_token: useToken.token
+            });
+        }
+        return useToken;
     }
 
     _isTargetGroup (campaign, subscribtions, pageId) {

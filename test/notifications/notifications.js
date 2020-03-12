@@ -7,6 +7,7 @@ const assert = require('assert');
 const sinon = require('sinon');
 const Router = require('../../src/Router');
 const Tester = require('../../src/Tester');
+const Request = require('../../src/Request');
 const Notifications = require('../../src/notifications/Notifications');
 
 const TEST_ITEMS = 20;
@@ -147,6 +148,14 @@ describe('Notifications', function () {
                 });
             });
 
+            bot.use('one', (req, res) => {
+                res.oneTimeNotificationRequest('title', 'subscribed', 'onetime');
+            });
+
+            bot.use('subscribed', (req, res) => {
+                res.text('success');
+            });
+
             bot.use('check', (req, res, postBack) => {
                 postBack('goto');
             });
@@ -284,6 +293,40 @@ describe('Notifications', function () {
 
             assert.throws(() => t.passedAction('testAction'));
         });
+
+        it('is able to send notification using a one time notification subscribtion', async () => {
+            const t = new Tester(bot);
+            t.processor.plugin(notifications);
+
+            await notifications._storage.updateCampaign(campaign.id, {
+                include: ['onetime']
+            });
+
+            // shows the request
+            await t.postBack('one');
+
+            t.any().contains('title');
+
+            // simulate the confirmation
+            const optin = Request.oneTimeOptIn(t.senderId, 'my-token');
+            const lastResponse = t.responses[t.responses.length - 1];
+            optin.optin.payload = lastResponse.message.attachment.payload.payload;
+            await t.processMessage(optin);
+
+            t.any()
+                .contains('success');
+
+            await notifications.runCampaign(campaign);
+
+            t.cleanup();
+
+            await notifications.processQueue(t);
+
+            t.passedAction('testAction');
+            assert.equal(t.responses.length, 1);
+            assert.deepEqual(t.responses[0].recipient, { one_time_notif_token: 'my-token' });
+        });
+
 
         it('does not sent a message, when campaign has a condition', async () => {
             const t = new Tester(bot);
@@ -529,7 +572,7 @@ describe('Notifications', function () {
             const bot = new Router();
 
             bot.use('camp-action', (req, res) => {
-                const { a = 'noo' } = req.action(true);
+                const { a = 'noo' } = req.actionData();
 
                 res.text('yeeesss')
                     .text(a);

@@ -432,7 +432,7 @@ class Processor extends EventEmitter {
             res.setState(setState);
 
             // attach sender meta
-            const data = req.action(true);
+            const data = req.actionData();
 
             if (typeof data._senderMeta === 'object') {
                 res._senderMeta = { ...data._senderMeta };

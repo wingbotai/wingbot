@@ -79,7 +79,7 @@ class Request {
 
         this.taskId = data.taskId || null;
 
-        this.data = data;
+        this._event = data;
 
         this.globalIntents = globalIntents;
 
@@ -153,13 +153,28 @@ class Request {
         this._aiWinner = null;
     }
 
+    get data () {
+        // eslint-disable-next-line
+        console.info('wingbot: req.data is deprecated, use req.event instead');
+        return this._event;
+    }
+
+    /**
+     * The original messaging event
+     *
+     * @type {Object}
+     */
+    get event () {
+        return this._event;
+    }
+
     /**
      * Returns true, if the incomming event is standby
      *
      * @returns {boolean}
      */
     isStandby () {
-        return !!this.data.isStandby;
+        return !!this._event.isStandby;
     }
 
     /**
@@ -232,7 +247,7 @@ class Request {
 
         let {
             _winningIntent: intent = this._winningIntent
-        } = this.action(true);
+        } = this.actionData();
         if (!intent) [intent] = this.intents;
 
         if (typeof getDataOrScore === 'number') {
@@ -259,7 +274,7 @@ class Request {
 
         const {
             _winningIntent: intent = this._winningIntent
-        } = this.action(true);
+        } = this.actionData();
         let entities;
         if (intent && intent.entities) {
             ({ entities } = intent);
@@ -602,20 +617,23 @@ class Request {
 
     /**
      * Returns action of the postback or quickreply
-     * When `getData` is `true`, object will be returned. Otherwise string or null.
      *
-     * 1. the postback is checked
-     * 2. the referral is checked
-     * 3. the quick reply is checked
-     * 4. expected keywords are checked
-     * 5. expected state is checked
+     * the order, where from the action is resolved
      *
-     * @param {boolean} [getData=false]
-     * @returns {null|string|Object}
+     * 1. referral
+     * 2. postback
+     * 2. optin
+     * 3. quick reply
+     * 4. expected keywords & intents
+     * 5. expected action in state
+     * 6. global or local AI intent action
+     *
+     * @param {boolean} [getData=false] - deprecated
+     * @returns {null|string}
      *
      * @example
      * typeof res.action() === 'string' || res.action() === null;
-     * typeof res.action(true) === 'object';
+     * typeof res.actionData() === 'object';
      */
     action (getData = false) {
         if (typeof this._action === 'undefined') {
@@ -623,10 +641,25 @@ class Request {
         }
 
         if (getData) {
+            // eslint-disable-next-line no-console
+            console.info('wingbot: deprecated using req.actionData(), use req.actionData() instead');
+
             return this._action ? this._action.data : {};
         }
 
         return this._action && this._action.action;
+    }
+
+    /**
+     * Returns action data of postback or quick reply
+     *
+     * @returns {Object}
+     */
+    actionData () {
+        if (typeof this._action === 'undefined') {
+            this._action = this._resolveAction();
+        }
+        return this._action ? this._action.data : {};
     }
 
     /**
@@ -643,7 +676,7 @@ class Request {
         }
 
         const setState = (this._action && this._action.setState)
-            || this.data.setState;
+            || this._event.setState;
 
         if (!setState || typeof setState !== 'object') {
             return {};
@@ -669,6 +702,10 @@ class Request {
 
         if (!res && this._optin !== null && this._optin.ref) {
             res = this._base64Ref(this._optin);
+        }
+
+        if (!res && this._optin !== null && this._optin.payload) {
+            res = parseActionPayload(this._optin);
         }
 
         if (!res && this.message !== null && this.message.quick_reply) {
@@ -1088,6 +1125,20 @@ class Request {
             optin: {
                 ref: ref.toString('base64'),
                 user_ref: userRef
+            }
+        };
+    }
+
+    static oneTimeOptIn (senderId, token, action, data = {}, type = 'one_time_notif_req', timestamp = makeTimestamp()) {
+        return {
+            timestamp,
+            sender: {
+                id: senderId
+            },
+            optin: {
+                type,
+                payload: JSON.stringify({ action, data }),
+                one_time_notif_token: token
             }
         };
     }

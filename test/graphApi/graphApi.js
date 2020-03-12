@@ -46,7 +46,7 @@ describe('<GraphApi>', function () {
         const bot = new Router();
 
         bot.use('start', (req, res) => {
-            receivedActionData = req.action(true);
+            receivedActionData = req.actionData();
             res.text('Hello');
         });
 

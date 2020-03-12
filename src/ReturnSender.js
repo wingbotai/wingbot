@@ -232,7 +232,7 @@ class ReturnSender {
                 intents: req.intents || [],
                 entities: (req.entities || []).filter(e => e.score >= ai.ai.confidence),
                 action: req.action(),
-                data: req.action(true),
+                data: req.actionData(),
                 expected: expected ? expected.action : null,
                 pageId: req.pageId,
                 senderId: req.senderId
@@ -258,7 +258,7 @@ class ReturnSender {
                 this._sendLogs = false;
                 const sent = this._sent.map(s => this._filterMessage(s));
                 const processedEvent = req
-                    ? req.data
+                    ? req.event
                     : this._incommingMessage;
                 let incomming = this._filterMessage(processedEvent);
 

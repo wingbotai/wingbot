@@ -21,7 +21,7 @@ function fakeReq (text = 'text') {
     return [
         {
             action () { return null; },
-            data: { timestamp: Date.now() },
+            event: { timestamp: Date.now() },
             text () { return text; },
             isTextOrIntent () { return !!text; },
             intents: null,
@@ -269,7 +269,7 @@ describe('<Ai>', function () {
                 isTextOrIntent: () => true,
                 isQuickReply: () => false,
                 action: () => null,
-                data: { timestamp: Date.now() }
+                event: { timestamp: Date.now() }
             };
 
             return match(req, { bookmark: () => null })
@@ -289,9 +289,9 @@ describe('<Ai>', function () {
 
             const match = testAi.match('testIntent');
 
-            const data = Request.intentWithText('any', 'hoho', 'testIntent');
+            const event = Request.intentWithText('any', 'hoho', 'testIntent');
             const req = {
-                isTextOrIntent: () => true, isQuickReply: () => false, data, action: () => null
+                isTextOrIntent: () => true, isQuickReply: () => false, event, action: () => null
             };
 
             return match(req, { bookmark: () => null })
