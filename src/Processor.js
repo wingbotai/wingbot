@@ -467,7 +467,11 @@ class Processor extends EventEmitter {
             }
 
             if (continueDispatching) {
-                if (this.options.autoSeen && (!req.isReferral() || req.action()) && fromEvent) {
+                if (this.options.autoSeen
+                    && res.isResponseType() // do not send seen, if it's a campaign
+                    && (!req.isReferral() || req.action())
+                    && fromEvent) {
+
                     res.seen();
                 }
                 // process the event
