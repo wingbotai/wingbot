@@ -159,8 +159,22 @@ class BuildRouter extends Router {
 
         if (!this._configStorage) {
             // not need to wait for existing requests, there are no existing ones
-            const snapshot = await this.loadBot();
-            this.buildWithSnapshot(snapshot.blocks);
+
+            let botLoaded = false;
+            try {
+                const snapshot = await this.loadBot();
+                botLoaded = true;
+                this.buildWithSnapshot(snapshot.blocks);
+            } catch (e) {
+                if (this._configTs > 0 && !botLoaded) {
+                    // mute
+                    // eslint-disable-next-line no-console
+                    console.info('loading new state failed - nothing has ben broken');
+                } else {
+                    throw e;
+                }
+            }
+
             return;
         }
         try {
