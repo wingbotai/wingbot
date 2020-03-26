@@ -206,6 +206,18 @@ class Processor extends EventEmitter {
             });
     }
 
+    async _preload () {
+        // @ts-ignore
+        if (this.reducer && typeof this.reducer.preload === 'function') {
+            // @ts-ignore
+            return this.reducer.preload()
+                .catch(e => this.options.log.error('preload error', e))
+                // mute log errors
+                .catch(() => {});
+        }
+        return Promise.resolve();
+    }
+
     async processMessage (
         message,
         pageId = null,
@@ -216,14 +228,7 @@ class Processor extends EventEmitter {
         ),
         responderData = {}
     ) {
-        // @ts-ignore
-        if (this.reducer && typeof this.reducer.preload === 'function') {
-            // @ts-ignore
-            this.reducer.preload()
-                .catch(e => this.options.log.error('preload error', e))
-                // mute log errors
-                .catch(() => {});
-        }
+        const preloadPromise = this._preload();
 
         try {
             for (const plugin of this._plugins) {
@@ -234,10 +239,12 @@ class Processor extends EventEmitter {
                     throw new Error('The plugin should always return the status code');
                 }
                 if (res.status === 200) {
+                    await preloadPromise;
                     return res;
                 }
             }
         } catch (e) {
+            await preloadPromise;
             const { code = 500 } = e;
             this.reportSendError(e, message, pageId);
             return { status: code };
@@ -252,6 +259,7 @@ class Processor extends EventEmitter {
                 || message.take_thread_control)) {
 
             this.options.log.warn('message should be an object', message);
+            await preloadPromise;
             return { status: 400 };
         }
 
@@ -259,6 +267,7 @@ class Processor extends EventEmitter {
 
         // ignore messages from the page
         if (pageId === senderId && senderId) {
+            await preloadPromise;
             return { status: 304 };
         }
 
@@ -278,6 +287,7 @@ class Processor extends EventEmitter {
             this.reportSendError(e, message, pageId);
             result = { status: code, error: e.message };
         }
+        await preloadPromise;
         return result;
     }
 

@@ -48,6 +48,14 @@ const DEFAULT_TEXT_THRESHOLD = 0.8;
  */
 
 /**
+ * @typedef {object} TestsGroup
+ * @prop {number} listId
+ * @prop {string} list
+ * @prop {string} type
+ * @prop {TestCase[]|TextTest[]} testCases
+ */
+
+/**
  * @typedef {object} List
  * @prop {number} id
  * @prop {string} name
@@ -58,6 +66,15 @@ const DEFAULT_TEXT_THRESHOLD = 0.8;
 /**
  * @typedef {object} TestsDefinition
  * @prop {List[]} lists
+ */
+
+/**
+ * Callback for getting a tester
+ *
+ * @callback testerFactory
+ * @param {Router|ReducerWrapper} bot - the chatbot itself
+ * @param {TestsGroup} test - the chatbot itself
+ * @returns {Tester}
  */
 
 /**
@@ -90,6 +107,7 @@ class ConversationTester {
      * @param {number} [options.stepCasesPerStep]
      * @param {number} [options.textCasesPerStep]
      * @param {number} [options.textCaseParallel]
+     * @param {testerFactory} [options.testerFactory]
      */
     constructor (testsSource, botFactory, options = {}) {
         this._testsSource = testsSource;
@@ -113,9 +131,9 @@ class ConversationTester {
     async test (validationRequestBody = null, step = null) {
         this._output = '';
         const testCases = await this._testsSource.getTestCases();
-        const steps = this._getSteps(testCases);
-        const stepCases = this._getStepCases(steps, step);
-        const stepCount = Number.isInteger(step) ? steps.length : 1;
+        const groups = this._getGroups(testCases);
+        const testsGroups = this._getTestsGroups(groups, step);
+        const stepCount = Number.isInteger(step) ? groups.length : 1;
 
         const botconfig = validationRequestBody;
         let failed = 0;
@@ -125,13 +143,13 @@ class ConversationTester {
 
         try {
             const results = [];
-            for (const stepCase of stepCases) {
+            for (const testsGroup of testsGroups) {
                 let stepResult;
-                if (stepCase.type === 'texts') {
-                    stepResult = await this._runTextCaseTests(stepCase, botconfig);
+                if (testsGroup.type === 'texts') {
+                    stepResult = await this._runTextCaseTests(testsGroup, botconfig);
                 }
-                if (stepCase.type === 'steps') {
-                    stepResult = await this._runStepCaseTests(stepCase, botconfig);
+                if (testsGroup.type === 'steps') {
+                    stepResult = await this._runStepCaseTests(testsGroup, botconfig);
                 }
                 results.push(stepResult);
             }
@@ -139,7 +157,7 @@ class ConversationTester {
             const resultsByList = new Map();
             let list = null;
             let i = 0;
-            for (const stepCase of stepCases) {
+            for (const stepCase of testsGroups) {
                 if (stepCase.list !== list) {
                     ({ list } = stepCase);
                     this._output += `\n- ${list}\n`;
@@ -162,7 +180,7 @@ class ConversationTester {
                 i++;
             }
 
-            skipped = stepCases.length - (passed + failed);
+            skipped = testsGroups.length - (passed + failed);
 
             if (!step) {
                 summaryOutput += `\nPASSED: ${passed}, FAILED: ${failed}, SKIPPED: ${skipped}\n\n`;
@@ -182,7 +200,7 @@ class ConversationTester {
         return {
             output: this._output,
             summaryOutput,
-            total: stepCases.reduce((total, stepCase) => total + stepCase.testCases.length, 0),
+            total: testsGroups.reduce((total, stepCase) => total + stepCase.testCases.length, 0),
             passed,
             failed,
             skipped,
@@ -191,13 +209,19 @@ class ConversationTester {
         };
     }
 
+    /**
+     *
+     * @param {(TestCase|TextCase)[]} testCases
+     * @returns {List[]}
+     */
     _getLists (testCases) {
         const getType = (cases) => {
             const [testCase] = cases;
             if (testCase.texts) return 'texts';
             if (testCase.steps) return 'steps';
             // eslint-disable-next-line no-console
-            return console.warn('unexpected testCase:', testCase);
+            console.warn('unexpected testCase:', testCase);
+            return null;
         };
         const getTestCases = (cases) => {
             const type = getType(cases);
@@ -219,39 +243,53 @@ class ConversationTester {
                 }));
             }
             // eslint-disable-next-line no-console
-            return console.warn('unexpected type:', type);
+            console.warn('unexpected type:', type);
+            return [];
         };
 
         const listCases = this._getListCases(testCases);
         const lists = [];
         let id = 0;
         for (const [list, cases] of listCases.entries()) {
+            const type = getType(cases);
+
+            if (type === null) continue;
+
             lists.push({
                 id,
                 name: list,
-                type: getType(cases),
+                type,
                 testCases: getTestCases(cases)
             });
             id++;
         }
 
-        return {
-            lists
-        };
+        return lists;
     }
 
+    /**
+     *
+     * @param {(TestCase|TextCase)[]} testCases
+     * @returns {Map<string,(TestCase|TextCase)[]>}
+     */
     _getListCases (testCases) {
-        return testCases.reduce(
-            (map, testCase) => map.set(
-                testCase.list, [...(map.get(testCase.list) || []), testCase]
-            ),
-            new Map()
-        );
+        return testCases
+            .reduce(
+                (map, testCase) => map.set(
+                    testCase.list, [...(map.get(testCase.list) || []), testCase]
+                ),
+                new Map()
+            );
     }
 
-    _getSteps (testCases) {
+    /**
+     *
+     * @param {*} testCases
+     * @returns {TestsGroup[]}
+     */
+    _getGroups (testCases) {
         const { textCasesPerStep, stepCasesPerStep } = this._options;
-        const { lists } = this._getLists(testCases);
+        const lists = this._getLists(testCases);
 
         const steps = [];
         for (const list of lists) {
@@ -271,33 +309,56 @@ class ConversationTester {
         return steps;
     }
 
-    _getStepCases (steps, step) {
-        if (!Number.isInteger(step)) return steps;
+    /**
+     *
+     * @param {TestsGroup[]} testsGroups
+     * @param {number} step
+     */
+    _getTestsGroups (testsGroups, step) {
+        if (!Number.isInteger(step)) return testsGroups;
 
-        return steps[step - 1] ? [steps[step - 1]] : [];
+        return testsGroups[step - 1] ? [testsGroups[step - 1]] : [];
     }
 
-    _createTester (botconfig = null) {
+    /**
+     *
+     * @param {TestsGroup} testsGroup
+     * @param {Object} [botconfig]
+     * @returns {Tester}
+     */
+    _createTester (testsGroup, botconfig = null) {
         const bot = this._botFactory(true);
 
         if (botconfig) {
             bot.buildWithSnapshot(botconfig.blocks, Number.MAX_SAFE_INTEGER);
         }
 
-        const t = new Tester(bot);
+        let t;
+
+        if (typeof this._options.testerFactory === 'function') {
+            t = this._options.testerFactory(bot, testsGroup);
+        } else {
+            t = new Tester(bot);
+        }
 
         t.setExpandRandomTexts();
 
         return t;
     }
 
-    async _runTextCaseTests (stepCase, botconfig = null) {
-        const t = this._createTester(botconfig);
+    /**
+     *
+     * @param {TestsGroup} testsGroup
+     * @param {Object} botconfig
+     */
+    async _runTextCaseTests (testsGroup, botconfig = null) {
+        const t = this._createTester(testsGroup, botconfig);
         let out = '';
         let passing = 0;
         let longestText = 0;
 
-        const iterate = stepCase.testCases.map((textCase) => {
+        // @ts-ignore
+        const iterate = testsGroup.testCases.map((textCase) => {
             if (textCase.text.length > longestText) longestText = textCase.text.length;
             return textCase;
         });
@@ -306,7 +367,7 @@ class ConversationTester {
 
         const { textCaseParallel } = this._options;
         const runTestCase = textCase => this
-            .executeTextCase(t, textCase, botconfig, longestText);
+            .executeTextCase(testsGroup, t, textCase, botconfig, longestText);
 
         while (iterate.length > 0) {
             const cases = iterate.splice(0, textCaseParallel);
@@ -327,7 +388,7 @@ class ConversationTester {
             .join('\n');
 
         // calculate stats
-        const passingPerc = passing / stepCase.testCases.length;
+        const passingPerc = passing / testsGroup.testCases.length;
 
         const ok = passingPerc >= (this._options.textThreshold || DEFAULT_TEXT_THRESHOLD);
         const mark = ok ? '✓' : '✗';
@@ -338,28 +399,36 @@ class ConversationTester {
             before += `\n${echo}\n\n`;
         }
 
-        out += `${before}     ${mark} ${stepCase.list} ${passing}/${stepCase.testCases.length} (${(passingPerc * 100).toFixed(0)}%)\n`;
+        out += `${before}     ${mark} ${testsGroup.list} ${passing}/${testsGroup.testCases.length} (${(passingPerc * 100).toFixed(0)}%)\n`;
 
         return [{ o: out, ok }];
     }
 
-    async _runStepCaseTests (stepCase, botconfig) {
-        const t = this._createTester(botconfig);
+    /**
+     *
+     * @param {TestsGroup} testsGroup
+     * @param {Object} botconfig
+     */
+    async _runStepCaseTests (testsGroup, botconfig = null) {
+        const t = this._createTester(testsGroup, botconfig);
         const out = [];
 
-        for (const testCase of stepCase.testCases) {
+        for (const testCase of testsGroup.testCases) {
             let o = '';
             let fail = null;
+            // @ts-ignore
             for (const step of testCase.steps) {
                 // eslint-disable-next-line no-await-in-loop
                 fail = await this.executeStep(t, step);
                 if (fail) break;
             }
             if (fail) {
+                // @ts-ignore
                 o += `FAILED ${testCase.name}\n\n`;
                 o += `${fail}\n\n`;
                 out.push({ o, ok: false });
             } else {
+                // @ts-ignore
                 o += `     ✓ ${testCase.name}\n`;
                 out.push({ o, ok: true });
             }
@@ -370,14 +439,15 @@ class ConversationTester {
 
     /**
      *
+     * @param {TestsGroup} testsGroup
      * @param {Tester} t
      * @param {TextTest} textCase
      * @param {*} botconfig
      * @param {number} longestText
      */
-    async executeTextCase (t, textCase, botconfig, longestText) {
+    async executeTextCase (testsGroup, t, textCase, botconfig, longestText) {
         if (this._options.useConversationForTextTestCases) {
-            const tester = this._createTester(botconfig);
+            const tester = this._createTester(testsGroup, botconfig);
 
             try {
                 await tester.text(textCase.text);

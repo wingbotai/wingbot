@@ -125,6 +125,11 @@ class BuildRouter extends Router {
             this._botLoaded = this._checkForBotUpdate()
                 .then(() => {
                     this._botLoaded = null;
+                })
+                .catch((e) => {
+                    // be able to try in again later
+                    this._botLoaded = null;
+                    throw e;
                 });
         }
 
@@ -169,7 +174,7 @@ class BuildRouter extends Router {
                 if (this._configTs > 0 && !botLoaded) {
                     // mute
                     // eslint-disable-next-line no-console
-                    console.info('loading new state failed - nothing has ben broken');
+                    console.info('loading new state failed - nothing has ben broken', e);
                 } else {
                     throw e;
                 }
