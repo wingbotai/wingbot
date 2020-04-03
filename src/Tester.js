@@ -98,17 +98,17 @@ class Tester {
         this.actions = [];
 
         /**
-         * @type {Object} predefined test data to use
+         * @prop {Object} predefined test data to use
          */
         this.testData = {};
 
         /**
-         * @type {boolean} allow tester to process empty responses
+         * @prop {boolean} allow tester to process empty responses
          */
         this.allowEmptyResponse = false;
 
         /**
-         * @type {console} use own loggger
+         * @prop {console} use own loggger
          */
         this.senderLogger = undefined;
     }

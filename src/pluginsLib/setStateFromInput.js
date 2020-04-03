@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const getUpdate = require('../utils/getUpdate');
+const { getUpdate } = require('../utils/getUpdate');
 
 /**
  * @param {import('../Request')} req

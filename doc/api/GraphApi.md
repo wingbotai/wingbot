@@ -12,6 +12,8 @@
 <dt><a href="#postBackApi">postBackApi(processor, [acl])</a> ⇒ <code><a href="#PostBackAPI">PostBackAPI</a></code></dt>
 <dd><p>Create a postback API</p>
 </dd>
+<dt><a href="#validate">validate(bot, validationRequestBody, postBackTest, textTest)</a></dt>
+<dd></dd>
 <dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> ⇒ <code><a href="#ValidateBotAPI">ValidateBotAPI</a></code></dt>
 <dd><p>Test the bot configuration</p>
 </dd>
@@ -101,6 +103,17 @@ const api = new GraphApi([
     appToken: 'API-will-be-accessible-with-this-token-in-Authorization-header'
 })
 ```
+{% raw %}<div id="validate">&nbsp;</div>{% endraw %}
+
+## validate(bot, validationRequestBody, postBackTest, textTest)
+**Kind**: global function  
+**Params**
+
+- bot <code>Object</code>
+- validationRequestBody <code>Object</code>
+- postBackTest <code>string</code> | <code>function</code> <code> = null</code>
+- textTest <code>string</code> | <code>function</code> <code> = null</code>
+
 {% raw %}<div id="validateBotApi">&nbsp;</div>{% endraw %}
 
 ## validateBotApi(botFactory, [postBackTest], [textTest], [acl]) ⇒ [<code>ValidateBotAPI</code>](#ValidateBotAPI)
@@ -110,16 +123,28 @@ Test the bot configuration
 **Params**
 
 - botFactory <code>function</code> - function, which returns a bot
-- [postBackTest] <code>string</code> | <code>null</code> - postback action to test
-- [textTest] <code>string</code> | <code>null</code> - random text to test
-- [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> - limit api to array of groups or use auth function
+- [postBackTest] <code>string</code> | <code>function</code> | <code>null</code> <code> = null</code> - postback action to test
+- [textTest] <code>string</code> | <code>function</code> | <code>null</code> <code> = null</code> - random text to test
+- [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function
 
 **Example**  
 ```javascript
-const { GraphApi, validateBotApi } = require('wingbot');
+const { GraphApi, validateBotApi, Tester } = require('wingbot');
 
 const api = new GraphApi([
     validateBotApi(botFactory, 'start', 'hello')
+], {
+    token: 'wingbot-token'
+})
+
+// OR WITH FUNCTION
+
+const api = new GraphApi([
+    validateBotApi(botFactory, async (t, bot) => {
+        const tester = new Tester(bot);
+
+        tester.postBack('start');
+    })
 ], {
     token: 'wingbot-token'
 })

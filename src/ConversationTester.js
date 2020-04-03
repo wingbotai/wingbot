@@ -211,7 +211,7 @@ class ConversationTester {
 
     /**
      *
-     * @param {(TestCase|TextCase)[]} testCases
+     * @param {TestCase[]|TextCase[]} testCases
      * @returns {List[]}
      */
     _getLists (testCases) {
@@ -269,11 +269,12 @@ class ConversationTester {
 
     /**
      *
-     * @param {(TestCase|TextCase)[]} testCases
-     * @returns {Map<string,(TestCase|TextCase)[]>}
+     * @param {TestCase[]|TextCase[]} testCases
+     * @returns {Map<string,TestCase[]|TextCase[]>}
      */
     _getListCases (testCases) {
         return testCases
+            // @ts-ignore
             .reduce(
                 (map, testCase) => map.set(
                     testCase.list, [...(map.get(testCase.list) || []), testCase]

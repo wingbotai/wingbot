@@ -1077,10 +1077,15 @@
 <dd></dd>
 <dt><a href="#TestCaseStep">TestCaseStep</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#TestsGroup">TestsGroup</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#List">List</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#TestsDefinition">TestsDefinition</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#testerFactory">testerFactory</a> &#x21D2; <code>Tester</code></dt>
+<dd><p>Callback for getting a tester</p>
+</dd>
 <dt><a href="#TestsOutput">TestsOutput</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
@@ -1093,9 +1098,9 @@
 <li><a href="#Tester">Tester</a><ul>
 <li><a href="#new_Tester_new">new Tester()</a></li>
 <li><em>instance</em><ul>
-<li><a href="#Tester_testData">.testData</a> : <code>Object</code></li>
-<li><a href="#Tester_allowEmptyResponse">.allowEmptyResponse</a> : <code>boolean</code></li>
-<li><a href="#Tester_senderLogger">.senderLogger</a> : <code>console</code></li>
+<li><a href="#Tester_testData">.testData</a></li>
+<li><a href="#Tester_allowEmptyResponse">.allowEmptyResponse</a></li>
+<li><a href="#Tester_senderLogger">.senderLogger</a></li>
 <li><a href="#Tester_setExpandRandomTexts">.setExpandRandomTexts()</a></li>
 <li><a href="#Tester_cleanup">.cleanup()</a></li>
 <li><a href="#Tester_processMessage">.processMessage(message, senderId, pageId)</a> &#x21D2; <code>Promise.&lt;any&gt;</code></li>
@@ -1131,19 +1136,64 @@
 <p>Utility for testing requests</p>
 <div id="Tester_testData">&#xA0;</div>
 
-<h3 id="testertestdata--object"><a name="testertestdata--object" class="plugin-anchor" href="#testertestdata--object"><i class="fa fa-link" aria-hidden="true"></i></a>tester.testData : <code>Object</code></h3>
-<p>predefined test data to use</p>
-<p><strong>Kind</strong>: instance property of <a href="#Tester"><code>Tester</code></a>  </p>
+<h3 id="testertestdata"><a name="testertestdata" class="plugin-anchor" href="#testertestdata"><i class="fa fa-link" aria-hidden="true"></i></a>tester.testData</h3>
+<p><strong>Kind</strong>: instance property of <a href="#Tester"><code>Tester</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>predefined</td>
+<td><code>Object</code></td>
+<td>test data to use</td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_allowEmptyResponse">&#xA0;</div>
 
-<h3 id="testerallowemptyresponse--boolean"><a name="testerallowemptyresponse--boolean" class="plugin-anchor" href="#testerallowemptyresponse--boolean"><i class="fa fa-link" aria-hidden="true"></i></a>tester.allowEmptyResponse : <code>boolean</code></h3>
-<p>allow tester to process empty responses</p>
-<p><strong>Kind</strong>: instance property of <a href="#Tester"><code>Tester</code></a>  </p>
+<h3 id="testerallowemptyresponse"><a name="testerallowemptyresponse" class="plugin-anchor" href="#testerallowemptyresponse"><i class="fa fa-link" aria-hidden="true"></i></a>tester.allowEmptyResponse</h3>
+<p><strong>Kind</strong>: instance property of <a href="#Tester"><code>Tester</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>allow</td>
+<td><code>boolean</code></td>
+<td>tester to process empty responses</td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_senderLogger">&#xA0;</div>
 
-<h3 id="testersenderlogger--console"><a name="testersenderlogger--console" class="plugin-anchor" href="#testersenderlogger--console"><i class="fa fa-link" aria-hidden="true"></i></a>tester.senderLogger : <code>console</code></h3>
-<p>use own loggger</p>
-<p><strong>Kind</strong>: instance property of <a href="#Tester"><code>Tester</code></a>  </p>
+<h3 id="testersenderlogger"><a name="testersenderlogger" class="plugin-anchor" href="#testersenderlogger"><i class="fa fa-link" aria-hidden="true"></i></a>tester.senderLogger</h3>
+<p><strong>Kind</strong>: instance property of <a href="#Tester"><code>Tester</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>use</td>
+<td><code>console</code></td>
+<td>own loggger</td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_setExpandRandomTexts">&#xA0;</div>
 
 <h3 id="testersetexpandrandomtexts"><a name="testersetexpandrandomtexts" class="plugin-anchor" href="#testersetexpandrandomtexts"><i class="fa fa-link" aria-hidden="true"></i></a>tester.setExpandRandomTexts()</h3>
@@ -1451,7 +1501,14 @@ It joins them into a single sting</p>
 <li><a href="#ConversationTester">ConversationTester</a><ul>
 <li><a href="#new_ConversationTester_new">new ConversationTester(testsSource, botFactory, [options])</a></li>
 <li><a href="#ConversationTester_test">.test(validationRequestBody, step)</a> &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></li>
-<li><a href="#ConversationTester_executeTextCase">.executeTextCase(t, textCase, botconfig, longestText)</a></li>
+<li><a href="#ConversationTester__getLists">._getLists(testCases)</a> &#x21D2; <a href="#List"><code>Array.&lt;List&gt;</code></a></li>
+<li><a href="#ConversationTester__getListCases">._getListCases(testCases)</a> &#x21D2; <code>Map.&lt;string, (Array.&lt;TestCase&gt;|Array.&lt;TextCase&gt;)&gt;</code></li>
+<li><a href="#ConversationTester__getGroups">._getGroups(testCases)</a> &#x21D2; <a href="#TestsGroup"><code>Array.&lt;TestsGroup&gt;</code></a></li>
+<li><a href="#ConversationTester__getTestsGroups">._getTestsGroups(testsGroups, step)</a></li>
+<li><a href="#ConversationTester__createTester">._createTester(testsGroup, [botconfig])</a> &#x21D2; <a href="#Tester"><code>Tester</code></a></li>
+<li><a href="#ConversationTester__runTextCaseTests">._runTextCaseTests(testsGroup, botconfig)</a></li>
+<li><a href="#ConversationTester__runStepCaseTests">._runStepCaseTests(testsGroup, botconfig)</a></li>
+<li><a href="#ConversationTester_executeTextCase">.executeTextCase(testsGroup, t, textCase, botconfig, longestText)</a></li>
 <li><a href="#ConversationTester_executeStep">.executeStep(t, step)</a></li>
 </ul>
 </li>
@@ -1472,6 +1529,7 @@ It joins them into a single sting</p>
 <li>[.stepCasesPerStep] <code>number</code></li>
 <li>[.textCasesPerStep] <code>number</code></li>
 <li>[.textCaseParallel] <code>number</code></li>
+<li>[.testerFactory] <a href="#testerFactory"><code>testerFactory</code></a></li>
 </ul>
 </li>
 </ul>
@@ -1484,11 +1542,65 @@ It joins them into a single sting</p>
 <li>validationRequestBody <code>Object</code> <code> = </code></li>
 <li>step <code>number</code> <code> = </code></li>
 </ul>
-<div id="ConversationTester_executeTextCase">&#xA0;</div>
+<div id="ConversationTester__getLists">&#xA0;</div>
 
-<h3 id="conversationtesterexecutetextcaset-textcase-botconfig-longesttext"><a name="conversationtesterexecutetextcaset-textcase-botconfig-longesttext" class="plugin-anchor" href="#conversationtesterexecutetextcaset-textcase-botconfig-longesttext"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.executeTextCase(t, textCase, botconfig, longestText)</h3>
+<h3 id="conversationtestergetliststestcases-&#x21D2;-arraylist"><a name="conversationtestergetliststestcases-&#x21D2;-arraylist" class="plugin-anchor" href="#conversationtestergetliststestcases-&#x21D2;-arraylist"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getLists(testCases) &#x21D2; <a href="#List"><code>Array.&lt;List&gt;</code></a></h3>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
 <ul>
+<li>testCases <a href="#TestCase"><code>Array.&lt;TestCase&gt;</code></a> | <a href="#TextCase"><code>Array.&lt;TextCase&gt;</code></a></li>
+</ul>
+<div id="ConversationTester__getListCases">&#xA0;</div>
+
+<h3 id="conversationtestergetlistcasestestcases-&#x21D2;-mapstring-arraytestcasearraytextcase"><a name="conversationtestergetlistcasestestcases-&#x21D2;-mapstring-arraytestcasearraytextcase" class="plugin-anchor" href="#conversationtestergetlistcasestestcases-&#x21D2;-mapstring-arraytestcasearraytextcase"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getListCases(testCases) &#x21D2; <code>Map.&lt;string, (Array.&lt;TestCase&gt;|Array.&lt;TextCase&gt;)&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>testCases <a href="#TestCase"><code>Array.&lt;TestCase&gt;</code></a> | <a href="#TextCase"><code>Array.&lt;TextCase&gt;</code></a></li>
+</ul>
+<div id="ConversationTester__getGroups">&#xA0;</div>
+
+<h3 id="conversationtestergetgroupstestcases-&#x21D2;-arraytestsgroup"><a name="conversationtestergetgroupstestcases-&#x21D2;-arraytestsgroup" class="plugin-anchor" href="#conversationtestergetgroupstestcases-&#x21D2;-arraytestsgroup"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getGroups(testCases) &#x21D2; <a href="#TestsGroup"><code>Array.&lt;TestsGroup&gt;</code></a></h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>testCases <code>*</code></li>
+</ul>
+<div id="ConversationTester__getTestsGroups">&#xA0;</div>
+
+<h3 id="conversationtestergettestsgroupstestsgroups-step"><a name="conversationtestergettestsgroupstestsgroups-step" class="plugin-anchor" href="#conversationtestergettestsgroupstestsgroups-step"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getTestsGroups(testsGroups, step)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>testsGroups <a href="#TestsGroup"><code>Array.&lt;TestsGroup&gt;</code></a></li>
+<li>step <code>number</code></li>
+</ul>
+<div id="ConversationTester__createTester">&#xA0;</div>
+
+<h3 id="conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester"><a name="conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester" class="plugin-anchor" href="#conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._createTester(testsGroup, [botconfig]) &#x21D2; <a href="#Tester"><code>Tester</code></a></h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
+<li>[botconfig] <code>Object</code> <code> = </code></li>
+</ul>
+<div id="ConversationTester__runTextCaseTests">&#xA0;</div>
+
+<h3 id="conversationtesterruntextcaseteststestsgroup-botconfig"><a name="conversationtesterruntextcaseteststestsgroup-botconfig" class="plugin-anchor" href="#conversationtesterruntextcaseteststestsgroup-botconfig"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._runTextCaseTests(testsGroup, botconfig)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
+<li>botconfig <code>Object</code> <code> = </code></li>
+</ul>
+<div id="ConversationTester__runStepCaseTests">&#xA0;</div>
+
+<h3 id="conversationtesterrunstepcaseteststestsgroup-botconfig"><a name="conversationtesterrunstepcaseteststestsgroup-botconfig" class="plugin-anchor" href="#conversationtesterrunstepcaseteststestsgroup-botconfig"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._runStepCaseTests(testsGroup, botconfig)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
+<li>botconfig <code>Object</code> <code> = </code></li>
+</ul>
+<div id="ConversationTester_executeTextCase">&#xA0;</div>
+
+<h3 id="conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext"><a name="conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext" class="plugin-anchor" href="#conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
+<ul>
+<li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
 <li>t <a href="#Tester"><code>Tester</code></a></li>
 <li>textCase <a href="#TextTest"><code>TextTest</code></a></li>
 <li>botconfig <code>*</code></li>
@@ -1644,6 +1756,37 @@ It joins them into a single sting</p>
 </tr>
 </tbody>
 </table>
+<div id="TestsGroup">&#xA0;</div>
+
+<h2 id="testsgroup--object"><a name="testsgroup--object" class="plugin-anchor" href="#testsgroup--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestsGroup : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>listId</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>list</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>type</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>testCases</td>
+<td><a href="#TestCase"><code>Array.&lt;TestCase&gt;</code></a> \</td>
+<td><a href="#TextTest"><code>Array.&lt;TextTest&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="List">&#xA0;</div>
 
 <h2 id="list--object"><a name="list--object" class="plugin-anchor" href="#list--object"><i class="fa fa-link" aria-hidden="true"></i></a>List : <code>object</code></h2>
@@ -1693,6 +1836,15 @@ It joins them into a single sting</p>
 </tr>
 </tbody>
 </table>
+<div id="testerFactory">&#xA0;</div>
+
+<h2 id="testerfactory-&#x21D2;-tester"><a name="testerfactory-&#x21D2;-tester" class="plugin-anchor" href="#testerfactory-&#x21D2;-tester"><i class="fa fa-link" aria-hidden="true"></i></a>testerFactory &#x21D2; <a href="#Tester"><code>Tester</code></a></h2>
+<p>Callback for getting a tester</p>
+<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
+<ul>
+<li>bot <code>Router</code> | <code>ReducerWrapper</code> - the chatbot itself</li>
+<li>test <a href="#TestsGroup"><code>TestsGroup</code></a> - the chatbot itself</li>
+</ul>
 <div id="TestsOutput">&#xA0;</div>
 
 <h2 id="testsoutput--object"><a name="testsoutput--object" class="plugin-anchor" href="#testsoutput--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestsOutput : <code>object</code></h2>
@@ -1782,7 +1934,7 @@ It joins them into a single sting</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2020-03-12T14:33:15.223Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-12T14:33:25.304Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2020-04-03T14:13:17.186Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-03T14:13:28.261Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -1064,6 +1064,8 @@
 <dt><a href="#postBackApi">postBackApi(processor, [acl])</a> &#x21D2; <code>PostBackAPI</code></dt>
 <dd><p>Create a postback API</p>
 </dd>
+<dt><a href="#validate">validate(bot, validationRequestBody, postBackTest, textTest)</a></dt>
+<dd></dd>
 <dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> &#x21D2; <code>ValidateBotAPI</code></dt>
 <dd><p>Test the bot configuration</p>
 </dd>
@@ -1155,6 +1157,16 @@ for retrieving conversations and it&apos;s history</p>
     appToken: <span class="hljs-string">&apos;API-will-be-accessible-with-this-token-in-Authorization-header&apos;</span>
 })
 </code></pre>
+<div id="validate">&#xA0;</div>
+
+<h2 id="validatebot-validationrequestbody-postbacktest-texttest"><a name="validatebot-validationrequestbody-postbacktest-texttest" class="plugin-anchor" href="#validatebot-validationrequestbody-postbacktest-texttest"><i class="fa fa-link" aria-hidden="true"></i></a>validate(bot, validationRequestBody, postBackTest, textTest)</h2>
+<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
+<ul>
+<li>bot <code>Object</code></li>
+<li>validationRequestBody <code>Object</code></li>
+<li>postBackTest <code>string</code> | <code>function</code> <code> = null</code></li>
+<li>textTest <code>string</code> | <code>function</code> <code> = null</code></li>
+</ul>
 <div id="validateBotApi">&#xA0;</div>
 
 <h2 id="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><a name="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi" class="plugin-anchor" href="#validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><i class="fa fa-link" aria-hidden="true"></i></a>validateBotApi(botFactory, [postBackTest], [textTest], [acl]) &#x21D2; <a href="#ValidateBotAPI"><code>ValidateBotAPI</code></a></h2>
@@ -1162,15 +1174,27 @@ for retrieving conversations and it&apos;s history</p>
 <p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
 <ul>
 <li>botFactory <code>function</code> - function, which returns a bot</li>
-<li>[postBackTest] <code>string</code> | <code>null</code> - postback action to test</li>
-<li>[textTest] <code>string</code> | <code>null</code> - random text to test</li>
-<li>[acl] <code>Array.&lt;string&gt;</code> | <code>function</code> - limit api to array of groups or use auth function</li>
+<li>[postBackTest] <code>string</code> | <code>function</code> | <code>null</code> <code> = null</code> - postback action to test</li>
+<li>[textTest] <code>string</code> | <code>function</code> | <code>null</code> <code> = null</code> - random text to test</li>
+<li>[acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function</li>
 </ul>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { GraphApi, validateBotApi } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { GraphApi, validateBotApi, Tester } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
     validateBotApi(botFactory, <span class="hljs-string">&apos;start&apos;</span>, <span class="hljs-string">&apos;hello&apos;</span>)
+], {
+    token: <span class="hljs-string">&apos;wingbot-token&apos;</span>
+})
+
+<span class="hljs-comment">// OR WITH FUNCTION</span>
+
+<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
+    validateBotApi(botFactory, <span class="hljs-keyword">async</span> (t, bot) =&gt; {
+        <span class="hljs-keyword">const</span> tester = <span class="hljs-keyword">new</span> Tester(bot);
+
+        tester.postBack(<span class="hljs-string">&apos;start&apos;</span>);
+    })
 ], {
     token: <span class="hljs-string">&apos;wingbot-token&apos;</span>
 })
@@ -1359,7 +1383,7 @@ for retrieving conversations and it&apos;s history</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"GraphApi","level":"3.10","depth":1,"next":{"title":"Chatbot API GraphQL schema","level":"3.11","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"previous":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/GraphApi.md","mtime":"2020-03-12T14:33:15.959Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-12T14:33:25.304Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"GraphApi","level":"3.10","depth":1,"next":{"title":"Chatbot API GraphQL schema","level":"3.11","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"previous":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/GraphApi.md","mtime":"2020-04-03T14:13:19.859Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-03T14:13:28.261Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
