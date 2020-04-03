@@ -4,7 +4,81 @@
 'use strict';
 
 const assert = require('assert');
-const getUpdate = require('../../src/utils/getUpdate');
+const { getUpdate, getValue, getSetState } = require('../../src/utils/getUpdate');
+
+
+describe('getSetState()', () => {
+
+    it('works', () => {
+        assert.deepEqual(getSetState({
+            k: { _$inc: 2 }
+        }, {
+            state: {}
+        }), {
+            k: 2
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$inc: '2' }
+        }, {
+            state: { k: 2, j: 3 }
+        }), {
+            k: 4
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$inc: -2 },
+            'a.b': 2,
+            'n.p': null
+        }, {
+            state: { k: NaN, j: 3, n: { o: null, p: {} } }
+        }), {
+            k: -2,
+            a: {
+                b: 2
+            },
+            n: {
+                o: null,
+                p: null
+            }
+        });
+    });
+
+});
+
+describe('getValue()', () => {
+
+    it('works', () => {
+        assert.strictEqual(getValue('foo.bar.deep', {
+            foo: {
+                bar: {
+                    deep: 1
+                }
+            }
+        }), 1);
+
+        assert.strictEqual(getValue('foo.bar.deep.deeper', {
+            foo: {
+                bar: {
+                    deep: 1
+                }
+            }
+        }), undefined);
+
+        assert.strictEqual(getValue('foo.bar.deep', {
+            foo: {
+                bar: null
+            }
+        }), undefined);
+
+        assert.strictEqual(getValue('foo.bar', {
+            foo: {
+                bar: null
+            }
+        }), null);
+    });
+
+});
 
 describe('getUpdate()', () => {
 

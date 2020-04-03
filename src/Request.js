@@ -6,7 +6,7 @@
 const Ai = require('./Ai');
 const { tokenize, parseActionPayload } = require('./utils');
 const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickReplies');
-const getUpdate = require('./utils/getUpdate');
+const { getSetState } = require('./utils/getUpdate');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
@@ -682,11 +682,7 @@ class Request {
             return {};
         }
 
-        return Object.keys(setState)
-            .reduce((o, key) => {
-                const value = setState[key];
-                return Object.assign(o, getUpdate(key, value, this.state));
-            }, {});
+        return getSetState(setState, this);
     }
 
     _resolveAction () {

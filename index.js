@@ -33,7 +33,7 @@ const GenericTemplate = require('./src/templates/GenericTemplate');
 const BaseTemplate = require('./src/templates/BaseTemplate');
 const { parseActionPayload } = require('./src/utils/pathUtils');
 const { disambiguationQuickReply } = require('./src/utils/quickReplies');
-const getUpdate = require('./src/utils/getUpdate');
+const { getUpdate, getValue } = require('./src/utils/getUpdate');
 const {
     bufferloader,
     MemoryStateStorage,
@@ -60,6 +60,7 @@ module.exports = {
     CachedModel,
     parseActionPayload,
     getUpdate,
+    getValue,
     disambiguationQuickReply,
 
     // Wingbot

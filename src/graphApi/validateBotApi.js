@@ -12,7 +12,14 @@ const apiAuthorizer = require('./apiAuthorizer');
  * @prop {Function} validateBot
  */
 
-async function validate (bot, validationRequestBody, postBackTest = 'start', textTest = 'hello') {
+/**
+ *
+ * @param {Object} bot
+ * @param {Object} validationRequestBody
+ * @param {string|Function} postBackTest
+ * @param {string|Function} textTest
+ */
+async function validate (bot, validationRequestBody, postBackTest = null, textTest = null) {
     try {
         bot.buildWithSnapshot(validationRequestBody.blocks, Number.MAX_SAFE_INTEGER);
     } catch (e) {
@@ -23,17 +30,25 @@ async function validate (bot, validationRequestBody, postBackTest = 'start', tex
 
     if (postBackTest) {
         try {
-            await t.postBack(postBackTest);
+            if (typeof postBackTest === 'function') {
+                await Promise.resolve(postBackTest(t, bot));
+            } else {
+                await t.postBack(postBackTest);
+            }
         } catch (e) {
-            return { error: `Postback failed: ${e.message}`, ok: false };
+            return { error: `Postback test failed: ${e.message}`, ok: false };
         }
     }
 
     if (textTest) {
         try {
-            await t.text(textTest);
+            if (typeof textTest === 'function') {
+                await Promise.resolve(textTest(t, bot));
+            } else {
+                await t.text(textTest);
+            }
         } catch (e) {
-            return { error: `Text message failed: ${e.message}`, ok: false };
+            return { error: `Text message test failed: ${e.message}`, ok: false };
         }
     }
 
@@ -45,31 +60,32 @@ async function validate (bot, validationRequestBody, postBackTest = 'start', tex
  * Test the bot configuration
  *
  * @param {Function} botFactory - function, which returns a bot
- * @param {string|null} [postBackTest] - postback action to test
- * @param {string|null} [textTest] - random text to test
+ * @param {string|Function|null} [postBackTest] - postback action to test
+ * @param {string|Function|null} [textTest] - random text to test
  * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
  * @returns {ValidateBotAPI}
  * @example
- * const { GraphApi, validateBotApi } = require('wingbot');
+ * const { GraphApi, validateBotApi, Tester } = require('wingbot');
  *
  * const api = new GraphApi([
  *     validateBotApi(botFactory, 'start', 'hello')
  * ], {
  *     token: 'wingbot-token'
  * })
+ *
+ * // OR WITH FUNCTION
+ *
+ * const api = new GraphApi([
+ *     validateBotApi(botFactory, async (t, bot) => {
+ *         const tester = new Tester(bot);
+ *
+ *         tester.postBack('start');
+ *     })
+ * ], {
+ *     token: 'wingbot-token'
+ * })
  */
-function validateBotApi (botFactory, postBackTest, textTest, acl) {
-    /** @deprecated way to validate bot */
-    if (postBackTest && typeof postBackTest === 'object') {
-
-        // @ts-ignore
-        return validate(botFactory, postBackTest, textTest, acl)
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(res.error);
-                }
-            });
-    }
+function validateBotApi (botFactory, postBackTest = null, textTest = null, acl = null) {
 
     return {
         async validateBot (args, ctx) {
