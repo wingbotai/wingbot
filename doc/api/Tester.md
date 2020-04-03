@@ -25,10 +25,15 @@
 <dd></dd>
 <dt><a href="#TestCaseStep">TestCaseStep</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#TestsGroup">TestsGroup</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#List">List</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#TestsDefinition">TestsDefinition</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#testerFactory">testerFactory</a> ⇒ <code><a href="#Tester">Tester</a></code></dt>
+<dd><p>Callback for getting a tester</p>
+</dd>
 <dt><a href="#TestsOutput">TestsOutput</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
@@ -41,9 +46,9 @@
 * [Tester](#Tester)
     * [new Tester()](#new_Tester_new)
     * _instance_
-        * [.testData](#Tester_testData) : <code>Object</code>
-        * [.allowEmptyResponse](#Tester_allowEmptyResponse) : <code>boolean</code>
-        * [.senderLogger](#Tester_senderLogger) : <code>console</code>
+        * [.testData](#Tester_testData)
+        * [.allowEmptyResponse](#Tester_allowEmptyResponse)
+        * [.senderLogger](#Tester_senderLogger)
         * [.setExpandRandomTexts()](#Tester_setExpandRandomTexts)
         * [.cleanup()](#Tester_cleanup)
         * [.processMessage(message, senderId, pageId)](#Tester_processMessage) ⇒ <code>Promise.&lt;any&gt;</code>
@@ -72,22 +77,34 @@ Utility for testing requests
 
 {% raw %}<div id="Tester_testData">&nbsp;</div>{% endraw %}
 
-### tester.testData : <code>Object</code>
-predefined test data to use
-
+### tester.testData
 **Kind**: instance property of [<code>Tester</code>](#Tester)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| predefined | <code>Object</code> | test data to use |
+
 {% raw %}<div id="Tester_allowEmptyResponse">&nbsp;</div>{% endraw %}
 
-### tester.allowEmptyResponse : <code>boolean</code>
-allow tester to process empty responses
-
+### tester.allowEmptyResponse
 **Kind**: instance property of [<code>Tester</code>](#Tester)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| allow | <code>boolean</code> | tester to process empty responses |
+
 {% raw %}<div id="Tester_senderLogger">&nbsp;</div>{% endraw %}
 
-### tester.senderLogger : <code>console</code>
-use own loggger
-
+### tester.senderLogger
 **Kind**: instance property of [<code>Tester</code>](#Tester)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| use | <code>console</code> | own loggger |
+
 {% raw %}<div id="Tester_setExpandRandomTexts">&nbsp;</div>{% endraw %}
 
 ### tester.setExpandRandomTexts()
@@ -448,7 +465,14 @@ Automated Conversation tests runner
 * [ConversationTester](#ConversationTester)
     * [new ConversationTester(testsSource, botFactory, [options])](#new_ConversationTester_new)
     * [.test(validationRequestBody, step)](#ConversationTester_test) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
-    * [.executeTextCase(t, textCase, botconfig, longestText)](#ConversationTester_executeTextCase)
+    * [._getLists(testCases)](#ConversationTester__getLists) ⇒ [<code>Array.&lt;List&gt;</code>](#List)
+    * [._getListCases(testCases)](#ConversationTester__getListCases) ⇒ <code>Map.&lt;string, (Array.&lt;TestCase&gt;\|Array.&lt;TextCase&gt;)&gt;</code>
+    * [._getGroups(testCases)](#ConversationTester__getGroups) ⇒ [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup)
+    * [._getTestsGroups(testsGroups, step)](#ConversationTester__getTestsGroups)
+    * [._createTester(testsGroup, [botconfig])](#ConversationTester__createTester) ⇒ [<code>Tester</code>](#Tester)
+    * [._runTextCaseTests(testsGroup, botconfig)](#ConversationTester__runTextCaseTests)
+    * [._runStepCaseTests(testsGroup, botconfig)](#ConversationTester__runStepCaseTests)
+    * [.executeTextCase(testsGroup, t, textCase, botconfig, longestText)](#ConversationTester_executeTextCase)
     * [.executeStep(t, step)](#ConversationTester_executeStep)
 
 {% raw %}<div id="new_ConversationTester_new">&nbsp;</div>{% endraw %}
@@ -467,6 +491,7 @@ Automated Conversation tests runner
     - [.stepCasesPerStep] <code>number</code>
     - [.textCasesPerStep] <code>number</code>
     - [.textCaseParallel] <code>number</code>
+    - [.testerFactory] [<code>testerFactory</code>](#testerFactory)
 
 {% raw %}<div id="ConversationTester_test">&nbsp;</div>{% endraw %}
 
@@ -479,12 +504,73 @@ Runs the conversation test
 - validationRequestBody <code>Object</code> <code> = </code>
 - step <code>number</code> <code> = </code>
 
-{% raw %}<div id="ConversationTester_executeTextCase">&nbsp;</div>{% endraw %}
+{% raw %}<div id="ConversationTester__getLists">&nbsp;</div>{% endraw %}
 
-### conversationTester.executeTextCase(t, textCase, botconfig, longestText)
+### conversationTester.\_getLists(testCases) ⇒ [<code>Array.&lt;List&gt;</code>](#List)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
 **Params**
 
+- testCases [<code>Array.&lt;TestCase&gt;</code>](#TestCase) | [<code>Array.&lt;TextCase&gt;</code>](#TextCase)
+
+{% raw %}<div id="ConversationTester__getListCases">&nbsp;</div>{% endraw %}
+
+### conversationTester.\_getListCases(testCases) ⇒ <code>Map.&lt;string, (Array.&lt;TestCase&gt;\|Array.&lt;TextCase&gt;)&gt;</code>
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+**Params**
+
+- testCases [<code>Array.&lt;TestCase&gt;</code>](#TestCase) | [<code>Array.&lt;TextCase&gt;</code>](#TextCase)
+
+{% raw %}<div id="ConversationTester__getGroups">&nbsp;</div>{% endraw %}
+
+### conversationTester.\_getGroups(testCases) ⇒ [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+**Params**
+
+- testCases <code>\*</code>
+
+{% raw %}<div id="ConversationTester__getTestsGroups">&nbsp;</div>{% endraw %}
+
+### conversationTester.\_getTestsGroups(testsGroups, step)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+**Params**
+
+- testsGroups [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup)
+- step <code>number</code>
+
+{% raw %}<div id="ConversationTester__createTester">&nbsp;</div>{% endraw %}
+
+### conversationTester.\_createTester(testsGroup, [botconfig]) ⇒ [<code>Tester</code>](#Tester)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+**Params**
+
+- testsGroup [<code>TestsGroup</code>](#TestsGroup)
+- [botconfig] <code>Object</code> <code> = </code>
+
+{% raw %}<div id="ConversationTester__runTextCaseTests">&nbsp;</div>{% endraw %}
+
+### conversationTester.\_runTextCaseTests(testsGroup, botconfig)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+**Params**
+
+- testsGroup [<code>TestsGroup</code>](#TestsGroup)
+- botconfig <code>Object</code> <code> = </code>
+
+{% raw %}<div id="ConversationTester__runStepCaseTests">&nbsp;</div>{% endraw %}
+
+### conversationTester.\_runStepCaseTests(testsGroup, botconfig)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+**Params**
+
+- testsGroup [<code>TestsGroup</code>](#TestsGroup)
+- botconfig <code>Object</code> <code> = </code>
+
+{% raw %}<div id="ConversationTester_executeTextCase">&nbsp;</div>{% endraw %}
+
+### conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+**Params**
+
+- testsGroup [<code>TestsGroup</code>](#TestsGroup)
 - t [<code>Tester</code>](#Tester)
 - textCase [<code>TextTest</code>](#TextTest)
 - botconfig <code>\*</code>
@@ -562,6 +648,19 @@ Runs the conversation test
 | quickRepliesContains | <code>string</code> | 
 | stepDescription | <code>string</code> | 
 
+{% raw %}<div id="TestsGroup">&nbsp;</div>{% endraw %}
+
+## TestsGroup : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| listId | <code>number</code> | 
+| list | <code>string</code> | 
+| type | <code>string</code> | 
+| testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextTest&gt;</code>](#TextTest) | 
+
 {% raw %}<div id="List">&nbsp;</div>{% endraw %}
 
 ## List : <code>object</code>
@@ -584,6 +683,17 @@ Runs the conversation test
 | Name | Type |
 | --- | --- |
 | lists | [<code>Array.&lt;List&gt;</code>](#List) | 
+
+{% raw %}<div id="testerFactory">&nbsp;</div>{% endraw %}
+
+## testerFactory ⇒ [<code>Tester</code>](#Tester)
+Callback for getting a tester
+
+**Kind**: global typedef  
+**Params**
+
+- bot <code>Router</code> | <code>ReducerWrapper</code> - the chatbot itself
+- test [<code>TestsGroup</code>](#TestsGroup) - the chatbot itself
 
 {% raw %}<div id="TestsOutput">&nbsp;</div>{% endraw %}
 
