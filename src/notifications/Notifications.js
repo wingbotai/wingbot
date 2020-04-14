@@ -270,7 +270,9 @@ class Notifications extends EventEmitter {
                 this._postponeTasksOnInteraction(cmps, req)
             ]);
 
-            this._reportEvent('subscribed', tag, { senderId, pageId });
+            if (tag !== this._allAudienceTag) {
+                this._reportEvent('subscribed', tag, { senderId, pageId });
+            }
         } else {
             await this._storage.subscribe(`${senderId}`, pageId, tag);
         }

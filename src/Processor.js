@@ -568,6 +568,12 @@ class Processor extends EventEmitter {
         const { _lastAction: lastAction = null } = req.state;
         const { _lastAction: act = null } = res.newState;
 
+        const shouldNotTrack = res._trackAsAction === false;
+
+        if (shouldNotTrack) {
+            return;
+        }
+
         const trackingSkill = typeof res.newState._trackAsSkill === 'undefined'
             ? (req.state._trackAsSkill || null)
             : res.newState._trackAsSkill;
