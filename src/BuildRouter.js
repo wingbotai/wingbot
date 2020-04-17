@@ -36,7 +36,6 @@ class BuildRouter extends Router {
      * @param {string} [block.botId] - the ID of bot
      * @param {string} [block.snapshot] - snapshot stage of bot
      * @param {string|Promise<string>} [block.token] - authorization token for bot
-     * @param {Object} [block.routes] - list of routes for direct bot build
      * @param {string} [block.url] - specify alternative configuration resource
      * @param {Plugins} plugins - custom code blocks resource
      * @param {Object} context - the building context

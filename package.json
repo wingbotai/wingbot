@@ -6,7 +6,7 @@
   "scripts": {
     "tsd:update": "jsdoc -t ./node_modules/tsd-jsdoc/dist/ -r ./src",
     "doc:gql": "graphql-markdown ./src/graphApi/schema.gql > doc/api/graphqlSchema.md",
-    "doc": "npm run doc:gql && node ./bin/makeApiDoc.js && gitbook install ./doc && gitbook build ./doc && rm -rf ./docs && mv ./doc/_book ./docs",
+    "doc": "npm run doc:gql && node ./bin/makeApiDoc.js && gitbook install ./doc && gitbook build ./doc && rimraf -rf ./docs && move-cli ./doc/_book ./docs",
     "test": "npm run test:lint && npm run test:coverage && npm run test:coverage:threshold",
     "test:coverage": "nyc --reporter=html mocha --opts ./mocha.opts ./test && nyc report",
     "test:coverage:threshold": "nyc check-coverage --lines 85 --functions 85 --branches 76",
@@ -50,8 +50,10 @@
     "jsdoc": "^3.6.3",
     "jsdoc-to-markdown": "^5.0.3",
     "mocha": "^6.1.4",
+    "move-cli": "^1.2.1",
     "nyc": "^14.1.1",
     "po2json": "^0.4.5",
+    "rimraf": "^3.0.2",
     "sinon": "^7.2.7",
     "tsd-jsdoc": "^2.3.1"
   },
