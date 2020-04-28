@@ -105,7 +105,7 @@ class BuildRouter extends Router {
          *
          * @prop {number}
          */
-        this.keepConfigFor = 10000;
+        this.keepConfigFor = 60000;
 
         if (typeof block.routes === 'object') {
             this._buildBot(block);

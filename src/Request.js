@@ -70,7 +70,7 @@ function makeTimestamp () {
 /**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
- * @class {Request}
+ * @class
  */
 class Request {
 

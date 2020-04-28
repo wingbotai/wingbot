@@ -304,6 +304,112 @@ describe('Processor', function () {
             assert.strictEqual(reducer.callCount, 0);
         });
 
+        it('should not fire the event if it should not be tracked', async () => {
+
+            const reducer = sinon.spy((req, res) => {
+                res.trackAs(false);
+            });
+
+            const stateStorage = createStateStorage();
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
+
+            let set = false;
+
+            proc.on('event', (s, action) => {
+                set = action;
+            });
+
+            await proc.processMessage({
+                sender: {
+                    id: 1
+                },
+                postback: {
+                    payload: {
+                        action: 'action'
+                    }
+                }
+            });
+
+            await new Promise(r => setTimeout(r, 10));
+
+            assert(reducer.called);
+            assert.strictEqual(set, false);
+        });
+
+        it('should not fire the event if it should not be tracked', async () => {
+
+            const reducer = new ReducerWrapper((req, res) => {
+                reducer.emitAction(req, res, false);
+            });
+
+            const reducerGot = [];
+            reducer.on('action', (r, a) => reducerGot.push(a));
+
+            const stateStorage = createStateStorage();
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
+
+            let set = false;
+
+            proc.on('event', (s, action) => {
+                set = action;
+            });
+
+            await proc.processMessage({
+                sender: {
+                    id: 1
+                },
+                postback: {
+                    payload: {
+                        action: 'action'
+                    }
+                }
+            });
+
+            await new Promise(r => setTimeout(r, 10));
+
+            assert.strictEqual(set, false);
+            assert.deepEqual(reducerGot, []);
+        });
+
+        it('should enable user tracking', async () => {
+
+            const reducer = new ReducerWrapper((req, res) => {
+                reducer.emitAction(req, res, 'abc');
+                reducer.emitAction(req, res, 'efg');
+            });
+
+            const reducerGot = [];
+            reducer.on('action', (r, a) => reducerGot.push(a));
+
+            const stateStorage = createStateStorage();
+            const opts = makeOptions(stateStorage);
+            const proc = new Processor(reducer, opts);
+
+            let set = false;
+
+            proc.on('event', (s, action) => {
+                set = action;
+            });
+
+            await proc.processMessage({
+                sender: {
+                    id: 1
+                },
+                postback: {
+                    payload: {
+                        action: 'action'
+                    }
+                }
+            });
+
+            await new Promise(r => setTimeout(r, 10));
+
+            assert.strictEqual(set, 'efg');
+            assert.deepEqual(reducerGot, ['abc', 'efg']);
+        });
+
         it('invalid messages should be logged', function () {
 
             const reducer = sinon.spy((req, res) => {
