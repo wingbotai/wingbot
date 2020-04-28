@@ -1069,6 +1069,8 @@
 <dl>
 <dt><a href="#Router">Router</a> &#x21D0; <code>ReducerWrapper</code></dt>
 <dd></dd>
+<dt><a href="#ReducerWrapper">ReducerWrapper</a> &#x21D0; <code>EventEmitter</code></dt>
+<dd></dd>
 </dl>
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
@@ -1084,13 +1086,15 @@
 
 <div id="Router">&#xA0;</div>
 
-<h2 id="router-&#x21D0;-reducerwrapper"><a name="router-&#x21D0;-reducerwrapper" class="plugin-anchor" href="#router-&#x21D0;-reducerwrapper"><i class="fa fa-link" aria-hidden="true"></i></a>Router &#x21D0; <code>ReducerWrapper</code></h2>
-<p><strong>Kind</strong>: global class<br><strong>Extends</strong>: <code>ReducerWrapper</code>  </p>
+<h2 id="router-&#x21D0;-reducerwrapper"><a name="router-&#x21D0;-reducerwrapper" class="plugin-anchor" href="#router-&#x21D0;-reducerwrapper"><i class="fa fa-link" aria-hidden="true"></i></a>Router &#x21D0; <a href="#ReducerWrapper"><code>ReducerWrapper</code></a></h2>
+<p><strong>Kind</strong>: global class<br><strong>Extends</strong>: <a href="#ReducerWrapper"><code>ReducerWrapper</code></a>  </p>
 <ul>
-<li><a href="#Router">Router</a> &#x21D0; <code>ReducerWrapper</code><ul>
+<li><a href="#Router">Router</a> &#x21D0; <a href="#ReducerWrapper"><code>ReducerWrapper</code></a><ul>
 <li><a href="#new_Router_new">new Router()</a></li>
 <li><em>instance</em><ul>
 <li><a href="#Router_use">.use(...resolvers)</a> &#x21D2; <code>this</code></li>
+<li><a href="#ReducerWrapper_reduce">.reduce(req, res, postBack)</a></li>
+<li><a href="#ReducerWrapper_emitAction">.emitAction(req, res, action)</a></li>
 </ul>
 </li>
 <li><em>static</em><ul>
@@ -1131,6 +1135,53 @@ router.use(<span class="hljs-string">&apos;action&apos;</span>, req =&gt; req.te
 
 <span class="hljs-comment">// use multiple reducers</span>
 router.use(<span class="hljs-string">&apos;/path&apos;</span>, reducer1, reducer2);
+</code></pre>
+<div id="ReducerWrapper_reduce">&#xA0;</div>
+
+<h3 id="routerreducereq-res-postback"><a name="routerreducereq-res-postback" class="plugin-anchor" href="#routerreducereq-res-postback"><i class="fa fa-link" aria-hidden="true"></i></a>router.reduce(req, res, postBack)</h3>
+<p>Reducer function</p>
+<p><strong>Kind</strong>: instance method of <a href="#Router"><code>Router</code></a><br><strong>Overrides</strong>: <a href="#ReducerWrapper_reduce"><code>reduce</code></a><br><strong>Params</strong></p>
+<ul>
+<li>req <code>Request</code></li>
+<li>res <code>Responder</code></li>
+<li>postBack <code>function</code></li>
+</ul>
+<div id="ReducerWrapper_emitAction">&#xA0;</div>
+
+<h3 id="routeremitactionreq-res-action"><a name="routeremitactionreq-res-action" class="plugin-anchor" href="#routeremitactionreq-res-action"><i class="fa fa-link" aria-hidden="true"></i></a>router.emitAction(req, res, action)</h3>
+<p>Low level tracking method,
+which disables the default automatic tracking
+for a single interaction.</p>
+<p><strong>Kind</strong>: instance method of <a href="#Router"><code>Router</code></a><br><strong>Params</strong></p>
+<ul>
+<li>req <code>Request</code></li>
+<li>res <code>Responder</code></li>
+<li>action <code>string</code> | <code>boolean</code> <code> = null</code></li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> router = <span class="hljs-keyword">new</span> Router();
+
+router.on(<span class="hljs-string">&apos;action&apos;</span>, (r, action) =&gt; {
+    <span class="hljs-comment">// will receive the action event</span>
+});
+
+router.use(<span class="hljs-string">&apos;interaction&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-comment">// track &apos;foo&apos; and &apos;bar&apos;, but not &apos;interaction&apos;</span>
+    router.trackAs(req, res, <span class="hljs-string">&apos;foo&apos;</span>);
+    router.trackAs(req, res, <span class="hljs-string">&apos;bar&apos;</span>);
+});
+
+router.use(<span class="hljs-string">&apos;will-not-be-tracked&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-comment">// will stop Processor to fire an &quot;event&quot; event and also router will track nothing</span>
+    router.trackAs(req, res, <span class="hljs-literal">false</span>);
+});
+
+router.use(<span class="hljs-string">&apos;disables-firing-processor-event&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-comment">// will track &apos;foo-bar&apos;</span>
+    router.trackAs(req, res, <span class="hljs-string">&apos;foo-bar&apos;</span>);
+    <span class="hljs-comment">// will stop Processor to fire an &quot;event&quot; event</span>
+    res.trackAs(<span class="hljs-literal">false</span>);
+});
 </code></pre>
 <div id="Router_CONTINUE">&#xA0;</div>
 
@@ -1186,6 +1237,100 @@ Its same as returning <code>undefined</code></p>
 </tr>
 </tbody>
 </table>
+<div id="ReducerWrapper">&#xA0;</div>
+
+<h2 id="reducerwrapper-&#x21D0;-eventemitter"><a name="reducerwrapper-&#x21D0;-eventemitter" class="plugin-anchor" href="#reducerwrapper-&#x21D0;-eventemitter"><i class="fa fa-link" aria-hidden="true"></i></a>ReducerWrapper &#x21D0; <code>EventEmitter</code></h2>
+<p><strong>Kind</strong>: global class<br><strong>Extends</strong>: <code>EventEmitter</code><br><strong>Emits</strong>: <code>ReducerWrapper#event:action</code>  </p>
+<ul>
+<li><a href="#ReducerWrapper">ReducerWrapper</a> &#x21D0; <code>EventEmitter</code><ul>
+<li><a href="#new_ReducerWrapper_new">new ReducerWrapper()</a></li>
+<li><em>instance</em><ul>
+<li><a href="#ReducerWrapper_reduce">.reduce(req, res, postBack)</a></li>
+<li><a href="#ReducerWrapper_emitAction">.emitAction(req, res, action)</a></li>
+</ul>
+</li>
+<li><em>static</em><ul>
+<li><a href="#ReducerWrapper_ReducerWrapper">.ReducerWrapper</a><ul>
+<li><a href="#new_ReducerWrapper_ReducerWrapper_new">new ReducerWrapper([reduce])</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div id="new_ReducerWrapper_new">&#xA0;</div>
+
+<h3 id="new-reducerwrapper"><a name="new-reducerwrapper" class="plugin-anchor" href="#new-reducerwrapper"><i class="fa fa-link" aria-hidden="true"></i></a>new ReducerWrapper()</h3>
+<p>Solution for catching events. This is useful for analytics.</p>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> reducer = <span class="hljs-keyword">new</span> ReducerWrapper((req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;Hello&apos;</span>);
+});
+
+reducer.on(<span class="hljs-string">&apos;action&apos;</span>, (senderId, processedAction, text, req, lastAction, skill, res) =&gt; {
+    <span class="hljs-comment">// log action</span>
+});
+</code></pre>
+<div id="ReducerWrapper_reduce">&#xA0;</div>
+
+<h3 id="reducerwrapperreducereq-res-postback"><a name="reducerwrapperreducereq-res-postback" class="plugin-anchor" href="#reducerwrapperreducereq-res-postback"><i class="fa fa-link" aria-hidden="true"></i></a>reducerWrapper.reduce(req, res, postBack)</h3>
+<p>Reducer function</p>
+<p><strong>Kind</strong>: instance method of <a href="#ReducerWrapper"><code>ReducerWrapper</code></a><br><strong>Params</strong></p>
+<ul>
+<li>req <code>Request</code></li>
+<li>res <code>Responder</code></li>
+<li>postBack <code>function</code></li>
+</ul>
+<div id="ReducerWrapper_emitAction">&#xA0;</div>
+
+<h3 id="reducerwrapperemitactionreq-res-action"><a name="reducerwrapperemitactionreq-res-action" class="plugin-anchor" href="#reducerwrapperemitactionreq-res-action"><i class="fa fa-link" aria-hidden="true"></i></a>reducerWrapper.emitAction(req, res, action)</h3>
+<p>Low level tracking method,
+which disables the default automatic tracking
+for a single interaction.</p>
+<p><strong>Kind</strong>: instance method of <a href="#ReducerWrapper"><code>ReducerWrapper</code></a><br><strong>Params</strong></p>
+<ul>
+<li>req <code>Request</code></li>
+<li>res <code>Responder</code></li>
+<li>action <code>string</code> | <code>boolean</code> <code> = null</code></li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> router = <span class="hljs-keyword">new</span> Router();
+
+router.on(<span class="hljs-string">&apos;action&apos;</span>, (r, action) =&gt; {
+    <span class="hljs-comment">// will receive the action event</span>
+});
+
+router.use(<span class="hljs-string">&apos;interaction&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-comment">// track &apos;foo&apos; and &apos;bar&apos;, but not &apos;interaction&apos;</span>
+    router.trackAs(req, res, <span class="hljs-string">&apos;foo&apos;</span>);
+    router.trackAs(req, res, <span class="hljs-string">&apos;bar&apos;</span>);
+});
+
+router.use(<span class="hljs-string">&apos;will-not-be-tracked&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-comment">// will stop Processor to fire an &quot;event&quot; event and also router will track nothing</span>
+    router.trackAs(req, res, <span class="hljs-literal">false</span>);
+});
+
+router.use(<span class="hljs-string">&apos;disables-firing-processor-event&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-comment">// will track &apos;foo-bar&apos;</span>
+    router.trackAs(req, res, <span class="hljs-string">&apos;foo-bar&apos;</span>);
+    <span class="hljs-comment">// will stop Processor to fire an &quot;event&quot; event</span>
+    res.trackAs(<span class="hljs-literal">false</span>);
+});
+</code></pre>
+<div id="ReducerWrapper_ReducerWrapper">&#xA0;</div>
+
+<h3 id="reducerwrapperreducerwrapper"><a name="reducerwrapperreducerwrapper" class="plugin-anchor" href="#reducerwrapperreducerwrapper"><i class="fa fa-link" aria-hidden="true"></i></a>ReducerWrapper.ReducerWrapper</h3>
+<p><strong>Kind</strong>: static class of <a href="#ReducerWrapper"><code>ReducerWrapper</code></a>  </p>
+<div id="new_ReducerWrapper_ReducerWrapper_new">&#xA0;</div>
+
+<h4 id="new-reducerwrapperreduce"><a name="new-reducerwrapperreduce" class="plugin-anchor" href="#new-reducerwrapperreduce"><i class="fa fa-link" aria-hidden="true"></i></a>new ReducerWrapper([reduce])</h4>
+<p>Creates an instance of ReducerWrapper.</p>
+<p><strong>Params</strong></p>
+<ul>
+<li>[reduce] <code>function</code> - the handler function</li>
+</ul>
 <div id="Resolver">&#xA0;</div>
 
 <h2 id="resolver--function"><a name="resolver--function" class="plugin-anchor" href="#resolver--function"><i class="fa fa-link" aria-hidden="true"></i></a>Resolver : <code>function</code></h2>
@@ -1261,7 +1406,7 @@ Its same as returning <code>undefined</code></p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Router","level":"3.3","depth":1,"next":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"previous":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Router.md","mtime":"2020-04-28T12:23:26.409Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:23:29.281Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Router","level":"3.3","depth":1,"next":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"previous":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Router.md","mtime":"2020-04-28T12:40:01.657Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:40:08.206Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
