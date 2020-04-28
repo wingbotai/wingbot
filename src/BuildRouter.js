@@ -337,9 +337,9 @@ class BuildRouter extends Router {
             for (const [from, to] of prevLinksMap.entries()) {
                 if (!linksMap.has(from)) {
 
-                    path.posix.join('..', to);
+                    (path.posix || path).join('..', to);
 
-                    linksMap.set(from, path.posix.join('..', to));
+                    linksMap.set(from, (path.posix || path).join('..', to));
                 }
             }
         }
