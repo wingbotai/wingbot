@@ -20,7 +20,14 @@ Each plugin can be used as any other conversation element like message.
       {
         "type": "text",
         "name": "text",
-        "label": "Text"
+        "label": "Text",
+        "validations": [
+            {
+                "type": "regexp",
+                "value": "^(\\s*).{0,2}$",
+                "message": "Should not be shorter than 3 letters!"
+            }
+        ]
       },
       {
         "type": "select",

@@ -27,7 +27,7 @@ class ReducerWrapper extends EventEmitter {
     /**
      * Creates an instance of ReducerWrapper.
      *
-     * @param {Function} [reduce=o => o] - the handler function
+     * @param {Function} [reduce] - the handler function
      *
      * @memberOf ReducerWrapper
      */
@@ -55,19 +55,71 @@ class ReducerWrapper extends EventEmitter {
         this._emitAction(req, res);
     }
 
-    _emitAction (req, res, action = null, doNotTrack = false) {
+    /**
+     * Low level tracking method,
+     * which disables the default automatic tracking
+     * for a single interaction.
+     *
+     * @param {Request} req
+     * @param {Responder} res
+     * @param {string|boolean} action
+     *
+     * @example
+     * const router = new Router();
+     *
+     * router.on('action', (r, action) => {
+     *     // will receive the action event
+     * });
+     *
+     * router.use('interaction', (req, res) => {
+     *     // track 'foo' and 'bar', but not 'interaction'
+     *     router.trackAs(req, res, 'foo');
+     *     router.trackAs(req, res, 'bar');
+     * });
+     *
+     * router.use('will-not-be-tracked', (req, res) => {
+     *     // will stop Processor to fire an "event" event and also router will track nothing
+     *     router.trackAs(req, res, false);
+     * });
+     *
+     * router.use('disables-firing-processor-event', (req, res) => {
+     *     // will track 'foo-bar'
+     *     router.trackAs(req, res, 'foo-bar');
+     *     // will stop Processor to fire an "event" event
+     *     res.trackAs(false);
+     * });
+     */
+    emitAction (req, res, action = null) {
+        this._emitAction(req, res, action, false, true);
+    }
+
+    _emitAction (req, res, action = null, doNotTrack = false, isUserCall = false) {
         const { _lastAction: lastAction = null } = req.state;
         const act = res._trackAsAction || action || req.action();
 
         const expected = req.expected();
         const isExpectedAction = expected && act === expected.action;
 
-        const shouldNotTrack = res._trackAsAction === false || doNotTrack;
+        const shouldNotTrack = res._trackAsAction === false || action === false || doNotTrack;
         const trackingSkill = typeof res.newState._trackAsSkill === 'undefined'
             ? (req.state._trackAsSkill || null)
             : res.newState._trackAsSkill;
 
         res._trackAsAction = null;
+
+        if (res.data) {
+            if (shouldNotTrack && res.data._fromInitialEvent) {
+                res.setData({ _initialEventShouldNotBeTracked: true });
+            }
+
+            const { _isFromEmitActionUserEvent: inCustomTrackingMode = false } = res.data;
+            if (isUserCall) {
+                res.setData({ _isFromEmitActionUserEvent: true });
+            } else if (inCustomTrackingMode) {
+                res.setData({ _isFromEmitActionUserEvent: false });
+                return;
+            }
+        }
 
         const params = [
             req.senderId,
@@ -107,9 +159,8 @@ class ReducerWrapper extends EventEmitter {
             if (shouldDelayTrack && shouldSetLastInteraction) {
                 res.setData({ _initialEventWasntTracked: true });
             }
-            // @todo _fromUntrackedInitialEvent should be removed with exists
-            if (!shouldDelayTrack && shouldSetLastInteraction) {
 
+            if (!shouldDelayTrack && shouldSetLastInteraction) {
                 res.setState({
                     lastInteraction,
                     beforeLastInteraction

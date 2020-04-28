@@ -566,9 +566,10 @@ class Processor extends EventEmitter {
      */
     _emitEvent (req, res) {
         const { _lastAction: lastAction = null } = req.state;
-        const { _lastAction: act = null } = res.newState;
+        let { _lastAction: act = null } = res.newState;
+        act = act || req.action();
 
-        const shouldNotTrack = res._trackAsAction === false;
+        const shouldNotTrack = res.data._initialEventShouldNotBeTracked === true;
 
         if (shouldNotTrack) {
             return;
