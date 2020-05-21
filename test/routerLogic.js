@@ -4,6 +4,7 @@
 'use strict';
 
 const assert = require('assert');
+const sinon = require('sinon');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const Ai = require('../src/Ai');
@@ -1344,6 +1345,62 @@ describe('<Router> logic', () => {
 
             t.any()
                 .contains('unknown');
+        });
+
+    });
+
+    describe('CONFIDENTAL REQUESTS FILTERING', () => {
+
+        it('filters confident data in following request', async () => {
+
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                // evil question
+                res.text('Give me your CARD NUMBER :D')
+                    .expected('received-card-number')
+                    .expectedConfidentInput();
+            });
+
+            bot.use('received-card-number', (req, res) => {
+                const cardNumber = req.text();
+
+                // raw card number
+
+                res.text(req.isConfidentInput()
+                    ? 'got it'
+                    : 'what?')
+                    .setState({ cardNumber });
+            });
+
+            bot.use((req, res) => {
+                res.text(
+                    req.isConfidentInput()
+                        ? 'confident'
+                        : 'ok'
+                );
+            });
+
+            const t = new Tester(bot);
+
+            const log = sinon.spy();
+            t.senderLogger = { log };
+
+            await t.postBack('start');
+
+            assert.strictEqual(log.callCount, 1);
+
+            await t.text('123456789');
+
+            assert.strictEqual(log.callCount, 2);
+            assert.deepEqual(log.args[1][2].message, { text: '@CONFIDENT' });
+            t.any().contains('got it');
+
+            await t.text('hello');
+
+            assert.strictEqual(log.callCount, 3);
+            assert.deepEqual(log.args[2][2].message, { text: 'hello' });
+            t.any().contains('ok');
         });
 
     });

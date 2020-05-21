@@ -332,6 +332,10 @@ class Ai {
     }
 
     _getModelForRequest (req, prefix = DEFAULT_PREFIX) {
+        if (req.isConfidentInput()) {
+            return null;
+        }
+
         const prefixForRequest = this.getPrefix(prefix, req);
         return this._keyworders.get(prefixForRequest);
     }

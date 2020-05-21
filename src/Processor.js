@@ -625,14 +625,22 @@ class Processor extends EventEmitter {
             state._expected = null;
         }
 
-        // reset expectated keywords
+        // reset expected keywords
         if (isUserEvent && !res.newState._expectedKeywords) {
             state._expectedKeywords = null;
+        }
+
+        // reset expected confident input
+        if (isUserEvent
+            && typeof state._expectedConfidentInput !== 'undefined'
+            && !res.newState._expectedConfidentInput) {
+            state._expectedConfidentInput = false;
         }
 
         if (senderStateUpdate && senderStateUpdate.state) {
             Object.assign(state, senderStateUpdate.state);
         }
+
         return state;
     }
 

@@ -20,7 +20,7 @@ const simpleTestbot = require('../simple-testbot.json');
 
 describe('<GraphApi>', function () {
 
-    this.timeout(10000);
+    this.timeout(15000);
 
     /** @type {GraphApi} */
     let api;

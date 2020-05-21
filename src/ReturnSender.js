@@ -21,6 +21,7 @@ class ReturnSender {
      * @param {Object} options
      * @param {textFilter} [options.textFilter] - filter for saving the texts
      * @param {boolean} [options.logStandbyEvents] - log the standby events
+     * @param {textFilter} [options.confidentInputFilter] - filter for confident input (@CONFIDENT)
      * @param {string} userId
      * @param {Object} incommingMessage
      * @param {console} logger - console like logger
@@ -67,6 +68,8 @@ class ReturnSender {
          */
         this.textFilter = options.textFilter || (text => text);
 
+        this.confidentInputFilter = options.confidentInputFilter || (() => '@CONFIDENT');
+
         this._lastWait = 0;
 
         this._visitedInteractions = [];
@@ -104,14 +107,18 @@ class ReturnSender {
         return new Promise(r => setTimeout(r, nextWait));
     }
 
-    _filterMessage (payload) {
+    _filterMessage (payload, confidentInput = false) {
+
+        const filter = confidentInput
+            ? this.confidentInputFilter
+            : this.textFilter;
 
         // text message
         if (payload.message && payload.message.text) {
 
             return Object.assign({}, payload, {
                 message: Object.assign({}, payload.message, {
-                    text: this.textFilter(payload.message.text)
+                    text: filter(payload.message.text)
                 })
             });
         }
@@ -126,7 +133,7 @@ class ReturnSender {
                 message: Object.assign({}, payload.message, {
                     attachment: Object.assign({}, payload.message.attachment, {
                         payload: Object.assign({}, payload.message.attachment.payload, {
-                            text: this.textFilter(payload.message.attachment.payload.text)
+                            text: filter(payload.message.attachment.payload.text)
                         })
                     })
                 })
@@ -251,6 +258,7 @@ class ReturnSender {
         this._finished = true;
 
         const meta = this._createMeta(req, res);
+        const confidentInput = req && req.isConfidentInput();
 
         try {
             await this._promise;
@@ -265,7 +273,7 @@ class ReturnSender {
                 const processedEvent = req
                     ? req.event
                     : this._incommingMessage;
-                let incomming = this._filterMessage(processedEvent);
+                let incomming = this._filterMessage(processedEvent, confidentInput);
 
                 if (processedEvent !== this._incommingMessage) {
                     incomming = {
@@ -286,7 +294,7 @@ class ReturnSender {
             };
         } catch (e) {
             const sent = this._sent.map(s => this._filterMessage(s));
-            const incomming = this._filterMessage(this._incommingMessage);
+            const incomming = this._filterMessage(this._incommingMessage, confidentInput);
 
             if (this._logger) {
                 await Promise.resolve(this._logger

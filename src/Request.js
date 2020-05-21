@@ -685,6 +685,18 @@ class Request {
         return getSetState(setState, this);
     }
 
+    /**
+     * Returns true, if previous request has been
+     * marked as confident using `res.expectedConfidentInput()`
+     *
+     * It's good to consider this state in "analytics" integrations.
+     *
+     * @returns {boolean}
+     */
+    isConfidentInput () {
+        return this.state._expectedConfidentInput === true;
+    }
+
     _resolveAction () {
         let res = null;
 

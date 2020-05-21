@@ -516,6 +516,48 @@ class Responder {
     }
 
     /**
+     * Makes a following user input anonymized
+     *
+     * - disables processing of it with NLP
+     * - replaces text content of incomming request before
+     *   storing it at ChatLogStorage using a `confidentInputFilter`
+     * - `req.isConfidentInput()` will return true
+     *
+     * After processing the user input, next requests will be processed as usual,
+     *
+     *
+     * @returns {this}
+     * @example
+     *
+     * const { Router } = require('wingbot');
+     *
+     * const bot = new Router();
+     *
+     * bot.use('start', (req, res) => {
+     *     // evil question
+     *     res.text('Give me your CARD NUMBER :D')
+     *         .expected('received-card-number')
+     *         .expectedConfidentInput();
+     * });
+     *
+     * bot.use('received-card-number', (req, res) => {
+     *     const cardNumber = req.text();
+     *
+     *     // raw card number
+     *
+     *     req.isConfidentInput(); // true
+     *
+     *     res.text('got it')
+     *         .setState({ cardNumber });
+     * });
+     */
+    expectedConfidentInput () {
+        return this.setState({
+            _expectedConfidentInput: true
+        });
+    }
+
+    /**
      * Converts relative action to absolute action path
      *
      * @param {string} action - relative action to covert to absolute
