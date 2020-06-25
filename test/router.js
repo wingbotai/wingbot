@@ -46,7 +46,7 @@ function shouldBeCalled (route, req, res) {
 }
 
 function nextTick () {
-    return new Promise(r => process.nextTick(r));
+    return new Promise((r) => process.nextTick(r));
 }
 
 describe('Router', function () {
@@ -134,13 +134,13 @@ describe('Router', function () {
             let i = 0;
 
             const first = sinon.spy(() => Router.CONTINUE);
-            const asyncResolver = sinon.spy(() => new Promise(resolve => setTimeout(resolve, 50))
+            const asyncResolver = sinon.spy(() => new Promise((resolve) => setTimeout(resolve, 50))
                 .then(() => i++)
                 .then(() => Router.CONTINUE));
 
             const third = sinon.spy(() => {
                 assert.equal(i, 1, 'The third reducer should be called after asyncResolver was resolved.');
-                return new Promise(resolve => setTimeout(resolve, 50))
+                return new Promise((resolve) => setTimeout(resolve, 50))
                     .then(() => i++)
                     .then(() => Router.CONTINUE);
             });
@@ -234,7 +234,6 @@ describe('Router', function () {
             // assert routes
             assert(!noRoute.called, 'route should not be called');
             shouldBeCalled(route, req, res);
-
 
             assert.equal(reduceResult, undefined);
 

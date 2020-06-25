@@ -10,7 +10,7 @@ const { disambiguationQuickReply } = require('../src/utils/quickReplies');
 const { FLAG_DISAMBIGUATION_OFFERED, FLAG_DISAMBIGUATION_SELECTED } = require('../src/flags');
 
 function wait (ms) {
-    return new Promise(r => setTimeout(r, ms));
+    return new Promise((r) => setTimeout(r, ms));
 }
 
 describe('senderMeta', () => {

@@ -6,28 +6,28 @@
 const DEFAULT_CACHE_SIZE = 10;
 
 /**
- * @typedef {Object} Entity
+ * @typedef {object} Entity
  * @param {string} entity
  * @param {string} value
  * @param {number} score
  */
 
 /**
- * @typedef {Object} Intent
+ * @typedef {object} Intent
  * @param {string} intent
  * @param {number} score
  * @param {Entity[]} [entities]
  */
 
 /**
- * @typedef {Object} Result
+ * @typedef {object} Result
  * @param {Entity[]} entities
  * @param {Intent[]} intents
  */
 class CachedModel {
 
     /**
-     * @param {Object} options
+     * @param {object} options
      * @param {number} [options.cacheSize]
      * @param {{ warn: Function }} [log]
      */
@@ -63,7 +63,6 @@ class CachedModel {
 
                 return res;
             });
-
 
         this._cache.push(text);
         this._cacheMap.set(text, promise);

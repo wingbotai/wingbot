@@ -25,7 +25,7 @@ const uuid = require('uuid/v4');
  */
 
 /**
- * @typedef Campaign {Object}
+ * @typedef Campaign {object}
  * @prop {string} id
  * @prop {string} name
  *
@@ -48,7 +48,7 @@ const uuid = require('uuid/v4');
  * Interaction
  *
  * @prop {string} action
- * @prop {Object} [data]
+ * @prop {object} [data]
  *
  * Setup
  *
@@ -76,7 +76,6 @@ const uuid = require('uuid/v4');
  * @prop {number} [leaved] - time the event was not sent because user left
  */
 
-
 const MAX_TS = 9999999999999;
 
 class NotificationsStorage {
@@ -100,7 +99,7 @@ class NotificationsStorage {
 
     /**
      *
-     * @param {Object} tasks
+     * @param {object} tasks
      * @returns {Promise<Task[]>}
      */
     pushTasks (tasks) {
@@ -114,7 +113,7 @@ class NotificationsStorage {
         this._tasks = this._tasks
             .map((task) => {
                 const overrideIndex = tasks
-                    .findIndex(t => t.campaignId === task.campaignId
+                    .findIndex((t) => t.campaignId === task.campaignId
                             && t.pageId === task.pageId
                             && t.senderId === task.senderId
                             && t.sent === task.sent);
@@ -124,16 +123,19 @@ class NotificationsStorage {
                 }
 
                 let [override] = tasks.splice(overrideIndex, 1);
-                override = Object.assign({}, task, override, {
+                override = {
+                    ...task,
+                    ...override,
                     insEnqueue: Math.min(task.insEnqueue, override.enqueue),
                     enqueue: override.enqueue === task.insEnqueue && task.insEnqueue !== MAX_TS
                         ? task.insEnqueue + 1 : override.enqueue
-                });
+                };
                 ret.push(override);
                 return override;
             });
 
-        const insert = tasks.map(t => Object.assign({}, t, {
+        const insert = tasks.map((t) => ({
+            ...t,
             id: uuid(),
             insEnqueue: t.enqueue
         }));
@@ -150,10 +152,11 @@ class NotificationsStorage {
         this._tasks = this._tasks
             .map((task) => {
                 if (task.enqueue <= until && pop.length < limit) {
-                    const upTask = Object.assign({}, task, {
+                    const upTask = {
+                        ...task,
                         enqueue: MAX_TS,
                         insEnqueue: MAX_TS
-                    });
+                    };
                     pop.push(upTask);
                     return upTask;
                 }
@@ -165,7 +168,7 @@ class NotificationsStorage {
     /**
      *
      * @param {string} taskId
-     * @param {Object} data
+     * @param {object} data
      */
     updateTask (taskId, data) {
         let ret = null;
@@ -174,7 +177,7 @@ class NotificationsStorage {
                 if (task.id !== taskId) {
                     return task;
                 }
-                ret = Object.assign({}, task, data);
+                ret = { ...task, ...data };
                 return ret;
             });
         return Promise.resolve(ret);
@@ -189,7 +192,7 @@ class NotificationsStorage {
      * @returns {Promise<Task|null>}
      */
     getSentTask (pageId, senderId, campaignId) {
-        const task = this._tasks.find(t => t.sent
+        const task = this._tasks.find((t) => t.sent
             && t.pageId === pageId
             && t.senderId === senderId
             && t.campaignId === campaignId);
@@ -206,13 +209,13 @@ class NotificationsStorage {
     getUnsuccessfulSubscribersByCampaign (campaignId, sentWithoutReaction = false, pageId = null) {
         let tasks;
         if (sentWithoutReaction) {
-            tasks = this._tasks.filter(t => t.campaignId === campaignId
+            tasks = this._tasks.filter((t) => t.campaignId === campaignId
                 && t.leaved === null && t.reaction === false);
         } else {
-            tasks = this._tasks.filter(t => t.campaignId === campaignId && t.leaved > 0);
+            tasks = this._tasks.filter((t) => t.campaignId === campaignId && t.leaved > 0);
         }
         if (pageId) {
-            tasks = tasks.filter(t => t.pageId === pageId);
+            tasks = tasks.filter((t) => t.pageId === pageId);
         }
         return Promise.resolve(tasks.map(({ senderId, pageId: p }) => ({ senderId, pageId: p })));
     }
@@ -226,11 +229,11 @@ class NotificationsStorage {
      */
     getSentCampagnIds (pageId, senderId, checkCampaignIds) {
         const res = this._tasks
-            .filter(t => t.sent
+            .filter((t) => t.sent
                 && t.pageId === pageId
                 && t.senderId === senderId
                 && checkCampaignIds.includes(t.campaignId))
-            .map(t => t.campaignId);
+            .map((t) => t.campaignId);
 
         return Promise.resolve(res);
     }
@@ -255,9 +258,7 @@ class NotificationsStorage {
                         || task.sent > watermark) {
                     return task;
                 }
-                const upTask = Object.assign({}, task, {
-                    [eventType]: ts
-                });
+                const upTask = { ...task, [eventType]: ts };
                 updated.push(upTask);
                 return upTask;
             });
@@ -267,14 +268,14 @@ class NotificationsStorage {
 
     /**
      *
-     * @param {Object} campaign
-     * @param {Object} [updateCampaign]
+     * @param {object} campaign
+     * @param {object} [updateCampaign]
      * @returns {Promise<Campaign>}
      */
     async upsertCampaign (campaign, updateCampaign = null) {
         let insert = campaign;
         if (!insert.id) {
-            insert = Object.assign({}, insert, { id: uuid() });
+            insert = { ...insert, id: uuid() };
         }
         if (!this._campaigns.has(insert.id)) {
             if (updateCampaign) Object.assign(insert, updateCampaign);
@@ -282,7 +283,7 @@ class NotificationsStorage {
         } else {
             insert = this._campaigns.get(insert.id);
             if (updateCampaign) {
-                insert = Object.assign({}, insert, updateCampaign);
+                insert = { ...insert, ...updateCampaign };
                 this._campaigns.set(insert.id, insert);
             }
         }
@@ -304,13 +305,13 @@ class NotificationsStorage {
     /**
      *
      * @param {string} campaignId
-     * @param {Object} increment
+     * @param {object} increment
      * @returns {Promise}
      */
     incrementCampaign (campaignId, increment = {}) {
         let campaign = this._campaigns.get(campaignId) || null;
         if (campaign !== null) {
-            campaign = Object.assign({}, campaign);
+            campaign = { ...campaign };
             Object.keys(increment)
                 .forEach((key) => {
                     campaign[key] = (campaign[key] || 0) + increment[key];
@@ -323,13 +324,13 @@ class NotificationsStorage {
     /**
      *
      * @param {string} campaignId
-     * @param {Object} data
+     * @param {object} data
      * @returns {Promise<Campaign|null>}
      */
     updateCampaign (campaignId, data) {
         let ret = this._campaigns.get(campaignId) || null;
         if (ret !== null) {
-            ret = Object.assign({}, ret, data);
+            ret = { ...ret, ...data };
             this._campaigns.set(campaignId, ret);
         }
         return Promise.resolve(ret);
@@ -352,7 +353,7 @@ class NotificationsStorage {
      */
     getCampaignByIds (campaignIds) {
         const campaigns = Array.from(this._campaigns.values())
-            .filter(c => campaignIds.includes(c.id));
+            .filter((c) => campaignIds.includes(c.id));
 
         return Promise.resolve(campaigns);
     }
@@ -368,9 +369,7 @@ class NotificationsStorage {
         for (const camp of this._campaigns.values()) {
             if (camp.active && camp.startAt && camp.startAt <= now) {
                 campaign = camp;
-                this._campaigns.set(campaign.id, Object.assign({}, camp, {
-                    startAt: null
-                }));
+                this._campaigns.set(campaign.id, { ...camp, startAt: null });
                 break;
             }
         }
@@ -380,9 +379,9 @@ class NotificationsStorage {
 
     /**
      *
-     * @param {Object} condition
+     * @param {object} condition
      * @param {number} [limit]
-     * @param {Object} [lastKey]
+     * @param {object} [lastKey]
      * @returns {Promise<{data:Campaign[],lastKey:string}>}
      */
     getCampaigns (condition, limit = null, lastKey = null) {
@@ -399,7 +398,7 @@ class NotificationsStorage {
             .filter((campaign) => {
 
                 const matches = conditionKeys
-                    .every(k => campaign[k] === condition[k]);
+                    .every((k) => campaign[k] === condition[k]);
 
                 if (!matches) {
                     return false;
@@ -450,9 +449,7 @@ class NotificationsStorage {
             };
         }
         if (!subscribtion.subs.includes(tag)) {
-            subscribtion = Object.assign({}, subscribtion, {
-                subs: [...subscribtion.subs, tag]
-            });
+            subscribtion = { ...subscribtion, subs: [...subscribtion.subs, tag] };
         }
 
         this._subscribtions.set(key, subscribtion);
@@ -473,7 +470,8 @@ class NotificationsStorage {
         }
         const unsubscribtions = [];
         let subscribtion = this._subscribtions.get(key);
-        subscribtion = Object.assign({}, subscribtion, {
+        subscribtion = {
+            ...subscribtion,
             subs: subscribtion.subs
                 .filter((sub) => {
                     const out = tag === null || sub === tag;
@@ -482,7 +480,7 @@ class NotificationsStorage {
                     }
                     return !out;
                 })
-        });
+        };
         if (subscribtion.subs.length === 0) {
             this._subscribtions.delete(key);
         } else {
@@ -504,8 +502,8 @@ class NotificationsStorage {
         const filtered = Array.from(this._subscribtions.values())
             .filter((sub) => {
                 const subMatches = (pageId === null || sub.pageId === pageId)
-                    && (include.length === 0 || sub.subs.some(s => include.includes(s)))
-                    && !sub.subs.some(s => exclude.includes(s));
+                    && (include.length === 0 || sub.subs.some((s) => include.includes(s)))
+                    && !sub.subs.some((s) => exclude.includes(s));
 
                 return subMatches;
             });
@@ -534,8 +532,8 @@ class NotificationsStorage {
         const ret = Array.from(this._subscribtions.values())
             .filter((sub) => {
                 const subMatches = (pageId === null || sub.pageId === pageId)
-                    && (include.length === 0 || sub.subs.some(s => include.includes(s)))
-                    && !sub.subs.some(s => exclude.includes(s));
+                    && (include.length === 0 || sub.subs.some((s) => include.includes(s)))
+                    && !sub.subs.some((s) => exclude.includes(s));
 
                 if (!subMatches) {
                     return false;
@@ -555,7 +553,7 @@ class NotificationsStorage {
                 return false;
             });
 
-        const data = ret.map(sub => ({
+        const data = ret.map((sub) => ({
             senderId: sub.senderId,
             pageId: sub.pageId
         }));

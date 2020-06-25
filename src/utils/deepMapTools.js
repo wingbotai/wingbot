@@ -38,7 +38,6 @@ function apiTextOutputFilter (obj, callback, prevKey = '') {
         }
     }
 
-
     return obj;
 }
 

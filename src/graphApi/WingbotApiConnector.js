@@ -73,7 +73,7 @@ class WingbotApiConnector {
 
             const keys = await this._getKeys();
 
-            const key = keys.find(k => k.kid === header.kid);
+            const key = keys.find((k) => k.kid === header.kid);
 
             if (!key) {
                 throw new Error('No key found');

@@ -14,7 +14,7 @@ const defaultResourceMap = require('./defaultResourceMap');
 const MESSAGE_RESOLVER_NAME = 'botbuild.message';
 
 /**
- * @typedef {Object} ConfigStorage
+ * @typedef {object} ConfigStorage
  * @prop {{():Promise}} invalidateConfig
  * @prop {{():Promise<number>}} getConfigTimestamp
  * @prop {{(config:Object):Promise<Object>}} updateConfig
@@ -32,14 +32,14 @@ class BuildRouter extends Router {
      * Create new router from configuration
      *
      * @constructor
-     * @param {Object} block
+     * @param {object} block
      * @param {string} [block.botId] - the ID of bot
      * @param {string} [block.snapshot] - snapshot stage of bot
      * @param {string|Promise<string>} [block.token] - authorization token for bot
      * @param {string} [block.url] - specify alternative configuration resource
      * @param {Plugins} plugins - custom code blocks resource
-     * @param {Object} context - the building context
-     * @param {Object} [context.linksTranslator] - function, that translates links globally
+     * @param {object} context - the building context
+     * @param {object} [context.linksTranslator] - function, that translates links globally
      * @param {ConfigStorage} [context.configStorage] - function, that translates links globally
      * @param {boolean} [context.allowForbiddenSnippetWords] - disable security rule
      * @param {Function} [request] - the building context
@@ -150,7 +150,7 @@ class BuildRouter extends Router {
         } finally {
             if (runningRequest) {
                 this._runningReqs = this._runningReqs
-                    .filter(rr => rr !== runningRequest);
+                    .filter((rr) => rr !== runningRequest);
             }
         }
     }
@@ -216,7 +216,7 @@ class BuildRouter extends Router {
     /**
      * Loads conversation configuration
      *
-     * @returns {Promise<Object>}
+     * @returns {Promise<object>}
      */
     async loadBot () {
         const req = {
@@ -243,7 +243,7 @@ class BuildRouter extends Router {
     buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER) {
         Object.assign(this._context, { blocks });
 
-        const rootBlock = blocks.find(block => block.isRoot);
+        const rootBlock = blocks.find((block) => block.isRoot);
 
         this._buildBot(rootBlock, setConfigTimestamp);
     }
@@ -275,9 +275,9 @@ class BuildRouter extends Router {
             blockName, blockType, isRoot, staticBlockId
         } = block;
 
-        this._context = Object.assign({}, this._context, {
-            blockName, blockType, isRoot, staticBlockId, BuildRouter
-        });
+        this._context = {
+            ...this._context, blockName, blockType, isRoot, staticBlockId, BuildRouter
+        };
 
         this._linksMap = this._createLinksMap(block);
 
@@ -318,7 +318,7 @@ class BuildRouter extends Router {
             }
             set.add(route.respondsToRouteId);
 
-            const referredRoute = routes.find(r => r.id === route.respondsToRouteId);
+            const referredRoute = routes.find((r) => r.id === route.respondsToRouteId);
 
             Object.assign(referredRoute, { expectedPath });
         });
@@ -328,8 +328,8 @@ class BuildRouter extends Router {
         const linksMap = new Map();
 
         block.routes
-            .filter(route => !route.isResponder)
-            .forEach(route => linksMap.set(route.id, route.path));
+            .filter((route) => !route.isResponder)
+            .forEach((route) => linksMap.set(route.id, route.path));
 
         const { linksMap: prevLinksMap } = this._context;
 
@@ -359,7 +359,7 @@ class BuildRouter extends Router {
 
     _findEntryPointsInResolver (linksMap, resolver, route, context) {
         const includedBlock = context.blocks
-            .find(b => b.staticBlockId === resolver.params.staticBlockId);
+            .find((b) => b.staticBlockId === resolver.params.staticBlockId);
 
         if (!includedBlock) {
             return;
@@ -449,7 +449,8 @@ class BuildRouter extends Router {
         const lastIndex = resolvers.length - 1;
 
         return resolvers.map((resolver, i) => {
-            const context = Object.assign({}, this._context, {
+            const context = {
+                ...this._context,
                 isLastIndex: lastIndex === i,
                 isLastMessage: lastMessageIndex === i,
                 router: this,
@@ -459,7 +460,7 @@ class BuildRouter extends Router {
                 isResponder,
                 expectedPath,
                 routeId: id
-            });
+            };
 
             return this._resolverFactory(resolver, context);
         });
@@ -480,15 +481,15 @@ class BuildRouter extends Router {
 }
 
 /**
- * @param {Object[]} blocks - blocks list
+ * @param {object[]} blocks - blocks list
  * @param {Plugins} plugins
- * @param {Object} [context]
+ * @param {object} [context]
  */
 BuildRouter.fromData = function fromData (blocks, plugins, context = {}) {
 
-    const rootBlock = blocks.find(block => block.isRoot);
+    const rootBlock = blocks.find((block) => block.isRoot);
 
-    return new BuildRouter(rootBlock, plugins, Object.assign({ blocks }, context));
+    return new BuildRouter(rootBlock, plugins, ({ blocks, ...context }));
 };
 
 module.exports = BuildRouter;

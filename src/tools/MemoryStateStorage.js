@@ -3,16 +3,15 @@
  */
 'use strict';
 
-
 /**
- * @typedef {Object} State
+ * @typedef {object} State
  * @prop {string} senderId
  * @prop {string} pageId
- * @prop {Object} state
+ * @prop {object} state
  */
 
 /**
- * @typedef {Object} StateCondition
+ * @typedef {object} StateCondition
  * @prop {string} [search]
  */
 
@@ -66,7 +65,7 @@ class MemoryStateStorage {
      *
      * @param {string} senderId - sender identifier
      * @param {string} pageId - page or channel identifier
-     * @param {Object} defaultState - default state of the conversation
+     * @param {object} defaultState - default state of the conversation
      * @param {number} lockTimeout - duration of lock
      * @returns {Promise.<State>} - conversation state
      */
@@ -76,7 +75,7 @@ class MemoryStateStorage {
 
     /**
      *
-     * @param {Object} state - conversation state
+     * @param {object} state - conversation state
      * @returns {Promise}
      */
     saveState (state) {

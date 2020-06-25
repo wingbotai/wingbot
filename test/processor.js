@@ -331,7 +331,7 @@ describe('Processor', function () {
                 }
             });
 
-            await new Promise(r => setTimeout(r, 10));
+            await new Promise((r) => setTimeout(r, 10));
 
             assert(reducer.called);
             assert.strictEqual(set, false);
@@ -367,7 +367,7 @@ describe('Processor', function () {
                 }
             });
 
-            await new Promise(r => setTimeout(r, 10));
+            await new Promise((r) => setTimeout(r, 10));
 
             assert.strictEqual(set, false);
             assert.deepEqual(reducerGot, []);
@@ -404,7 +404,7 @@ describe('Processor', function () {
                 }
             });
 
-            await new Promise(r => setTimeout(r, 10));
+            await new Promise((r) => setTimeout(r, 10));
 
             assert.strictEqual(set, 'efg');
             assert.deepEqual(reducerGot, ['abc', 'efg']);
@@ -439,7 +439,7 @@ describe('Processor', function () {
 
             const reducer = sinon.spy((req, res, postBack) => {
                 if (!req.action()) {
-                    const data = new Promise(r => setTimeout(() => r({ some: 1 }), 50));
+                    const data = new Promise((r) => setTimeout(() => r({ some: 1 }), 50));
                     postBack('actionName', data);
                 }
             });
@@ -490,7 +490,7 @@ describe('Processor', function () {
                 }
             })
                 // events are processed as next tick
-                .then(res => new Promise(r => process.nextTick(() => r(res))))
+                .then((res) => new Promise((r) => process.nextTick(() => r(res))))
                 .then((res) => {
                     assert(reducer.calledOnce);
 
@@ -537,7 +537,7 @@ describe('Processor', function () {
         it('makes async postbacks', async () => {
             const bot = new Router();
 
-            const wait = resData => new Promise(r => setTimeout(() => r(resData), 100));
+            const wait = (resData) => new Promise((r) => setTimeout(() => r(resData), 100));
 
             bot.use('start', (req, res, postBack) => {
                 postBack('process', async () => wait({ test: 2 }));
@@ -574,15 +574,16 @@ describe('Processor', function () {
             });
 
             mockPlugin = {
-                processMessage: sinon.spy(message => ({ status: message.sender.id })),
+                processMessage: sinon.spy((message) => ({ status: message.sender.id })),
                 middleware: sinon.spy(() => middleware),
-                beforeAiPreload: sinon.spy(req => (req.event.beforeAiPreload !== undefined
+                beforeAiPreload: sinon.spy((req) => (req.event.beforeAiPreload !== undefined
                     ? req.event.beforeAiPreload
                     : true)),
-                beforeProcessMessage: sinon.spy(req => (req.event.beforeProcessMessage !== undefined
-                    ? req.event.beforeProcessMessage
-                    : true)),
-                afterProcessMessage: sinon.spy(req => (req.event.afterProcessMessage !== undefined
+                beforeProcessMessage: sinon.spy((req) => (
+                    req.event.beforeProcessMessage !== undefined
+                        ? req.event.beforeProcessMessage
+                        : true)),
+                afterProcessMessage: sinon.spy((req) => (req.event.afterProcessMessage !== undefined
                     ? req.event.afterProcessMessage
                     : true))
             };

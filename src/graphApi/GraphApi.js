@@ -14,9 +14,9 @@ const KEYS_URL = 'https://api.wingbot.ai/keys';
 const DEFAULT_CACHE = 5 * 86400000;
 
 /**
- * @typedef {Object} GraphQlResponse
+ * @typedef {object} GraphQlResponse
  * @param {*} [data]
- * @param {Object[]} [errors]
+ * @param {object[]} [errors]
  */
 
 /**
@@ -26,8 +26,8 @@ class GraphApi {
 
     /**
      *
-     * @param {Object[]} apis - list of connected APIs
-     * @param {Object} options - API options
+     * @param {object[]} apis - list of connected APIs
+     * @param {object} options - API options
      * @param {string|Promise<string>} options.token - wingbot token
      * @param {string} [options.appToken] - public token
      * @param {string[]} [options.groups] - list of allowed bot groups
@@ -48,7 +48,7 @@ class GraphApi {
 
         Object.assign(opts, options);
 
-        apis.forEach(api => Object.assign(this._root, api));
+        apis.forEach((api) => Object.assign(this._root, api));
 
         this._cachedSchema = null;
 
@@ -64,11 +64,11 @@ class GraphApi {
 
     /**
      *
-     * @param {Object} body
-     * @param {Object} body.query
-     * @param {Object} [body.variables]
+     * @param {object} body
+     * @param {object} body.query
+     * @param {object} [body.variables]
      * @param {string} [body.operationName]
-     * @param {Object} headers
+     * @param {object} headers
      * @param {string} [headers.Authorization]
      * @param {string} [headers.authorization]
      * @param {string} [wingbotToken]

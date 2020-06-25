@@ -44,7 +44,7 @@ function subscribtions (params, { isLastIndex, allowForbiddenSnippetWords }) {
             res.unsubscribe();
         }
 
-        tags.forEach(tag => res[method](tag));
+        tags.forEach((tag) => res[method](tag));
 
         return ret;
     };

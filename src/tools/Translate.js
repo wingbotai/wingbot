@@ -19,15 +19,16 @@ class Translate {
 
     /**
      *
-     * @param {Object} [options]
+     * @param {object} [options]
      * @param {string} [options.sourcePath] - optional source path of translation folder
      * @param {string} [options.fileSuffix] - by default `.locale.po`
      */
     constructor (options = {}) {
-        this._options = Object.assign({
+        this._options = {
             sourcePath: path.join(process.cwd(), 'locales'),
-            fileSuffix: '.locale.po'
-        }, options);
+            fileSuffix: '.locale.po',
+            ...options
+        };
 
         this._promisedTranslators = {};
 
@@ -38,7 +39,7 @@ class Translate {
 
     _getTranslator (lang) {
         if (lang === null) {
-            return Promise.resolve(w => w);
+            return Promise.resolve((w) => w);
         }
 
         if (!this._promisedTranslators[lang]) {
@@ -55,7 +56,7 @@ class Translate {
                 .then((content) => {
                     const messages = po2json.parse(content, { format: 'mf' });
                     // return translator for the locale
-                    return key => (typeof messages[key] !== 'undefined' ? messages[key] : key);
+                    return (key) => (typeof messages[key] !== 'undefined' ? messages[key] : key);
                 });
         }
         return this._promisedTranslators[lang];
@@ -65,7 +66,7 @@ class Translate {
      * Creates static translator for static settings
      *
      * @param {string[]} languages - list of required languages
-     * @returns {Promise<Object>}
+     * @returns {Promise<object>}
      * @example
      * const { Translate } = require('wingbot');
      *
@@ -84,8 +85,8 @@ class Translate {
             throw new Error('Language list should be non-empty array of strings');
         }
 
-        return Promise.all(languages.map(lang => this._getTranslator(lang)))
-            .then(translatorsArray => languages
+        return Promise.all(languages.map((lang) => this._getTranslator(lang)))
+            .then((translatorsArray) => languages
                 .reduce((obj, lang, index) => Object.assign(obj, {
                     [lang]: {
                         t: translatorsArray[index]

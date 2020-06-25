@@ -26,7 +26,7 @@ describe('<ReturnSender>', () => {
 
             rs.send({ b: 1 });
 
-            await new Promise(r => setTimeout(r, 10));
+            await new Promise((r) => setTimeout(r, 10));
 
             const res = await rs.finished();
 

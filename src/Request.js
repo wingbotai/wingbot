@@ -27,42 +27,42 @@ function makeTimestamp () {
 }
 
 /**
- * @typedef {Object} Entity
+ * @typedef {object} Entity
  * @prop {string} entity
  * @prop {string} value
  * @prop {number} score
  */
 
 /**
- * @typedef {Object} Intent
+ * @typedef {object} Intent
  * @prop {string} intent
  * @prop {number} score
  * @prop {Entity[]} [entities]
  */
 
 /**
- * @typedef {Object} Action
+ * @typedef {object} Action
  * @prop {string} action
- * @prop {Object} data
- * @prop {Object|null} [setState]
+ * @prop {object} data
+ * @prop {object|null} [setState]
  */
 
 /**
- * @typedef {Object} IntentAction
+ * @typedef {object} IntentAction
  * @prop {string} action
  * @prop {Intent} intent
  * @prop {number} sort
  * @prop {boolean} local
  * @prop {boolean} aboveConfidence
  * @prop {boolean} [winner]
- * @prop {string|function} [title]
- * @prop {Object} meta
+ * @prop {string|Function} [title]
+ * @prop {object} meta
  * @prop {string} [meta.targetAppId]
  * @prop {string|null} [meta.targetAction]
  */
 
 /**
- * @typedef {Object} QuickReply
+ * @typedef {object} QuickReply
  * @prop {string} action
  * @prop {*} title
  */
@@ -121,7 +121,7 @@ class Request {
         this.pageId = pageId;
 
         /**
-         * @prop {Object} state current state of the conversation
+         * @prop {object} state current state of the conversation
          */
         this.state = state;
 
@@ -162,7 +162,7 @@ class Request {
     /**
      * The original messaging event
      *
-     * @type {Object}
+     * @type {object}
      */
     get event () {
         return this._event;
@@ -203,9 +203,9 @@ class Request {
         const text = this.text();
 
         return (aiActions || this._aiActions)
-            .filter(a => a.title)
+            .filter((a) => a.title)
             .slice(0, limit)
-            .map(a => disambiguationQuickReply(
+            .map((a) => disambiguationQuickReply(
                 typeof a.title === 'function'
                     ? a.title(this)
                     : a.title,
@@ -230,7 +230,7 @@ class Request {
     hasAiActionsForDisambiguation (minimum = 1) {
         this._getMatchingGlobalIntent();
         return this._aiActions
-            .filter(a => a.title)
+            .filter((a) => a.title)
             .length >= minimum;
     }
 
@@ -283,7 +283,7 @@ class Request {
         }
 
         const found = entities
-            .filter(e => e.entity === cleanName);
+            .filter((e) => e.entity === cleanName);
 
         if (found.length <= sequence) {
             return null;
@@ -337,7 +337,7 @@ class Request {
      * @returns {boolean}
      */
     hasLocation () {
-        return this.attachments.some(at => at.type === 'location');
+        return this.attachments.some((at) => at.type === 'location');
     }
 
     /**
@@ -367,7 +367,7 @@ class Request {
      * });
      */
     getLocation () {
-        const location = this.attachments.find(at => at.type === 'location');
+        const location = this.attachments.find((at) => at.type === 'location');
 
         if (!location) {
             return null;
@@ -380,7 +380,7 @@ class Request {
      * Returns whole attachment or null
      *
      * @param {number} [attachmentIndex=0] - use, when user sends more then one attachment
-     * @returns {Object|null}
+     * @returns {object|null}
      */
     attachment (attachmentIndex = 0) {
         if (this.attachments.length <= attachmentIndex) {
@@ -510,7 +510,7 @@ class Request {
     /**
      * Returns all expected keywords for the next request (just expected keywords)
      *
-     * @param {boolean} [justOnce]  - don't return already retained items
+     * @param {boolean} [justOnce] -  - don't return already retained items
      * @example
      *
      * bot.use('my-route', (req, res) => {
@@ -534,7 +534,7 @@ class Request {
             _expectedKeywords: exKeywords
                 // @ts-ignore
                 .filter(({ data = {} }) => !data._expectedFallbackOccured)
-                .map(keyword => ({
+                .map((keyword) => ({
                     ...keyword,
                     data: {
                         ...(keyword.data || {}),
@@ -549,7 +549,7 @@ class Request {
      *
      * @param {boolean} [justOnce] - don't return already retained items
      * @param {boolean} [includeKeywords] - keep intents from quick replies
-     * @returns {Object}
+     * @returns {object}
      * @example
      *
      * bot.use('my-route', (req, res) => {
@@ -601,7 +601,7 @@ class Request {
      * When `getData` is `true`, object will be returned. Otherwise string or null.
      *
      * @param {boolean} [getData=false]
-     * @returns {null|string|Object}
+     * @returns {null|string|object}
      *
      * @example
      * typeof res.quickReply() === 'string' || res.quickReply() === null;
@@ -647,7 +647,7 @@ class Request {
      * Sets the action and returns previous action
      *
      * @param {string|Action|null} action
-     * @param {Object} [data]
+     * @param {object} [data]
      * @returns {Action|null|undefined} - previous action
      */
     setAction (action, data = {}) {
@@ -701,7 +701,7 @@ class Request {
     /**
      * Returns action data of postback or quick reply
      *
-     * @returns {Object}
+     * @returns {object}
      */
     actionData () {
         if (typeof this._action === 'undefined') {
@@ -713,7 +713,7 @@ class Request {
     /**
      * Gets incomming setState action variable
      *
-     * @returns {Object}
+     * @returns {object}
      *
      * @example
      * res.setState(req.getSetState());
@@ -883,7 +883,7 @@ class Request {
      * When `getData` is `true`, object will be returned. Otherwise string or null.
      *
      * @param {boolean} [getData=false]
-     * @returns {null|string|Object}
+     * @returns {null|string|object}
      *
      * @example
      * typeof res.postBack() === 'string' || res.postBack() === null;
@@ -922,7 +922,6 @@ class Request {
         return action;
     }
 
-
     static timestamp () {
         return makeTimestamp();
     }
@@ -938,7 +937,6 @@ class Request {
             type: 'OPEN_THREAD'
         };
     }
-
 
     static postBack (
         senderId,

@@ -29,11 +29,11 @@ class AnyResponseAssert {
      */
     contains (search) {
         const ok = this.responses
-            .some(res => asserts.contains(res, search, false));
+            .some((res) => asserts.contains(res, search, false));
         if (!ok) {
             const actual = this.responses
-                .map(res => asserts.getText(res))
-                .filter(t => !!t);
+                .map((res) => asserts.getText(res))
+                .filter((t) => !!t);
             assert.fail(m('No response contains required text', search, actual));
         }
         return this;
@@ -49,11 +49,11 @@ class AnyResponseAssert {
      */
     quickReplyAction (action) {
         const ok = this.responses
-            .some(res => asserts.quickReplyAction(res, action, false));
+            .some((res) => asserts.quickReplyAction(res, action, false));
         if (!ok) {
             const actual = this.responses
-                .map(res => asserts.getQuickReplies(res))
-                .filter(replies => !!replies)
+                .map((res) => asserts.getQuickReplies(res))
+                .filter((replies) => !!replies)
                 .reduce((a, replies) => {
                     for (const reply of replies) {
                         const { action: route } = asserts.parseActionPayload(reply.payload) || {};
@@ -78,11 +78,11 @@ class AnyResponseAssert {
      */
     quickReplyTextContains (search) {
         const ok = this.responses
-            .some(res => asserts.quickReplyText(res, search, false));
+            .some((res) => asserts.quickReplyText(res, search, false));
         if (!ok) {
             const actual = this.responses
-                .map(res => asserts.getQuickReplies(res))
-                .filter(replies => !!replies)
+                .map((res) => asserts.getQuickReplies(res))
+                .filter((replies) => !!replies)
                 .reduce((a, replies) => {
                     for (const { title } of replies) {
                         if (title) {
@@ -106,7 +106,7 @@ class AnyResponseAssert {
      */
     templateType (type) {
         const ok = this.responses
-            .some(res => asserts.templateType(res, type, false));
+            .some((res) => asserts.templateType(res, type, false));
         assert.ok(ok, `No response contains template type: "${type}"`);
         return this;
     }
@@ -120,7 +120,7 @@ class AnyResponseAssert {
      */
     genericTemplate (itemCount = null) {
         const ok = this.responses
-            .some(res => asserts.genericTemplate(res, itemCount, false));
+            .some((res) => asserts.genericTemplate(res, itemCount, false));
         assert.ok(ok, 'No response contains valid generic template');
         return this;
     }
@@ -135,7 +135,7 @@ class AnyResponseAssert {
      */
     buttonTemplate (search, buttonCount = null) {
         const ok = this.responses
-            .some(res => asserts.buttonTemplate(res, search, buttonCount, false));
+            .some((res) => asserts.buttonTemplate(res, search, buttonCount, false));
         assert.ok(ok, 'No response contains valid button template');
         return this;
     }
@@ -150,7 +150,7 @@ class AnyResponseAssert {
      */
     passThread (appId = null) {
         const ok = this.responses
-            .some(res => asserts.passThread(res, appId, false));
+            .some((res) => asserts.passThread(res, appId, false));
         assert.ok(ok, 'No response contains pass control or pass control app mismatch');
         return this;
     }
@@ -165,7 +165,7 @@ class AnyResponseAssert {
      */
     attachmentType (type) {
         const ok = this.responses
-            .some(res => asserts.attachmentType(res, type, false));
+            .some((res) => asserts.attachmentType(res, type, false));
         assert.ok(ok, `No response contains attachment type: "${type}"`);
         return this;
     }

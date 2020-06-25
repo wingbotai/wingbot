@@ -10,7 +10,7 @@
             "name": "Test Program",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "cwd": "${workspaceRoot}",
-            "args": ["-d", "--opts", "./mocha.opts", "./test/"],
+            "args": ["-d", "./test/"],
             "protocol": "inspector",
             "env": {
                 "NODE_ENV": "test"

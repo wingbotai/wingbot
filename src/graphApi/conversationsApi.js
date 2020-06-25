@@ -7,24 +7,24 @@ const apiAuthorizer = require('./apiAuthorizer');
 const { apiTextOutputFilter } = require('../utils/deepMapTools');
 
 /**
- * @typedef {Object} ConversationsAPI
+ * @typedef {object} ConversationsAPI
  * @typedef {Function} conversations
  * @typedef {Function} conversation
  */
 
 /**
- * @typedef {Object} StateStorage
+ * @typedef {object} StateStorage
  * @prop {Function} getStates
  * @prop {Function} getState
  */
 
 /**
- * @typedef {Object} Notifications
+ * @typedef {object} Notifications
  * @prop {Function} getSubscribtions
  */
 
 /**
- * @typedef {Object} ChatLogStorage
+ * @typedef {object} ChatLogStorage
  * @prop {Function} getInteractions
  */
 
@@ -45,7 +45,7 @@ const { apiTextOutputFilter } = require('../utils/deepMapTools');
  * @param {ChatLogStorage} chatLogStorage
  * @param {Notifications} notifications
  * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
- * @param {Object} options
+ * @param {object} options
  * @param {textFilter} [options.stateTextFilter] - optional funcion for filtering data in states
  * @returns {ConversationsAPI}
  * @example
@@ -99,7 +99,7 @@ function conversationsApi (
 
     let mapState;
     if (options.stateTextFilter) {
-        mapState = d => ({
+        mapState = (d) => ({
             ...d,
             state: apiTextOutputFilter(d.state, options.stateTextFilter),
             lastInteraction: d.lastInteraction || (new Date(0)),
@@ -107,7 +107,7 @@ function conversationsApi (
             subscribtions
         });
     } else {
-        mapState = d => ({
+        mapState = (d) => ({
             ...d,
             lastInteraction: d.lastInteraction || (new Date(0)),
             history,

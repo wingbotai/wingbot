@@ -7,7 +7,7 @@ let handlebars;
 try {
     handlebars = module.require('handlebars');
 } catch (er) {
-    handlebars = { compile: text => () => text };
+    handlebars = { compile: (text) => () => text };
 }
 
 module.exports = handlebars;

@@ -6,7 +6,6 @@
 const assert = require('assert');
 const { replaceDiacritics, tokenize } = require('../../src/utils/tokenizer');
 
-
 describe('tokenizer', function () {
 
     describe('#replaceDiacritics()', function () {

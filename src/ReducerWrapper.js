@@ -31,7 +31,7 @@ class ReducerWrapper extends EventEmitter {
      *
      * @memberOf ReducerWrapper
      */
-    constructor (reduce = o => o) {
+    constructor (reduce = (o) => o) {
         super();
 
         this._reduce = reduce;

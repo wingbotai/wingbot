@@ -15,19 +15,17 @@ const TYPE_UPDATE = 'UPDATE';
 const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
 const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 
-
 /**
- * @typedef {Object} QuickReply
+ * @typedef {object} QuickReply
  * @prop {string} title
  * @prop {string} [action]
- * @prop {Object} [data]
- * @prop {Object} [setState]
- * @prop {Regexp|string|string[]} [match]
+ * @prop {object} [data]
+ * @prop {object} [setState]
+ * @prop {RegExp|string|string[]} [match]
  */
 
-
 /**
- * @typedef {Object} SenderMeta
+ * @typedef {object} SenderMeta
  * @prop {string|null} flag
  * @prop {string} [likelyIntent]
  * @prop {string} [disambText]
@@ -51,7 +49,7 @@ class Responder {
          * and saved (with Object.assign) at the end of event processing
          * into the conversation state.
          *
-         * @prop {Object}
+         * @prop {object}
          */
         this.newState = {};
 
@@ -60,18 +58,19 @@ class Responder {
         this._bookmark = null;
 
         this.options = {
-            translator: w => w,
+            translator: (w) => w,
             appUrl: ''
         };
 
         Object.assign(this.options, options);
         if (this.options.autoTyping) {
-            this.options.autoTyping = Object.assign({
+            this.options.autoTyping = {
                 time: 450,
                 perCharacters: 'Sample text Sample texts'.length,
                 minTime: 400,
-                maxTime: 1400
-            }, this.options.autoTyping);
+                maxTime: 1400,
+                ...this.options.autoTyping
+            };
         }
 
         this._t = this.options.translator;
@@ -93,7 +92,7 @@ class Responder {
          * @param {string} blockName
          * @returns {Promise}
          */
-        this.run = blockName => Promise.resolve(blockName && undefined);
+        this.run = (blockName) => Promise.resolve(blockName && undefined);
 
         /**
          * Is true, when a final message (the quick replies by default) has been sent
@@ -123,7 +122,7 @@ class Responder {
      * Replaces recipient and disables autotyping
      * Usefull for sending a one-time notification
      *
-     * @param {Object} recipient
+     * @param {object} recipient
      */
     setNotificationRecipient (recipient) {
         this._recipient = recipient;
@@ -184,7 +183,7 @@ class Responder {
      * Stores current action to be able to all it again
      *
      * @param {string} [action]
-     * @param {Object} [winningIntent]
+     * @param {object} [winningIntent]
      * @returns {this}
      * @deprecated
      * @example
@@ -219,7 +218,7 @@ class Responder {
      *
      *
      * @param {Function} postBack - the postback func
-     * @param {Object} [data] - data for bookmark action
+     * @param {object} [data] - data for bookmark action
      * @returns {Promise<null|boolean>}
      * @deprecated
      * @example
@@ -247,10 +246,11 @@ class Responder {
             return true;
         }
         const bookmark = this._bookmark;
-        const sendData = Object.assign({
+        const sendData = {
             bookmark,
-            _winningIntent: this._winningIntent
-        }, data);
+            _winningIntent: this._winningIntent,
+            ...data
+        };
         const res = await postBack(bookmark, sendData, true);
         this._bookmark = null;
         return res;
@@ -271,7 +271,7 @@ class Responder {
     /**
      * Tets the persona for following requests
      *
-     * @param {Object|string|null} personaId
+     * @param {object|string|null} personaId
      * @returns {this}
      */
     setPersona (personaId = null) {
@@ -289,7 +289,7 @@ class Responder {
     }
 
     /**
-     * @type {Object}
+     * @type {object}
      */
     get data () {
         return this._data;
@@ -298,7 +298,7 @@ class Responder {
     /**
      * Set temporary data to responder, which are persisted through single event
      *
-     * @param {Object} data
+     * @param {object} data
      * @returns {this}
      * @example
      *
@@ -325,7 +325,7 @@ class Responder {
      * Send text as a response
      *
      * @param {string} text - text to send to user, can contain placeholders (%s)
-     * @param {Object.<string, string|QuickReply>|QuickReply[]} [replies] - quick replies object
+     * @param {object.<string,string|QuickReply>|QuickReply[]} [replies] - quick replies
      * @returns {this}
      *
      * @example
@@ -388,7 +388,7 @@ class Responder {
     /**
      * Sets new attributes to state (with Object.assign())
      *
-     * @param {Object} object
+     * @param {object} object
      * @returns {this}
      *
      * @example
@@ -402,9 +402,9 @@ class Responder {
     /**
      * Appends quick reply, to be sent with following text method
      *
-     * @param {string|Object} action - relative or absolute action
+     * @param {string|object} action - relative or absolute action
      * @param {string} [title] - quick reply title
-     * @param {Object} [data] - additional data
+     * @param {object} [data] - additional data
      * @param {boolean} [prepend] - set true to add reply at the beginning
      * @param {boolean} [justToExisting] - add quick reply only to existing replies
      * @example
@@ -427,14 +427,18 @@ class Responder {
         if (justToExisting) Object.assign(prep, { _justToExisting: true });
 
         if (actionIsObject) {
-            this._quickReplyCollector.push(Object.assign({}, prep, {
-                action: this.toAbsoluteAction(action.action)
-            }, data));
+            this._quickReplyCollector.push({
+                ...prep,
+                action: this.toAbsoluteAction(action.action),
+                ...data
+            });
         } else {
-            this._quickReplyCollector.push(Object.assign({
+            this._quickReplyCollector.push({
                 action: this.toAbsoluteAction(action),
-                title
-            }, data, prep));
+                title,
+                ...data,
+                ...prep
+            });
         }
 
         return this;
@@ -473,8 +477,8 @@ class Responder {
      *
      * @param {string|string[]} intents
      * @param {string} action
-     * @param {Object} data
-     * @param {Object} setState
+     * @param {object} data
+     * @param {object} setState
      */
     expectedIntent (intents, action, data = {}, setState = null) {
         const { _expectedKeywords: ex = [] } = this.newState;
@@ -499,7 +503,7 @@ class Responder {
      * When user writes some text as reply, it will be processed as action
      *
      * @param {string} action - desired action
-     * @param {Object} data - desired action data
+     * @param {object} data - desired action data
      * @returns {this}
      */
     expected (action, data = {}) {
@@ -673,7 +677,7 @@ class Responder {
      * @param {string} title - propmt text
      * @param {string} action - target action, when user subscribes
      * @param {string} [tag] - subscribtion tag, which will be matched against a campaign
-     * @param {Object} [data]
+     * @param {object} [data]
      * @returns {this}
      */
     oneTimeNotificationRequest (title, action, tag = null, data = {}) {
@@ -751,7 +755,7 @@ class Responder {
      * Pass thread to another app
      *
      * @param {string} targetAppId
-     * @param {string|Object} [data]
+     * @param {string|object} [data]
      * @returns {this}
      */
     passThread (targetAppId, data = null) {
@@ -797,7 +801,7 @@ class Responder {
     /**
      * Request thread from Primary Receiver app
      *
-     * @param {string|Object} [data]
+     * @param {string|object} [data]
      * @returns {this}
      */
     requestThread (data = null) {
@@ -825,7 +829,7 @@ class Responder {
     /**
      * Take thread from another app
      *
-     * @param {string|Object} [data]
+     * @param {string|object} [data]
      * @returns {this}
      */
     takeThead (data = null) {
@@ -866,7 +870,7 @@ class Responder {
      */
     receipt (recipientName, paymentMethod = 'Cash', currency = 'USD', uniqueCode = null) {
         return new ReceiptTemplate(
-            payload => this.template(payload),
+            (payload) => this.template(payload),
             this._createContext(),
             recipientName,
             paymentMethod,
@@ -890,7 +894,7 @@ class Responder {
      */
     button (text) {
         const btn = new ButtonTemplate(
-            payload => this.template(payload),
+            (payload) => this.template(payload),
             this._createContext(),
             text
         );
@@ -919,7 +923,7 @@ class Responder {
      */
     genericTemplate (shareable = false, isSquare = false) {
         return new GenericTemplate(
-            payload => this.template(payload),
+            (payload) => this.template(payload),
             this._createContext(),
             shareable,
             isSquare
@@ -948,7 +952,7 @@ class Responder {
     list (topElementStyle = 'large') {
         return new ListTemplate(
             topElementStyle,
-            payload => this.template(payload),
+            (payload) => this.template(payload),
             this._createContext()
         );
     }

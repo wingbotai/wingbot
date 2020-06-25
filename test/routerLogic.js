@@ -134,7 +134,6 @@ describe('<Router> logic', () => {
                 await res.runBookmark(postBack);
             });
 
-
             const bot = new Router();
 
             bot.use('start', (req, res) => {
@@ -184,7 +183,6 @@ describe('<Router> logic', () => {
             nested.use(ai.local('has-path', 'foo'), (req, res) => {
                 res.text('foo text');
             });
-
 
             const bot = new Router();
 
@@ -295,13 +293,13 @@ describe('<Router> logic', () => {
 
         t.passedAction('a');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         assert.deepEqual(collector, ['/a']);
 
         await t.intent('int');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         assert.deepEqual(collector, ['/a', '/b', '/c']);
     });
@@ -339,7 +337,7 @@ describe('<Router> logic', () => {
         bot.use((req, res, postback) => {
             res.trackAs(false);
             postback('after-async', async () => {
-                await new Promise(r => setTimeout(r, 100));
+                await new Promise((r) => setTimeout(r, 100));
                 return {};
             });
         });
@@ -364,14 +362,14 @@ describe('<Router> logic', () => {
 
         t.passedAction('x');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         assert.deepEqual(actions, ['/x']);
         assert.deepEqual(skills, [null]);
 
         await t.intent('int');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         assert.deepEqual(actions, ['/x', '/y', '/z']);
         assert.deepEqual(skills, [null, 'skill', 'skill']);
@@ -379,8 +377,7 @@ describe('<Router> logic', () => {
 
         await t.text('random');
         t.passedAction('hello');
-        await new Promise(r => setTimeout(r, 100));
-
+        await new Promise((r) => setTimeout(r, 100));
 
         assert.deepEqual(actions, ['/x', '/y', '/z', '/hello']);
         assert.deepEqual(skills, [null, 'skill', 'skill', 'skill']);
@@ -584,7 +581,6 @@ describe('<Router> logic', () => {
     });
 
     describe('back pattern', () => {
-
 
         /** @type {Tester} */
         let t;
@@ -1102,7 +1098,6 @@ describe('<Router> logic', () => {
     });
 
     describe('re-expected in fallback', () => {
-
 
         /** @type {Tester} */
         let t;

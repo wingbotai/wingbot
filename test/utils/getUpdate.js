@@ -6,7 +6,6 @@
 const assert = require('assert');
 const { getUpdate, getValue, getSetState } = require('../../src/utils/getUpdate');
 
-
 describe('getSetState()', () => {
 
     it('works', () => {

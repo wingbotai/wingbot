@@ -15,7 +15,7 @@ async function disambiguation (req, res) {
         max = parseInt(max, 10) || 3;
 
         req.aiActionsForQuickReplies(max)
-            .forEach(a => res.addQuickReply(a, null, {}, false, true));
+            .forEach((a) => res.addQuickReply(a, null, {}, false, true));
 
         await res.run('diambiguations');
         return null;

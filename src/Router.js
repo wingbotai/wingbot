@@ -3,8 +3,7 @@
  */
 'use strict';
 
-
-const pathToRegexp = require('path-to-regexp');
+const { pathToRegexp } = require('path-to-regexp');
 const ReducerWrapper = require('./ReducerWrapper');
 const { makeAbsolute } = require('./utils');
 
@@ -23,7 +22,7 @@ function defaultPathContext () {
  */
 
 /**
- * @typedef {Object} BotPath
+ * @typedef {object} BotPath
  * @prop {string} path
  */
 
@@ -138,7 +137,7 @@ class Router extends ReducerWrapper {
                         re,
                         pathContext.path
                     );
-                    gis.forEach(g => globalIntents.set(g.id, g));
+                    gis.forEach((g) => globalIntents.set(g.id, g));
                     Object.assign(pathContext, { path: resolverPath });
                     Object.assign(pathContext.globalIntentsMeta, globalIntentsMeta);
                     isAnyReducer = isAnyReducer || isReducer;
@@ -172,6 +171,7 @@ class Router extends ReducerWrapper {
 
         if (typeof reducer === 'string' || path) {
             resolverPath = this._normalizePath(path || reducer);
+            resolverPath = resolverPath.replace(/\*/g, '(.*)');
             const pathMatch = pathToRegexp(resolverPath, [], { end: resolverPath === '' });
 
             reduce = (req, res, relativePostBack, pathContext, action) => {
@@ -187,7 +187,7 @@ class Router extends ReducerWrapper {
             isReducer = true;
 
         } else if (reducer instanceof RegExp) {
-            reduce = req => (req.isText() && req.text(true).match(reducer)
+            reduce = (req) => (req.isText() && req.text(true).match(reducer)
                 ? Router.CONTINUE
                 : Router.BREAK);
 

@@ -70,7 +70,7 @@ class MemoryBotConfigStorage {
     }
 
     /**
-     * @returns {Promise<Object|null>}
+     * @returns {Promise<object|null>}
      */
     async getConfig () {
         return this._config;

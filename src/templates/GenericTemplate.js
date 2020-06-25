@@ -77,7 +77,7 @@ class GenericTemplate extends ButtonTemplate {
      * Sets url of recently added element
      *
      * @param {string} action - Button action (can be absolute or relative)
-     * @param {Object} [data={}] - Action data
+     * @param {object} [data={}] - Action data
      * @returns {this}
      *
      * @memberOf GenericTemplate

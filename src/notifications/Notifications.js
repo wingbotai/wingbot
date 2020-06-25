@@ -40,23 +40,22 @@ const DEFAULT_CAMPAIGN_DATA = {
 };
 
 /**
- * @typedef {Object} CampaignTarget
+ * @typedef {object} CampaignTarget
  * @prop {string} senderId - sender identifier
  * @prop {string} pageId - page identifier
  * @prop {string} campaignId - campaign identifier
- * @prop {Object} [data] - custom action data for specific target
+ * @prop {object} [data] - custom action data for specific target
  * @prop {number} [enqueue] - custom enqueue time, now will be used by default
  */
 
-
 /**
- * @typedef Task {Object}
+ * @typedef Task {object}
  * @prop {string} id - task identifier
  * @prop {string} pageId - page identifier
  * @prop {string} senderId - user identifier
  * @prop {string} campaignId - campaign identifer
  * @prop {number} enqueue - when the task will be processed with queue
- * @prop {Object} [data] - custom action data for specific target
+ * @prop {object} [data] - custom action data for specific target
  * @prop {number} [read] - time of read
  * @prop {number} [delivery] - time of delivery
  * @prop {number} [sent] - time of send
@@ -64,9 +63,8 @@ const DEFAULT_CAMPAIGN_DATA = {
  * @prop {number} [leaved] - time the event was not sent because user left
  */
 
-
 /**
- * @typedef Campaign {Object}
+ * @typedef Campaign {object}
  * @prop {string} id
  * @prop {string} name
  *
@@ -89,7 +87,7 @@ const DEFAULT_CAMPAIGN_DATA = {
  * Interaction
  *
  * @prop {string} action
- * @prop {Object} [data]
+ * @prop {object} [data]
  *
  * Setup
  *
@@ -116,7 +114,7 @@ class Notifications extends EventEmitter {
      * @memberof Notifications
      *
      * @param {NotificationsStorage} notificationStorage
-     * @param {Object} options
+     * @param {object} options
      * @param {console} [options.log] - logger
      * @param {number} [options.default24Clearance] - use this clearance to ensure delivery in 24h
      * @param {string} [options.allAudienceTag] - tag to mark all users
@@ -142,7 +140,7 @@ class Notifications extends EventEmitter {
      * @memberof Notifications
      *
      * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
-     * @returns {Object} - the graphql api object
+     * @returns {object} - the graphql api object
      */
     api (acl = null) {
         return api(this._storage, this, acl);
@@ -154,8 +152,8 @@ class Notifications extends EventEmitter {
      *
      * @param {string} name
      * @param {string} action
-     * @param {Object} [data]
-     * @param {Object} options - use { id: '...' } to make campaign accessible from code
+     * @param {object} [data]
+     * @param {object} options - use { id: '...' } to make campaign accessible from code
      * @returns {Promise<Campaign>}
      */
     async createCampaign (
@@ -194,7 +192,6 @@ class Notifications extends EventEmitter {
                 }
             });
 
-
         return this._storage.upsertCampaign(campaign, update);
     }
 
@@ -215,7 +212,7 @@ class Notifications extends EventEmitter {
         const defEnqueue = Date.now();
 
         const tasks = campaignTargets
-            .map(target => ({
+            .map((target) => ({
                 campaignId: target.campaignId,
                 senderId: target.senderId,
                 pageId: target.pageId,
@@ -287,14 +284,14 @@ class Notifications extends EventEmitter {
      * @param {string} senderId
      * @param {string} pageId
      * @param {string} [tag]
-     * @param {Object} [req]
-     * @param {Object} [res]
+     * @param {object} [req]
+     * @param {object} [res]
      */
     async unsubscribe (senderId, pageId, tag = null, req = null, res = null, cmps = null) {
         let unsubscibtions;
 
         if (req && req.subscribtions.includes(tag)) {
-            req.subscribtions = req.subscribtions.filter(s => s !== tag);
+            req.subscribtions = req.subscribtions.filter((s) => s !== tag);
             this._updateResDataWithSubscribtions(req, res);
 
             // re-evalutate campaigns
@@ -308,7 +305,7 @@ class Notifications extends EventEmitter {
         }
 
         unsubscibtions
-            .forEach(sub => this._reportEvent('unsubscribed', sub, { senderId, pageId }));
+            .forEach((sub) => this._reportEvent('unsubscribed', sub, { senderId, pageId }));
 
     }
 
@@ -317,7 +314,7 @@ class Notifications extends EventEmitter {
      *
      * @memberof Notifications
      *
-     * @param {Object} event
+     * @param {object} event
      * @param {string} pageId
      * @returns {Promise<{status:number}>}
      */
@@ -337,7 +334,9 @@ class Notifications extends EventEmitter {
             .updateTasksByWatermark(senderId, pageId, watermark, eventType, ts);
 
         await Promise.all(tasks
-            .map(task => this._messageDeliveryByMid(task.campaignId, eventType, senderId, pageId)));
+            .map((task) => this._messageDeliveryByMid(
+                task.campaignId, eventType, senderId, pageId
+            )));
 
         return {
             status: 200
@@ -409,23 +408,23 @@ class Notifications extends EventEmitter {
             subscribe (tag) {
                 notifications
                     .subscribe(req.senderId, req.pageId, tag, req, res, slidingCampaigns)
-                    .catch(e => notifications._log.error(e));
+                    .catch((e) => notifications._log.error(e));
             },
             unsubscribe (tag = null) {
                 notifications
                     .unsubscribe(req.senderId, req.pageId, tag, req, res, slidingCampaigns)
-                    .catch(e => notifications._log.error(e));
+                    .catch((e) => notifications._log.error(e));
             }
         });
 
         // process setState variables
         if (req.state[SUBSCRIBE]) {
-            req.state[SUBSCRIBE].forEach(t => res.subscribe(t));
+            req.state[SUBSCRIBE].forEach((t) => res.subscribe(t));
             delete req.state[SUBSCRIBE];
             delete res.newState[SUBSCRIBE];
         }
         if (req.state[UNSUBSCRIBE]) {
-            req.state[UNSUBSCRIBE].forEach(t => res.unsubscribe(t));
+            req.state[UNSUBSCRIBE].forEach((t) => res.unsubscribe(t));
             delete req.state[UNSUBSCRIBE];
             delete res.newState[UNSUBSCRIBE];
         }
@@ -466,7 +465,6 @@ class Notifications extends EventEmitter {
                     _ntfLastCampaignName: null,
                     _ntfLastTask: null
                 });
-
 
                 this._reportCampaignSuccess(
                     isNegative ? 'negative' : 'positive',
@@ -551,7 +549,7 @@ class Notifications extends EventEmitter {
         if (useToken) {
             // pop the token
             res.setState({
-                _ntfOneTimeTokens: tokens.filter(t => t.token !== useToken.token)
+                _ntfOneTimeTokens: tokens.filter((t) => t.token !== useToken.token)
             });
             res.setNotificationRecipient({
                 one_time_notif_token: useToken.token
@@ -566,12 +564,12 @@ class Notifications extends EventEmitter {
             return false;
         }
         // if there's exclusion, it should also match
-        if (subscribtions.some(s => campaign.exclude.includes(s))) {
+        if (subscribtions.some((s) => campaign.exclude.includes(s))) {
             return false;
         }
 
         return campaign.include.length === 0
-            || subscribtions.some(s => campaign.include.includes(s));
+            || subscribtions.some((s) => campaign.include.includes(s));
     }
 
     /* _isTargetGroup (campaign, subscribtions, pageId) {
@@ -584,7 +582,7 @@ class Notifications extends EventEmitter {
 
     _reportCampaignSuccess (eventName, campaignId, campaignName, meta, taskId) {
         this._storage.incrementCampaign(campaignId, { [eventName]: 1 })
-            .catch(e => this._log.error('report campaign success store', e));
+            .catch((e) => this._log.error('report campaign success store', e));
         if (taskId) {
             this._storage.updateTask(taskId, { reaction: true });
         }
@@ -624,19 +622,19 @@ class Notifications extends EventEmitter {
         }
 
         const slidingCampaigns = data
-            .filter(c => this._isTargetGroup(c, req.subscribtions, req.pageId));
+            .filter((c) => this._isTargetGroup(c, req.subscribtions, req.pageId));
 
         let { _ntfSlidingCampTasks: cache = [] } = req.state;
 
         // remove the old tasks or tasks without campaigns
-        cache = cache.filter(t => t.enqueue >= req.timestamp
-            && slidingCampaigns.some(c => c.id === t.campaignId));
+        cache = cache.filter((t) => t.enqueue >= req.timestamp
+            && slidingCampaigns.some((c) => c.id === t.campaignId));
 
         // postpone existing
         cache = cache.map((t) => {
-            const campaign = slidingCampaigns.find(c => c.id === t.campaignId);
+            const campaign = slidingCampaigns.find((c) => c.id === t.campaignId);
             const enqueue = this._calculateSlide(req.timestamp, campaign);
-            return Object.assign({}, t, { enqueue });
+            return { ...t, enqueue };
         });
         await Promise.all(cache
             .map(({ id, enqueue }) => this._storage.updateTask(id, { enqueue })));
@@ -644,19 +642,19 @@ class Notifications extends EventEmitter {
         // missing tasks in cache
         const { senderId, pageId } = req;
         const insert = slidingCampaigns
-            .filter(c => !cache.some(t => t.campaignId === c.id));
+            .filter((c) => !cache.some((t) => t.campaignId === c.id));
 
         const checkCids = insert
-            .filter(c => !c.allowRepeat)
-            .map(c => c.id);
+            .filter((c) => !c.allowRepeat)
+            .map((c) => c.id);
 
         // load the sent tasks
         const sentCampaigns = await this._storage
             .getSentCampagnIds(req.pageId, req.senderId, checkCids);
 
         const insertTasks = insert
-            .filter(c => c.allowRepeat || !sentCampaigns.includes(c.id))
-            .map(c => ({
+            .filter((c) => c.allowRepeat || !sentCampaigns.includes(c.id))
+            .map((c) => ({
                 senderId,
                 pageId,
                 campaignId: c.id,
@@ -667,7 +665,7 @@ class Notifications extends EventEmitter {
         const insertedTasks = await this.pushTasksToQueue(insertTasks);
 
         if (res) {
-            cache.push(...insertedTasks.map(t => ({
+            cache.push(...insertedTasks.map((t) => ({
                 id: t.id,
                 campaignId: t.campaignId,
                 enqueue: t.enqueue
@@ -686,7 +684,7 @@ class Notifications extends EventEmitter {
      *
      * @memberof Notifications
      *
-     * @param {Object} campaign
+     * @param {object} campaign
      * @returns {Promise<{queued:number}>}
      */
     async runCampaign (campaign) {
@@ -705,7 +703,7 @@ class Notifications extends EventEmitter {
 
             lastKey = key;
 
-            const campaignTargets = targets.map(target => ({
+            const campaignTargets = targets.map((target) => ({
                 senderId: target.senderId,
                 pageId: target.pageId,
                 campaignId: campaign.id,
@@ -759,7 +757,7 @@ class Notifications extends EventEmitter {
 
         return Promise.all(pop
             .map((task) => {
-                const campaign = campaigns.find(c => c.id === task.campaignId);
+                const campaign = campaigns.find((c) => c.id === task.campaignId);
                 return this._processTask(processor, task, campaign);
             }));
     }
@@ -778,7 +776,7 @@ class Notifications extends EventEmitter {
         if (this._lts.size > 50) {
             const keep = ts - 1000;
             this._lts = new Map(Array.from(this._lts.entries())
-                .filter(e => e[1] > keep));
+                .filter((e) => e[1] > keep));
         }
         return ts;
     }
@@ -787,11 +785,11 @@ class Notifications extends EventEmitter {
      * Sends the message directly (without queue)
      * and records it's delivery status at campaign stats
      *
-     * @param {Object} campaign - campaign
-     * @param {Object} processor - channel processor instance
+     * @param {object} campaign - campaign
+     * @param {object} processor - channel processor instance
      * @param {string} pageId - page
      * @param {string} senderId - user
-     * @param {Object} [data] - override the data of campaign
+     * @param {object} [data] - override the data of campaign
      * @returns {Promise<{ status: number }>}
      * @example
      * const campaign = await notifications

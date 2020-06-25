@@ -8,7 +8,7 @@ const ConversationTester = require('../ConversationTester');
 
 /**
  * @typedef {object} TestSource
- * @prop {function} getTestCases
+ * @prop {Function} getTestCases
  */
 
 /**
@@ -16,7 +16,7 @@ const ConversationTester = require('../ConversationTester');
  *
  * @param {TestSource} testsSource
  * @param {Function} botFactory
- * @param {Object} [options]
+ * @param {object} [options]
  * @param {boolean} [options.disableAssertActions]
  * @param {boolean} [options.disableAssertTexts]
  * @param {boolean} [options.disableAssertQuickReplies]

@@ -82,7 +82,7 @@ class SecurityMiddleware {
      *
      * - the tokenstorage should be included
      *
-     * @param {Object} req - express request
+     * @param {object} req - express request
      * @returns {Promise<string>}
      *
      * @memberOf SecurityMiddleware
@@ -136,7 +136,7 @@ class SecurityMiddleware {
         }
 
         return this.tokenStorage.getOrCreateToken(senderId)
-            .then(token => token.token);
+            .then((token) => token.token);
     }
 
 }

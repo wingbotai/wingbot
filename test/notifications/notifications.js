@@ -100,7 +100,7 @@ describe('Notifications', function () {
     });
 
     function wait (ms) {
-        return new Promise(res => setTimeout(res, ms));
+        return new Promise((res) => setTimeout(res, ms));
     }
 
     describe('#beforeProcessMessage()', () => {
@@ -336,7 +336,6 @@ describe('Notifications', function () {
             assert.equal(t.responses.length, 1);
             assert.deepEqual(t.responses[0].recipient, { one_time_notif_token: 'my-token' });
         });
-
 
         it('does not sent a message, when campaign has a condition', async () => {
             const t = new Tester(bot);
