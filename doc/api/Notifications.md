@@ -8,11 +8,11 @@
 ## Typedefs
 
 <dl>
-<dt><a href="#CampaignTarget">CampaignTarget</a> : <code>Object</code></dt>
+<dt><a href="#CampaignTarget">CampaignTarget</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Task">Task</a> : <code>Object</code></dt>
+<dt><a href="#Task">Task</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Campaign">Campaign</a> : <code>Object</code></dt>
+<dt><a href="#Campaign">Campaign</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Tag">Tag</a> : <code>Object</code></dt>
 <dd></dd>
@@ -20,7 +20,7 @@
 <dd></dd>
 <dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#Campaign">Campaign</a> : <code>Object</code></dt>
+<dt><a href="#Campaign">Campaign</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Task">Task</a> : <code>Object</code></dt>
 <dd></dd>
@@ -34,7 +34,7 @@
 * [Notifications](#Notifications)
     * [new Notifications()](#new_Notifications_new)
     * _instance_
-        * [.api([acl])](#Notifications_api) ⇒ <code>Object</code>
+        * [.api([acl])](#Notifications_api) ⇒ <code>object</code>
         * [.createCampaign(name, action, [data], options)](#Notifications_createCampaign) ⇒ [<code>Promise.&lt;Campaign&gt;</code>](#Campaign)
         * [.pushTasksToQueue(campaignTargets)](#Notifications_pushTasksToQueue) ⇒ <code>Promise.&lt;Array.&lt;Task&gt;&gt;</code>
         * [.subscribe(senderId, pageId, tag)](#Notifications_subscribe)
@@ -54,11 +54,11 @@ Experimental notifications service
 
 {% raw %}<div id="Notifications_api">&nbsp;</div>{% endraw %}
 
-### notifications.api([acl]) ⇒ <code>Object</code>
+### notifications.api([acl]) ⇒ <code>object</code>
 API Factory
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Returns**: <code>Object</code> - - the graphql api object  
+**Returns**: <code>object</code> - - the graphql api object  
 **Params**
 
 - [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function
@@ -74,8 +74,8 @@ If the campaing does not exists add new. Otherwise, update it.
 
 - name <code>string</code>
 - action <code>string</code>
-- [data] <code>Object</code>
-- options <code>Object</code> - use { id: '...' } to make campaign accessible from code
+- [data] <code>object</code>
+- options <code>object</code> - use { id: '...' } to make campaign accessible from code
 
 {% raw %}<div id="Notifications_pushTasksToQueue">&nbsp;</div>{% endraw %}
 
@@ -110,8 +110,8 @@ Unsubscribe user from certain tag or from all tags
 - senderId <code>string</code>
 - pageId <code>string</code>
 - [tag] <code>string</code> <code> = null</code>
-- [req] <code>Object</code> <code> = </code>
-- [res] <code>Object</code> <code> = </code>
+- [req] <code>object</code> <code> = </code>
+- [res] <code>object</code> <code> = </code>
 
 {% raw %}<div id="Notifications_processMessage">&nbsp;</div>{% endraw %}
 
@@ -121,7 +121,7 @@ Preprocess message - for read and delivery
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
 **Params**
 
-- event <code>Object</code>
+- event <code>object</code>
 - pageId <code>string</code>
 
 {% raw %}<div id="Notifications_getSubscribtions">&nbsp;</div>{% endraw %}
@@ -143,7 +143,7 @@ Run the campaign now (push tasks into the queue)
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
 **Params**
 
-- campaign <code>Object</code>
+- campaign <code>object</code>
 
 {% raw %}<div id="Notifications_sendCampaignMessage">&nbsp;</div>{% endraw %}
 
@@ -154,11 +154,11 @@ and records it's delivery status at campaign stats
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
 **Params**
 
-- campaign <code>Object</code> - campaign
-- processor <code>Object</code> - channel processor instance
+- campaign <code>object</code> - campaign
+- processor <code>object</code> - channel processor instance
 - pageId <code>string</code> - page
 - senderId <code>string</code> - user
-- [data] <code>Object</code> <code> = </code> - override the data of campaign
+- [data] <code>object</code> <code> = </code> - override the data of campaign
 
 **Example**  
 ```javascript
@@ -179,14 +179,14 @@ Creates a new instance on notification service
 **Params**
 
 - notificationStorage <code>NotificationsStorage</code>
-- options <code>Object</code>
+- options <code>object</code>
     - [.log] <code>console</code> - logger
     - [.default24Clearance] <code>number</code> - use this clearance to ensure delivery in 24h
     - [.allAudienceTag] <code>string</code> - tag to mark all users
 
 {% raw %}<div id="CampaignTarget">&nbsp;</div>{% endraw %}
 
-## CampaignTarget : <code>Object</code>
+## CampaignTarget : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -195,12 +195,12 @@ Creates a new instance on notification service
 | senderId | <code>string</code> | sender identifier |
 | pageId | <code>string</code> | page identifier |
 | campaignId | <code>string</code> | campaign identifier |
-| [data] | <code>Object</code> | custom action data for specific target |
+| [data] | <code>object</code> | custom action data for specific target |
 | [enqueue] | <code>number</code> | custom enqueue time, now will be used by default |
 
 {% raw %}<div id="Task">&nbsp;</div>{% endraw %}
 
-## Task : <code>Object</code>
+## Task : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -211,7 +211,7 @@ Creates a new instance on notification service
 | senderId | <code>string</code> | user identifier |
 | campaignId | <code>string</code> | campaign identifer |
 | enqueue | <code>number</code> | when the task will be processed with queue |
-| [data] | <code>Object</code> | custom action data for specific target |
+| [data] | <code>object</code> | custom action data for specific target |
 | [read] | <code>number</code> | time of read |
 | [delivery] | <code>number</code> | time of delivery |
 | [sent] | <code>number</code> | time of send |
@@ -220,7 +220,7 @@ Creates a new instance on notification service
 
 {% raw %}<div id="Campaign">&nbsp;</div>{% endraw %}
 
-## Campaign : <code>Object</code>
+## Campaign : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -239,7 +239,7 @@ Creates a new instance on notification service
 | leaved | <code>number</code> |  |
 | queued | <code>number</code> | Interaction |
 | action | <code>string</code> |  |
-| [data] | <code>Object</code> | Setup |
+| [data] | <code>object</code> | Setup |
 | sliding | <code>boolean</code> |  |
 | slide | <code>number</code> |  |
 | active | <code>boolean</code> |  |
@@ -284,7 +284,7 @@ Creates a new instance on notification service
 
 {% raw %}<div id="Campaign">&nbsp;</div>{% endraw %}
 
-## Campaign : <code>Object</code>
+## Campaign : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -303,7 +303,7 @@ Creates a new instance on notification service
 | leaved | <code>number</code> |  |
 | queued | <code>number</code> | Interaction |
 | action | <code>string</code> |  |
-| [data] | <code>Object</code> | Setup |
+| [data] | <code>object</code> | Setup |
 | sliding | <code>boolean</code> |  |
 | slide | <code>number</code> |  |
 | active | <code>boolean</code> |  |

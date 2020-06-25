@@ -12,7 +12,7 @@
 <dl>
 <dt><a href="#Resolver">Resolver</a> : <code>function</code></dt>
 <dd></dd>
-<dt><a href="#BotPath">BotPath</a> : <code>Object</code></dt>
+<dt><a href="#BotPath">BotPath</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Middleware">Middleware</a> : <code><a href="#Resolver">Resolver</a></code> | <code>string</code> | <code>RegExp</code> | <code><a href="#Router">Router</a></code> | <code><a href="#BotPath">BotPath</a></code></dt>
 <dd><p>flow control statement or function</p>
@@ -270,7 +270,7 @@ Creates an instance of ReducerWrapper.
 
 {% raw %}<div id="BotPath">&nbsp;</div>{% endraw %}
 
-## BotPath : <code>Object</code>
+## BotPath : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 

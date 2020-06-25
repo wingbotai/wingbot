@@ -9,15 +9,15 @@
 ## Typedefs
 
 <dl>
-<dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
+<dt><a href="#Entity">Entity</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dt><a href="#Intent">Intent</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Action">Action</a> : <code>Object</code></dt>
+<dt><a href="#Action">Action</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#IntentAction">IntentAction</a> : <code>Object</code></dt>
+<dt><a href="#IntentAction">IntentAction</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#QuickReply">QuickReply</a> : <code>Object</code></dt>
+<dt><a href="#QuickReply">QuickReply</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
 
@@ -38,7 +38,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.subscribtions](#Request_subscribtions)
     * [.entities](#Request_entities)
     * [.intents](#Request_intents)
-    * [.event](#Request_event) : <code>Object</code>
+    * [.event](#Request_event) : <code>object</code>
     * [.isStandby()](#Request_isStandby) ⇒ <code>boolean</code>
     * [.aiActions()](#Request_aiActions) ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
     * [.aiActionsForQuickReplies([limit], [aiActions], [overrideAction])](#Request_aiActionsForQuickReplies) ⇒ [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply)
@@ -50,7 +50,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.isFile([attachmentIndex])](#Request_isFile) ⇒ <code>boolean</code>
     * [.hasLocation()](#Request_hasLocation) ⇒ <code>boolean</code>
     * [.getLocation()](#Request_getLocation) ⇒ <code>null</code> \| <code>Object</code>
-    * [.attachment([attachmentIndex])](#Request_attachment) ⇒ <code>Object</code> \| <code>null</code>
+    * [.attachment([attachmentIndex])](#Request_attachment) ⇒ <code>object</code> \| <code>null</code>
     * [.attachmentUrl([attachmentIndex])](#Request_attachmentUrl) ⇒ <code>string</code> \| <code>null</code>
     * [.isMessage()](#Request_isMessage) ⇒ <code>boolean</code>
     * [.isQuickReply()](#Request_isQuickReply) ⇒ <code>boolean</code>
@@ -58,16 +58,18 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.isSticker([includeToTextStickers])](#Request_isSticker) ⇒ <code>boolean</code>
     * [.text([tokenized])](#Request_text) ⇒ <code>string</code>
     * [.expected()](#Request_expected) ⇒ [<code>Action</code>](#Action) \| <code>null</code>
-    * [.expectedContext([justOnce], [includeKeywords])](#Request_expectedContext) ⇒ <code>Object</code>
-    * [.quickReply([getData])](#Request_quickReply) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
+    * [.expectedKeywords([justOnce])](#Request_expectedKeywords)
+    * [.expectedContext([justOnce], [includeKeywords])](#Request_expectedContext) ⇒ <code>object</code>
+    * [.quickReply([getData])](#Request_quickReply) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
     * [.isPostBack()](#Request_isPostBack) ⇒ <code>boolean</code>
     * [.isReferral()](#Request_isReferral) ⇒ <code>boolean</code>
     * [.isOptin()](#Request_isOptin) ⇒ <code>boolean</code>
     * [.setAction(action, [data])](#Request_setAction) ⇒ [<code>Action</code>](#Action) \| <code>null</code> \| <code>undefined</code>
     * [.action([getData])](#Request_action) ⇒ <code>null</code> \| <code>string</code>
-    * [.actionData()](#Request_actionData) ⇒ <code>Object</code>
-    * [.getSetState()](#Request_getSetState) ⇒ <code>Object</code>
-    * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
+    * [.actionData()](#Request_actionData) ⇒ <code>object</code>
+    * [.getSetState()](#Request_getSetState) ⇒ <code>object</code>
+    * [.isConfidentInput()](#Request_isConfidentInput) ⇒ <code>boolean</code>
+    * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
 
 {% raw %}<div id="Request_params">&nbsp;</div>{% endraw %}
 
@@ -127,7 +129,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| state | <code>Object</code> | current state of the conversation |
+| state | <code>object</code> | current state of the conversation |
 
 {% raw %}<div id="Request_subscribtions">&nbsp;</div>{% endraw %}
 
@@ -161,7 +163,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 
 {% raw %}<div id="Request_event">&nbsp;</div>{% endraw %}
 
-### request.event : <code>Object</code>
+### request.event : <code>object</code>
 The original messaging event
 
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -283,7 +285,7 @@ bot.use('locAction', (req, res) => {
 ```
 {% raw %}<div id="Request_attachment">&nbsp;</div>{% endraw %}
 
-### request.attachment([attachmentIndex]) ⇒ <code>Object</code> \| <code>null</code>
+### request.attachment([attachmentIndex]) ⇒ <code>object</code> \| <code>null</code>
 Returns whole attachment or null
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
@@ -349,20 +351,42 @@ console.log(req.text(true)) // "can-you-help-me"
 Returns the request expected handler in case have been set last response
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+{% raw %}<div id="Request_expectedKeywords">&nbsp;</div>{% endraw %}
+
+### request.expectedKeywords([justOnce])
+Returns all expected keywords for the next request (just expected keywords)
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Params**
+
+- [justOnce] <code>boolean</code> <code> = false</code> - - don't return already retained items
+
+**Example**  
+```javascript
+bot.use('my-route', (req, res) => {
+    res.setState(req.expectedKeywords());
+});
+```
 {% raw %}<div id="Request_expectedContext">&nbsp;</div>{% endraw %}
 
-### request.expectedContext([justOnce], [includeKeywords]) ⇒ <code>Object</code>
+### request.expectedContext([justOnce], [includeKeywords]) ⇒ <code>object</code>
 Returns current turn-around context (expected and expected keywords)
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 **Params**
 
-- [justOnce] <code>boolean</code> <code> = false</code> - don't do it again
+- [justOnce] <code>boolean</code> <code> = false</code> - don't return already retained items
 - [includeKeywords] <code>boolean</code> <code> = false</code> - keep intents from quick replies
 
+**Example**  
+```javascript
+bot.use('my-route', (req, res) => {
+    res.setState(req.expectedContext());
+});
+```
 {% raw %}<div id="Request_quickReply">&nbsp;</div>{% endraw %}
 
-### request.quickReply([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
+### request.quickReply([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
 Returns action or data of quick reply
 When `getData` is `true`, object will be returned. Otherwise string or null.
 
@@ -404,7 +428,7 @@ Sets the action and returns previous action
 **Params**
 
 - action <code>string</code> | [<code>Action</code>](#Action) | <code>null</code>
-- [data] <code>Object</code>
+- [data] <code>object</code>
 
 {% raw %}<div id="Request_action">&nbsp;</div>{% endraw %}
 
@@ -433,13 +457,13 @@ typeof res.actionData() === 'object';
 ```
 {% raw %}<div id="Request_actionData">&nbsp;</div>{% endraw %}
 
-### request.actionData() ⇒ <code>Object</code>
+### request.actionData() ⇒ <code>object</code>
 Returns action data of postback or quick reply
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_getSetState">&nbsp;</div>{% endraw %}
 
-### request.getSetState() ⇒ <code>Object</code>
+### request.getSetState() ⇒ <code>object</code>
 Gets incomming setState action variable
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
@@ -447,9 +471,18 @@ Gets incomming setState action variable
 ```javascript
 res.setState(req.getSetState());
 ```
+{% raw %}<div id="Request_isConfidentInput">&nbsp;</div>{% endraw %}
+
+### request.isConfidentInput() ⇒ <code>boolean</code>
+Returns true, if previous request has been
+marked as confident using `res.expectedConfidentInput()`
+
+It's good to consider this state in "analytics" integrations.
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_postBack">&nbsp;</div>{% endraw %}
 
-### request.postBack([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>Object</code>
+### request.postBack([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
 Returns action or data of postback
 When `getData` is `true`, object will be returned. Otherwise string or null.
 
@@ -465,7 +498,7 @@ typeof res.postBack(true) === 'object';
 ```
 {% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
 
-## Entity : <code>Object</code>
+## Entity : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -477,7 +510,7 @@ typeof res.postBack(true) === 'object';
 
 {% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
 
-## Intent : <code>Object</code>
+## Intent : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -489,19 +522,19 @@ typeof res.postBack(true) === 'object';
 
 {% raw %}<div id="Action">&nbsp;</div>{% endraw %}
 
-## Action : <code>Object</code>
+## Action : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type |
 | --- | --- |
 | action | <code>string</code> | 
-| data | <code>Object</code> | 
-| [setState] | <code>Object</code> \| <code>null</code> | 
+| data | <code>object</code> | 
+| [setState] | <code>object</code> \| <code>null</code> | 
 
 {% raw %}<div id="IntentAction">&nbsp;</div>{% endraw %}
 
-## IntentAction : <code>Object</code>
+## IntentAction : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -514,13 +547,13 @@ typeof res.postBack(true) === 'object';
 | aboveConfidence | <code>boolean</code> | 
 | [winner] | <code>boolean</code> | 
 | [title] | <code>string</code> \| <code>function</code> | 
-| meta | <code>Object</code> | 
+| meta | <code>object</code> | 
 | [meta.targetAppId] | <code>string</code> | 
 | [meta.targetAction] | <code>string</code> \| <code>null</code> | 
 
 {% raw %}<div id="QuickReply">&nbsp;</div>{% endraw %}
 
-## QuickReply : <code>Object</code>
+## QuickReply : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
