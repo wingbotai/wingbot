@@ -1283,6 +1283,21 @@ describe('<Router> logic', () => {
                 res.text('nothing');
             });
 
+            bot.use('keep', (req, res) => {
+                res.text('prompt', {
+                    next: 'next'
+                });
+                res.expected('keep-context');
+            });
+
+            bot.use('keep-context', (req, res) => {
+                // @ts-ignore
+                res.setState(req.expectedContext());
+                // @ts-ignore
+                res.setState(req.expectedKeywords());
+                res.text('still nothing');
+            });
+
             bot.use((req, res) => {
                 res.text('fallback');
             });
@@ -1299,6 +1314,33 @@ describe('<Router> logic', () => {
             t.any().contains('nothing');
 
             await t.text('fallback');
+
+            t.any().contains('nothing');
+
+            await t.text('fallback');
+
+            t.any().contains('fallback');
+        });
+
+        it('keeps previous context still', async () => {
+
+            await t.postBack('keep');
+
+            await t.text('foo');
+
+            t.any().contains('still nothing');
+
+            await t.text('fallback');
+
+            t.any().contains('still nothing');
+
+            await t.text('fallback');
+
+            t.any().contains('still nothing');
+
+            await t.text('next');
+
+            t.any().contains('yes');
         });
 
         it('remembers previous value', async () => {

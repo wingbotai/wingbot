@@ -97,6 +97,7 @@ describe('<BuildRouter>', async () => {
         await t.text('anytext');
 
         t.any().contains('This is local AI reaction');
+        t.any().contains('got anytext');
 
         ai.mockIntent();
     });

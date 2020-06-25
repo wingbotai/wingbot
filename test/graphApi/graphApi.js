@@ -472,6 +472,45 @@ describe('<GraphApi>', function () {
             assert.strictEqual(typeof res.data.conversation, 'object');
         });
 
+        it('should filter the content', async () => {
+            const stateTextFilter = (w, k) => (k === 'lastAction' ? 'FILTERED' : w);
+
+            api = new GraphApi([
+                conversationsApi(tester.storage, null, null, undefined, { stateTextFilter })
+            ], {
+                token: 'x',
+                appToken: 'y'
+            });
+
+            // make some states
+            await tester.postBack('start');
+            tester.senderId = 'abc';
+            await tester.postBack('start');
+
+            const res = await api.request({
+                query: `query Conversation ($senderId: String!, $pageId: String!) {
+                    conversation (senderId: $senderId, pageId: $pageId) {
+                        senderId,
+                        pageId,
+                        lastInteraction,
+                        name,
+                        subscribtions,
+                        state,
+                        history {
+                            timestamp
+                        }
+                    }
+                }`,
+                variables: {
+                    senderId: tester.senderId,
+                    pageId: tester.pageId
+                }
+            }, headers);
+
+            assert.strictEqual(typeof res.data.conversation, 'object');
+            assert.strictEqual(res.data.conversation.state.lastAction, 'FILTERED');
+        });
+
     });
 
     describe('{ flaggedInteractions }', () => {

@@ -430,14 +430,17 @@ class Request {
      * @returns {boolean}
      */
     isText () {
-        return (this.message !== null
+        return (this._postback === null
+            && this.message !== null
             && !this.message.quick_reply
             && !!this.message.text)
             || this._stickerToSmile() !== '';
     }
 
     isTextOrIntent () {
-        return this.isText() || this.intents.length > 0 || this.entities.length > 0;
+        return this.isText()
+            || this.intents.length > 0
+            || this.entities.length > 0;
     }
 
     /**
@@ -505,17 +508,56 @@ class Request {
     }
 
     /**
-     * Returns current turn-around context (expected and expected keywords)
+     * Returns all expected keywords for the next request (just expected keywords)
      *
-     * @param {boolean} [justOnce] - don't do it again
-     * @param {boolean} [includeKeywords] - keep intents from quick replies
-     * @returns {Object}
+     * @param {boolean} [justOnce]  - don't return already retained items
+     * @example
+     *
+     * bot.use('my-route', (req, res) => {
+     *     res.setState(req.expectedKeywords());
+     * });
      */
-    expectedContext (justOnce = false, includeKeywords = false) {
+    expectedKeywords (justOnce = false) {
         const {
-            _expected: expected,
             _expectedKeywords: exKeywords
         } = this.state;
+
+        if (!exKeywords) {
+            return {};
+        }
+
+        if (!justOnce) {
+            return { _expectedKeywords: exKeywords };
+        }
+
+        return {
+            _expectedKeywords: exKeywords
+                // @ts-ignore
+                .filter(({ data = {} }) => !data._expectedFallbackOccured)
+                .map(keyword => ({
+                    ...keyword,
+                    data: {
+                        ...(keyword.data || {}),
+                        _expectedFallbackOccured: true
+                    }
+                }))
+        };
+    }
+
+    /**
+     * Returns current turn-around context (expected and expected keywords)
+     *
+     * @param {boolean} [justOnce] - don't return already retained items
+     * @param {boolean} [includeKeywords] - keep intents from quick replies
+     * @returns {Object}
+     * @example
+     *
+     * bot.use('my-route', (req, res) => {
+     *     res.setState(req.expectedContext());
+     * });
+     */
+    expectedContext (justOnce = false, includeKeywords = false) {
+        const { _expected: expected, _expectedConfidentInput: confident } = this.state;
 
         const ret = {};
 
@@ -539,9 +581,15 @@ class Request {
             }
         }
 
-        if (exKeywords && shouldIncludeKeywords) {
+        if (shouldIncludeKeywords) {
             Object.assign(ret, {
-                _expectedKeywords: exKeywords
+                ...this.expectedKeywords(justOnce)
+            });
+        }
+
+        if (confident) {
+            Object.assign(ret, {
+                _expectedConfidentInput: true
             });
         }
 
