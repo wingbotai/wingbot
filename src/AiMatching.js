@@ -27,47 +27,46 @@ const COMPARE = {
 };
 
 /**
- * @typedef {Object} Entity
+ * @typedef {object} Entity
  * @param {string} entity
  * @param {string} value
  * @param {number} score
  */
 
 /**
- * @typedef {Object} Intent
+ * @typedef {object} Intent
  * @param {string} [intent]
  * @param {number} score
  * @param {Entity[]} [entities]
  */
 
 /**
- * @typedef {Object} EntityExpression
+ * @typedef {object} EntityExpression
  * @prop {string} entity - the requested entity
  * @prop {boolean} [optional] - the match is optional
  * @prop {Compare} [op] - comparison operation
  * @prop {string[]|number[]} [compare] - value to compare with
  */
 
-
 /**
  * @typedef {string|EntityExpression} IntentRule
  */
 
 /**
- * @typedef {Object} RegexpComparator
+ * @typedef {object} RegexpComparator
  * @prop {RegExp} r - regular expression
  * @prop {boolean} t - use normalized text
  */
 
 /**
- * @typedef {Object} PreprocessorOutput
+ * @typedef {object} PreprocessorOutput
  * @prop {RegexpComparator[]} regexps
  * @prop {string[]} intents
  * @prop {EntityExpression[]} entities
  */
 
 /**
- * @typedef {Object} AIRequest
+ * @typedef {object} AIRequest
  * @prop {Function} text
  * @prop {Intent[]|null} intents
  * @prop {Entity[]} entities
@@ -125,7 +124,6 @@ class AiMatching {
         this.redundantIntentHandicap = handicap;
     }
 
-
     _normalizeToNumber (value, returnIfEmpty = null) {
         if (typeof value === 'string') {
             const flt = parseFloat(value);
@@ -162,7 +160,7 @@ class AiMatching {
             ];
         }
 
-        return arr.map(cmp => `${cmp}`);
+        return arr.map((cmp) => `${cmp}`);
     }
 
     _stringOpToOperation (op) {
@@ -217,7 +215,7 @@ class AiMatching {
         const expressions = Array.isArray(intent) ? intent : [intent];
 
         const entities = expressions
-            .filter(ex => typeof ex === 'object' || ex.match(/^@/))
+            .filter((ex) => typeof ex === 'object' || ex.match(/^@/))
             .map((ex) => {
                 if (typeof ex === 'string') {
                     return this._parseEntityString(ex);
@@ -235,7 +233,7 @@ class AiMatching {
         /** @type {string[]} */
         // @ts-ignore
         const intents = expressions
-            .filter(ex => typeof ex === 'string' && !ex.match(/^[#@]/));
+            .filter((ex) => typeof ex === 'string' && !ex.match(/^[#@]/));
 
         /**
          * 1. Emoji lists
@@ -247,7 +245,7 @@ class AiMatching {
          */
 
         const regexps = expressions
-            .filter(ex => typeof ex === 'string' && ex.match(/^#/))
+            .filter((ex) => typeof ex === 'string' && ex.match(/^#/))
             .map((rawExp) => {
                 // @ts-ignore
                 const exp = replaceDiacritics(rawExp);
@@ -270,7 +268,7 @@ class AiMatching {
                 } else {
                     regexText = exp.replace(/^#/, '')
                         .split('|')
-                        .map(s => `^${s}$`.toLowerCase())
+                        .map((s) => `^${s}$`.toLowerCase())
                         .join('|');
                 }
 
@@ -318,7 +316,7 @@ class AiMatching {
             }
             const { score, handicap, matched } = this._entityMatching(entities, req.entities);
 
-            const allOptional = entities.every(e => e.optional);
+            const allOptional = entities.every((e) => e.optional);
             if (score === 0 && !allOptional) {
                 return null;
             }
@@ -352,9 +350,8 @@ class AiMatching {
                             ...requestIntent,
                             score,
                             entities: useEntities
-                                .filter(e => entities.some(w => w.entity === e.entity))
+                                .filter((e) => entities.some((w) => w.entity === e.entity))
                         };
-
 
                         // attach used entities
                         if (!winningIntent.entities && req.entities) {
@@ -395,7 +392,7 @@ class AiMatching {
         const { score, handicap, matched } = this
             ._entityMatching(wantedEntities, useEntities);
 
-        const allOptional = wantedEntities.every(e => e.optional);
+        const allOptional = wantedEntities.every((e) => e.optional);
         if (score === 0 && !allOptional) {
             return 0;
         }

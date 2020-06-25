@@ -104,12 +104,8 @@ describe('<AiMatching>', () => {
 
             const badReq = fakeReq([intent('bad')]);
 
-            assert.deepEqual(ai.match(fooReq, rule), Object.assign({}, foo, {
-                score: 1.1387999999999998
-            }));
-            assert.deepEqual(ai.match(barReq, rule), Object.assign({}, bar, {
-                score: 1.1387999999999998
-            }));
+            assert.deepEqual(ai.match(fooReq, rule), { ...foo, score: 1.1387999999999998 });
+            assert.deepEqual(ai.match(barReq, rule), { ...bar, score: 1.1387999999999998 });
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
@@ -285,7 +281,6 @@ describe('<AiMatching>', () => {
             const moreReq = fakeReq([], [more]);
             const lessReq = fakeReq([], [less]);
             const zeroReq = fakeReq([], [zero]);
-
 
             assert.strictEqual(ai.match(moreReq, lt), null);
             assert.strictEqual(ai.match(zeroReq, lt), null);

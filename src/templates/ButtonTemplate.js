@@ -68,7 +68,7 @@ class ButtonTemplate extends BaseTemplate {
      *
      * @param {string} title - Button title
      * @param {string} action - Button action (can be absolute or relative)
-     * @param {Object} [data={}] - Action data
+     * @param {object} [data={}] - Action data
      * @returns {this}
      *
      * @memberOf ButtonTemplate

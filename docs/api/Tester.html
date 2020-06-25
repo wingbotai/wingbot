@@ -1122,7 +1122,7 @@
 <li><a href="#Tester_lastRes">.lastRes()</a> &#x21D2; <a href="#ResponseAssert"><code>ResponseAssert</code></a></li>
 <li><a href="#Tester_passedAction">.passedAction(path)</a> &#x21D2; <code>this</code></li>
 <li><a href="#Tester_respondedWithBlock">.respondedWithBlock(blockName)</a> &#x21D2; <code>this</code></li>
-<li><a href="#Tester_getState">.getState()</a> &#x21D2; <code>Object</code></li>
+<li><a href="#Tester_getState">.getState()</a> &#x21D2; <code>object</code></li>
 <li><a href="#Tester_setState">.setState([state])</a></li>
 <li><a href="#Tester_text">.text(text)</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Tester_intent">.intent(intent, [text], [score])</a> &#x21D2; <code>Promise</code></li>
@@ -1162,7 +1162,7 @@
 <tbody>
 <tr>
 <td>predefined</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 <td>test data to use</td>
 </tr>
 </tbody>
@@ -1224,7 +1224,7 @@ It joins them into a single sting</p>
 <p>Use tester as a connector :)</p>
 <p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
 <ul>
-<li>message <code>Object</code> - wingbot chat event</li>
+<li>message <code>object</code> - wingbot chat event</li>
 <li>senderId <code>string</code> - chat event sender identifier</li>
 <li>pageId <code>string</code> - channel/page identifier</li>
 </ul>
@@ -1264,7 +1264,7 @@ It joins them into a single sting</p>
 </ul>
 <div id="Tester_getState">&#xA0;</div>
 
-<h3 id="testergetstate-&#x21D2;-object"><a name="testergetstate-&#x21D2;-object" class="plugin-anchor" href="#testergetstate-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>tester.getState() &#x21D2; <code>Object</code></h3>
+<h3 id="testergetstate-&#x21D2;-object"><a name="testergetstate-&#x21D2;-object" class="plugin-anchor" href="#testergetstate-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>tester.getState() &#x21D2; <code>object</code></h3>
 <p>Returns state</p>
 <p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
 <div id="Tester_setState">&#xA0;</div>
@@ -1273,7 +1273,7 @@ It joins them into a single sting</p>
 <p>Sets state with <code>Object.assign()</code></p>
 <p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
 <ul>
-<li>[state] <code>Object</code> <code> = {}</code></li>
+<li>[state] <code>object</code> <code> = {}</code></li>
 </ul>
 <div id="Tester_text">&#xA0;</div>
 
@@ -1312,7 +1312,7 @@ It joins them into a single sting</p>
 <p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>action <code>string</code></li>
-<li>[data] <code>Object</code> <code> = {}</code></li>
+<li>[data] <code>object</code> <code> = {}</code></li>
 <li>[userRef] <code>string</code> <code> = null</code> - specific ref string</li>
 </ul>
 <div id="Tester_quickReply">&#xA0;</div>
@@ -1322,7 +1322,7 @@ It joins them into a single sting</p>
 <p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>action <code>string</code></li>
-<li>[data] <code>Object</code> <code> = {}</code></li>
+<li>[data] <code>object</code> <code> = {}</code></li>
 </ul>
 <div id="Tester_quickReplyText">&#xA0;</div>
 
@@ -1339,9 +1339,9 @@ It joins them into a single sting</p>
 <p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>action <code>string</code></li>
-<li>[data] <code>Object</code> <code> = {}</code></li>
+<li>[data] <code>object</code> <code> = {}</code></li>
 <li>[refAction] <code>string</code> <code> = null</code> - referred action</li>
-<li>[refData] <code>Object</code> <code> = {}</code> - referred action data</li>
+<li>[refData] <code>object</code> <code> = {}</code> - referred action data</li>
 </ul>
 <div id="Tester_Tester">&#xA0;</div>
 
@@ -1356,7 +1356,7 @@ It joins them into a single sting</p>
 <li>reducer <code>Router</code> | <code>ReducerWrapper</code> | <code>function</code></li>
 <li>[senderId] <code>string</code> <code> = null</code></li>
 <li>[pageId] <code>string</code> <code> = null</code></li>
-<li>[processorOptions] <code>Object</code> <code> = {}</code> - options for Processor</li>
+<li>[processorOptions] <code>object</code> <code> = {}</code> - options for Processor</li>
 <li>[storage] <code>MemoryStateStorage</code> - place to override the storage</li>
 </ul>
 <div id="ResponseAssert">&#xA0;</div>
@@ -1533,7 +1533,7 @@ It joins them into a single sting</p>
 <ul>
 <li>testsSource <a href="#TestSource"><code>TestSource</code></a></li>
 <li>botFactory <code>function</code></li>
-<li>[options] <code>Object</code><ul>
+<li>[options] <code>object</code><ul>
 <li>[.disableAssertActions] <code>boolean</code></li>
 <li>[.disableAssertTexts] <code>boolean</code></li>
 <li>[.disableAssertQuickReplies] <code>boolean</code></li>
@@ -1552,7 +1552,7 @@ It joins them into a single sting</p>
 <p>Runs the conversation test</p>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
 <ul>
-<li>validationRequestBody <code>Object</code> <code> = </code></li>
+<li>validationRequestBody <code>object</code> <code> = </code></li>
 <li>step <code>number</code> <code> = </code></li>
 </ul>
 <div id="ConversationTester__getLists">&#xA0;</div>
@@ -1590,7 +1590,7 @@ It joins them into a single sting</p>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
-<li>[botconfig] <code>Object</code> <code> = </code></li>
+<li>[botconfig] <code>object</code> <code> = </code></li>
 </ul>
 <div id="ConversationTester__runTextCaseTests">&#xA0;</div>
 
@@ -1598,7 +1598,7 @@ It joins them into a single sting</p>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
-<li>botconfig <code>Object</code> <code> = </code></li>
+<li>botconfig <code>object</code> <code> = </code></li>
 </ul>
 <div id="ConversationTester__runStepCaseTests">&#xA0;</div>
 
@@ -1606,7 +1606,7 @@ It joins them into a single sting</p>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
 <ul>
 <li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
-<li>botconfig <code>Object</code> <code> = </code></li>
+<li>botconfig <code>object</code> <code> = </code></li>
 </ul>
 <div id="ConversationTester_executeTextCase">&#xA0;</div>
 
@@ -1947,7 +1947,7 @@ It joins them into a single sting</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2020-04-28T12:40:01.668Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:40:08.206Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2020-06-25T15:30:12.438Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

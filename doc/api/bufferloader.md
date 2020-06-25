@@ -40,9 +40,9 @@
 ## Typedefs
 
 <dl>
-<dt><a href="#State">State</a> : <code>Object</code></dt>
+<dt><a href="#State">State</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#StateCondition">StateCondition</a> : <code>Object</code></dt>
+<dt><a href="#StateCondition">StateCondition</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#textFilter">textFilter</a> ⇒ <code>string</code></dt>
 <dd><p>Text filter function</p>
@@ -80,7 +80,7 @@ Memory conversation state storage for testing purposes
 
 - senderId <code>string</code> - sender identifier
 - pageId <code>string</code> - page or channel identifier
-- defaultState <code>Object</code> - default state of the conversation
+- defaultState <code>object</code> - default state of the conversation
 - lockTimeout <code>number</code> <code> = 300</code> - duration of lock
 
 {% raw %}<div id="MemoryStateStorage_saveState">&nbsp;</div>{% endraw %}
@@ -89,7 +89,7 @@ Memory conversation state storage for testing purposes
 **Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
 **Params**
 
-- state <code>Object</code> - conversation state
+- state <code>object</code> - conversation state
 
 {% raw %}<div id="MemoryStateStorage_getStates">&nbsp;</div>{% endraw %}
 
@@ -109,7 +109,7 @@ Memory conversation state storage for testing purposes
 * [Translate](#Translate)
     * [new Translate()](#new_Translate_new)
     * [new Translate([options])](#new_Translate_new)
-    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;Object&gt;</code>
+    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;object&gt;</code>
     * [.middleware(languageResolver)](#Translate_middleware) ⇒ <code>function</code>
 
 {% raw %}<div id="new_Translate_new">&nbsp;</div>{% endraw %}
@@ -122,13 +122,13 @@ Tool for text translation
 ### new Translate([options])
 **Params**
 
-- [options] <code>Object</code>
+- [options] <code>object</code>
     - [.sourcePath] <code>string</code> - optional source path of translation folder
     - [.fileSuffix] <code>string</code> - by default `.locale.po`
 
 {% raw %}<div id="Translate_translator">&nbsp;</div>{% endraw %}
 
-### translate.translator(languages) ⇒ <code>Promise.&lt;Object&gt;</code>
+### translate.translator(languages) ⇒ <code>Promise.&lt;object&gt;</code>
 Creates static translator for static settings
 
 **Kind**: instance method of [<code>Translate</code>](#Translate)  
@@ -182,7 +182,7 @@ bot.use((req, res) => {
 * [Translate](#Translate)
     * [new Translate()](#new_Translate_new)
     * [new Translate([options])](#new_Translate_new)
-    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;Object&gt;</code>
+    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;object&gt;</code>
     * [.middleware(languageResolver)](#Translate_middleware) ⇒ <code>function</code>
 
 {% raw %}<div id="new_Translate_new">&nbsp;</div>{% endraw %}
@@ -195,13 +195,13 @@ Tool for text translation
 ### new Translate([options])
 **Params**
 
-- [options] <code>Object</code>
+- [options] <code>object</code>
     - [.sourcePath] <code>string</code> - optional source path of translation folder
     - [.fileSuffix] <code>string</code> - by default `.locale.po`
 
 {% raw %}<div id="Translate_translator">&nbsp;</div>{% endraw %}
 
-### translate.translator(languages) ⇒ <code>Promise.&lt;Object&gt;</code>
+### translate.translator(languages) ⇒ <code>Promise.&lt;object&gt;</code>
 Creates static translator for static settings
 
 **Kind**: instance method of [<code>Translate</code>](#Translate)  
@@ -255,19 +255,20 @@ bot.use((req, res) => {
 * [ReturnSender](#ReturnSender)
     * [new ReturnSender(options, userId, incommingMessage, logger)](#new_ReturnSender_new)
     * [.textFilter](#ReturnSender_textFilter) : [<code>textFilter</code>](#textFilter)
-    * [.modifyStateAfterLoad()](#ReturnSender_modifyStateAfterLoad) ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
-    * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
+    * [.modifyStateAfterLoad()](#ReturnSender_modifyStateAfterLoad) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+    * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
 
 {% raw %}<div id="new_ReturnSender_new">&nbsp;</div>{% endraw %}
 
 ### new ReturnSender(options, userId, incommingMessage, logger)
 **Params**
 
-- options <code>Object</code>
+- options <code>object</code>
     - [.textFilter] [<code>textFilter</code>](#textFilter) - filter for saving the texts
     - [.logStandbyEvents] <code>boolean</code> - log the standby events
+    - [.confidentInputFilter] [<code>textFilter</code>](#textFilter) - filter for confident input (@CONFIDENT)
 - userId <code>string</code>
-- incommingMessage <code>Object</code>
+- incommingMessage <code>object</code>
 - logger <code>console</code> - console like logger
 
 {% raw %}<div id="ReturnSender_textFilter">&nbsp;</div>{% endraw %}
@@ -283,11 +284,11 @@ For example to remove any confidential data
 
 {% raw %}<div id="ReturnSender_modifyStateAfterLoad">&nbsp;</div>{% endraw %}
 
-### returnSender.modifyStateAfterLoad() ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
+### returnSender.modifyStateAfterLoad() ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
 **Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
 {% raw %}<div id="ReturnSender_modifyStateBeforeStore">&nbsp;</div>{% endraw %}
 
-### returnSender.modifyStateBeforeStore() ⇒ <code>Promise.&lt;(Object\|null)&gt;</code>
+### returnSender.modifyStateBeforeStore() ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
 **Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
 {% raw %}<div id="FLAG_DISAMBIGUATION_SELECTED">&nbsp;</div>{% endraw %}
 
@@ -342,11 +343,11 @@ Create a disambiguation quick reply
 - likelyIntent <code>string</code> - possible intent
 - disambText <code>string</code> - users text input
 - action <code>string</code> - action to process the disambbiguation
-- data <code>Object</code> - optional data
+- data <code>object</code> - optional data
 
 {% raw %}<div id="State">&nbsp;</div>{% endraw %}
 
-## State : <code>Object</code>
+## State : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -354,11 +355,11 @@ Create a disambiguation quick reply
 | --- | --- |
 | senderId | <code>string</code> | 
 | pageId | <code>string</code> | 
-| state | <code>Object</code> | 
+| state | <code>object</code> | 
 
 {% raw %}<div id="StateCondition">&nbsp;</div>{% endraw %}
 
-## StateCondition : <code>Object</code>
+## StateCondition : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 

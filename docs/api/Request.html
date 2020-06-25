@@ -1074,15 +1074,15 @@
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#Entity">Entity</a> : <code>Object</code></dt>
+<dt><a href="#Entity">Entity</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Intent">Intent</a> : <code>Object</code></dt>
+<dt><a href="#Intent">Intent</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Action">Action</a> : <code>Object</code></dt>
+<dt><a href="#Action">Action</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#IntentAction">IntentAction</a> : <code>Object</code></dt>
+<dt><a href="#IntentAction">IntentAction</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#QuickReply">QuickReply</a> : <code>Object</code></dt>
+<dt><a href="#QuickReply">QuickReply</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
 
@@ -1102,7 +1102,7 @@
 <li><a href="#Request_subscribtions">.subscribtions</a></li>
 <li><a href="#Request_entities">.entities</a></li>
 <li><a href="#Request_intents">.intents</a></li>
-<li><a href="#Request_event">.event</a> : <code>Object</code></li>
+<li><a href="#Request_event">.event</a> : <code>object</code></li>
 <li><a href="#Request_isStandby">.isStandby()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_aiActions">.aiActions()</a> &#x21D2; <a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></li>
 <li><a href="#Request_aiActionsForQuickReplies">.aiActionsForQuickReplies([limit], [aiActions], [overrideAction])</a> &#x21D2; <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a></li>
@@ -1114,7 +1114,7 @@
 <li><a href="#Request_isFile">.isFile([attachmentIndex])</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_hasLocation">.hasLocation()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_getLocation">.getLocation()</a> &#x21D2; <code>null</code> | <code>Object</code></li>
-<li><a href="#Request_attachment">.attachment([attachmentIndex])</a> &#x21D2; <code>Object</code> | <code>null</code></li>
+<li><a href="#Request_attachment">.attachment([attachmentIndex])</a> &#x21D2; <code>object</code> | <code>null</code></li>
 <li><a href="#Request_attachmentUrl">.attachmentUrl([attachmentIndex])</a> &#x21D2; <code>string</code> | <code>null</code></li>
 <li><a href="#Request_isMessage">.isMessage()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isQuickReply">.isQuickReply()</a> &#x21D2; <code>boolean</code></li>
@@ -1122,16 +1122,18 @@
 <li><a href="#Request_isSticker">.isSticker([includeToTextStickers])</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_text">.text([tokenized])</a> &#x21D2; <code>string</code></li>
 <li><a href="#Request_expected">.expected()</a> &#x21D2; <a href="#Action"><code>Action</code></a> | <code>null</code></li>
-<li><a href="#Request_expectedContext">.expectedContext([justOnce], [includeKeywords])</a> &#x21D2; <code>Object</code></li>
-<li><a href="#Request_quickReply">.quickReply([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></li>
+<li><a href="#Request_expectedKeywords">.expectedKeywords([justOnce])</a></li>
+<li><a href="#Request_expectedContext">.expectedContext([justOnce], [includeKeywords])</a> &#x21D2; <code>object</code></li>
+<li><a href="#Request_quickReply">.quickReply([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></li>
 <li><a href="#Request_isPostBack">.isPostBack()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isReferral">.isReferral()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_isOptin">.isOptin()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_setAction">.setAction(action, [data])</a> &#x21D2; <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code></li>
 <li><a href="#Request_action">.action([getData])</a> &#x21D2; <code>null</code> | <code>string</code></li>
-<li><a href="#Request_actionData">.actionData()</a> &#x21D2; <code>Object</code></li>
-<li><a href="#Request_getSetState">.getSetState()</a> &#x21D2; <code>Object</code></li>
-<li><a href="#Request_postBack">.postBack([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></li>
+<li><a href="#Request_actionData">.actionData()</a> &#x21D2; <code>object</code></li>
+<li><a href="#Request_getSetState">.getSetState()</a> &#x21D2; <code>object</code></li>
+<li><a href="#Request_isConfidentInput">.isConfidentInput()</a> &#x21D2; <code>boolean</code></li>
+<li><a href="#Request_postBack">.postBack([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></li>
 </ul>
 </li>
 </ul>
@@ -1249,7 +1251,7 @@
 <tbody>
 <tr>
 <td>state</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 <td>current state of the conversation</td>
 </tr>
 </tbody>
@@ -1316,7 +1318,7 @@
 </table>
 <div id="Request_event">&#xA0;</div>
 
-<h3 id="requestevent--object"><a name="requestevent--object" class="plugin-anchor" href="#requestevent--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.event : <code>Object</code></h3>
+<h3 id="requestevent--object"><a name="requestevent--object" class="plugin-anchor" href="#requestevent--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.event : <code>object</code></h3>
 <p>The original messaging event</p>
 <p><strong>Kind</strong>: instance property of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_isStandby">&#xA0;</div>
@@ -1418,7 +1420,7 @@ bot.use(<span class="hljs-string">&apos;locAction&apos;</span>, (req, res) =&gt;
 </code></pre>
 <div id="Request_attachment">&#xA0;</div>
 
-<h3 id="requestattachmentattachmentindex-&#x21D2;-object--null"><a name="requestattachmentattachmentindex-&#x21D2;-object--null" class="plugin-anchor" href="#requestattachmentattachmentindex-&#x21D2;-object--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.attachment([attachmentIndex]) &#x21D2; <code>Object</code> | <code>null</code></h3>
+<h3 id="requestattachmentattachmentindex-&#x21D2;-object--null"><a name="requestattachmentattachmentindex-&#x21D2;-object--null" class="plugin-anchor" href="#requestattachmentattachmentindex-&#x21D2;-object--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.attachment([attachmentIndex]) &#x21D2; <code>object</code> | <code>null</code></h3>
 <p>Returns whole attachment or null</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
 <ul>
@@ -1471,18 +1473,36 @@ bot.use(<span class="hljs-string">&apos;locAction&apos;</span>, (req, res) =&gt;
 <h3 id="requestexpected-&#x21D2;-action--null"><a name="requestexpected-&#x21D2;-action--null" class="plugin-anchor" href="#requestexpected-&#x21D2;-action--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.expected() &#x21D2; <a href="#Action"><code>Action</code></a> | <code>null</code></h3>
 <p>Returns the request expected handler in case have been set last response</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<div id="Request_expectedKeywords">&#xA0;</div>
+
+<h3 id="requestexpectedkeywordsjustonce"><a name="requestexpectedkeywordsjustonce" class="plugin-anchor" href="#requestexpectedkeywordsjustonce"><i class="fa fa-link" aria-hidden="true"></i></a>request.expectedKeywords([justOnce])</h3>
+<p>Returns all expected keywords for the next request (just expected keywords)</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
+<ul>
+<li>[justOnce] <code>boolean</code> <code> = false</code> - - don&apos;t return already retained items</li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;my-route&apos;</span>, (req, res) =&gt; {
+    res.setState(req.expectedKeywords());
+});
+</code></pre>
 <div id="Request_expectedContext">&#xA0;</div>
 
-<h3 id="requestexpectedcontextjustonce-includekeywords-&#x21D2;-object"><a name="requestexpectedcontextjustonce-includekeywords-&#x21D2;-object" class="plugin-anchor" href="#requestexpectedcontextjustonce-includekeywords-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.expectedContext([justOnce], [includeKeywords]) &#x21D2; <code>Object</code></h3>
+<h3 id="requestexpectedcontextjustonce-includekeywords-&#x21D2;-object"><a name="requestexpectedcontextjustonce-includekeywords-&#x21D2;-object" class="plugin-anchor" href="#requestexpectedcontextjustonce-includekeywords-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.expectedContext([justOnce], [includeKeywords]) &#x21D2; <code>object</code></h3>
 <p>Returns current turn-around context (expected and expected keywords)</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
 <ul>
-<li>[justOnce] <code>boolean</code> <code> = false</code> - don&apos;t do it again</li>
+<li>[justOnce] <code>boolean</code> <code> = false</code> - don&apos;t return already retained items</li>
 <li>[includeKeywords] <code>boolean</code> <code> = false</code> - keep intents from quick replies</li>
 </ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;my-route&apos;</span>, (req, res) =&gt; {
+    res.setState(req.expectedContext());
+});
+</code></pre>
 <div id="Request_quickReply">&#xA0;</div>
 
-<h3 id="requestquickreplygetdata-&#x21D2;-null--string--object"><a name="requestquickreplygetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestquickreplygetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.quickReply([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></h3>
+<h3 id="requestquickreplygetdata-&#x21D2;-null--string--object"><a name="requestquickreplygetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestquickreplygetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.quickReply([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></h3>
 <p>Returns action or data of quick reply
 When <code>getData</code> is <code>true</code>, object will be returned. Otherwise string or null.</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
@@ -1515,7 +1535,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Returns</strong>: <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code> - - previous action<br><strong>Params</strong></p>
 <ul>
 <li>action <code>string</code> | <a href="#Action"><code>Action</code></a> | <code>null</code></li>
-<li>[data] <code>Object</code></li>
+<li>[data] <code>object</code></li>
 </ul>
 <div id="Request_action">&#xA0;</div>
 
@@ -1541,19 +1561,26 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </code></pre>
 <div id="Request_actionData">&#xA0;</div>
 
-<h3 id="requestactiondata-&#x21D2;-object"><a name="requestactiondata-&#x21D2;-object" class="plugin-anchor" href="#requestactiondata-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.actionData() &#x21D2; <code>Object</code></h3>
+<h3 id="requestactiondata-&#x21D2;-object"><a name="requestactiondata-&#x21D2;-object" class="plugin-anchor" href="#requestactiondata-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.actionData() &#x21D2; <code>object</code></h3>
 <p>Returns action data of postback or quick reply</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_getSetState">&#xA0;</div>
 
-<h3 id="requestgetsetstate-&#x21D2;-object"><a name="requestgetsetstate-&#x21D2;-object" class="plugin-anchor" href="#requestgetsetstate-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.getSetState() &#x21D2; <code>Object</code></h3>
+<h3 id="requestgetsetstate-&#x21D2;-object"><a name="requestgetsetstate-&#x21D2;-object" class="plugin-anchor" href="#requestgetsetstate-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.getSetState() &#x21D2; <code>object</code></h3>
 <p>Gets incomming setState action variable</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">res.setState(req.getSetState());
 </code></pre>
+<div id="Request_isConfidentInput">&#xA0;</div>
+
+<h3 id="requestisconfidentinput-&#x21D2;-boolean"><a name="requestisconfidentinput-&#x21D2;-boolean" class="plugin-anchor" href="#requestisconfidentinput-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isConfidentInput() &#x21D2; <code>boolean</code></h3>
+<p>Returns true, if previous request has been
+marked as confident using <code>res.expectedConfidentInput()</code></p>
+<p>It&apos;s good to consider this state in &quot;analytics&quot; integrations.</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_postBack">&#xA0;</div>
 
-<h3 id="requestpostbackgetdata-&#x21D2;-null--string--object"><a name="requestpostbackgetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestpostbackgetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.postBack([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>Object</code></h3>
+<h3 id="requestpostbackgetdata-&#x21D2;-null--string--object"><a name="requestpostbackgetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestpostbackgetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.postBack([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></h3>
 <p>Returns action or data of postback
 When <code>getData</code> is <code>true</code>, object will be returned. Otherwise string or null.</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
@@ -1566,7 +1593,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </code></pre>
 <div id="Entity">&#xA0;</div>
 
-<h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>Object</code></h2>
+<h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1592,7 +1619,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </table>
 <div id="Intent">&#xA0;</div>
 
-<h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>Object</code></h2>
+<h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1618,7 +1645,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </table>
 <div id="Action">&#xA0;</div>
 
-<h2 id="action--object"><a name="action--object" class="plugin-anchor" href="#action--object"><i class="fa fa-link" aria-hidden="true"></i></a>Action : <code>Object</code></h2>
+<h2 id="action--object"><a name="action--object" class="plugin-anchor" href="#action--object"><i class="fa fa-link" aria-hidden="true"></i></a>Action : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1634,18 +1661,18 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </tr>
 <tr>
 <td>data</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 </tr>
 <tr>
 <td>[setState]</td>
-<td><code>Object</code> \</td>
+<td><code>object</code> \</td>
 <td><code>null</code></td>
 </tr>
 </tbody>
 </table>
 <div id="IntentAction">&#xA0;</div>
 
-<h2 id="intentaction--object"><a name="intentaction--object" class="plugin-anchor" href="#intentaction--object"><i class="fa fa-link" aria-hidden="true"></i></a>IntentAction : <code>Object</code></h2>
+<h2 id="intentaction--object"><a name="intentaction--object" class="plugin-anchor" href="#intentaction--object"><i class="fa fa-link" aria-hidden="true"></i></a>IntentAction : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1686,7 +1713,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </tr>
 <tr>
 <td>meta</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 </tr>
 <tr>
 <td>[meta.targetAppId]</td>
@@ -1701,7 +1728,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </table>
 <div id="QuickReply">&#xA0;</div>
 
-<h2 id="quickreply--object"><a name="quickreply--object" class="plugin-anchor" href="#quickreply--object"><i class="fa fa-link" aria-hidden="true"></i></a>QuickReply : <code>Object</code></h2>
+<h2 id="quickreply--object"><a name="quickreply--object" class="plugin-anchor" href="#quickreply--object"><i class="fa fa-link" aria-hidden="true"></i></a>QuickReply : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1764,7 +1791,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2020-04-28T12:40:00.683Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:40:08.206Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2020-06-25T15:30:10.370Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -17,7 +17,7 @@
 <dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> ⇒ <code><a href="#ValidateBotAPI">ValidateBotAPI</a></code></dt>
 <dd><p>Test the bot configuration</p>
 </dd>
-<dt><a href="#conversationsApi">conversationsApi(stateStorage, chatLogStorage, notifications, [acl])</a> ⇒ <code>ConversationsAPI</code></dt>
+<dt><a href="#conversationsApi">conversationsApi(stateStorage, chatLogStorage, notifications, [acl], options)</a> ⇒ <code>ConversationsAPI</code></dt>
 <dd><p>Create a conversations API
 for retrieving conversations and it&#39;s history</p>
 </dd>
@@ -29,20 +29,23 @@ for retrieving conversations and it&#39;s history</p>
 ## Typedefs
 
 <dl>
-<dt><a href="#GraphQlResponse">GraphQlResponse</a> : <code>Object</code></dt>
+<dt><a href="#GraphQlResponse">GraphQlResponse</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#PostBackAPI">PostBackAPI</a> : <code>Object</code></dt>
+<dt><a href="#PostBackAPI">PostBackAPI</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#ValidateBotAPI">ValidateBotAPI</a> : <code>Object</code></dt>
+<dt><a href="#ValidateBotAPI">ValidateBotAPI</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#conversation">conversation</a> : <code>Object</code></dt>
+<dt><a href="#conversation">conversation</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#StateStorage">StateStorage</a> : <code>Object</code></dt>
+<dt><a href="#StateStorage">StateStorage</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Notifications">Notifications</a> : <code>Object</code></dt>
+<dt><a href="#Notifications">Notifications</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>Object</code></dt>
+<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#textFilter">textFilter</a> ⇒ <code>any</code></dt>
+<dd><p>Function for filtration of string output</p>
+</dd>
 </dl>
 
 {% raw %}<div id="GraphApi">&nbsp;</div>{% endraw %}
@@ -61,8 +64,8 @@ Experimental chatbot API
 ### new GraphApi(apis, options)
 **Params**
 
-- apis <code>Array.&lt;Object&gt;</code> - list of connected APIs
-- options <code>Object</code> - API options
+- apis <code>Array.&lt;object&gt;</code> - list of connected APIs
+- options <code>object</code> - API options
     - .token <code>string</code> | <code>Promise.&lt;string&gt;</code> - wingbot token
     - [.appToken] <code>string</code> - public token
     - [.groups] <code>Array.&lt;string&gt;</code> - list of allowed bot groups
@@ -73,11 +76,11 @@ Experimental chatbot API
 **Kind**: instance method of [<code>GraphApi</code>](#GraphApi)  
 **Params**
 
-- body <code>Object</code>
-    - .query <code>Object</code>
-    - [.variables] <code>Object</code>
+- body <code>object</code>
+    - .query <code>object</code>
+    - [.variables] <code>object</code>
     - [.operationName] <code>string</code>
-- headers <code>Object</code>
+- headers <code>object</code>
     - [.Authorization] <code>string</code>
     - [.authorization] <code>string</code>
 - [wingbotToken] <code>string</code>
@@ -109,8 +112,8 @@ const api = new GraphApi([
 **Kind**: global function  
 **Params**
 
-- bot <code>Object</code>
-- validationRequestBody <code>Object</code>
+- bot <code>object</code>
+- validationRequestBody <code>object</code>
 - postBackTest <code>string</code> | <code>function</code> <code> = null</code>
 - textTest <code>string</code> | <code>function</code> <code> = null</code>
 
@@ -151,7 +154,7 @@ const api = new GraphApi([
 ```
 {% raw %}<div id="conversationsApi">&nbsp;</div>{% endraw %}
 
-## conversationsApi(stateStorage, chatLogStorage, notifications, [acl]) ⇒ <code>ConversationsAPI</code>
+## conversationsApi(stateStorage, chatLogStorage, notifications, [acl], options) ⇒ <code>ConversationsAPI</code>
 Create a conversations API
 for retrieving conversations and it's history
 
@@ -162,7 +165,30 @@ for retrieving conversations and it's history
 - chatLogStorage [<code>ChatLogStorage</code>](#ChatLogStorage) <code> = </code>
 - notifications [<code>Notifications</code>](#Notifications) <code> = </code>
 - [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function
+- options <code>object</code>
+    - [.stateTextFilter] [<code>textFilter</code>](#textFilter) - optional funcion for filtering data in states
 
+**Example**  
+```javascript
+const { GraphApi, conversationsApi } = require('wingbot');
+const BOT_UPDATE_GROUPS = ['botEditor', 'botAdmin', 'botUser'];
+
+function stateTextFilter (value, key) {
+    if (key === 'credentials.password') {
+        return '****';
+    }
+    return value;
+}
+
+const api = new GraphApi([
+    conversationsApi(
+        stateStorage, chatLogStorage, notifications, BOT_UPDATE_GROUPS,
+        { stateTextFilter }
+    )
+], {
+    token: 'my-secret-token'
+});
+```
 {% raw %}<div id="apiAuthorizer">&nbsp;</div>{% endraw %}
 
 ## apiAuthorizer(args, ctx, acl) ⇒ <code>boolean</code>
@@ -171,7 +197,7 @@ If API call is authorized - use for own implementations of API endpoints
 **Kind**: global function  
 **Params**
 
-- args <code>Object</code> - gql request
+- args <code>object</code> - gql request
 - ctx <code>Object</code> - request context
 - acl <code>Array.&lt;string&gt;</code> | <code>null</code> | <code>function</code> - custom acl settings
 
@@ -191,16 +217,16 @@ function createApi (acl = null) {
 ```
 {% raw %}<div id="GraphQlResponse">&nbsp;</div>{% endraw %}
 
-## GraphQlResponse : <code>Object</code>
+## GraphQlResponse : <code>object</code>
 **Kind**: global typedef  
 **Params**
 
 - [data] <code>\*</code>
-- [errors] <code>Array.&lt;Object&gt;</code>
+- [errors] <code>Array.&lt;object&gt;</code>
 
 {% raw %}<div id="PostBackAPI">&nbsp;</div>{% endraw %}
 
-## PostBackAPI : <code>Object</code>
+## PostBackAPI : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -210,7 +236,7 @@ function createApi (acl = null) {
 
 {% raw %}<div id="ValidateBotAPI">&nbsp;</div>{% endraw %}
 
-## ValidateBotAPI : <code>Object</code>
+## ValidateBotAPI : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -220,11 +246,11 @@ function createApi (acl = null) {
 
 {% raw %}<div id="conversation">&nbsp;</div>{% endraw %}
 
-## conversation : <code>Object</code>
+## conversation : <code>object</code>
 **Kind**: global typedef  
 {% raw %}<div id="StateStorage">&nbsp;</div>{% endraw %}
 
-## StateStorage : <code>Object</code>
+## StateStorage : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -235,7 +261,7 @@ function createApi (acl = null) {
 
 {% raw %}<div id="Notifications">&nbsp;</div>{% endraw %}
 
-## Notifications : <code>Object</code>
+## Notifications : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
@@ -245,11 +271,22 @@ function createApi (acl = null) {
 
 {% raw %}<div id="ChatLogStorage">&nbsp;</div>{% endraw %}
 
-## ChatLogStorage : <code>Object</code>
+## ChatLogStorage : <code>object</code>
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type |
 | --- | --- |
 | getInteractions | <code>function</code> | 
+
+{% raw %}<div id="textFilter">&nbsp;</div>{% endraw %}
+
+## textFilter ⇒ <code>any</code>
+Function for filtration of string output
+
+**Kind**: global typedef  
+**Params**
+
+- value <code>string</code>
+- key <code>string</code>
 

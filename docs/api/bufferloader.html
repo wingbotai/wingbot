@@ -1103,9 +1103,9 @@
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#State">State</a> : <code>Object</code></dt>
+<dt><a href="#State">State</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#StateCondition">StateCondition</a> : <code>Object</code></dt>
+<dt><a href="#StateCondition">StateCondition</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#textFilter">textFilter</a> &#x21D2; <code>string</code></dt>
 <dd><p>Text filter function</p>
@@ -1141,7 +1141,7 @@
 <ul>
 <li>senderId <code>string</code> - sender identifier</li>
 <li>pageId <code>string</code> - page or channel identifier</li>
-<li>defaultState <code>Object</code> - default state of the conversation</li>
+<li>defaultState <code>object</code> - default state of the conversation</li>
 <li>lockTimeout <code>number</code> <code> = 300</code> - duration of lock</li>
 </ul>
 <div id="MemoryStateStorage_saveState">&#xA0;</div>
@@ -1149,7 +1149,7 @@
 <h3 id="memorystatestoragesavestatestate-&#x21D2;-promise"><a name="memorystatestoragesavestatestate-&#x21D2;-promise" class="plugin-anchor" href="#memorystatestoragesavestatestate-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.saveState(state) &#x21D2; <code>Promise</code></h3>
 <p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
 <ul>
-<li>state <code>Object</code> - conversation state</li>
+<li>state <code>object</code> - conversation state</li>
 </ul>
 <div id="MemoryStateStorage_getStates">&#xA0;</div>
 
@@ -1168,7 +1168,7 @@
 <li><a href="#Translate">Translate</a><ul>
 <li><a href="#new_Translate_new">new Translate()</a></li>
 <li><a href="#new_Translate_new">new Translate([options])</a></li>
-<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
+<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;object&gt;</code></li>
 <li><a href="#Translate_middleware">.middleware(languageResolver)</a> &#x21D2; <code>function</code></li>
 </ul>
 </li>
@@ -1182,7 +1182,7 @@
 <h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
 <p><strong>Params</strong></p>
 <ul>
-<li>[options] <code>Object</code><ul>
+<li>[options] <code>object</code><ul>
 <li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
 <li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
 </ul>
@@ -1190,7 +1190,7 @@
 </ul>
 <div id="Translate_translator">&#xA0;</div>
 
-<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
+<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;object&gt;</code></h3>
 <p>Creates static translator for static settings</p>
 <p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
 <ul>
@@ -1239,7 +1239,7 @@ bot.use((req, res) =&gt; {
 <li><a href="#Translate">Translate</a><ul>
 <li><a href="#new_Translate_new">new Translate()</a></li>
 <li><a href="#new_Translate_new">new Translate([options])</a></li>
-<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
+<li><a href="#Translate_translator">.translator(languages)</a> &#x21D2; <code>Promise.&lt;object&gt;</code></li>
 <li><a href="#Translate_middleware">.middleware(languageResolver)</a> &#x21D2; <code>function</code></li>
 </ul>
 </li>
@@ -1253,7 +1253,7 @@ bot.use((req, res) =&gt; {
 <h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
 <p><strong>Params</strong></p>
 <ul>
-<li>[options] <code>Object</code><ul>
+<li>[options] <code>object</code><ul>
 <li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
 <li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
 </ul>
@@ -1261,7 +1261,7 @@ bot.use((req, res) =&gt; {
 </ul>
 <div id="Translate_translator">&#xA0;</div>
 
-<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
+<h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;object&gt;</code></h3>
 <p>Creates static translator for static settings</p>
 <p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
 <ul>
@@ -1310,8 +1310,8 @@ bot.use((req, res) =&gt; {
 <li><a href="#ReturnSender">ReturnSender</a><ul>
 <li><a href="#new_ReturnSender_new">new ReturnSender(options, userId, incommingMessage, logger)</a></li>
 <li><a href="#ReturnSender_textFilter">.textFilter</a> : <a href="#textFilter"><code>textFilter</code></a></li>
-<li><a href="#ReturnSender_modifyStateAfterLoad">.modifyStateAfterLoad()</a> &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></li>
-<li><a href="#ReturnSender_modifyStateBeforeStore">.modifyStateBeforeStore()</a> &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></li>
+<li><a href="#ReturnSender_modifyStateAfterLoad">.modifyStateAfterLoad()</a> &#x21D2; <code>Promise.&lt;(object|null)&gt;</code></li>
+<li><a href="#ReturnSender_modifyStateBeforeStore">.modifyStateBeforeStore()</a> &#x21D2; <code>Promise.&lt;(object|null)&gt;</code></li>
 </ul>
 </li>
 </ul>
@@ -1320,13 +1320,14 @@ bot.use((req, res) =&gt; {
 <h3 id="new-returnsenderoptions-userid-incommingmessage-logger"><a name="new-returnsenderoptions-userid-incommingmessage-logger" class="plugin-anchor" href="#new-returnsenderoptions-userid-incommingmessage-logger"><i class="fa fa-link" aria-hidden="true"></i></a>new ReturnSender(options, userId, incommingMessage, logger)</h3>
 <p><strong>Params</strong></p>
 <ul>
-<li>options <code>Object</code><ul>
+<li>options <code>object</code><ul>
 <li>[.textFilter] <a href="#textFilter"><code>textFilter</code></a> - filter for saving the texts</li>
 <li>[.logStandbyEvents] <code>boolean</code> - log the standby events</li>
+<li>[.confidentInputFilter] <a href="#textFilter"><code>textFilter</code></a> - filter for confident input (@CONFIDENT)</li>
 </ul>
 </li>
 <li>userId <code>string</code></li>
-<li>incommingMessage <code>Object</code></li>
+<li>incommingMessage <code>object</code></li>
 <li>logger <code>console</code> - console like logger</li>
 </ul>
 <div id="ReturnSender_textFilter">&#xA0;</div>
@@ -1340,11 +1341,11 @@ For example to remove any confidential data</p>
 </ul>
 <div id="ReturnSender_modifyStateAfterLoad">&#xA0;</div>
 
-<h3 id="returnsendermodifystateafterload-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystateafterload-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystateafterload-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateAfterLoad() &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></h3>
+<h3 id="returnsendermodifystateafterload-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystateafterload-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystateafterload-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateAfterLoad() &#x21D2; <code>Promise.&lt;(object|null)&gt;</code></h3>
 <p><strong>Kind</strong>: instance method of <a href="#ReturnSender"><code>ReturnSender</code></a>  </p>
 <div id="ReturnSender_modifyStateBeforeStore">&#xA0;</div>
 
-<h3 id="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateBeforeStore() &#x21D2; <code>Promise.&lt;(Object|null)&gt;</code></h3>
+<h3 id="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystatebeforestore-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateBeforeStore() &#x21D2; <code>Promise.&lt;(object|null)&gt;</code></h3>
 <p><strong>Kind</strong>: instance method of <a href="#ReturnSender"><code>ReturnSender</code></a>  </p>
 <div id="FLAG_DISAMBIGUATION_SELECTED">&#xA0;</div>
 
@@ -1391,11 +1392,11 @@ For example to remove any confidential data</p>
 <li>likelyIntent <code>string</code> - possible intent</li>
 <li>disambText <code>string</code> - users text input</li>
 <li>action <code>string</code> - action to process the disambbiguation</li>
-<li>data <code>Object</code> - optional data</li>
+<li>data <code>object</code> - optional data</li>
 </ul>
 <div id="State">&#xA0;</div>
 
-<h2 id="state--object"><a name="state--object" class="plugin-anchor" href="#state--object"><i class="fa fa-link" aria-hidden="true"></i></a>State : <code>Object</code></h2>
+<h2 id="state--object"><a name="state--object" class="plugin-anchor" href="#state--object"><i class="fa fa-link" aria-hidden="true"></i></a>State : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1415,13 +1416,13 @@ For example to remove any confidential data</p>
 </tr>
 <tr>
 <td>state</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 </tr>
 </tbody>
 </table>
 <div id="StateCondition">&#xA0;</div>
 
-<h2 id="statecondition--object"><a name="statecondition--object" class="plugin-anchor" href="#statecondition--object"><i class="fa fa-link" aria-hidden="true"></i></a>StateCondition : <code>Object</code></h2>
+<h2 id="statecondition--object"><a name="statecondition--object" class="plugin-anchor" href="#statecondition--object"><i class="fa fa-link" aria-hidden="true"></i></a>StateCondition : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1488,7 +1489,7 @@ For example to remove any confidential data</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2020-04-28T12:40:01.673Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:40:08.206Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2020-06-25T15:30:12.881Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

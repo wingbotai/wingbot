@@ -3,7 +3,6 @@
  */
 'use strict';
 
-
 /**
  * @param {import('../Request')} req
  * @param {import('../Responder')} res

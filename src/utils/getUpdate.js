@@ -62,7 +62,7 @@ function getValue (attr, currentState = {}) {
 function getSetState (setState = {}, req, res = null) {
 
     const keys = Object.keys(setState)
-        .filter(k => k !== '_');
+        .filter((k) => k !== '_');
 
     let obj = {};
     let state = {
@@ -76,13 +76,13 @@ function getSetState (setState = {}, req, res = null) {
 
         if (k === SUBSCRIBE && Array.isArray(val)) {
             if (res && typeof res.subscribe === 'function') {
-                val.forEach(v => res.subscribe(v));
+                val.forEach((v) => res.subscribe(v));
             } else {
                 set = val;
             }
         } else if (k === UNSUBSCRIBE && Array.isArray(val)) {
             if (res && typeof res.unsubscribe === 'function') {
-                val.forEach(v => res.unsubscribe(v));
+                val.forEach((v) => res.unsubscribe(v));
             } else {
                 set = val;
             }

@@ -13,7 +13,7 @@ const TOKEN = 't';
 
 function createAssets () {
     const sendFn = sinon.spy();
-    const translator = sinon.spy(w => `-${w}`);
+    const translator = sinon.spy((w) => `-${w}`);
 
     const messageSender = { send: sendFn };
     const opts = { translator, appUrl: APP_URL };
@@ -556,7 +556,6 @@ describe('Responder', function () {
         });
 
     });
-
 
     describe('#wait()', function () {
 

@@ -57,7 +57,7 @@
         * [.lastRes()](#Tester_lastRes) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
         * [.passedAction(path)](#Tester_passedAction) ⇒ <code>this</code>
         * [.respondedWithBlock(blockName)](#Tester_respondedWithBlock) ⇒ <code>this</code>
-        * [.getState()](#Tester_getState) ⇒ <code>Object</code>
+        * [.getState()](#Tester_getState) ⇒ <code>object</code>
         * [.setState([state])](#Tester_setState)
         * [.text(text)](#Tester_text) ⇒ <code>Promise</code>
         * [.intent(intent, [text], [score])](#Tester_intent) ⇒ <code>Promise</code>
@@ -83,7 +83,7 @@ Utility for testing requests
 
 | Name | Type | Description |
 | --- | --- | --- |
-| predefined | <code>Object</code> | test data to use |
+| predefined | <code>object</code> | test data to use |
 
 {% raw %}<div id="Tester_allowEmptyResponse">&nbsp;</div>{% endraw %}
 
@@ -126,7 +126,7 @@ Use tester as a connector :)
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
 **Params**
 
-- message <code>Object</code> - wingbot chat event
+- message <code>object</code> - wingbot chat event
 - senderId <code>string</code> - chat event sender identifier
 - pageId <code>string</code> - channel/page identifier
 
@@ -174,7 +174,7 @@ Checks, that a plugin used a block as a responde
 
 {% raw %}<div id="Tester_getState">&nbsp;</div>{% endraw %}
 
-### tester.getState() ⇒ <code>Object</code>
+### tester.getState() ⇒ <code>object</code>
 Returns state
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
@@ -186,7 +186,7 @@ Sets state with `Object.assign()`
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
 **Params**
 
-- [state] <code>Object</code> <code> = {}</code>
+- [state] <code>object</code> <code> = {}</code>
 
 {% raw %}<div id="Tester_text">&nbsp;</div>{% endraw %}
 
@@ -233,7 +233,7 @@ Make optin call
 **Params**
 
 - action <code>string</code>
-- [data] <code>Object</code> <code> = {}</code>
+- [data] <code>object</code> <code> = {}</code>
 - [userRef] <code>string</code> <code> = null</code> - specific ref string
 
 {% raw %}<div id="Tester_quickReply">&nbsp;</div>{% endraw %}
@@ -245,7 +245,7 @@ Send quick reply
 **Params**
 
 - action <code>string</code>
-- [data] <code>Object</code> <code> = {}</code>
+- [data] <code>object</code> <code> = {}</code>
 
 {% raw %}<div id="Tester_quickReplyText">&nbsp;</div>{% endraw %}
 
@@ -266,9 +266,9 @@ Sends postback, optionally with referrer action
 **Params**
 
 - action <code>string</code>
-- [data] <code>Object</code> <code> = {}</code>
+- [data] <code>object</code> <code> = {}</code>
 - [refAction] <code>string</code> <code> = null</code> - referred action
-- [refData] <code>Object</code> <code> = {}</code> - referred action data
+- [refData] <code>object</code> <code> = {}</code> - referred action data
 
 {% raw %}<div id="Tester_Tester">&nbsp;</div>{% endraw %}
 
@@ -284,7 +284,7 @@ Creates an instance of Tester.
 - reducer <code>Router</code> | <code>ReducerWrapper</code> | <code>function</code>
 - [senderId] <code>string</code> <code> = null</code>
 - [pageId] <code>string</code> <code> = null</code>
-- [processorOptions] <code>Object</code> <code> = {}</code> - options for Processor
+- [processorOptions] <code>object</code> <code> = {}</code> - options for Processor
 - [storage] <code>MemoryStateStorage</code> - place to override the storage
 
 {% raw %}<div id="ResponseAssert">&nbsp;</div>{% endraw %}
@@ -482,7 +482,7 @@ Automated Conversation tests runner
 
 - testsSource [<code>TestSource</code>](#TestSource)
 - botFactory <code>function</code>
-- [options] <code>Object</code>
+- [options] <code>object</code>
     - [.disableAssertActions] <code>boolean</code>
     - [.disableAssertTexts] <code>boolean</code>
     - [.disableAssertQuickReplies] <code>boolean</code>
@@ -501,7 +501,7 @@ Runs the conversation test
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
 **Params**
 
-- validationRequestBody <code>Object</code> <code> = </code>
+- validationRequestBody <code>object</code> <code> = </code>
 - step <code>number</code> <code> = </code>
 
 {% raw %}<div id="ConversationTester__getLists">&nbsp;</div>{% endraw %}
@@ -544,7 +544,7 @@ Runs the conversation test
 **Params**
 
 - testsGroup [<code>TestsGroup</code>](#TestsGroup)
-- [botconfig] <code>Object</code> <code> = </code>
+- [botconfig] <code>object</code> <code> = </code>
 
 {% raw %}<div id="ConversationTester__runTextCaseTests">&nbsp;</div>{% endraw %}
 
@@ -553,7 +553,7 @@ Runs the conversation test
 **Params**
 
 - testsGroup [<code>TestsGroup</code>](#TestsGroup)
-- botconfig <code>Object</code> <code> = </code>
+- botconfig <code>object</code> <code> = </code>
 
 {% raw %}<div id="ConversationTester__runStepCaseTests">&nbsp;</div>{% endraw %}
 
@@ -562,7 +562,7 @@ Runs the conversation test
 **Params**
 
 - testsGroup [<code>TestsGroup</code>](#TestsGroup)
-- botconfig <code>Object</code> <code> = </code>
+- botconfig <code>object</code> <code> = </code>
 
 {% raw %}<div id="ConversationTester_executeTextCase">&nbsp;</div>{% endraw %}
 

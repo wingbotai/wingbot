@@ -4,7 +4,7 @@
 'use strict';
 
 /**
- * @typedef {Object} TemplateContext
+ * @typedef {object} TemplateContext
  * @prop {string} [appUrl]
  * @prop {string} [token]
  * @prop {string} [senderId]
@@ -29,7 +29,7 @@ class BaseTemplate {
             appUrl: '',
             token: '',
             senderId: '',
-            translator: w => w,
+            translator: (w) => w,
             path: ''
         };
 

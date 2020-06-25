@@ -106,7 +106,7 @@ for (let i = 0; i < DEFAULT_REMOVAL_MAP.length; i++) {
  * @returns {string}
  */
 function replaceDiacritics (str) {
-    return str.replace(/[^\u0000-\u007E]/g, a => diacriticsMap[a] || a); // eslint-disable-line no-control-regex
+    return str.replace(/[^\u0000-\u007E]/g, (a) => diacriticsMap[a] || a); // eslint-disable-line no-control-regex
 }
 
 /**

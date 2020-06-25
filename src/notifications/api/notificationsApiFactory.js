@@ -32,7 +32,7 @@ function notificationsApiFactory (storage, notifications, acl) {
             } = args.campaign;
 
             // other options
-            const options = Object.assign({}, args.campaign);
+            const options = { ...args.campaign };
 
             delete options.name;
             delete options.action;

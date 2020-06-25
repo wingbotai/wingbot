@@ -1074,9 +1074,9 @@
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#QuickReply">QuickReply</a> : <code>Object</code></dt>
+<dt><a href="#QuickReply">QuickReply</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#SenderMeta">SenderMeta</a> : <code>Object</code></dt>
+<dt><a href="#SenderMeta">SenderMeta</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
 
@@ -1091,7 +1091,7 @@
 <li><a href="#Responder_finalMessageSent">.finalMessageSent</a></li>
 <li><a href="#Responder_startedOutput">.startedOutput</a></li>
 <li><a href="#Responder_senderMeta">.senderMeta</a> &#x21D2; <a href="#SenderMeta"><code>SenderMeta</code></a></li>
-<li><a href="#Responder_data">.data</a> : <code>Object</code></li>
+<li><a href="#Responder_data">.data</a> : <code>object</code></li>
 <li><a href="#Responder_run">.run(blockName)</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Responder_setNotificationRecipient">.setNotificationRecipient(recipient)</a></li>
 <li><a href="#Responder_doNotLogTheEvent">.doNotLogTheEvent()</a> &#x21D2; <code>this</code></li>
@@ -1108,6 +1108,7 @@
 <li><a href="#Responder_keepPreviousContext">.keepPreviousContext(req, [justOnce], [includeKeywords])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_expectedIntent">.expectedIntent(intents, action, data, setState)</a></li>
 <li><a href="#Responder_expected">.expected(action, data)</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_expectedConfidentInput">.expectedConfidentInput()</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_toAbsoluteAction">.toAbsoluteAction(action)</a> &#x21D2; <code>string</code></li>
 <li><a href="#Responder_currentAction">.currentAction()</a> &#x21D2; <code>string</code></li>
 <li><a href="#Responder_image">.image(imageUrl, [reusable])</a> &#x21D2; <code>this</code></li>
@@ -1145,7 +1146,7 @@ into the conversation state.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 </tr>
 </tbody>
 </table>
@@ -1190,7 +1191,7 @@ into the conversation state.</p>
 <p><strong>Kind</strong>: instance property of <a href="#Responder"><code>Responder</code></a>  </p>
 <div id="Responder_data">&#xA0;</div>
 
-<h3 id="responderdata--object"><a name="responderdata--object" class="plugin-anchor" href="#responderdata--object"><i class="fa fa-link" aria-hidden="true"></i></a>responder.data : <code>Object</code></h3>
+<h3 id="responderdata--object"><a name="responderdata--object" class="plugin-anchor" href="#responderdata--object"><i class="fa fa-link" aria-hidden="true"></i></a>responder.data : <code>object</code></h3>
 <p><strong>Kind</strong>: instance property of <a href="#Responder"><code>Responder</code></a>  </p>
 <div id="Responder_run">&#xA0;</div>
 
@@ -1220,7 +1221,7 @@ into the conversation state.</p>
 Usefull for sending a one-time notification</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
-<li>recipient <code>Object</code></li>
+<li>recipient <code>object</code></li>
 </ul>
 <div id="Responder_doNotLogTheEvent">&#xA0;</div>
 
@@ -1235,7 +1236,7 @@ Usefull for sending a one-time notification</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>[action] <code>string</code></li>
-<li>[winningIntent] <code>Object</code> <code> = </code></li>
+<li>[winningIntent] <code>object</code> <code> = </code></li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">bot.use([<span class="hljs-string">&apos;action-name&apos;</span>, <span class="hljs-regexp">/keyword/</span>], (req, res) =&gt; {
@@ -1262,7 +1263,7 @@ Usefull for sending a one-time notification</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>postBack <code>function</code> - the postback func</li>
-<li>[data] <code>Object</code> - data for bookmark action</li>
+<li>[data] <code>object</code> - data for bookmark action</li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">// there should be a named intent intent matcher (ai.match() and &apos;action-name&apos;)
@@ -1298,7 +1299,7 @@ bot.use(&apos;onName&apos;, (req, res, postBack) =&gt; {
 <p>Tets the persona for following requests</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
-<li>personaId <code>Object</code> | <code>string</code> | <code>null</code> <code> = </code></li>
+<li>personaId <code>object</code> | <code>string</code> | <code>null</code> <code> = </code></li>
 </ul>
 <div id="Responder_isResponseType">&#xA0;</div>
 
@@ -1311,7 +1312,7 @@ bot.use(&apos;onName&apos;, (req, res, postBack) =&gt; {
 <p>Set temporary data to responder, which are persisted through single event</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
-<li>data <code>Object</code></li>
+<li>data <code>object</code></li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;foo&apos;</span>, (req, res, postBack) =&gt; {
@@ -1330,7 +1331,7 @@ bot.use(<span class="hljs-string">&apos;bar&apos;</span>, (req, res) =&gt; {
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>text <code>string</code> - text to send to user, can contain placeholders (%s)</li>
-<li>[replies] <code>Object.&lt;string, (string|QuickReply)&gt;</code> | <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a> <code> = </code> - quick replies object</li>
+<li>[replies] <code>object.&lt;string, (string|QuickReply)&gt;</code> | <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a> <code> = </code> - quick replies</li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// simply</span>
@@ -1357,7 +1358,7 @@ res.text(<span class="hljs-string">&apos;Hello&apos;</span>, [
 <p>Sets new attributes to state (with Object.assign())</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
-<li>object <code>Object</code></li>
+<li>object <code>object</code></li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript">res.setState({ visited: <span class="hljs-literal">true</span> });
@@ -1368,9 +1369,9 @@ res.text(<span class="hljs-string">&apos;Hello&apos;</span>, [
 <p>Appends quick reply, to be sent with following text method</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
-<li>action <code>string</code> | <code>Object</code> - relative or absolute action</li>
+<li>action <code>string</code> | <code>object</code> - relative or absolute action</li>
 <li>[title] <code>string</code> - quick reply title</li>
-<li>[data] <code>Object</code> - additional data</li>
+<li>[data] <code>object</code> - additional data</li>
 <li>[prepend] <code>boolean</code> <code> = false</code> - set true to add reply at the beginning</li>
 <li>[justToExisting] <code>boolean</code> <code> = false</code> - add quick reply only to existing replies</li>
 </ul>
@@ -1417,8 +1418,8 @@ bot.use(<span class="hljs-string">&apos;need-color&apos;</span>, (req, res) =&gt
 <ul>
 <li>intents <code>string</code> | <code>Array.&lt;string&gt;</code></li>
 <li>action <code>string</code></li>
-<li>data <code>Object</code></li>
-<li>setState <code>Object</code> <code> = </code></li>
+<li>data <code>object</code></li>
+<li>setState <code>object</code> <code> = </code></li>
 </ul>
 <div id="Responder_expected">&#xA0;</div>
 
@@ -1427,8 +1428,42 @@ bot.use(<span class="hljs-string">&apos;need-color&apos;</span>, (req, res) =&gt
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>action <code>string</code> - desired action</li>
-<li>data <code>Object</code> - desired action data</li>
+<li>data <code>object</code> - desired action data</li>
 </ul>
+<div id="Responder_expectedConfidentInput">&#xA0;</div>
+
+<h3 id="responderexpectedconfidentinput-&#x21D2;-this"><a name="responderexpectedconfidentinput-&#x21D2;-this" class="plugin-anchor" href="#responderexpectedconfidentinput-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expectedConfidentInput() &#x21D2; <code>this</code></h3>
+<p>Makes a following user input anonymized</p>
+<ul>
+<li>disables processing of it with NLP</li>
+<li>replaces text content of incomming request before
+storing it at ChatLogStorage using a <code>confidentInputFilter</code></li>
+<li><code>req.isConfidentInput()</code> will return true</li>
+</ul>
+<p>After processing the user input, next requests will be processed as usual,</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+
+bot.use(<span class="hljs-string">&apos;start&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-comment">// evil question</span>
+    res.text(<span class="hljs-string">&apos;Give me your CARD NUMBER :D&apos;</span>)
+        .expected(<span class="hljs-string">&apos;received-card-number&apos;</span>)
+        .expectedConfidentInput();
+});
+
+bot.use(<span class="hljs-string">&apos;received-card-number&apos;</span>, (req, res) =&gt; {
+    <span class="hljs-keyword">const</span> cardNumber = req.text();
+
+    <span class="hljs-comment">// raw card number</span>
+
+    req.isConfidentInput(); <span class="hljs-comment">// true</span>
+
+    res.text(<span class="hljs-string">&apos;got it&apos;</span>)
+        .setState({ cardNumber });
+});
+</code></pre>
 <div id="Responder_toAbsoluteAction">&#xA0;</div>
 
 <h3 id="respondertoabsoluteactionaction-&#x21D2;-string"><a name="respondertoabsoluteactionaction-&#x21D2;-string" class="plugin-anchor" href="#respondertoabsoluteactionaction-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>responder.toAbsoluteAction(action) &#x21D2; <code>string</code></h3>
@@ -1500,7 +1535,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 <li>title <code>string</code> - propmt text</li>
 <li>action <code>string</code> - target action, when user subscribes</li>
 <li>[tag] <code>string</code> <code> = null</code> - subscribtion tag, which will be matched against a campaign</li>
-<li>[data] <code>Object</code></li>
+<li>[data] <code>object</code></li>
 </ul>
 <div id="Responder_wait">&#xA0;</div>
 
@@ -1532,7 +1567,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
 <li>targetAppId <code>string</code></li>
-<li>[data] <code>string</code> | <code>Object</code> <code> = null</code></li>
+<li>[data] <code>string</code> | <code>object</code> <code> = null</code></li>
 </ul>
 <div id="Responder_requestThread">&#xA0;</div>
 
@@ -1540,7 +1575,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 <p>Request thread from Primary Receiver app</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
-<li>[data] <code>string</code> | <code>Object</code> <code> = null</code></li>
+<li>[data] <code>string</code> | <code>object</code> <code> = null</code></li>
 </ul>
 <div id="Responder_takeThead">&#xA0;</div>
 
@@ -1548,7 +1583,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 <p>Take thread from another app</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
 <ul>
-<li>[data] <code>string</code> | <code>Object</code> <code> = null</code></li>
+<li>[data] <code>string</code> | <code>object</code> <code> = null</code></li>
 </ul>
 <div id="Responder_receipt">&#xA0;</div>
 
@@ -1641,7 +1676,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 </ul>
 <div id="QuickReply">&#xA0;</div>
 
-<h2 id="quickreply--object"><a name="quickreply--object" class="plugin-anchor" href="#quickreply--object"><i class="fa fa-link" aria-hidden="true"></i></a>QuickReply : <code>Object</code></h2>
+<h2 id="quickreply--object"><a name="quickreply--object" class="plugin-anchor" href="#quickreply--object"><i class="fa fa-link" aria-hidden="true"></i></a>QuickReply : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1661,15 +1696,15 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 </tr>
 <tr>
 <td>[data]</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 </tr>
 <tr>
 <td>[setState]</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 </tr>
 <tr>
 <td>[match]</td>
-<td><code>Regexp</code> \</td>
+<td><code>RegExp</code> \</td>
 <td><code>string</code> \</td>
 <td><code>Array.&lt;string&gt;</code></td>
 </tr>
@@ -1677,7 +1712,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 </table>
 <div id="SenderMeta">&#xA0;</div>
 
-<h2 id="sendermeta--object"><a name="sendermeta--object" class="plugin-anchor" href="#sendermeta--object"><i class="fa fa-link" aria-hidden="true"></i></a>SenderMeta : <code>Object</code></h2>
+<h2 id="sendermeta--object"><a name="sendermeta--object" class="plugin-anchor" href="#sendermeta--object"><i class="fa fa-link" aria-hidden="true"></i></a>SenderMeta : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1749,7 +1784,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2020-04-28T12:40:00.690Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:40:08.206Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2020-06-25T15:30:10.848Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

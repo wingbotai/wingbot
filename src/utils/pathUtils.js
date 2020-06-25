@@ -4,7 +4,7 @@
 'use strict';
 
 const path = require('path');
-const pathToRegexp = require('path-to-regexp');
+const { pathToRegexp } = require('path-to-regexp');
 
 function makeAbsolute (action, contextPath = '') {
     const isAbsolute = !action || action.match(/^\//);
@@ -17,7 +17,8 @@ function actionMatches (route, requestedPath) {
         return true;
     }
     if (isAbsolute) {
-        return !!pathToRegexp(route).exec(requestedPath);
+        return !!pathToRegexp(route.replace(/\*/g, '(.*)'))
+            .exec(requestedPath);
     }
     const expectedPos = route.length - requestedPath.length;
     return route.lastIndexOf(requestedPath) === expectedPos && expectedPos !== -1;

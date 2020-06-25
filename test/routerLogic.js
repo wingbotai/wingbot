@@ -4,6 +4,7 @@
 'use strict';
 
 const assert = require('assert');
+const sinon = require('sinon');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const Ai = require('../src/Ai');
@@ -133,7 +134,6 @@ describe('<Router> logic', () => {
                 await res.runBookmark(postBack);
             });
 
-
             const bot = new Router();
 
             bot.use('start', (req, res) => {
@@ -183,7 +183,6 @@ describe('<Router> logic', () => {
             nested.use(ai.local('has-path', 'foo'), (req, res) => {
                 res.text('foo text');
             });
-
 
             const bot = new Router();
 
@@ -294,13 +293,13 @@ describe('<Router> logic', () => {
 
         t.passedAction('a');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         assert.deepEqual(collector, ['/a']);
 
         await t.intent('int');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         assert.deepEqual(collector, ['/a', '/b', '/c']);
     });
@@ -338,7 +337,7 @@ describe('<Router> logic', () => {
         bot.use((req, res, postback) => {
             res.trackAs(false);
             postback('after-async', async () => {
-                await new Promise(r => setTimeout(r, 100));
+                await new Promise((r) => setTimeout(r, 100));
                 return {};
             });
         });
@@ -363,14 +362,14 @@ describe('<Router> logic', () => {
 
         t.passedAction('x');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         assert.deepEqual(actions, ['/x']);
         assert.deepEqual(skills, [null]);
 
         await t.intent('int');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         assert.deepEqual(actions, ['/x', '/y', '/z']);
         assert.deepEqual(skills, [null, 'skill', 'skill']);
@@ -378,8 +377,7 @@ describe('<Router> logic', () => {
 
         await t.text('random');
         t.passedAction('hello');
-        await new Promise(r => setTimeout(r, 100));
-
+        await new Promise((r) => setTimeout(r, 100));
 
         assert.deepEqual(actions, ['/x', '/y', '/z', '/hello']);
         assert.deepEqual(skills, [null, 'skill', 'skill', 'skill']);
@@ -583,7 +581,6 @@ describe('<Router> logic', () => {
     });
 
     describe('back pattern', () => {
-
 
         /** @type {Tester} */
         let t;
@@ -1102,7 +1099,6 @@ describe('<Router> logic', () => {
 
     describe('re-expected in fallback', () => {
 
-
         /** @type {Tester} */
         let t;
 
@@ -1282,6 +1278,21 @@ describe('<Router> logic', () => {
                 res.text('nothing');
             });
 
+            bot.use('keep', (req, res) => {
+                res.text('prompt', {
+                    next: 'next'
+                });
+                res.expected('keep-context');
+            });
+
+            bot.use('keep-context', (req, res) => {
+                // @ts-ignore
+                res.setState(req.expectedContext());
+                // @ts-ignore
+                res.setState(req.expectedKeywords());
+                res.text('still nothing');
+            });
+
             bot.use((req, res) => {
                 res.text('fallback');
             });
@@ -1298,6 +1309,33 @@ describe('<Router> logic', () => {
             t.any().contains('nothing');
 
             await t.text('fallback');
+
+            t.any().contains('nothing');
+
+            await t.text('fallback');
+
+            t.any().contains('fallback');
+        });
+
+        it('keeps previous context still', async () => {
+
+            await t.postBack('keep');
+
+            await t.text('foo');
+
+            t.any().contains('still nothing');
+
+            await t.text('fallback');
+
+            t.any().contains('still nothing');
+
+            await t.text('fallback');
+
+            t.any().contains('still nothing');
+
+            await t.text('next');
+
+            t.any().contains('yes');
         });
 
         it('remembers previous value', async () => {
@@ -1344,6 +1382,62 @@ describe('<Router> logic', () => {
 
             t.any()
                 .contains('unknown');
+        });
+
+    });
+
+    describe('CONFIDENTAL REQUESTS FILTERING', () => {
+
+        it('filters confident data in following request', async () => {
+
+            const bot = new Router();
+
+            bot.use('start', (req, res) => {
+                // evil question
+                res.text('Give me your CARD NUMBER :D')
+                    .expected('received-card-number')
+                    .expectedConfidentInput();
+            });
+
+            bot.use('received-card-number', (req, res) => {
+                const cardNumber = req.text();
+
+                // raw card number
+
+                res.text(req.isConfidentInput()
+                    ? 'got it'
+                    : 'what?')
+                    .setState({ cardNumber });
+            });
+
+            bot.use((req, res) => {
+                res.text(
+                    req.isConfidentInput()
+                        ? 'confident'
+                        : 'ok'
+                );
+            });
+
+            const t = new Tester(bot);
+
+            const log = sinon.spy();
+            t.senderLogger = { log };
+
+            await t.postBack('start');
+
+            assert.strictEqual(log.callCount, 1);
+
+            await t.text('123456789');
+
+            assert.strictEqual(log.callCount, 2);
+            assert.deepEqual(log.args[1][2].message, { text: '@CONFIDENT' });
+            t.any().contains('got it');
+
+            await t.text('hello');
+
+            assert.strictEqual(log.callCount, 3);
+            assert.deepEqual(log.args[2][2].message, { text: 'hello' });
+            t.any().contains('ok');
         });
 
     });

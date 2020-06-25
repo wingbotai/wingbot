@@ -45,7 +45,20 @@ function postback ({
             }
         }
 
-        postBack(action, data);
+        const text = req.text();
+        const request = {
+            sender: { id: req.senderId },
+            postback: {
+                action: res.toAbsoluteAction(action),
+                data: data || {}
+            }
+        };
+
+        if (text) {
+            Object.assign(request, { message: { text } });
+        }
+
+        postBack(request);
 
         return Router.END;
     };

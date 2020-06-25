@@ -10,9 +10,8 @@ const DEFAULT_PREFIX = 'default';
 
 let uq = 1;
 
-
 /**
- * @typedef {Object} EntityExpression
+ * @typedef {object} EntityExpression
  * @prop {string} entity - the requested entity
  * @prop {boolean} [optional] - entity is optional, can be missing in request
  * @prop {Compare} [op] - comparison operation (eq|ne|range)
@@ -27,19 +26,17 @@ let uq = 1;
  * @returns {string} - filtered text
  */
 
-
 /**
  * @typedef {string|EntityExpression} IntentRule
  */
 
-
 /**
- * @typedef {Object} BotPath
+ * @typedef {object} BotPath
  * @prop {string} path
  */
 
 /**
- * @typedef {Object} IntentAction
+ * @typedef {object} IntentAction
  * @prop {string} action
  * @prop {Intent} intent
  * @prop {number} sort
@@ -74,7 +71,7 @@ class Ai {
         /**
          * The logger (console by default)
          *
-         * @type {Object}
+         * @type {object}
          */
         this.logger = console;
 
@@ -95,7 +92,7 @@ class Ai {
          * @param {string} text
          * @type {textFilter}
          */
-        this.textFilter = text => text;
+        this.textFilter = (text) => text;
 
         /**
          * AI Score provider
@@ -178,10 +175,10 @@ class Ai {
      * @param {string} path
      * @param {IntentRule|IntentRule[]} intents
      * @param {string} [title] - disambiguation title
-     * @param {Object} [meta] - metadata for multibot environments
-     * @param {Object} [meta.targetAppId] - target application id
-     * @param {Object} [meta.targetAction] - target action
-     * @returns {Object} - the middleware
+     * @param {object} [meta] - metadata for multibot environments
+     * @param {object} [meta.targetAppId] - target application id
+     * @param {object} [meta.targetAction] - target action
+     * @returns {object} - the middleware
      * @memberOf Ai
      * @example
      * const { Router, ai } = require('wingbot');
@@ -220,7 +217,7 @@ class Ai {
      * @param {string} path
      * @param {IntentRule|IntentRule[]} intents
      * @param {string} [title] - disambiguation title
-     * @returns {Object} - the middleware
+     * @returns {object} - the middleware
      * @memberOf Ai
      * @example
      * const { Router, ai } = require('wingbot');
@@ -332,6 +329,10 @@ class Ai {
     }
 
     _getModelForRequest (req, prefix = DEFAULT_PREFIX) {
+        if (req.isConfidentInput()) {
+            return null;
+        }
+
         const prefixForRequest = this.getPrefix(prefix, req);
         return this._keyworders.get(prefixForRequest);
     }
@@ -348,7 +349,7 @@ class Ai {
             : this._mockIntent;
 
         const intents = Array.isArray(intent)
-            ? intent.map(i => ({ intent: i, score: score === null ? this.confidence : score }))
+            ? intent.map((i) => ({ intent: i, score: score === null ? this.confidence : score }))
             : [{ intent, score: score === null ? this.confidence : score }];
 
         return {

@@ -32,8 +32,8 @@ describe('MemoryStateStorage', function () {
             const storage = new MemoryStateStorage();
 
             return storage.getOrCreateAndLock(SENDER_ID, PAGE_ID, DEFAULT_STATE)
-                .then(state => Object.assign(state, { state: { ko: 1 } }))
-                .then(state => storage.saveState(state))
+                .then((state) => Object.assign(state, { state: { ko: 1 } }))
+                .then((state) => storage.saveState(state))
                 .then((state) => {
                     assert.deepEqual(state.state, { ko: 1 });
 
@@ -59,12 +59,8 @@ describe('MemoryStateStorage', function () {
             const first = await storage.getOrCreateAndLock(SENDER_ID, PAGE_ID, DEFAULT_STATE);
             const second = await storage.getOrCreateAndLock(SENDER_ID2, PAGE_ID, secondState);
 
-            await storage.saveState(Object.assign({}, first, {
-                lastInteraction
-            }));
-            await storage.saveState(Object.assign({}, second, {
-                lastInteraction: lastInteraction2
-            }));
+            await storage.saveState({ ...first, lastInteraction });
+            await storage.saveState({ ...second, lastInteraction: lastInteraction2 });
         });
 
         it('should return states by last interaction', async () => {

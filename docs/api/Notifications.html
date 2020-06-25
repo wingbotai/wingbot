@@ -1073,11 +1073,11 @@
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#CampaignTarget">CampaignTarget</a> : <code>Object</code></dt>
+<dt><a href="#CampaignTarget">CampaignTarget</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Task">Task</a> : <code>Object</code></dt>
+<dt><a href="#Task">Task</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Campaign">Campaign</a> : <code>Object</code></dt>
+<dt><a href="#Campaign">Campaign</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Tag">Tag</a> : <code>Object</code></dt>
 <dd></dd>
@@ -1085,7 +1085,7 @@
 <dd></dd>
 <dt><a href="#Subscribtion">Subscribtion</a> : <code>Object</code></dt>
 <dd></dd>
-<dt><a href="#Campaign">Campaign</a> : <code>Object</code></dt>
+<dt><a href="#Campaign">Campaign</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Task">Task</a> : <code>Object</code></dt>
 <dd></dd>
@@ -1099,7 +1099,7 @@
 <li><a href="#Notifications">Notifications</a><ul>
 <li><a href="#new_Notifications_new">new Notifications()</a></li>
 <li><em>instance</em><ul>
-<li><a href="#Notifications_api">.api([acl])</a> &#x21D2; <code>Object</code></li>
+<li><a href="#Notifications_api">.api([acl])</a> &#x21D2; <code>object</code></li>
 <li><a href="#Notifications_createCampaign">.createCampaign(name, action, [data], options)</a> &#x21D2; <a href="#Campaign"><code>Promise.&lt;Campaign&gt;</code></a></li>
 <li><a href="#Notifications_pushTasksToQueue">.pushTasksToQueue(campaignTargets)</a> &#x21D2; <code>Promise.&lt;Array.&lt;Task&gt;&gt;</code></li>
 <li><a href="#Notifications_subscribe">.subscribe(senderId, pageId, tag)</a></li>
@@ -1126,9 +1126,9 @@
 <p>Experimental notifications service</p>
 <div id="Notifications_api">&#xA0;</div>
 
-<h3 id="notificationsapiacl-&#x21D2;-object"><a name="notificationsapiacl-&#x21D2;-object" class="plugin-anchor" href="#notificationsapiacl-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>notifications.api([acl]) &#x21D2; <code>Object</code></h3>
+<h3 id="notificationsapiacl-&#x21D2;-object"><a name="notificationsapiacl-&#x21D2;-object" class="plugin-anchor" href="#notificationsapiacl-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>notifications.api([acl]) &#x21D2; <code>object</code></h3>
 <p>API Factory</p>
-<p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Returns</strong>: <code>Object</code> - - the graphql api object<br><strong>Params</strong></p>
+<p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Returns</strong>: <code>object</code> - - the graphql api object<br><strong>Params</strong></p>
 <ul>
 <li>[acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function</li>
 </ul>
@@ -1141,8 +1141,8 @@ If the campaing does not exists add new. Otherwise, update it.</p>
 <ul>
 <li>name <code>string</code></li>
 <li>action <code>string</code></li>
-<li>[data] <code>Object</code></li>
-<li>options <code>Object</code> - use { id: &apos;...&apos; } to make campaign accessible from code</li>
+<li>[data] <code>object</code></li>
+<li>options <code>object</code> - use { id: &apos;...&apos; } to make campaign accessible from code</li>
 </ul>
 <div id="Notifications_pushTasksToQueue">&#xA0;</div>
 
@@ -1171,8 +1171,8 @@ If the campaing does not exists add new. Otherwise, update it.</p>
 <li>senderId <code>string</code></li>
 <li>pageId <code>string</code></li>
 <li>[tag] <code>string</code> <code> = null</code></li>
-<li>[req] <code>Object</code> <code> = </code></li>
-<li>[res] <code>Object</code> <code> = </code></li>
+<li>[req] <code>object</code> <code> = </code></li>
+<li>[res] <code>object</code> <code> = </code></li>
 </ul>
 <div id="Notifications_processMessage">&#xA0;</div>
 
@@ -1180,7 +1180,7 @@ If the campaing does not exists add new. Otherwise, update it.</p>
 <p>Preprocess message - for read and delivery</p>
 <p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
 <ul>
-<li>event <code>Object</code></li>
+<li>event <code>object</code></li>
 <li>pageId <code>string</code></li>
 </ul>
 <div id="Notifications_getSubscribtions">&#xA0;</div>
@@ -1198,7 +1198,7 @@ If the campaing does not exists add new. Otherwise, update it.</p>
 <p>Run the campaign now (push tasks into the queue)</p>
 <p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
 <ul>
-<li>campaign <code>Object</code></li>
+<li>campaign <code>object</code></li>
 </ul>
 <div id="Notifications_sendCampaignMessage">&#xA0;</div>
 
@@ -1207,11 +1207,11 @@ If the campaing does not exists add new. Otherwise, update it.</p>
 and records it&apos;s delivery status at campaign stats</p>
 <p><strong>Kind</strong>: instance method of <a href="#Notifications"><code>Notifications</code></a><br><strong>Params</strong></p>
 <ul>
-<li>campaign <code>Object</code> - campaign</li>
-<li>processor <code>Object</code> - channel processor instance</li>
+<li>campaign <code>object</code> - campaign</li>
+<li>processor <code>object</code> - channel processor instance</li>
 <li>pageId <code>string</code> - page</li>
 <li>senderId <code>string</code> - user</li>
-<li>[data] <code>Object</code> <code> = </code> - override the data of campaign</li>
+<li>[data] <code>object</code> <code> = </code> - override the data of campaign</li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> campaign = <span class="hljs-keyword">await</span> notifications
@@ -1230,7 +1230,7 @@ and records it&apos;s delivery status at campaign stats</p>
 <p><strong>Params</strong></p>
 <ul>
 <li>notificationStorage <code>NotificationsStorage</code></li>
-<li>options <code>Object</code><ul>
+<li>options <code>object</code><ul>
 <li>[.log] <code>console</code> - logger</li>
 <li>[.default24Clearance] <code>number</code> - use this clearance to ensure delivery in 24h</li>
 <li>[.allAudienceTag] <code>string</code> - tag to mark all users</li>
@@ -1239,7 +1239,7 @@ and records it&apos;s delivery status at campaign stats</p>
 </ul>
 <div id="CampaignTarget">&#xA0;</div>
 
-<h2 id="campaigntarget--object"><a name="campaigntarget--object" class="plugin-anchor" href="#campaigntarget--object"><i class="fa fa-link" aria-hidden="true"></i></a>CampaignTarget : <code>Object</code></h2>
+<h2 id="campaigntarget--object"><a name="campaigntarget--object" class="plugin-anchor" href="#campaigntarget--object"><i class="fa fa-link" aria-hidden="true"></i></a>CampaignTarget : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1267,7 +1267,7 @@ and records it&apos;s delivery status at campaign stats</p>
 </tr>
 <tr>
 <td>[data]</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 <td>custom action data for specific target</td>
 </tr>
 <tr>
@@ -1279,7 +1279,7 @@ and records it&apos;s delivery status at campaign stats</p>
 </table>
 <div id="Task">&#xA0;</div>
 
-<h2 id="task--object"><a name="task--object" class="plugin-anchor" href="#task--object"><i class="fa fa-link" aria-hidden="true"></i></a>Task : <code>Object</code></h2>
+<h2 id="task--object"><a name="task--object" class="plugin-anchor" href="#task--object"><i class="fa fa-link" aria-hidden="true"></i></a>Task : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1317,7 +1317,7 @@ and records it&apos;s delivery status at campaign stats</p>
 </tr>
 <tr>
 <td>[data]</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 <td>custom action data for specific target</td>
 </tr>
 <tr>
@@ -1349,7 +1349,7 @@ and records it&apos;s delivery status at campaign stats</p>
 </table>
 <div id="Campaign">&#xA0;</div>
 
-<h2 id="campaign--object"><a name="campaign--object" class="plugin-anchor" href="#campaign--object"><i class="fa fa-link" aria-hidden="true"></i></a>Campaign : <code>Object</code></h2>
+<h2 id="campaign--object"><a name="campaign--object" class="plugin-anchor" href="#campaign--object"><i class="fa fa-link" aria-hidden="true"></i></a>Campaign : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1427,7 +1427,7 @@ and records it&apos;s delivery status at campaign stats</p>
 </tr>
 <tr>
 <td>[data]</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 <td>Setup</td>
 </tr>
 <tr>
@@ -1538,7 +1538,7 @@ and records it&apos;s delivery status at campaign stats</p>
 </table>
 <div id="Campaign">&#xA0;</div>
 
-<h2 id="campaign--object"><a name="campaign--object" class="plugin-anchor" href="#campaign--object"><i class="fa fa-link" aria-hidden="true"></i></a>Campaign : <code>Object</code></h2>
+<h2 id="campaign--object"><a name="campaign--object" class="plugin-anchor" href="#campaign--object"><i class="fa fa-link" aria-hidden="true"></i></a>Campaign : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1616,7 +1616,7 @@ and records it&apos;s delivery status at campaign stats</p>
 </tr>
 <tr>
 <td>[data]</td>
-<td><code>Object</code></td>
+<td><code>object</code></td>
 <td>Setup</td>
 </tr>
 <tr>
@@ -1768,7 +1768,7 @@ and records it&apos;s delivery status at campaign stats</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Notifications","level":"3.9","depth":1,"next":{"title":"GraphApi","level":"3.10","depth":1,"path":"api/GraphApi.md","ref":"api/GraphApi.md","articles":[]},"previous":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Notifications.md","mtime":"2020-04-28T12:40:01.694Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:40:08.206Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Notifications","level":"3.9","depth":1,"next":{"title":"GraphApi","level":"3.10","depth":1,"path":"api/GraphApi.md","ref":"api/GraphApi.md","articles":[]},"previous":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Notifications.md","mtime":"2020-06-25T15:30:14.240Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -1078,7 +1078,7 @@
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#ConfigStorage">ConfigStorage</a> : <code>Object</code></dt>
+<dt><a href="#ConfigStorage">ConfigStorage</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Plugin">Plugin</a> : <code>function</code></dt>
 <dd></dd>
@@ -1094,7 +1094,7 @@
 <li><a href="#new_BuildRouter_new">new BuildRouter(block, plugins, context, [request])</a></li>
 <li><em>instance</em><ul>
 <li><a href="#BuildRouter_keepConfigFor">.keepConfigFor</a></li>
-<li><a href="#BuildRouter_loadBot">.loadBot()</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
+<li><a href="#BuildRouter_loadBot">.loadBot()</a> &#x21D2; <code>Promise.&lt;object&gt;</code></li>
 </ul>
 </li>
 <li><em>static</em><ul>
@@ -1114,7 +1114,7 @@
 <p>Create new router from configuration</p>
 <p><strong>Params</strong></p>
 <ul>
-<li>block <code>Object</code><ul>
+<li>block <code>object</code><ul>
 <li>[.botId] <code>string</code> - the ID of bot</li>
 <li>[.snapshot] <code>string</code> - snapshot stage of bot</li>
 <li>[.token] <code>string</code> | <code>Promise.&lt;string&gt;</code> - authorization token for bot</li>
@@ -1122,8 +1122,8 @@
 </ul>
 </li>
 <li>plugins <a href="#Plugins"><code>Plugins</code></a> - custom code blocks resource</li>
-<li>context <code>Object</code> - the building context<ul>
-<li>[.linksTranslator] <code>Object</code> - function, that translates links globally</li>
+<li>context <code>object</code> - the building context<ul>
+<li>[.linksTranslator] <code>object</code> - function, that translates links globally</li>
 <li>[.configStorage] <a href="#ConfigStorage"><code>ConfigStorage</code></a> - function, that translates links globally</li>
 <li>[.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule</li>
 </ul>
@@ -1170,7 +1170,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 </table>
 <div id="BuildRouter_loadBot">&#xA0;</div>
 
-<h3 id="buildrouterloadbot-&#x21D2;-promiseobject"><a name="buildrouterloadbot-&#x21D2;-promiseobject" class="plugin-anchor" href="#buildrouterloadbot-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>buildRouter.loadBot() &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
+<h3 id="buildrouterloadbot-&#x21D2;-promiseobject"><a name="buildrouterloadbot-&#x21D2;-promiseobject" class="plugin-anchor" href="#buildrouterloadbot-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>buildRouter.loadBot() &#x21D2; <code>Promise.&lt;object&gt;</code></h3>
 <p>Loads conversation configuration</p>
 <p><strong>Kind</strong>: instance method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
 <div id="BuildRouter_fromData">&#xA0;</div>
@@ -1178,9 +1178,9 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <h3 id="buildrouterfromdatablocks-plugins-context"><a name="buildrouterfromdatablocks-plugins-context" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins-context"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, plugins, [context])</h3>
 <p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a><br><strong>Params</strong></p>
 <ul>
-<li>blocks <code>Array.&lt;Object&gt;</code> - blocks list</li>
+<li>blocks <code>Array.&lt;object&gt;</code> - blocks list</li>
 <li>plugins <a href="#Plugins"><code>Plugins</code></a></li>
-<li>[context] <code>Object</code></li>
+<li>[context] <code>object</code></li>
 </ul>
 <div id="BuildRouter">&#xA0;</div>
 
@@ -1192,7 +1192,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <li><a href="#new_BuildRouter_new">new BuildRouter(block, plugins, context, [request])</a></li>
 <li><em>instance</em><ul>
 <li><a href="#BuildRouter_keepConfigFor">.keepConfigFor</a></li>
-<li><a href="#BuildRouter_loadBot">.loadBot()</a> &#x21D2; <code>Promise.&lt;Object&gt;</code></li>
+<li><a href="#BuildRouter_loadBot">.loadBot()</a> &#x21D2; <code>Promise.&lt;object&gt;</code></li>
 </ul>
 </li>
 <li><em>static</em><ul>
@@ -1212,7 +1212,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <p>Create new router from configuration</p>
 <p><strong>Params</strong></p>
 <ul>
-<li>block <code>Object</code><ul>
+<li>block <code>object</code><ul>
 <li>[.botId] <code>string</code> - the ID of bot</li>
 <li>[.snapshot] <code>string</code> - snapshot stage of bot</li>
 <li>[.token] <code>string</code> | <code>Promise.&lt;string&gt;</code> - authorization token for bot</li>
@@ -1220,8 +1220,8 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 </ul>
 </li>
 <li>plugins <a href="#Plugins"><code>Plugins</code></a> - custom code blocks resource</li>
-<li>context <code>Object</code> - the building context<ul>
-<li>[.linksTranslator] <code>Object</code> - function, that translates links globally</li>
+<li>context <code>object</code> - the building context<ul>
+<li>[.linksTranslator] <code>object</code> - function, that translates links globally</li>
 <li>[.configStorage] <a href="#ConfigStorage"><code>ConfigStorage</code></a> - function, that translates links globally</li>
 <li>[.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule</li>
 </ul>
@@ -1268,7 +1268,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 </table>
 <div id="BuildRouter_loadBot">&#xA0;</div>
 
-<h3 id="buildrouterloadbot-&#x21D2;-promiseobject"><a name="buildrouterloadbot-&#x21D2;-promiseobject" class="plugin-anchor" href="#buildrouterloadbot-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>buildRouter.loadBot() &#x21D2; <code>Promise.&lt;Object&gt;</code></h3>
+<h3 id="buildrouterloadbot-&#x21D2;-promiseobject"><a name="buildrouterloadbot-&#x21D2;-promiseobject" class="plugin-anchor" href="#buildrouterloadbot-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>buildRouter.loadBot() &#x21D2; <code>Promise.&lt;object&gt;</code></h3>
 <p>Loads conversation configuration</p>
 <p><strong>Kind</strong>: instance method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
 <div id="BuildRouter_fromData">&#xA0;</div>
@@ -1276,9 +1276,9 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <h3 id="buildrouterfromdatablocks-plugins-context"><a name="buildrouterfromdatablocks-plugins-context" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins-context"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, plugins, [context])</h3>
 <p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a><br><strong>Params</strong></p>
 <ul>
-<li>blocks <code>Array.&lt;Object&gt;</code> - blocks list</li>
+<li>blocks <code>Array.&lt;object&gt;</code> - blocks list</li>
 <li>plugins <a href="#Plugins"><code>Plugins</code></a></li>
-<li>[context] <code>Object</code></li>
+<li>[context] <code>object</code></li>
 </ul>
 <div id="Plugins">&#xA0;</div>
 
@@ -1312,7 +1312,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 </ul>
 <div id="ConfigStorage">&#xA0;</div>
 
-<h2 id="configstorage--object"><a name="configstorage--object" class="plugin-anchor" href="#configstorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>ConfigStorage : <code>Object</code></h2>
+<h2 id="configstorage--object"><a name="configstorage--object" class="plugin-anchor" href="#configstorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>ConfigStorage : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1349,7 +1349,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <li>res <code>Responder</code></li>
 <li>[postBack] <code>function</code></li>
 <li>[context] <code>Object</code></li>
-<li>[paramsData] <code>Object</code></li>
+<li>[paramsData] <code>object</code></li>
 </ul>
 
                                 
@@ -1394,7 +1394,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2020-04-28T12:40:01.688Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:40:08.206Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2020-06-25T15:30:13.730Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

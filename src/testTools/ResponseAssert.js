@@ -86,7 +86,6 @@ class ResponseAssert {
         return this;
     }
 
-
 }
 
 module.exports = ResponseAssert;

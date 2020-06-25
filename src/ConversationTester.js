@@ -11,7 +11,7 @@ const DEFAULT_TEXT_THRESHOLD = 0.8;
 
 /**
  * @typedef {object} TestSource
- * @prop {function} getTestCases
+ * @prop {Function} getTestCases
  */
 
 /**
@@ -98,7 +98,7 @@ class ConversationTester {
      *
      * @param {TestSource} testsSource
      * @param {Function} botFactory
-     * @param {Object} [options]
+     * @param {object} [options]
      * @param {boolean} [options.disableAssertActions]
      * @param {boolean} [options.disableAssertTexts]
      * @param {boolean} [options.disableAssertQuickReplies]
@@ -124,7 +124,7 @@ class ConversationTester {
     /**
      * Runs the conversation test
      *
-     * @param {Object} validationRequestBody
+     * @param {object} validationRequestBody
      * @param {number} step
      * @returns {Promise<TestsOutput>}
      */
@@ -228,7 +228,7 @@ class ConversationTester {
             if (type === 'texts') {
                 return cases.reduce(
                     (tests, testCase) => tests.concat(
-                        testCase.texts.map(text => ({
+                        testCase.texts.map((text) => ({
                             name: testCase.name,
                             ...text
                         }))
@@ -237,7 +237,7 @@ class ConversationTester {
                 );
             }
             if (type === 'steps') {
-                return cases.map(testCase => ({
+                return cases.map((testCase) => ({
                     name: testCase.name,
                     steps: testCase.steps
                 }));
@@ -324,7 +324,7 @@ class ConversationTester {
     /**
      *
      * @param {TestsGroup} testsGroup
-     * @param {Object} [botconfig]
+     * @param {object} [botconfig]
      * @returns {Tester}
      */
     _createTester (testsGroup, botconfig = null) {
@@ -350,7 +350,7 @@ class ConversationTester {
     /**
      *
      * @param {TestsGroup} testsGroup
-     * @param {Object} botconfig
+     * @param {object} botconfig
      */
     async _runTextCaseTests (testsGroup, botconfig = null) {
         const t = this._createTester(testsGroup, botconfig);
@@ -367,7 +367,7 @@ class ConversationTester {
         const textResults = [];
 
         const { textCaseParallel } = this._options;
-        const runTestCase = textCase => this
+        const runTestCase = (textCase) => this
             .executeTextCase(testsGroup, t, textCase, botconfig, longestText);
 
         while (iterate.length > 0) {
@@ -385,7 +385,7 @@ class ConversationTester {
                 if (r.ok) passing++;
                 return !!r.o;
             })
-            .map(r => r.o)
+            .map((r) => r.o)
             .join('\n');
 
         // calculate stats
@@ -408,7 +408,7 @@ class ConversationTester {
     /**
      *
      * @param {TestsGroup} testsGroup
-     * @param {Object} botconfig
+     * @param {object} botconfig
      */
     async _runStepCaseTests (testsGroup, botconfig = null) {
         const t = this._createTester(testsGroup, botconfig);
@@ -542,7 +542,6 @@ class ConversationTester {
                     found = await t.quickReplyText(cleanAction);
                 }
 
-
                 if (!found && quickReplyRequired) {
                     throw new Error(`Quick reply "${action.replace(/^>/, '')}" was required, but has not been found`);
                 } else if (!found) {
@@ -552,21 +551,21 @@ class ConversationTester {
 
             if (!this._options.disableAssertActions) {
                 passedAction.split('\n')
-                    .map(a => (a.trim().match(/^[a-z\-0-9/]+$/) ? a : tokenize(a)))
-                    .forEach(a => a && t.passedAction(a));
+                    .map((a) => (a.trim().match(/^[a-z\-0-9/]+$/) ? a : tokenize(a)))
+                    .forEach((a) => a && t.passedAction(a));
             }
 
             const any = t.any();
             if (!this._options.disableAssertQuickReplies) {
                 textContains.split(/\n|@[A-Z_]+/)
-                    .map(a => a.trim())
-                    .forEach(a => a && any.contains(a));
+                    .map((a) => a.trim())
+                    .forEach((a) => a && any.contains(a));
             }
 
             if (!this._options.disableAssertTexts) {
                 quickRepliesContains.split('\n')
-                    .map(a => a.trim())
-                    .forEach(a => a && any.quickReplyTextContains(a));
+                    .map((a) => a.trim())
+                    .forEach((a) => a && any.quickReplyTextContains(a));
             }
 
             return null;
@@ -576,12 +575,10 @@ class ConversationTester {
             let { stepDescription = '' } = step;
             stepDescription = stepDescription.trim();
 
-            return `    error at ${step.step} step, (row: ${step.rowNum}${stepDescription ? `, ${stepDescription}` : ''})\n      [visited interactions: \`${t.actions.filter(a => !a.doNotTrack).map(a => a.action).join('`, `')}\`]\n\n${message}\n`;
+            return `    error at ${step.step} step, (row: ${step.rowNum}${stepDescription ? `, ${stepDescription}` : ''})\n      [visited interactions: \`${t.actions.filter((a) => !a.doNotTrack).map((a) => a.action).join('`, `')}\`]\n\n${message}\n`;
         }
     }
 
-
 }
-
 
 module.exports = ConversationTester;

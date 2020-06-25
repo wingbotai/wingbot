@@ -6,8 +6,8 @@
 /**
  * If API call is authorized - use for own implementations of API endpoints
  *
- * @param {Object} args - gql request
- * @param {{groups:string[],token:Object}} ctx - request context
+ * @param {object} args - gql request
+ * @param {{groups: string[], token: object}} ctx - request context
  * @param {string[]|null|Function} acl - custom acl settings
  * @returns {boolean}
  * @example
@@ -36,7 +36,7 @@ function apiAuthorizer (args, ctx, acl) {
         check = [...groups, ...acl];
     }
 
-    return tokenGroups.some(g => check.includes(g.group));
+    return tokenGroups.some((g) => check.includes(g.group));
 }
 
 module.exports = apiAuthorizer;

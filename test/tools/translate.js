@@ -6,7 +6,6 @@ const Translate = require('../../src/tools/Translate');
 const Router = require('../../src/Router');
 const Tester = require('../../src/Tester');
 
-
 describe('<Translate>', function () {
 
     describe('#middleware()', function () {

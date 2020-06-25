@@ -6,16 +6,15 @@
 const Tester = require('../Tester');
 const apiAuthorizer = require('./apiAuthorizer');
 
-
 /**
- * @typedef {Object} ValidateBotAPI
+ * @typedef {object} ValidateBotAPI
  * @prop {Function} validateBot
  */
 
 /**
  *
- * @param {Object} bot
- * @param {Object} validationRequestBody
+ * @param {object} bot
+ * @param {object} validationRequestBody
  * @param {string|Function} postBackTest
  * @param {string|Function} textTest
  */

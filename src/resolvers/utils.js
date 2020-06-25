@@ -28,7 +28,7 @@ function isTextObjectEmpty (text) {
         return true;
     }
     if (Array.isArray(text.t)) {
-        return !text.t.some(t => !!t);
+        return !text.t.some((t) => !!t);
     }
     return false;
 }
@@ -43,17 +43,17 @@ function getLanguageText (translations, lang = null) {
     let foundText;
     if (isArrayOfObjects(translations)) {
         if (lang) {
-            foundText = translations.find(t => t.l === lang);
+            foundText = translations.find((t) => t.l === lang);
         }
         if (isTextObjectEmpty(foundText)) {
-            foundText = translations.find(t => !isTextObjectEmpty(t));
+            foundText = translations.find((t) => !isTextObjectEmpty(t));
         }
         foundText = foundText ? foundText.t : null;
     } else {
         foundText = translations;
     }
     if (Array.isArray(foundText)) {
-        foundText = foundText.filter(f => !!f);
+        foundText = foundText.filter((f) => !!f);
 
         if (foundText.length === 0) {
             return '';
@@ -99,13 +99,13 @@ function randomizedCompiler (text, lang) {
 }
 
 function stateData (req, res = null) {
-    return Object.assign(
-        {},
-        req.state,
-        res ? res.newState : {},
-        req.actionData(),
-        res ? res.data : {}
-    );
+    return {
+
+        ...req.state,
+        ...(res ? res.newState : {}),
+        ...req.actionData(),
+        ...(res ? res.data : {})
+    };
 }
 
 function cachedTranslatedCompilator (text) {

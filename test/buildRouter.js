@@ -15,7 +15,7 @@ const testbot = require('./testbot.json');
 const snippetTestbot = require('./invalid-snippet-testbot.json');
 
 function wait (ms) {
-    return new Promise(r => setTimeout(r, ms));
+    return new Promise((r) => setTimeout(r, ms));
 }
 
 describe('<BuildRouter>', async () => {
@@ -97,6 +97,7 @@ describe('<BuildRouter>', async () => {
         await t.text('anytext');
 
         t.any().contains('This is local AI reaction');
+        t.any().contains('got anytext');
 
         ai.mockIntent();
     });
@@ -190,7 +191,7 @@ describe('<BuildRouter>', async () => {
 
         await t.intent('localIntent');
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 10));
 
         t.any()
             .contains('Matched fallback responder');
@@ -268,15 +269,15 @@ describe('<BuildRouter>', async () => {
             // for two different users to be able to make simultaneous requests
             const testers = [new Tester(bot), new Tester(bot), new Tester(bot)];
 
-            await Promise.all(testers.map(t => t.postBack('/start')));
+            await Promise.all(testers.map((t) => t.postBack('/start')));
 
-            testers.forEach(t => t.res(0).contains('first'));
+            testers.forEach((t) => t.res(0).contains('first'));
 
             assert.strictEqual(mockRequest.callCount, 1);
 
-            await Promise.all(testers.map(t => t.postBack('/start')));
+            await Promise.all(testers.map((t) => t.postBack('/start')));
 
-            testers.forEach(t => t.res(0).contains('first'));
+            testers.forEach((t) => t.res(0).contains('first'));
 
             assert.strictEqual(mockRequest.callCount, 1);
         });
@@ -347,7 +348,6 @@ describe('<BuildRouter>', async () => {
                 allowForbiddenSnippetWords: true
             });
         });
-
 
     });
 

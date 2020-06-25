@@ -109,6 +109,13 @@
                   "text": "This is local AI reaction"
                 },
                 "id": 1507124026698
+              },
+              {
+                "type": "botbuild.postback",
+                "params": {
+                  "routeId": 1507123084001
+                },
+                "id": 1507123359283
               }
             ],
             "respondsToRouteId": 1507122731125,
@@ -198,6 +205,21 @@
               }
             ],
             "id": 1507123084071
+          },
+          {
+            "name": "write-a-text",
+            "path": "write-a-text",
+            "resolvers": [
+              {
+                "type": "botbuild.inlineCode",
+                "params": {
+                  "description": "increment state",
+                  "code": "(req, res) => {\n    res.text(`got ${req.text()}`);\n}"
+                },
+                "id": 1507627874451
+              }
+            ],
+            "id": 1507123084001
           }
         ],
         "isRoot": false,

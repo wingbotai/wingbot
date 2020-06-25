@@ -11,7 +11,7 @@ const Ai = require('./Ai');
 const ReturnSender = require('./ReturnSender');
 
 /**
- * @typedef {Object} AutoTypingConfig
+ * @typedef {object} AutoTypingConfig
  * @prop {number} time - duration
  * @prop {number} perCharacters - number of characters
  * @prop {number} minTime - minimum writing time
@@ -19,7 +19,7 @@ const ReturnSender = require('./ReturnSender');
  */
 
 /**
- * @typedef {Object} Plugin
+ * @typedef {object} Plugin
  * @prop {Function} [processMessage]
  * @prop {Function} [beforeAiPreload]
  * @prop {Function} [beforeProcessMessage]
@@ -27,7 +27,7 @@ const ReturnSender = require('./ReturnSender');
  */
 
 /**
- * @typedef {Object} IntentAction
+ * @typedef {object} IntentAction
  * @prop {string} action
  * @prop {Intent} intent
  * @prop {number} sort
@@ -35,7 +35,7 @@ const ReturnSender = require('./ReturnSender');
  * @prop {boolean} local
  * @prop {boolean} aboveConfidence
  * @prop {boolean} [winner]
- * @prop {Object} meta
+ * @prop {object} meta
  * @prop {string} title
  * @prop {string} [meta.targetAppId]
  * @prop {string|null} [meta.targetAction]
@@ -51,17 +51,16 @@ const NAME_FROM_STATE = (state) => {
     return null;
 };
 
-
 class Processor extends EventEmitter {
 
     /**
      * Creates an instance of Processor
      *
      * @param {ReducerWrapper|Function|Router} reducer
-     * @param {Object} [options] - processor options
+     * @param {object} [options] - processor options
      * @param {string} [options.appUrl] - url basepath for relative links
-     * @param {Object} [options.stateStorage] - chatbot state storage
-     * @param {Object} [options.tokenStorage] - frontend token storage
+     * @param {object} [options.stateStorage] - chatbot state storage
+     * @param {object} [options.tokenStorage] - frontend token storage
      * @param {Function} [options.translator] - text translate function
      * @param {number} [options.timeout] - chat sesstion lock duration (30000)
      * @param {number} [options.justUpdateTimeout] - simple read and write lock (1000)
@@ -70,7 +69,7 @@ class Processor extends EventEmitter {
      * @param {Function} [options.nameFromState] - override the name translator
      * @param {boolean|AutoTypingConfig} [options.autoTyping] - enable or disable automatic typing
      * @param {Function} [options.log] - console like error logger
-     * @param {Object} [options.defaultState] - default chat state
+     * @param {object} [options.defaultState] - default chat state
      * @param {boolean} [options.autoSeen] - send seen automatically
      * @param {boolean} [options.waitsForSender] - use 'false' resolve the processing promise
      *     without waiting for message sender
@@ -85,7 +84,7 @@ class Processor extends EventEmitter {
             appUrl: '',
             stateStorage: new MemoryStateStorage(),
             tokenStorage: null,
-            translator: w => w,
+            translator: (w) => w,
             timeout: 30000,
             waitForLockedState: 12000,
             retriesWhenWaiting: 6,
@@ -164,7 +163,7 @@ class Processor extends EventEmitter {
 
             if (data instanceof Promise) {
                 postbackAcumulator.push(data
-                    .then(result => ({
+                    .then((result) => ({
                         action,
                         data: Object.assign(result || {}, { _localpostback: true })
                     })));
@@ -211,7 +210,7 @@ class Processor extends EventEmitter {
         if (this.reducer && typeof this.reducer.preload === 'function') {
             // @ts-ignore
             return this.reducer.preload()
-                .catch(e => this.options.log.error('preload error', e))
+                .catch((e) => this.options.log.error('preload error', e))
                 // mute log errors
                 .catch(() => {});
         }
@@ -306,7 +305,7 @@ class Processor extends EventEmitter {
     /**
      * Get matching NLP intents
      *
-     * @param {string|Object} text
+     * @param {string|object} text
      * @param {string} [pageId]
      * @param {boolean} [allowEmptyAction]
      * @returns {Promise<IntentAction[]>}
@@ -346,7 +345,7 @@ class Processor extends EventEmitter {
             }
 
             return actions
-                .map(a => ({
+                .map((a) => ({
                     ...a,
                     title: typeof a.title === 'function'
                         ? a.title(req)
@@ -397,7 +396,7 @@ class Processor extends EventEmitter {
             // update state before run
             const modState = await messageSender.modifyStateAfterLoad(stateObject, this);
             if (modState) {
-                const modStateCopy = Object.assign({}, modState);
+                const modStateCopy = { ...modState };
                 if (modStateCopy.state) {
                     Object.assign(stateObject.state, modStateCopy.state);
                     delete modStateCopy.state;
@@ -614,7 +613,7 @@ class Processor extends EventEmitter {
     }
 
     _mergeState (previousState, req, res, senderStateUpdate) {
-        const state = Object.assign({}, previousState, res.newState);
+        const state = { ...previousState, ...res.newState };
 
         const isUserEvent = req.isMessage() || req.isPostBack()
             || req.isReferral() || req.isAttachment()
@@ -625,14 +624,22 @@ class Processor extends EventEmitter {
             state._expected = null;
         }
 
-        // reset expectated keywords
+        // reset expected keywords
         if (isUserEvent && !res.newState._expectedKeywords) {
             state._expectedKeywords = null;
+        }
+
+        // reset expected confident input
+        if (isUserEvent
+            && typeof state._expectedConfidentInput !== 'undefined'
+            && !res.newState._expectedConfidentInput) {
+            state._expectedConfidentInput = false;
         }
 
         if (senderStateUpdate && senderStateUpdate.state) {
             Object.assign(state, senderStateUpdate.state);
         }
+
         return state;
     }
 
@@ -642,13 +649,13 @@ class Processor extends EventEmitter {
         }
 
         return this.tokenStorage.getOrCreateToken(senderId, pageId)
-            .then(token => token.token);
+            .then((token) => token.token);
     }
 
     _loadState (senderId, pageId, lock) {
         if (!senderId) {
             return Promise.resolve({
-                state: Object.assign({}, this.options.defaultState)
+                state: { ...this.options.defaultState }
             });
         }
 
@@ -664,7 +671,6 @@ class Processor extends EventEmitter {
                                 this.options.log.warn(`Locked state: ${senderId}, lock: ${lock}, at ${Date.now()}`, state);
                             })
                             .catch(() => {});
-
 
                         reject(new Error(`Loading state timed out: another event is blocking it (${senderId}, lock: ${lock})`));
                         return;
@@ -684,7 +690,7 @@ class Processor extends EventEmitter {
 
     _wait () {
         const wait = Math.round(this.options.waitForLockedState / this.options.retriesWhenWaiting);
-        return new Promise(r => setTimeout(() => r(null), wait));
+        return new Promise((r) => setTimeout(() => r(null), wait));
     }
 
     _model (senderId, pageId, timeout, retries) {

@@ -38,7 +38,6 @@ describe('Router extended functions', function () {
 
         r.use('nested', nested);
 
-
         const t = new Tester(r);
 
         await t.postBack('/start');
@@ -107,7 +106,6 @@ describe('Router extended functions', function () {
 
         r.use('/music', music);
 
-
         const t = new Tester(r);
 
         await t.postBack('/start');
@@ -129,7 +127,6 @@ describe('Router extended functions', function () {
         assert.strictEqual(t.responses.length, 1);
         t.any()
             .contains('stop test');
-
 
         await t.text('start');
 

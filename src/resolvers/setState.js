@@ -7,7 +7,6 @@ const Router = require('../Router');
 const { getSetState } = require('../utils/getUpdate');
 const customFn = require('../utils/customFn');
 
-
 function setState (params, { isLastIndex, allowForbiddenSnippetWords }) {
     const {
         hasCondition = false,

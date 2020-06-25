@@ -9,21 +9,21 @@ const DEFAULT_MATCHES = 3;
 const SERVICE_URL = 'https://model.wingbot.ai';
 
 /**
- * @typedef {Object} Entity
+ * @typedef {object} Entity
  * @param {string} entity
  * @param {string} value
  * @param {number} score
  */
 
 /**
- * @typedef {Object} Intent
+ * @typedef {object} Intent
  * @param {string} intent
  * @param {number} score
  * @param {Entity[]} [entities]
  */
 
 /**
- * @typedef {Object} Result
+ * @typedef {object} Result
  * @param {Entity[]} entities
  * @param {Intent[]} intents
  */
@@ -34,7 +34,7 @@ const SERVICE_URL = 'https://model.wingbot.ai';
 class WingbotModel extends CachedModel {
 
     /**
-     * @param {Object} options
+     * @param {object} options
      * @param {string} [options.serviceUrl]
      * @param {string} options.model
      * @param {number} [options.cacheSize]

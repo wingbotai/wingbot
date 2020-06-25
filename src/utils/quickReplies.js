@@ -36,13 +36,13 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, s
 /**
  *
  * @ignore
- * @param {Object|Object[]|null} replies
+ * @param {object|object[]|null} replies
  * @param {string} [path]
  * @param {Function} [translate=w => w]
- * @param {Object[]} [quickReplyCollector]
- * @returns {{quickReplies:Object[],expectedKeywords:Object[],disambiguationIntents:string[]}}
+ * @param {object[]} [quickReplyCollector]
+ * @returns {{quickReplies: object[], expectedKeywords: object[], disambiguationIntents: string[]}}
  */
-function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCollector = []) {
+function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyCollector = []) {
 
     const expectedKeywords = [];
     const disambiguationIntents = [];
@@ -52,11 +52,10 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
     // if there are no replies and quickReplyCollector collector
     // has only "_justToExisting" items, skip it
     if (!iterate
-        && quickReplyCollector.every(q => q._justToExisting)) {
+        && quickReplyCollector.every((q) => q._justToExisting)) {
 
         return { quickReplies: [], expectedKeywords, disambiguationIntents };
     }
-
 
     if (!Array.isArray(iterate)) {
         iterate = Object.keys(replies)
@@ -64,7 +63,7 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
                 const value = replies[action];
 
                 if (typeof value === 'object') {
-                    return Object.assign({}, value, { action });
+                    return { ...value, action };
                 }
 
                 return { title: value, action };
@@ -173,17 +172,17 @@ function makeQuickReplies (replies, path = '', translate = w => w, quickReplyCol
 /**
  *
  * @ignore
- * @param {Object[]} expectedKeywords
+ * @param {object[]} expectedKeywords
  * @param {Request} req
  * @param {Ai} ai
- * @returns {null|Object}
+ * @returns {null|object}
  */
 function quickReplyAction (expectedKeywords, req, ai) {
     const text = req.text();
 
     if (text) {
         const exactMatch = expectedKeywords
-            .filter(keyword => keyword.title === text);
+            .filter((keyword) => keyword.title === text);
 
         if (exactMatch.length !== 0) {
             return exactMatch[0];
@@ -194,7 +193,7 @@ function quickReplyAction (expectedKeywords, req, ai) {
 
     // @todo sort by score / disamb
     const found = expectedKeywords
-        .filter(keyword => ai.ruleIsMatching(keyword.match, req));
+        .filter((keyword) => ai.ruleIsMatching(keyword.match, req));
 
     if (found.length === 0) {
         return null;
@@ -210,7 +209,7 @@ function quickReplyAction (expectedKeywords, req, ai) {
  * @param {string} likelyIntent - possible intent
  * @param {string} disambText - users text input
  * @param {string} action - action to process the disambbiguation
- * @param {Object} data - optional data
+ * @param {object} data - optional data
  */
 function disambiguationQuickReply (title, likelyIntent, disambText, action, data = {}) {
     return {

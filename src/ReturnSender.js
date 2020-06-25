@@ -18,11 +18,12 @@ class ReturnSender {
 
     /**
      *
-     * @param {Object} options
+     * @param {object} options
      * @param {textFilter} [options.textFilter] - filter for saving the texts
      * @param {boolean} [options.logStandbyEvents] - log the standby events
+     * @param {textFilter} [options.confidentInputFilter] - filter for confident input (@CONFIDENT)
      * @param {string} userId
-     * @param {Object} incommingMessage
+     * @param {object} incommingMessage
      * @param {console} logger - console like logger
      */
     constructor (options, userId, incommingMessage, logger = null) {
@@ -65,7 +66,9 @@ class ReturnSender {
          * @param {string} text
          * @type {textFilter}
          */
-        this.textFilter = options.textFilter || (text => text);
+        this.textFilter = options.textFilter || ((text) => text);
+
+        this.confidentInputFilter = options.confidentInputFilter || (() => '@CONFIDENT');
 
         this._lastWait = 0;
 
@@ -101,19 +104,21 @@ class ReturnSender {
         if (!this.waits) {
             return Promise.resolve();
         }
-        return new Promise(r => setTimeout(r, nextWait));
+        return new Promise((r) => setTimeout(r, nextWait));
     }
 
-    _filterMessage (payload) {
+    _filterMessage (payload, confidentInput = false) {
+
+        const filter = confidentInput
+            ? this.confidentInputFilter
+            : this.textFilter;
 
         // text message
         if (payload.message && payload.message.text) {
-
-            return Object.assign({}, payload, {
-                message: Object.assign({}, payload.message, {
-                    text: this.textFilter(payload.message.text)
-                })
-            });
+            return {
+                ...payload,
+                message: { ...payload.message, text: filter(payload.message.text) }
+            };
         }
 
         // button message
@@ -122,15 +127,19 @@ class ReturnSender {
             && payload.message.attachment.payload
             && payload.message.attachment.payload.text) {
 
-            return Object.assign({}, payload, {
-                message: Object.assign({}, payload.message, {
-                    attachment: Object.assign({}, payload.message.attachment, {
-                        payload: Object.assign({}, payload.message.attachment.payload, {
-                            text: this.textFilter(payload.message.attachment.payload.text)
-                        })
-                    })
-                })
-            });
+            return {
+                ...payload,
+                message: {
+                    ...payload.message,
+                    attachment: {
+                        ...payload.message.attachment,
+                        payload: {
+                            ...payload.message.attachment.payload,
+                            text: filter(payload.message.attachment.payload.text)
+                        }
+                    }
+                }
+            };
         }
 
         return payload;
@@ -181,14 +190,14 @@ class ReturnSender {
     }
 
     /**
-     * @returns {Promise<Object|null>}
+     * @returns {Promise<object|null>}
      */
     modifyStateAfterLoad () {
         return Promise.resolve(this._simulateStateChangeOnLoad);
     }
 
     /**
-     * @returns {Promise<Object|null>}
+     * @returns {Promise<object|null>}
      */
     modifyStateBeforeStore () {
         return Promise.resolve(this._simulateStateChange);
@@ -220,10 +229,11 @@ class ReturnSender {
                     sort
                 } = req._match;
 
-                aiMatch = Object.assign({}, intent, {
+                aiMatch = {
+                    ...intent,
                     path,
                     sort
-                });
+                };
             }
 
             const expected = req.expected();
@@ -235,7 +245,7 @@ class ReturnSender {
                 aiConfidence: ai.ai.confidence,
                 aiMatch,
                 intents: req.intents || [],
-                entities: (req.entities || []).filter(e => e.score >= ai.ai.confidence),
+                entities: (req.entities || []).filter((e) => e.score >= ai.ai.confidence),
                 action: req.action(),
                 data: req.actionData(),
                 expected: expected ? expected.action : null,
@@ -251,6 +261,7 @@ class ReturnSender {
         this._finished = true;
 
         const meta = this._createMeta(req, res);
+        const confidentInput = req && req.isConfidentInput();
 
         try {
             await this._promise;
@@ -261,11 +272,11 @@ class ReturnSender {
 
             if (this._sendLogs && meta.flag !== FLAG_DO_NOT_LOG) {
                 this._sendLogs = false;
-                const sent = this._sent.map(s => this._filterMessage(s));
+                const sent = this._sent.map((s) => this._filterMessage(s));
                 const processedEvent = req
                     ? req.event
                     : this._incommingMessage;
-                let incomming = this._filterMessage(processedEvent);
+                let incomming = this._filterMessage(processedEvent, confidentInput);
 
                 if (processedEvent !== this._incommingMessage) {
                     incomming = {
@@ -285,8 +296,8 @@ class ReturnSender {
                 responses: this._responses
             };
         } catch (e) {
-            const sent = this._sent.map(s => this._filterMessage(s));
-            const incomming = this._filterMessage(this._incommingMessage);
+            const sent = this._sent.map((s) => this._filterMessage(s));
+            const incomming = this._filterMessage(this._incommingMessage, confidentInput);
 
             if (this._logger) {
                 await Promise.resolve(this._logger

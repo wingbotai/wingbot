@@ -94,7 +94,6 @@ describe('Tester', function () {
 
         r.use('/read', read);
 
-
         const t = new Tester(r);
 
         await t.postBack('/start');
@@ -206,7 +205,6 @@ describe('Tester', function () {
             res.setState({ i });
             res.text(`Go ${req.state.i}`);
         });
-
 
         const t = new Tester(r);
 

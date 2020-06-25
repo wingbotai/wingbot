@@ -7,7 +7,7 @@ const apiAuthorizer = require('./apiAuthorizer');
 const Request = require('../Request');
 
 /**
- * @typedef {Object} PostBackAPI
+ * @typedef {object} PostBackAPI
  * @prop {Function} postBack
  */
 

@@ -287,7 +287,6 @@ describe('Request', function () {
         it('should recognize a sticker', () => {
             const req = new Request(Request.sticker(SENDER_ID, 1, ''));
 
-
             assert.strictEqual(req.isFile(), false);
             assert.strictEqual(req.isImage(), false);
             assert.strictEqual(req.isImage(0, true), true);
@@ -412,6 +411,5 @@ describe('Request', function () {
         });
 
     });
-
 
 });

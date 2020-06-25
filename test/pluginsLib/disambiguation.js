@@ -87,5 +87,4 @@ describe('Disambiguation', () => {
             .contains('No result.');
     });
 
-
 });

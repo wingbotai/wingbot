@@ -4,27 +4,37 @@
 'use strict';
 
 const apiAuthorizer = require('./apiAuthorizer');
+const { apiTextOutputFilter } = require('../utils/deepMapTools');
 
 /**
- * @typedef {Object} ConversationsAPI
+ * @typedef {object} ConversationsAPI
  * @typedef {Function} conversations
  * @typedef {Function} conversation
  */
 
 /**
- * @typedef {Object} StateStorage
+ * @typedef {object} StateStorage
  * @prop {Function} getStates
  * @prop {Function} getState
  */
 
 /**
- * @typedef {Object} Notifications
+ * @typedef {object} Notifications
  * @prop {Function} getSubscribtions
  */
 
 /**
- * @typedef {Object} ChatLogStorage
+ * @typedef {object} ChatLogStorage
  * @prop {Function} getInteractions
+ */
+
+/**
+ * Function for filtration of string output
+ *
+ * @callback textFilter
+ * @param {string} value
+ * @param {string} key
+ * @returns {any}
  */
 
 /**
@@ -35,9 +45,36 @@ const apiAuthorizer = require('./apiAuthorizer');
  * @param {ChatLogStorage} chatLogStorage
  * @param {Notifications} notifications
  * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
+ * @param {object} options
+ * @param {textFilter} [options.stateTextFilter] - optional funcion for filtering data in states
  * @returns {ConversationsAPI}
+ * @example
+ * const { GraphApi, conversationsApi } = require('wingbot');
+ * const BOT_UPDATE_GROUPS = ['botEditor', 'botAdmin', 'botUser'];
+ *
+ * function stateTextFilter (value, key) {
+ *     if (key === 'credentials.password') {
+ *         return '****';
+ *     }
+ *     return value;
+ * }
+ *
+ * const api = new GraphApi([
+ *     conversationsApi(
+ *         stateStorage, chatLogStorage, notifications, BOT_UPDATE_GROUPS,
+ *         { stateTextFilter }
+ *     )
+ * ], {
+ *     token: 'my-secret-token'
+ * });
  */
-function conversationsApi (stateStorage, chatLogStorage = null, notifications = null, acl = null) {
+function conversationsApi (
+    stateStorage,
+    chatLogStorage = null,
+    notifications = null,
+    acl = null,
+    options = {}
+) {
 
     async function history (args) {
         if (!chatLogStorage || typeof chatLogStorage.getInteractions !== 'function') {
@@ -60,14 +97,19 @@ function conversationsApi (stateStorage, chatLogStorage = null, notifications = 
         return notifications.getSubscribtions(senderId, pageId);
     }
 
-    function mapState (d) {
-
-        return Object.assign({}, d, {
-            lastInteraction: typeof d.lastInteraction === 'object'
-                && d.lastInteraction
-                && typeof d.lastInteraction === 'function'
-                ? d.lastInteraction.toISOString()
-                : d.lastInteraction,
+    let mapState;
+    if (options.stateTextFilter) {
+        mapState = (d) => ({
+            ...d,
+            state: apiTextOutputFilter(d.state, options.stateTextFilter),
+            lastInteraction: d.lastInteraction || (new Date(0)),
+            history,
+            subscribtions
+        });
+    } else {
+        mapState = (d) => ({
+            ...d,
+            lastInteraction: d.lastInteraction || (new Date(0)),
             history,
             subscribtions
         });

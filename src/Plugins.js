@@ -14,7 +14,7 @@ const pluginsLib = require('./pluginsLib');
  * @param {Responder} res
  * @param {Function} [postBack]
  * @param {{isLastIndex:boolean,path:string,expectedPath:string}} [context]
- * @param {Object} [paramsData]
+ * @param {object} [paramsData]
  */
 
 /**

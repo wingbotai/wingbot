@@ -68,7 +68,6 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
     });
 }
 
-
 function message (params, {
     isLastIndex, isLastMessage, linksMap, allowForbiddenSnippetWords
 }) {
@@ -106,16 +105,17 @@ function message (params, {
 
         if (quickReplies) {
             const okQuickReplies = quickReplies
-                .filter(reply => reply.condition(req, res));
+                .filter((reply) => reply.condition(req, res));
 
             const sendReplies = okQuickReplies
-                .filter(reply => reply.title || reply.isLocation || reply.isEmail || reply.isPhone)
+                .filter((reply) => reply.title
+                    || reply.isLocation
+                    || reply.isEmail
+                    || reply.isPhone)
                 .map((reply) => {
                     const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
-                        ? Object.assign({}, reply)
-                        : Object.assign({}, reply, {
-                            title: reply.title(data)
-                        });
+                        ? ({ ...reply })
+                        : ({ ...reply, title: reply.title(data) });
 
                     if (typeof rep.condition === 'function') {
                         delete rep.condition;
@@ -127,7 +127,7 @@ function message (params, {
             res.text(text, sendReplies);
 
             okQuickReplies
-                .filter(reply => !reply.title && reply.match)
+                .filter((reply) => !reply.title && reply.match)
                 .forEach((reply) => {
                     res.expectedIntent(reply.match, reply.action, reply.data);
                 });

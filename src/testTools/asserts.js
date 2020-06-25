@@ -31,7 +31,7 @@ function m (text, actual = null, expected = null) {
 function ex (message, expected, actual) {
     const actuals = Array.isArray(actual) ? actual : [actual];
     return `${message}\n  + expected: "${expected}"\n  - actual: ${actuals
-        .map(a => `"${a}"`).join('\n            ')}`;
+        .map((a) => `"${a}"`).join('\n            ')}`;
 }
 
 function getText (response) {
@@ -60,7 +60,7 @@ function getAttachment (response) {
 /**
  * Checks attachment type
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string} type
  * @param {string|false} [message='Attachment type does not match'] - use false for no asserts
  * @returns {boolean}
@@ -82,7 +82,7 @@ function attachmentType (response, type, message = 'Attachment type does not mat
 /**
  * Checks, that response is a text
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string|false} [message='Should be a text'] - use false for no asserts
  * @returns {boolean}
  */
@@ -108,7 +108,7 @@ function searchMatchesText (search, text) {
 /**
  * Checks, that text contain a message
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string} search
  * @param {string|false} [message='Should contain a text'] - use false for no asserts
  * @returns {boolean}
@@ -131,7 +131,7 @@ function contains (response, search, message = 'Should contain a text') {
 /**
  * Checks quick response action
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string} action
  * @param {string|false} [message='Should contain the action'] - use false for no asserts
  * @returns {boolean}
@@ -157,7 +157,7 @@ function quickReplyAction (response, action, message = 'Should contain the actio
 /**
  * Checks quick response action
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string} search
  * @param {string|false} [message='Should contain the action'] - use false for no asserts
  * @returns {boolean}
@@ -183,7 +183,7 @@ function quickReplyText (response, search, message = 'Should contain the text') 
 /**
  * Checks template type
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string} expectedType
  * @param {string|false} [message='Template type does not match'] - use false for no asserts
  * @returns {boolean}
@@ -205,7 +205,7 @@ function templateType (response, expectedType, message = 'Template type does not
 /**
  * Looks for waiting message
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string|false} [message='Should be waiting placeholder'] - use false for no asserts
  * @returns {boolean}
  */
@@ -221,7 +221,7 @@ function waiting (response, message = 'Should be waiting placeholder') {
 /**
  * Looks for pass thread control
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string} [appId] - look for specific app id
  * @param {string|false} [message='Should be waiting placeholder'] - use false for no asserts
  * @returns {boolean}
@@ -238,9 +238,9 @@ function passThread (response, appId = null, message = 'Should pass control') {
 
 /**
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string|false} message
- * @returns {false|Object[]}
+ * @returns {false|object[]}
  */
 function buttonTemplateButtons (response, message = 'Button template should contain buttons') {
     const buttons = response.message.attachment
@@ -259,7 +259,7 @@ function buttonTemplateButtons (response, message = 'Button template should cont
 /**
  * Validates generic template
  *
- * @param {Object} response
+ * @param {object} response
  * @param {string} search - look for string
  * @param {number} [count]
  * @param {string|false} message
@@ -296,7 +296,7 @@ function buttonTemplate (response, search, count = null, message = 'Should conta
  *
  * @param {search} response
  * @param {string|false} message
- * @returns {false|Object[]}
+ * @returns {false|object[]}
  */
 function genericTemplateItems (response, message = 'Generic template should contain items') {
     const elements = response.message.attachment

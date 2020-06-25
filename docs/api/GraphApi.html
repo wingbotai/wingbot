@@ -1082,7 +1082,7 @@
 <dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> &#x21D2; <code>ValidateBotAPI</code></dt>
 <dd><p>Test the bot configuration</p>
 </dd>
-<dt><a href="#conversationsApi">conversationsApi(stateStorage, chatLogStorage, notifications, [acl])</a> &#x21D2; <code>ConversationsAPI</code></dt>
+<dt><a href="#conversationsApi">conversationsApi(stateStorage, chatLogStorage, notifications, [acl], options)</a> &#x21D2; <code>ConversationsAPI</code></dt>
 <dd><p>Create a conversations API
 for retrieving conversations and it&apos;s history</p>
 </dd>
@@ -1093,20 +1093,23 @@ for retrieving conversations and it&apos;s history</p>
 
 <h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
 <dl>
-<dt><a href="#GraphQlResponse">GraphQlResponse</a> : <code>Object</code></dt>
+<dt><a href="#GraphQlResponse">GraphQlResponse</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#PostBackAPI">PostBackAPI</a> : <code>Object</code></dt>
+<dt><a href="#PostBackAPI">PostBackAPI</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#ValidateBotAPI">ValidateBotAPI</a> : <code>Object</code></dt>
+<dt><a href="#ValidateBotAPI">ValidateBotAPI</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#conversation">conversation</a> : <code>Object</code></dt>
+<dt><a href="#conversation">conversation</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#StateStorage">StateStorage</a> : <code>Object</code></dt>
+<dt><a href="#StateStorage">StateStorage</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Notifications">Notifications</a> : <code>Object</code></dt>
+<dt><a href="#Notifications">Notifications</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>Object</code></dt>
+<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#textFilter">textFilter</a> &#x21D2; <code>any</code></dt>
+<dd><p>Function for filtration of string output</p>
+</dd>
 </dl>
 
 <div id="GraphApi">&#xA0;</div>
@@ -1126,8 +1129,8 @@ for retrieving conversations and it&apos;s history</p>
 <h3 id="new-graphapiapis-options"><a name="new-graphapiapis-options" class="plugin-anchor" href="#new-graphapiapis-options"><i class="fa fa-link" aria-hidden="true"></i></a>new GraphApi(apis, options)</h3>
 <p><strong>Params</strong></p>
 <ul>
-<li>apis <code>Array.&lt;Object&gt;</code> - list of connected APIs</li>
-<li>options <code>Object</code> - API options<ul>
+<li>apis <code>Array.&lt;object&gt;</code> - list of connected APIs</li>
+<li>options <code>object</code> - API options<ul>
 <li>.token <code>string</code> | <code>Promise.&lt;string&gt;</code> - wingbot token</li>
 <li>[.appToken] <code>string</code> - public token</li>
 <li>[.groups] <code>Array.&lt;string&gt;</code> - list of allowed bot groups</li>
@@ -1139,13 +1142,13 @@ for retrieving conversations and it&apos;s history</p>
 <h3 id="graphapirequestbody-headers-wingbottoken-&#x21D2;-promisegraphqlresponse"><a name="graphapirequestbody-headers-wingbottoken-&#x21D2;-promisegraphqlresponse" class="plugin-anchor" href="#graphapirequestbody-headers-wingbottoken-&#x21D2;-promisegraphqlresponse"><i class="fa fa-link" aria-hidden="true"></i></a>graphApi.request(body, headers, [wingbotToken]) &#x21D2; <a href="#GraphQlResponse"><code>Promise.&lt;GraphQlResponse&gt;</code></a></h3>
 <p><strong>Kind</strong>: instance method of <a href="#GraphApi"><code>GraphApi</code></a><br><strong>Params</strong></p>
 <ul>
-<li>body <code>Object</code><ul>
-<li>.query <code>Object</code></li>
-<li>[.variables] <code>Object</code></li>
+<li>body <code>object</code><ul>
+<li>.query <code>object</code></li>
+<li>[.variables] <code>object</code></li>
 <li>[.operationName] <code>string</code></li>
 </ul>
 </li>
-<li>headers <code>Object</code><ul>
+<li>headers <code>object</code><ul>
 <li>[.Authorization] <code>string</code></li>
 <li>[.authorization] <code>string</code></li>
 </ul>
@@ -1175,8 +1178,8 @@ for retrieving conversations and it&apos;s history</p>
 <h2 id="validatebot-validationrequestbody-postbacktest-texttest"><a name="validatebot-validationrequestbody-postbacktest-texttest" class="plugin-anchor" href="#validatebot-validationrequestbody-postbacktest-texttest"><i class="fa fa-link" aria-hidden="true"></i></a>validate(bot, validationRequestBody, postBackTest, textTest)</h2>
 <p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
 <ul>
-<li>bot <code>Object</code></li>
-<li>validationRequestBody <code>Object</code></li>
+<li>bot <code>object</code></li>
+<li>validationRequestBody <code>object</code></li>
 <li>postBackTest <code>string</code> | <code>function</code> <code> = null</code></li>
 <li>textTest <code>string</code> | <code>function</code> <code> = null</code></li>
 </ul>
@@ -1214,7 +1217,7 @@ for retrieving conversations and it&apos;s history</p>
 </code></pre>
 <div id="conversationsApi">&#xA0;</div>
 
-<h2 id="conversationsapistatestorage-chatlogstorage-notifications-acl-&#x21D2;-conversationsapi"><a name="conversationsapistatestorage-chatlogstorage-notifications-acl-&#x21D2;-conversationsapi" class="plugin-anchor" href="#conversationsapistatestorage-chatlogstorage-notifications-acl-&#x21D2;-conversationsapi"><i class="fa fa-link" aria-hidden="true"></i></a>conversationsApi(stateStorage, chatLogStorage, notifications, [acl]) &#x21D2; <code>ConversationsAPI</code></h2>
+<h2 id="conversationsapistatestorage-chatlogstorage-notifications-acl-options-&#x21D2;-conversationsapi"><a name="conversationsapistatestorage-chatlogstorage-notifications-acl-options-&#x21D2;-conversationsapi" class="plugin-anchor" href="#conversationsapistatestorage-chatlogstorage-notifications-acl-options-&#x21D2;-conversationsapi"><i class="fa fa-link" aria-hidden="true"></i></a>conversationsApi(stateStorage, chatLogStorage, notifications, [acl], options) &#x21D2; <code>ConversationsAPI</code></h2>
 <p>Create a conversations API
 for retrieving conversations and it&apos;s history</p>
 <p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
@@ -1223,14 +1226,38 @@ for retrieving conversations and it&apos;s history</p>
 <li>chatLogStorage <a href="#ChatLogStorage"><code>ChatLogStorage</code></a> <code> = </code></li>
 <li>notifications <a href="#Notifications"><code>Notifications</code></a> <code> = </code></li>
 <li>[acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function</li>
+<li>options <code>object</code><ul>
+<li>[.stateTextFilter] <a href="#textFilter"><code>textFilter</code></a> - optional funcion for filtering data in states</li>
 </ul>
+</li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { GraphApi, conversationsApi } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> BOT_UPDATE_GROUPS = [<span class="hljs-string">&apos;botEditor&apos;</span>, <span class="hljs-string">&apos;botAdmin&apos;</span>, <span class="hljs-string">&apos;botUser&apos;</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">stateTextFilter</span> (<span class="hljs-params">value, key</span>) </span>{
+    <span class="hljs-keyword">if</span> (key === <span class="hljs-string">&apos;credentials.password&apos;</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-string">&apos;****&apos;</span>;
+    }
+    <span class="hljs-keyword">return</span> value;
+}
+
+<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
+    conversationsApi(
+        stateStorage, chatLogStorage, notifications, BOT_UPDATE_GROUPS,
+        { stateTextFilter }
+    )
+], {
+    token: <span class="hljs-string">&apos;my-secret-token&apos;</span>
+});
+</code></pre>
 <div id="apiAuthorizer">&#xA0;</div>
 
 <h2 id="apiauthorizerargs-ctx-acl-&#x21D2;-boolean"><a name="apiauthorizerargs-ctx-acl-&#x21D2;-boolean" class="plugin-anchor" href="#apiauthorizerargs-ctx-acl-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>apiAuthorizer(args, ctx, acl) &#x21D2; <code>boolean</code></h2>
 <p>If API call is authorized - use for own implementations of API endpoints</p>
 <p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
 <ul>
-<li>args <code>Object</code> - gql request</li>
+<li>args <code>object</code> - gql request</li>
 <li>ctx <code>Object</code> - request context</li>
 <li>acl <code>Array.&lt;string&gt;</code> | <code>null</code> | <code>function</code> - custom acl settings</li>
 </ul>
@@ -1249,15 +1276,15 @@ for retrieving conversations and it&apos;s history</p>
 </code></pre>
 <div id="GraphQlResponse">&#xA0;</div>
 
-<h2 id="graphqlresponse--object"><a name="graphqlresponse--object" class="plugin-anchor" href="#graphqlresponse--object"><i class="fa fa-link" aria-hidden="true"></i></a>GraphQlResponse : <code>Object</code></h2>
+<h2 id="graphqlresponse--object"><a name="graphqlresponse--object" class="plugin-anchor" href="#graphqlresponse--object"><i class="fa fa-link" aria-hidden="true"></i></a>GraphQlResponse : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
 <ul>
 <li>[data] <code>*</code></li>
-<li>[errors] <code>Array.&lt;Object&gt;</code></li>
+<li>[errors] <code>Array.&lt;object&gt;</code></li>
 </ul>
 <div id="PostBackAPI">&#xA0;</div>
 
-<h2 id="postbackapi--object"><a name="postbackapi--object" class="plugin-anchor" href="#postbackapi--object"><i class="fa fa-link" aria-hidden="true"></i></a>PostBackAPI : <code>Object</code></h2>
+<h2 id="postbackapi--object"><a name="postbackapi--object" class="plugin-anchor" href="#postbackapi--object"><i class="fa fa-link" aria-hidden="true"></i></a>PostBackAPI : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1275,7 +1302,7 @@ for retrieving conversations and it&apos;s history</p>
 </table>
 <div id="ValidateBotAPI">&#xA0;</div>
 
-<h2 id="validatebotapi--object"><a name="validatebotapi--object" class="plugin-anchor" href="#validatebotapi--object"><i class="fa fa-link" aria-hidden="true"></i></a>ValidateBotAPI : <code>Object</code></h2>
+<h2 id="validatebotapi--object"><a name="validatebotapi--object" class="plugin-anchor" href="#validatebotapi--object"><i class="fa fa-link" aria-hidden="true"></i></a>ValidateBotAPI : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1293,11 +1320,11 @@ for retrieving conversations and it&apos;s history</p>
 </table>
 <div id="conversation">&#xA0;</div>
 
-<h2 id="conversation--object"><a name="conversation--object" class="plugin-anchor" href="#conversation--object"><i class="fa fa-link" aria-hidden="true"></i></a>conversation : <code>Object</code></h2>
+<h2 id="conversation--object"><a name="conversation--object" class="plugin-anchor" href="#conversation--object"><i class="fa fa-link" aria-hidden="true"></i></a>conversation : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef  </p>
 <div id="StateStorage">&#xA0;</div>
 
-<h2 id="statestorage--object"><a name="statestorage--object" class="plugin-anchor" href="#statestorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>StateStorage : <code>Object</code></h2>
+<h2 id="statestorage--object"><a name="statestorage--object" class="plugin-anchor" href="#statestorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>StateStorage : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1319,7 +1346,7 @@ for retrieving conversations and it&apos;s history</p>
 </table>
 <div id="Notifications">&#xA0;</div>
 
-<h2 id="notifications--object"><a name="notifications--object" class="plugin-anchor" href="#notifications--object"><i class="fa fa-link" aria-hidden="true"></i></a>Notifications : <code>Object</code></h2>
+<h2 id="notifications--object"><a name="notifications--object" class="plugin-anchor" href="#notifications--object"><i class="fa fa-link" aria-hidden="true"></i></a>Notifications : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1337,7 +1364,7 @@ for retrieving conversations and it&apos;s history</p>
 </table>
 <div id="ChatLogStorage">&#xA0;</div>
 
-<h2 id="chatlogstorage--object"><a name="chatlogstorage--object" class="plugin-anchor" href="#chatlogstorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>ChatLogStorage : <code>Object</code></h2>
+<h2 id="chatlogstorage--object"><a name="chatlogstorage--object" class="plugin-anchor" href="#chatlogstorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>ChatLogStorage : <code>object</code></h2>
 <p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1353,6 +1380,15 @@ for retrieving conversations and it&apos;s history</p>
 </tr>
 </tbody>
 </table>
+<div id="textFilter">&#xA0;</div>
+
+<h2 id="textfilter-&#x21D2;-any"><a name="textfilter-&#x21D2;-any" class="plugin-anchor" href="#textfilter-&#x21D2;-any"><i class="fa fa-link" aria-hidden="true"></i></a>textFilter &#x21D2; <code>any</code></h2>
+<p>Function for filtration of string output</p>
+<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
+<ul>
+<li>value <code>string</code></li>
+<li>key <code>string</code></li>
+</ul>
 
                                 
                                 </section>
@@ -1396,7 +1432,7 @@ for retrieving conversations and it&apos;s history</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"GraphApi","level":"3.10","depth":1,"next":{"title":"Chatbot API GraphQL schema","level":"3.11","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"previous":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/GraphApi.md","mtime":"2020-04-28T12:40:01.701Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-04-28T12:40:08.206Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"GraphApi","level":"3.10","depth":1,"next":{"title":"Chatbot API GraphQL schema","level":"3.11","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"previous":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/GraphApi.md","mtime":"2020-06-25T15:30:14.592Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
