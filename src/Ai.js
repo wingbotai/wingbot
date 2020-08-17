@@ -306,7 +306,24 @@ class Ai {
     ruleIsMatching (intent, req) {
         const rules = this.matcher.preprocessRule(intent);
         const winningIntent = this.matcher.match(req, rules);
-        return winningIntent && winningIntent.score >= this.confidence;
+
+        if (!winningIntent || winningIntent.score < this.confidence) {
+            return null;
+        }
+
+        const setState = this._getSetStateForEntities(winningIntent.entities);
+
+        return {
+            ...winningIntent,
+            setState
+        };
+    }
+
+    _getSetStateForEntities (entities = []) {
+        return entities
+            .reduce((o, entity) => Object.assign(o, {
+                [`@${entity.entity}`]: entity.value
+            }), {});
     }
 
     _createIntentMatcher (intent) {
@@ -320,9 +337,11 @@ class Ai {
             }
 
             const aboveConfidence = winningIntent.score >= this.confidence;
+            const setState = this._getSetStateForEntities(winningIntent.entities);
 
             return {
                 ...winningIntent,
+                setState,
                 aboveConfidence
             };
         };

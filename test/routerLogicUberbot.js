@@ -48,7 +48,8 @@ describe('<Router> features for Uberbot', () => {
                         intent: 'fooIntent',
                         score: 1,
                         entities: [],
-                        aboveConfidence: true
+                        aboveConfidence: true,
+                        setState: {}
                     },
                     aboveConfidence: true,
                     winner: true

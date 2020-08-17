@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const Ai = require('./Ai');
 const ReceiptTemplate = require('./templates/ReceiptTemplate');
 const ButtonTemplate = require('./templates/ButtonTemplate');
 const GenericTemplate = require('./templates/GenericTemplate');
@@ -360,7 +361,7 @@ class Responder {
         if (replies || this._quickReplyCollector.length !== 0) {
             const {
                 quickReplies: qrs, expectedKeywords, disambiguationIntents
-            } = makeQuickReplies(replies, this.path, this._t, this._quickReplyCollector);
+            } = makeQuickReplies(replies, this.path, this._t, this._quickReplyCollector, Ai.ai);
 
             if (disambiguationIntents.length > 0) {
                 this._senderMeta = {
