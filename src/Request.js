@@ -59,6 +59,7 @@ function makeTimestamp () {
  * @prop {object} meta
  * @prop {string} [meta.targetAppId]
  * @prop {string|null} [meta.targetAction]
+ * @prop {string} [meta.resolverTag]
  */
 
 /**
@@ -183,7 +184,7 @@ class Request {
      * @returns {IntentAction[]}
      */
     aiActions () {
-        this._getMatchingGlobalIntent();
+        this.aiActionsWinner();
         return this._aiActions;
     }
 
@@ -197,7 +198,7 @@ class Request {
      */
     aiActionsForQuickReplies (limit = 5, aiActions = null, overrideAction = null) {
         if (aiActions === null) {
-            this._getMatchingGlobalIntent();
+            this.aiActionsWinner();
         }
 
         const text = this.text();
@@ -228,7 +229,7 @@ class Request {
      * @returns {boolean}
      */
     hasAiActionsForDisambiguation (minimum = 1) {
-        this._getMatchingGlobalIntent();
+        this.aiActionsWinner();
         return this._aiActions
             .filter((a) => a.title)
             .length >= minimum;
@@ -777,7 +778,7 @@ class Request {
         }
 
         if (!res && this.isTextOrIntent()) {
-            const winner = this._getMatchingGlobalIntent();
+            const winner = this.aiActionsWinner();
             res = winner
                 ? { action: winner.action, data: {}, setState: winner.setState }
                 : null;
@@ -786,12 +787,42 @@ class Request {
         return res;
     }
 
+    /**
+     * Returs action string, if there is an action detected by NLP
+     *
+     * @returns {string|null}
+     * @example
+     *
+     * const { Router } = require('wingbot');
+     *
+     * const bot = new Router();
+     *
+     * bot.use('question', (req, res) => {
+     *     res.text('tell me your email')
+     *         .expected('email');
+     * });
+     *
+     * bot.use('email', async (req, res, postBack) => {
+     *     if (req.actionByAi()) {
+     *         await postBack(req.actionByAi(), {}, true);
+     *         return;
+     *     }
+     *     res.text('thank you for your email');
+     *     res.setState({ email: req.text() });
+     * });
+     *
+     */
     actionByAi () {
-        const winner = this._getMatchingGlobalIntent();
+        const winner = this.aiActionsWinner();
         return winner ? winner.action : null;
     }
 
-    _getMatchingGlobalIntent () {
+    /**
+     * Returns full detected AI action
+     *
+     * @returns {IntentAction|null}
+     */
+    aiActionsWinner () {
         if (this._aiActions) {
             return this._aiWinner;
         }

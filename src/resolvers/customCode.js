@@ -4,6 +4,8 @@
 'use strict';
 
 const EventEmitter = require('events');
+const Router = require('../Router');
+const { shouldExecuteResolver } = require('./resolverTags');
 
 class RouterWrap extends EventEmitter {
 
@@ -92,6 +94,10 @@ function customCode (params, context, blocks) {
     }
 
     const fn = async function (req, res, postBack, path, action) {
+        if (!shouldExecuteResolver(req, params)) {
+            return isLastIndex ? Router.END : Router.CONTINUE;
+        }
+
         req.params = paramsData;
 
         // attach block runner
@@ -121,6 +127,12 @@ function customCode (params, context, blocks) {
 
     if (typeof customFn.globalIntentsMeta === 'object') {
         fn.globalIntentsMeta = customFn.globalIntentsMeta;
+    }
+
+    if (params.resolverTag) {
+        fn.globalIntentsMeta = {
+            resolverTag: params.resolverTag
+        };
     }
 
     return fn;

@@ -6,6 +6,7 @@
 const Router = require('../Router');
 const customFn = require('../utils/customFn');
 const { cachedTranslatedCompilator, stateData } = require('./utils');
+const { shouldExecuteResolver } = require('./resolverTags');
 
 function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
     return replies.map((reply) => {
@@ -93,7 +94,10 @@ function message (params, {
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
-    return (req, res) => {
+    const fn = (req, res) => {
+        if (!shouldExecuteResolver(req, params)) {
+            return ret;
+        }
         if (condition !== null) {
             if (!condition(req, res)) {
                 return ret;
@@ -139,6 +143,14 @@ function message (params, {
 
         return ret;
     };
+
+    if (params.resolverTag) {
+        fn.globalIntentsMeta = {
+            resolverTag: params.resolverTag
+        };
+    }
+
+    return fn;
 }
 
 module.exports = message;

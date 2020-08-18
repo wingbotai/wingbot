@@ -16,20 +16,23 @@ const {
     TYPE_SHARE,
     TYPE_URL_WITH_EXT
 } = require('./utils');
+const { shouldExecuteResolver } = require('./resolverTags');
 
-function end (isLastIndex) {
-    return isLastIndex ? Router.END : Router.CONTINUE;
-}
+function carousel (params, { isLastIndex, linksMap, linksTranslator = (a, b, c) => c }) {
+    const {
+        items = [],
+        shareable = false,
+        imageAspect = ASPECT_HORISONTAL
+    } = params;
 
-function carousel ({
-    items = [],
-    shareable = false,
-    imageAspect = ASPECT_HORISONTAL
-}, { isLastIndex, linksMap, linksTranslator }) {
+    const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
-    return (req, res) => {
+    const fn = (req, res) => {
         if (items.length === 0) {
-            return end(isLastIndex);
+            return ret;
+        }
+        if (!shouldExecuteResolver(req, params)) {
+            return ret;
         }
 
         const state = stateData(req, res);
@@ -96,8 +99,16 @@ function carousel ({
 
         tpl.send();
 
-        return end(isLastIndex);
+        return ret;
     };
+
+    if (params.resolverTag) {
+        fn.globalIntentsMeta = {
+            resolverTag: params.resolverTag
+        };
+    }
+
+    return fn;
 }
 
 module.exports = carousel;

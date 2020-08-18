@@ -4,12 +4,19 @@
 'use strict';
 
 const customFn = require('../utils/customFn');
+const { shouldExecuteResolver } = require('./resolverTags');
 
 function inlineCode (params, { isLastIndex, allowForbiddenSnippetWords }) {
-    const fn = customFn(params.code, params.description, allowForbiddenSnippetWords);
+    const fnToExecute = customFn(params.code, params.description, allowForbiddenSnippetWords);
 
-    return async function (req, res, postBack, path, action) {
-        let ret = fn(req, res, postBack, path, action);
+    const defaultRet = isLastIndex ? null : true;
+
+    const fn = async (req, res, postBack, path, action) => {
+        if (!shouldExecuteResolver(req, params)) {
+            return defaultRet;
+        }
+
+        let ret = fnToExecute(req, res, postBack, path, action);
 
         if (typeof ret === 'object' && ret !== null) {
             ret = await ret;
@@ -19,8 +26,16 @@ function inlineCode (params, { isLastIndex, allowForbiddenSnippetWords }) {
             return ret;
         }
 
-        return isLastIndex ? null : true;
+        return defaultRet;
     };
+
+    if (params.resolverTag) {
+        fn.globalIntentsMeta = {
+            resolverTag: params.resolverTag
+        };
+    }
+
+    return fn;
 }
 
 module.exports = inlineCode;

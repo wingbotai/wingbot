@@ -1,0 +1,447 @@
+{
+    "data" : [
+        {
+            "isRoot" : true,
+            "blockName" : "Root",
+            "staticBlockId" : "5444e110-dd6f-11ea-a35d-19546190d6d5",
+            "routes" : [
+                {
+                    "id" : "5444e111-dd6f-11ea-a35d-19546190d6d5",
+                    "path" : "start",
+                    "name" : "Start",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "Welcome, I'am a chatbot!"
+                                ],
+                                "hasCondition" : false,
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "53e07240-e146-11ea-b4f2-ef90cb7940de",
+                    "path" : "allowed-and-then-do-not-return",
+                    "name" : "allowed and then do not return",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "interaction"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "ac377f60-e146-11ea-b4f2-ef90cb7940de",
+                    "isResponder" : true,
+                    "respondsToRouteId" : "53e07240-e146-11ea-b4f2-ef90cb7940de",
+                    "aiTags" : null,
+                    "bounceAllowedTo": "allow",
+                    "bounceReturn": "not",
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "fallback"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "6bb05520-e146-11ea-b4f2-ef90cb7940de",
+                    "path" : "allowed-and-then-return-if-possible",
+                    "name" : "allowed and then return if possible",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "interaction"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "afff35c0-e146-11ea-b4f2-ef90cb7940de",
+                    "isResponder" : true,
+                    "respondsToRouteId" : "6bb05520-e146-11ea-b4f2-ef90cb7940de",
+                    "aiTags" : null,
+                    "bounceAllowedTo": "allow",
+                    "bounceReturn": "ifpos",
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "fallback"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "7c9f0ca0-e146-11ea-b4f2-ef90cb7940de",
+                    "path" : "allowed-to-faq-and-then-return-here",
+                    "name" : "allowed to FAQ and then return here",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "interaction"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "def6ad90-e146-11ea-b4f2-ef90cb7940de",
+                    "isResponder" : true,
+                    "respondsToRouteId" : "7c9f0ca0-e146-11ea-b4f2-ef90cb7940de",
+                    "aiTags" : null,
+                    "bounceAllowedTo": "faq",
+                    "bounceReturn": "here",
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "first fallback"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "ee389f70-e146-11ea-b4f2-ef90cb7940de",
+                    "isResponder" : true,
+                    "respondsToRouteId" : "7c9f0ca0-e146-11ea-b4f2-ef90cb7940de",
+                    "aiTags" : null,
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "second fallback"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "912346f0-e146-11ea-b4f2-ef90cb7940de",
+                    "path" : "allowed-to-faq-and-then-return-to-interaction",
+                    "name" : "allowed to FAQ and then return to interaction",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "interaction"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "path" : "faq",
+                    "id" : "0c1baf50-e147-11ea-b4f2-ef90cb7940de",
+                    "resolvers" : [
+                        {
+                            "id" : "0c1baf50-e147-11ea-b4f2-ef90cb7940de",
+                            "type" : "botbuild.include",
+                            "params" : {
+                                "staticBlockId" : "0c1baf50-e147-11ea-b4f2-ef90cb7940de",
+                                "items" : {}
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "e0c7c410-e146-11ea-b4f2-ef90cb7940de",
+                    "isResponder" : true,
+                    "respondsToRouteId" : "912346f0-e146-11ea-b4f2-ef90cb7940de",
+                    "aiTags" : null,
+                    "bounceAllowedTo": "faq",
+                    "bounceReturn": "inta",
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "fallback"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "54450821-dd6f-11ea-a35d-19546190d6d5",
+                    "path" : "fallback",
+                    "name" : "Fallback",
+                    "isEntryPoint" : false,
+                    "isFallback" : true,
+                    "replies" : [],
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "Sorry, but i don't understand"
+                                ],
+                                "hasCondition" : false,
+                                "replies" : [
+                                    {
+                                        "targetRouteId" : "5444e111-dd6f-11ea-a35d-19546190d6d5",
+                                        "title" : "Back to Start"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blockName" : "faq",
+            "staticBlockId" : "0c1baf50-e147-11ea-b4f2-ef90cb7940de",
+            "routes" : [
+                {
+                    "id" : "0d8a0c60-e147-11ea-b4f2-ef90cb7940de",
+                    "path" : "with-faq",
+                    "name" : "with faq",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "resolverTag": "faq",
+                                "text" : [
+                                    "text with faq"
+                                ],
+                                "replies" : []
+                            }
+                        },
+                        {
+                            "type" : "botbuild.button",
+                            "params" : {
+                                "resolverTag": "faq",
+                                "text" : "btn with faq",
+                                "buttons" : [
+                                    {
+                                        "id" : 1597750623412.0,
+                                        "action" : {
+                                            "type" : "postback",
+                                            "url" : "",
+                                            "webviewHeight" : "full",
+                                            "targetRouteId" : "5444e111-dd6f-11ea-a35d-19546190d6d5"
+                                        },
+                                        "title" : "btn"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type" : "botbuild.button",
+                            "params" : {
+                                "text" : "btn no faq",
+                                "buttons" : [
+                                    {
+                                        "id" : 1597750623412.0,
+                                        "action" : {
+                                            "type" : "postback",
+                                            "url" : "",
+                                            "webviewHeight" : "full",
+                                            "targetRouteId" : "5444e111-dd6f-11ea-a35d-19546190d6d5"
+                                        },
+                                        "title" : "btn"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type" : "botbuild.carousel",
+                            "params" : {
+                                "resolverTag": "faq",
+                                "items" : [
+                                    {
+                                        "id" : 1597750632709.0,
+                                        "title" : "crsl",
+                                        "subtitle" : "",
+                                        "image" : "",
+                                        "buttons" : [],
+                                        "imageAspect" : "horizontal",
+                                        "action": {
+                                            "type": "web_url",
+                                            "webviewHeight": "full",
+                                            "url": "https://goo.gl",
+                                            "title": "ho"
+                                        }
+                                    },
+                                    {
+                                        "id" : 1597750632710.0,
+                                        "title" : "crsl",
+                                        "subtitle" : "",
+                                        "image" : "",
+                                        "buttons" : [],
+                                        "imageAspect" : "horizontal",
+                                        "action": {
+                                            "type": "postback",
+                                            "targetRouteId": "71f23dd0-e147-11ea-b4f2-ef90cb7940de",
+                                            "title": "https://goo.gl"
+                                        }
+                                    },
+                                    {
+                                        "id" : 1597750632711.0,
+                                        "title" : "crsl",
+                                        "subtitle" : "",
+                                        "image" : "",
+                                        "buttons" : [],
+                                        "imageAspect" : "horizontal",
+                                        "action": {
+                                            "type": "share"
+                                        }
+                                    }
+                                ],
+                                "shareable" : true
+                            }
+                        },
+                        {
+                            "type" : "botbuild.carousel",
+                            "params" : {
+                                "items" : [
+                                    {
+                                        "id" : 1597750632709.0,
+                                        "title" : "crsl",
+                                        "subtitle" : "",
+                                        "image" : "",
+                                        "buttons" : [],
+                                        "imageAspect" : "horizontal",
+                                        "action": {
+                                            "type": "web_url",
+                                            "webviewHeight": "full",
+                                            "url": "https://goo.gl",
+                                            "title": "ho"
+                                        }
+                                    }
+                                ],
+                                "shareable" : true
+                            }
+                        },
+                        {
+                            "type" : "botbuild.inlineCode",
+                            "params" : {
+                                "resolverTag": "faq",
+                                "code" : "(req, res, postBack) => {\n    \n}"
+                            }
+                        },
+                        {
+                            "type" : "botbuild.setState",
+                            "params" : {
+                                "resolverTag": "faq",
+                                "setState" : {
+                                    "random" : "foo"
+                                }
+                            }
+                        },
+                        {
+                            "type" : "botbuild.media",
+                            "params" : {
+                                "resolverTag": "faq",
+                                "url" : "https://cdr.cz/sites/default/files/url_index.jpg",
+                                "type" : "image"
+                            }
+                        },
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "followup"
+                                ],
+                                "replies" : []
+                            }
+                        },
+                        {
+                            "type" : "botbuild.postback",
+                            "params" : {
+                                "routeId" : "5444e111-dd6f-11ea-a35d-19546190d6d5"
+                            }
+                        }
+                    ],
+                    "aiTags" : [
+                        "withFaq"
+                    ],
+                    "aiTitle" : null,
+                    "aiGlobal" : true
+                },
+                {
+                    "id" : "71f23dd0-e147-11ea-b4f2-ef90cb7940de",
+                    "path" : "without-faq",
+                    "name" : "without faq",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "aiTags" : [
+                        "withoutFaq"
+                    ],
+                    "aiGlobal" : true,
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "text without faq"
+                                ],
+                                "replies" : []
+                            }
+                        },
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "followup"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

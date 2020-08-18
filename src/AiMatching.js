@@ -499,9 +499,8 @@ class AiMatching {
         const operation = op || (typeof compare !== 'undefined' ? COMPARE.EQUAL : null);
 
         if (typeof value === 'undefined') {
-            return operation === COMPARE.NOT_EQUAL
-                ? true // eslint-disable-line no-unneeded-ternary
-                : false;
+            // eslint-disable-next-line no-unneeded-ternary
+            return operation === COMPARE.NOT_EQUAL ? true : false;
         }
 
         switch (operation) {
