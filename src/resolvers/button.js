@@ -10,7 +10,6 @@ const {
     cachedTranslatedCompilator,
     processButtons
 } = require('./utils');
-const { shouldExecuteResolver } = require('./resolverTags');
 
 function button (params, {
     isLastIndex,
@@ -34,11 +33,8 @@ function button (params, {
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
-    const fn = (req, res) => {
+    return (req, res) => {
         if (buttons.length === 0) {
-            return ret;
-        }
-        if (!shouldExecuteResolver(req, params)) {
             return ret;
         }
         if (condition !== null) {
@@ -56,14 +52,6 @@ function button (params, {
 
         return ret;
     };
-
-    if (params.resolverTag) {
-        fn.globalIntentsMeta = {
-            resolverTag: params.resolverTag
-        };
-    }
-
-    return fn;
 }
 
 module.exports = button;

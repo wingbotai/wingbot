@@ -8,7 +8,7 @@ const testbot = require('./faq-testbot.json');
 const Tester = require('../src/Tester');
 const BuildRouter = require('../src/BuildRouter');
 
-describe('<BuildRouter>', async () => {
+describe('FAQ BOUNCE', async () => {
 
     /**
      * @type {Tester}

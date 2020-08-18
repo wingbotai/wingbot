@@ -16,7 +16,6 @@ const {
     TYPE_SHARE,
     TYPE_URL_WITH_EXT
 } = require('./utils');
-const { shouldExecuteResolver } = require('./resolverTags');
 
 function carousel (params, { isLastIndex, linksMap, linksTranslator = (a, b, c) => c }) {
     const {
@@ -27,11 +26,8 @@ function carousel (params, { isLastIndex, linksMap, linksTranslator = (a, b, c) 
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
-    const fn = (req, res) => {
+    return (req, res) => {
         if (items.length === 0) {
-            return ret;
-        }
-        if (!shouldExecuteResolver(req, params)) {
             return ret;
         }
 
@@ -101,14 +97,6 @@ function carousel (params, { isLastIndex, linksMap, linksTranslator = (a, b, c) 
 
         return ret;
     };
-
-    if (params.resolverTag) {
-        fn.globalIntentsMeta = {
-            resolverTag: params.resolverTag
-        };
-    }
-
-    return fn;
 }
 
 module.exports = carousel;

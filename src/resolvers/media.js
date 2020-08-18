@@ -5,7 +5,6 @@
 
 const Router = require('../Router');
 const { stateData, cachedTranslatedCompilator } = require('./utils');
-const { shouldExecuteResolver } = require('./resolverTags');
 
 function media (params, { isLastIndex }) {
     const { type, url } = params;
@@ -20,10 +19,7 @@ function media (params, { isLastIndex }) {
         throw new Error(`Unsupported media type: ${type}`);
     }
 
-    const fn = (req, res) => {
-        if (!shouldExecuteResolver(req, params)) {
-            return ret;
-        }
+    return (req, res) => {
         const data = stateData(req, res);
         const sendUrl = urlTemplate(data);
 
@@ -31,14 +27,6 @@ function media (params, { isLastIndex }) {
 
         return ret;
     };
-
-    if (params.resolverTag) {
-        fn.globalIntentsMeta = {
-            resolverTag: params.resolverTag
-        };
-    }
-
-    return fn;
 }
 
 module.exports = media;

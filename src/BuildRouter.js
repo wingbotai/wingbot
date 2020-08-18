@@ -12,6 +12,7 @@ const expected = require('./resolvers/expected');
 const bounce = require('./resolvers/bounce');
 const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
 const defaultResourceMap = require('./defaultResourceMap');
+const { shouldExecuteResolver } = require('./resolvers/resolverTags');
 
 const MESSAGE_RESOLVER_NAME = 'botbuild.message';
 
@@ -498,7 +499,44 @@ class BuildRouter extends Router {
 
         const factoryFn = this.resources.get(type);
 
-        return factoryFn(resolver.params, context, this._plugins);
+        const fn = factoryFn(resolver.params, context, this._plugins);
+
+        if ([
+            'botbuild.include',
+            'botbuild.path'
+        ].includes(type)) {
+            return fn;
+        }
+
+        const retFn = (req, ...rest) => {
+            if (!shouldExecuteResolver(req, resolver.tag)) {
+                return context.isLastIndex ? Router.END : Router.CONTINUE;
+            }
+            return typeof fn === 'function'
+                ? fn(req, ...rest)
+                : fn.reduce(req, ...rest);
+        };
+
+        if (typeof fn.globalIntentsMeta === 'object') {
+            retFn.globalIntentsMeta = fn.globalIntentsMeta;
+        }
+
+        if (fn.globalIntents) {
+            retFn.globalIntents = fn.globalIntents;
+        }
+
+        if (fn.path) {
+            retFn.path = fn.path;
+        }
+
+        if (resolver.tag) {
+            if (!retFn.globalIntentsMeta) {
+                retFn.globalIntentsMeta = {};
+            }
+            Object.assign(retFn.globalIntentsMeta, { resolverTag: resolver.tag });
+        }
+
+        return retFn;
     }
 
 }

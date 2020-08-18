@@ -8,15 +8,14 @@ const FAQ = 'faq';
 /**
  *
  * @param {import('../Request')} req
- * @param {{ resolverTag: string|null }} params
+ * @param {string} tag
  * @returns {boolean}
  */
-function shouldExecuteResolver (req, params) {
+function shouldExecuteResolver (req, tag = null) {
     const { _resolverTag: actionResolverTag } = req.actionData();
-    const { resolverTag = null } = params;
 
     if (actionResolverTag === FAQ) {
-        return resolverTag === FAQ;
+        return tag === FAQ;
     }
 
     return true;
