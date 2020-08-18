@@ -54,6 +54,7 @@ function makeTimestamp () {
  * @prop {number} sort
  * @prop {boolean} local
  * @prop {boolean} aboveConfidence
+ * @prop {object} [setState]
  * @prop {boolean} [winner]
  * @prop {string|Function} [title]
  * @prop {object} meta
