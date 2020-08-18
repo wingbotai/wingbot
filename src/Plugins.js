@@ -6,7 +6,7 @@
 const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
 const Request = require('./Request'); // eslint-disable-line no-unused-vars
 const Router = require('./Router'); // eslint-disable-line no-unused-vars
-const pluginsLib = require('./pluginsLib');
+const plugins = require('../plugins');
 
 /**
  * @callback Plugin
@@ -28,8 +28,8 @@ class Plugins {
 
     getPluginFactory (name, paramsData = {}) {
         let plugin;
-        if (pluginsLib.has(name)) {
-            plugin = pluginsLib.get(name);
+        if (plugins.has(name)) {
+            plugin = plugins.get(name);
         } else if (!this._plugins.has(name)) {
             throw new Error(`Unknown Plugin: ${name}. Ensure its registration.`);
         } else {

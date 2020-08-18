@@ -1,9 +1,8 @@
 /**
- * @author David Menger
+ *
+ * @param {object} params
  */
-'use strict';
-
-function passThreadToBotFactory (params) {
+module.exports = (params) => {
 
     const {
         targetAppId = '',
@@ -12,8 +11,8 @@ function passThreadToBotFactory (params) {
     } = params;
 
     /**
-    * @param {import('../Request')} req
-    * @param {import('../Responder')} res
+    * @param {import('../../src/Request')} req
+    * @param {import('../../src/Responder')} res
     */
     const fn = async (req, res) => {
         let action;
@@ -50,6 +49,4 @@ function passThreadToBotFactory (params) {
     };
 
     return fn;
-}
-
-module.exports = passThreadToBotFactory;
+};

@@ -1,13 +1,8 @@
-/**
- * @author David Menger
- */
-'use strict';
-
-const { getUpdate } = require('../utils/getUpdate');
+const { getUpdate } = require('../../src/utils/getUpdate');
 
 /**
- * @param {import('../Request')} req
- * @param {import('../Responder')} res
+ * @param {import('../../src/Request')} req
+ * @param {import('../../src/Responder')} res
  */
 function setStateFromInput (req, res) {
     if (!req.isText() && !req.isQuickReply()) {

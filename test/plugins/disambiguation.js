@@ -7,7 +7,7 @@
 const Tester = require('../../src/Tester');
 const Router = require('../../src/Router');
 const Ai = require('../../src/Ai');
-const disambiguation = require('../../src/pluginsLib/disambiguation');
+const disambiguation = require('../../plugins/ai.wingbot.disambiguation/plugin');
 
 const { ai } = Ai;
 

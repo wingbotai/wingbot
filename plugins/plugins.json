@@ -1,0 +1,147 @@
+{
+    "plugins": [
+        {
+            "id": "ai.wingbot.disambiguation",
+            "name": "Disambiguation",
+            "description": "Put me into a fallback interaction to first position (if there'll be no options, output will continue below the plugin)",
+            "availableSince": 2.22,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [
+                { "id": "diambiguations", "description": "Disambiguation message - options will be added as quick replies" }
+            ],
+            "inputs": [
+                {
+                    "type": "select",
+                    "name": "min",
+                    "label": "Minimum number of options",
+                    "options": [
+                        { "value": "1", "label": "1" },
+                        { "value": "2", "label": "2" }
+                    ]
+                },
+                {
+                    "type": "select",
+                    "name": "max",
+                    "label": "Maximum number of options",
+                    "options": [
+                        { "value": "2", "label": "2" },
+                        { "value": "3", "label": "3" },
+                        { "value": "4", "label": "4" },
+                        { "value": "5", "label": "5" }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.oneTimeNotificationRequest",
+            "name": "wingbot: Facebook's one-time notification request",
+            "description": "Ask user to subscribe to one time notification",
+            "availableSince": 3.01,
+            "editable": true,
+            "isFactory": false,
+            "category": "facebook",
+            "items": [],
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "title",
+                    "label": "Prompt text visible to user"
+                },
+                {
+                    "type": "postback",
+                    "name": "action",
+                    "label": "Target interaction"
+                },
+                {
+                    "type": "text",
+                    "name": "tag",
+                    "label": "Subscribe user to tag (must match with campaign)"
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.passThreadToBot",
+            "name": "Handover to another bot",
+            "description": "Pass thread to another application (keep action and intent empty to pass an input text)",
+            "availableSince": 3.0,
+            "editable": false,
+            "isFactory": true,
+            "category": "uberbot",
+            "items": [],
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "targetAppId",
+                    "label": "Target Application Id (required)"
+                },
+                {
+                    "type": "text",
+                    "name": "targetAction",
+                    "label": "Target action"
+                },
+                {
+                    "type": "text",
+                    "name": "targetIntent",
+                    "label": "Target intent"
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.setState",
+            "name": "Set state variable",
+            "description": "Set any value to user state (you can use dot notation for nested objects)",
+            "availableSince": 2.26,
+            "deprecatedSince": 3.0,
+            "editable": false,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "attr",
+                    "label": "Variable"
+                },
+                {
+                    "type": "text",
+                    "name": "value",
+                    "label": "Value"
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.setStateFromInput",
+            "name": "wingbot: Set state variable from text message",
+            "description": "Set a user message, or quick reply, to state variable (you can use dot notation for nested objects)",
+            "availableSince": 2.26,
+            "deprecatedSince": 3.0,
+            "editable": false,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": [
+                {
+                    "name": "attr",
+                    "type": "text",
+                    "label": "Variable"
+                }
+            ]
+        }
+    ],
+    "categories": [
+        {
+            "id": "conversation",
+            "name": "Conversation features"
+        },
+        {
+            "id": "facebook",
+            "name": "Facebook Messenger"
+        },
+        {
+            "id": "uberbot",
+            "name": "Masterbot architecture"
+        }
+    ]
+}

@@ -2,8 +2,10 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es2017",
+        "lib": ["es6"],
         "allowSyntheticDefaultImports": true,
-        "checkJs": true
+        "checkJs": true,
+        "resolveJsonModule": true
     },
     "exclude": [
         "node_modules",

@@ -11,7 +11,7 @@
     "test:coverage": "nyc --reporter=html mocha ./test && nyc report",
     "test:coverage:threshold": "nyc check-coverage --lines 85 --functions 85 --branches 76",
     "test:backend": "mocha ./test",
-    "test:lint": "eslint --ext .js src test *.js"
+    "test:lint": "eslint --ext .js src test *.js plugins"
   },
   "repository": {
     "type": "git",
