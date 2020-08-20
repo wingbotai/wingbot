@@ -1,6 +1,7 @@
 {
     "extends": "../.eslintrc",
     "rules": {
-        "strict": 0
+        "strict": 0,
+        "no-unused-vars": 0
     }
 }

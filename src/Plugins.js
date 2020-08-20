@@ -7,6 +7,8 @@ const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
 const Request = require('./Request'); // eslint-disable-line no-unused-vars
 const Router = require('./Router'); // eslint-disable-line no-unused-vars
 const plugins = require('../plugins');
+const RouterWrap = require('./RouterWrap');
+const wrapPluginFunction = require('./utils/wrapPluginFunction');
 
 /**
  * @callback Plugin
@@ -39,6 +41,49 @@ class Plugins {
             return plugin.pluginFactory(paramsData);
         }
         return plugin;
+    }
+
+    /**
+     * Get plugin for the router
+     *
+     * @param {string} name
+     * @param {object} [paramsData]
+     * @param {Map<string,Function[]>} [items]
+     * @param {object} [context]
+     * @example
+     *
+     * const { Router } = require('wingbot');
+     *
+     * const bot = new Router();
+     *
+     * // simply
+     * bot.use('simple-route', plugins.getWrappedPlugin('myCoolPLugin'));
+     *
+     * // fully
+     * bot.use('full-plugin-route', plugins
+     *  .getWrappedPlugin(
+     *     'fancyPLugin',
+     *     { param: 123 },
+     *     new Map([
+     *       ['onSuccess', (req, res) => { res.text('yes, success'); }]
+     *     ])
+     * ));
+     */
+    getWrappedPlugin (
+        name,
+        paramsData = {},
+        items = new Map(),
+        context = { isLastIndex: true }
+    ) {
+        const customFn = this.getPluginFactory(name, paramsData);
+
+        if (typeof customFn === 'object') {
+            // this is an attached router
+
+            return new RouterWrap(customFn, items, paramsData);
+        }
+
+        return wrapPluginFunction(customFn, paramsData, items, context, Router);
     }
 
     code (name, factoryFn = null) {

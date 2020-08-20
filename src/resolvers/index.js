@@ -8,8 +8,7 @@ const message = require('./message');
 const include = require('./include');
 const postback = require('./postback');
 const expected = require('./expected');
-const customCode = require('./customCode');
-const inlineCode = require('./inlineCode');
+const plugin = require('./plugin');
 const carousel = require('./carousel');
 const passThread = require('./passThread');
 const media = require('./media');
@@ -23,8 +22,7 @@ module.exports = {
     include,
     postback,
     expected,
-    customCode,
-    inlineCode,
+    plugin,
     passThread,
     media,
     carousel,
