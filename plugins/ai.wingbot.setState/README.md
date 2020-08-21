@@ -1,0 +1,1 @@
+> This plugin has been replaced with native UI.

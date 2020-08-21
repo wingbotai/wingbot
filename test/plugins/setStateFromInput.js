@@ -6,9 +6,9 @@
 const assert = require('assert');
 const Tester = require('../../src/Tester');
 const Router = require('../../src/Router');
-const setState = require('../../src/pluginsLib/setState');
+const setStateFromInput = require('../../plugins/ai.wingbot.setStateFromInput/plugin');
 
-describe('setState plugin', () => {
+describe('setStateFromInput plugin', () => {
 
     /** @type {Tester} */
     let t;
@@ -18,9 +18,12 @@ describe('setState plugin', () => {
 
         bot.use((req, res) => {
             req.params = {
-                attr: 'attr',
-                value: 'val'
+                attr: 'attr'
             };
+
+            res.text('res', {
+                qr: 'QR text'
+            });
 
             // simulate plugins modules
             Object.assign(res, {
@@ -32,7 +35,7 @@ describe('setState plugin', () => {
                 }
             });
             return true;
-        }, setState);
+        }, setStateFromInput);
 
         t = new Tester(bot);
 
@@ -42,9 +45,15 @@ describe('setState plugin', () => {
     it('sets the state', async () => {
         await t.text('random');
 
-        const { state } = t.getState();
+        let { state } = t.getState();
 
-        assert.strictEqual(state.attr, 'val');
+        assert.strictEqual(state.attr, 'random');
+
+        await t.quickReply('qr');
+
+        ({ state } = t.getState());
+
+        assert.strictEqual(state.attr, 'QR text');
     });
 
 });

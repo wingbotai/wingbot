@@ -1,13 +1,8 @@
 /**
- * @author David Menger
+ * @param {import('../../src/Request')} req
+ * @param {import('../../src/Responder')} res
  */
-'use strict';
-
-/**
- * @param {import('../Request')} req
- * @param {import('../Responder')} res
- */
-async function disambiguation (req, res) {
+module.exports = async (req, res) => {
     let { min = '1', max = '3' } = req.params;
     min = parseInt(min, 10) || 1;
 
@@ -21,6 +16,4 @@ async function disambiguation (req, res) {
         return null;
     }
     return true;
-}
-
-module.exports = disambiguation;
+};

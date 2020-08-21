@@ -15,6 +15,10 @@ function factoryResourceMap () {
             map.set(`${PREFIX}.${name}`, resolvers[name]);
         });
 
+    // backwards compatibility
+    map.set(`${PREFIX}.customCode`, resolvers.plugin);
+    map.set(`${PREFIX}.inlineCode`, resolvers.plugin);
+
     return map;
 }
 

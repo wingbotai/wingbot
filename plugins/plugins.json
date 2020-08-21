@@ -1,0 +1,287 @@
+{
+    "plugins": [
+        {
+            "id": "ai.wingbot.disambiguation",
+            "name": "Disambiguation",
+            "description": "Put me into a fallback interaction to first position (if there'll be no options, output will continue below the plugin)",
+            "availableSince": 2.22,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [
+                { "id": "diambiguations", "description": "Disambiguation message - options will be added as quick replies" }
+            ],
+            "inputs": [
+                {
+                    "type": "select",
+                    "name": "min",
+                    "label": "Minimum number of options",
+                    "options": [
+                        { "value": "1", "label": "1" },
+                        { "value": "2", "label": "2" }
+                    ]
+                },
+                {
+                    "type": "select",
+                    "name": "max",
+                    "label": "Maximum number of options",
+                    "options": [
+                        { "value": "2", "label": "2" },
+                        { "value": "3", "label": "3" },
+                        { "value": "4", "label": "4" },
+                        { "value": "5", "label": "5" }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.oneTimeNotificationRequest",
+            "name": "wingbot: Facebook's one-time notification request",
+            "description": "Ask user to subscribe to one time notification",
+            "availableSince": 3.01,
+            "editable": true,
+            "isFactory": false,
+            "category": "facebook",
+            "items": [],
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "title",
+                    "label": "Prompt text visible to user"
+                },
+                {
+                    "type": "postback",
+                    "name": "action",
+                    "label": "Target interaction"
+                },
+                {
+                    "type": "text",
+                    "name": "tag",
+                    "label": "Subscribe user to tag (must match with campaign)"
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.passThreadToBot",
+            "name": "Handover to another bot",
+            "description": "Pass thread to another application (keep action and intent empty to pass an input text)",
+            "availableSince": 3.0,
+            "editable": false,
+            "isFactory": true,
+            "category": "uberbot",
+            "items": [],
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "targetAppId",
+                    "label": "Target Application Id (required)"
+                },
+                {
+                    "type": "text",
+                    "name": "targetAction",
+                    "label": "Target action"
+                },
+                {
+                    "type": "text",
+                    "name": "targetIntent",
+                    "label": "Target intent"
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.setState",
+            "name": "Set state variable",
+            "description": "Set any value to user state (you can use dot notation for nested objects)",
+            "availableSince": 2.26,
+            "deprecatedSince": 3.0,
+            "editable": false,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "attr",
+                    "label": "Variable"
+                },
+                {
+                    "type": "text",
+                    "name": "value",
+                    "label": "Value"
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.setStateFromInput",
+            "name": "Set state variable from text message",
+            "description": "Set a user message, or quick reply, to state variable (you can use dot notation for nested objects)",
+            "availableSince": 2.26,
+            "deprecatedSince": 3.0,
+            "editable": false,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": [
+                {
+                    "name": "attr",
+                    "type": "text",
+                    "label": "Variable"
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.waitASecond",
+            "name": "Wait a second",
+            "description": "Make a short delay between bots messages",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.stopResponding",
+            "name": "Stop responding",
+            "description": "Make a short delay between bots messages",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.putABreadcrumb",
+            "name": "Put a breadcrumb",
+            "description": "Remember this step to be able to get back there later",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "breadcrumbs",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.goToLastBreadcrumb",
+            "name": "Go to last breadcrumb",
+            "description": "If there is a breadcrumb, go to it. If not, go to start.",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "breadcrumbs",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.goBack",
+            "name": "Go back to previous interaction",
+            "description": "If there is a previous interaction, go to it",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "breadcrumbs",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.keepInInteraction",
+            "name": "Keep user in this interaction (use it as a fallback)",
+            "description": "Users response will be processed by this interaction",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.keepInInteractionJustOnce",
+            "name": "Keep user in this interaction (use it as a fallback just once)",
+            "description": "Next response will be processed by this interaction, but the other not",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.keepPreviousHandlers",
+            "name": "Keep previous NLP handlers and fallback (repeatedly)",
+            "description": "Response will be processed same as in previous interaction - users can correct themselves",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.keepPreviousHandlersJustOnce",
+            "name": "Keep previous NLP handlers and fallback (just once)",
+            "description": "Response will be processed same as in previous interaction - users can correct themselves",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.conditionIfGoBackPossible",
+            "name": "Show when there is a way back (lastInteraction)",
+            "description": "Useful for link to 'go back' plugin.",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "CONDITION",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.ifImageDetected",
+            "name": "If user sends an image",
+            "description": "Continue, if request contains an image attachment",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "detectors",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.ifStickerDetected",
+            "name": "If user sends a sticker",
+            "description": "Continue, if request contains a Facebook sticker",
+            "availableSince": 3.06,
+            "editable": true,
+            "isFactory": false,
+            "category": "detectors",
+            "items": [],
+            "inputs": []
+        }
+    ],
+    "categories": [
+        {
+            "id": "conversation",
+            "name": "Conversation features"
+        },
+        {
+            "id": "breadcrumbs",
+            "name": "Moving in conversation"
+        },
+        {
+            "id": "detectors",
+            "name": "React to unusual messages"
+        },
+        {
+            "id": "facebook",
+            "name": "Facebook Messenger"
+        },
+        {
+            "id": "uberbot",
+            "name": "Masterbot architecture"
+        }
+    ]
+}

@@ -291,7 +291,7 @@ class Router extends ReducerWrapper {
                     true
                 );
             } else {
-                result = reducer.reduce(req, res, relativePostBack, pathContext, action);
+                result = reducer.reduce(req, res, relativePostBack, pathContext, action, this);
 
                 if (result instanceof Promise) {
                     result = await result;
