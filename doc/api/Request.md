@@ -69,6 +69,8 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.actionData()](#Request_actionData) ⇒ <code>object</code>
     * [.getSetState()](#Request_getSetState) ⇒ <code>object</code>
     * [.isConfidentInput()](#Request_isConfidentInput) ⇒ <code>boolean</code>
+    * [.actionByAi()](#Request_actionByAi) ⇒ <code>string</code> \| <code>null</code>
+    * [.aiActionsWinner()](#Request_aiActionsWinner) ⇒ [<code>IntentAction</code>](#IntentAction) \| <code>null</code>
     * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
 
 {% raw %}<div id="Request_params">&nbsp;</div>{% endraw %}
@@ -480,6 +482,38 @@ marked as confident using `res.expectedConfidentInput()`
 It's good to consider this state in "analytics" integrations.
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+{% raw %}<div id="Request_actionByAi">&nbsp;</div>{% endraw %}
+
+### request.actionByAi() ⇒ <code>string</code> \| <code>null</code>
+Returs action string, if there is an action detected by NLP
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Example**  
+```javascript
+const { Router } = require('wingbot');
+
+const bot = new Router();
+
+bot.use('question', (req, res) => {
+    res.text('tell me your email')
+        .expected('email');
+});
+
+bot.use('email', async (req, res, postBack) => {
+    if (req.actionByAi()) {
+        await postBack(req.actionByAi(), {}, true);
+        return;
+    }
+    res.text('thank you for your email');
+    res.setState({ email: req.text() });
+});
+```
+{% raw %}<div id="Request_aiActionsWinner">&nbsp;</div>{% endraw %}
+
+### request.aiActionsWinner() ⇒ [<code>IntentAction</code>](#IntentAction) \| <code>null</code>
+Returns full detected AI action
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_postBack">&nbsp;</div>{% endraw %}
 
 ### request.postBack([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
@@ -545,11 +579,13 @@ typeof res.postBack(true) === 'object';
 | sort | <code>number</code> | 
 | local | <code>boolean</code> | 
 | aboveConfidence | <code>boolean</code> | 
+| [setState] | <code>object</code> | 
 | [winner] | <code>boolean</code> | 
 | [title] | <code>string</code> \| <code>function</code> | 
 | meta | <code>object</code> | 
 | [meta.targetAppId] | <code>string</code> | 
 | [meta.targetAction] | <code>string</code> \| <code>null</code> | 
+| [meta.resolverTag] | <code>string</code> | 
 
 {% raw %}<div id="QuickReply">&nbsp;</div>{% endraw %}
 

@@ -1392,6 +1392,7 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <li><a href="#AiMatching_redundantEntityHandicap">.redundantEntityHandicap</a> : <code>number</code></li>
 <li><a href="#AiMatching_redundantIntentHandicap">.redundantIntentHandicap</a> : <code>number</code></li>
 <li><a href="#AiMatching_multiMatchGain">.multiMatchGain</a> : <code>number</code></li>
+<li><a href="#AiMatching_getSetStateForEntityRules">.getSetStateForEntityRules(rule)</a> &#x21D2; <code>object</code></li>
 <li><a href="#AiMatching_preprocessRule">.preprocessRule(intent)</a> &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
 <li><a href="#AiMatching_match">.match(req, rule)</a> &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></li>
 <li><a href="#AiMatching__matchRegexp">._matchRegexp(req, regexps)</a> &#x21D2; <code>boolean</code></li>
@@ -1424,6 +1425,13 @@ Also works, when an optional entity was not matched
 enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 (1.2 by default)</p>
 <p><strong>Kind</strong>: instance property of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<div id="AiMatching_getSetStateForEntityRules">&#xA0;</div>
+
+<h3 id="aimatchinggetsetstateforentityrulesrule-&#x21D2;-object"><a name="aimatchinggetsetstateforentityrulesrule-&#x21D2;-object" class="plugin-anchor" href="#aimatchinggetsetstateforentityrulesrule-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.getSetStateForEntityRules(rule) &#x21D2; <code>object</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a><br><strong>Params</strong></p>
+<ul>
+<li>rule <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
+</ul>
 <div id="AiMatching_preprocessRule">&#xA0;</div>
 
 <h3 id="aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput"><a name="aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput" class="plugin-anchor" href="#aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.preprocessRule(intent) &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></h3>
@@ -1799,6 +1807,10 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 <td>entities</td>
 <td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
 </tr>
+<tr>
+<td>[state]</td>
+<td><code>object</code></td>
+</tr>
 </tbody>
 </table>
 
@@ -1844,7 +1856,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-06-25T15:30:13.343Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-08-21T14:40:31.072Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T14:40:39.324Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

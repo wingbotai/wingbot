@@ -346,6 +346,7 @@ Class responsible for NLP Routing by score
     * [.redundantEntityHandicap](#AiMatching_redundantEntityHandicap) : <code>number</code>
     * [.redundantIntentHandicap](#AiMatching_redundantIntentHandicap) : <code>number</code>
     * [.multiMatchGain](#AiMatching_multiMatchGain) : <code>number</code>
+    * [.getSetStateForEntityRules(rule)](#AiMatching_getSetStateForEntityRules) ⇒ <code>object</code>
     * [.preprocessRule(intent)](#AiMatching_preprocessRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
     * [.match(req, rule)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
     * [._matchRegexp(req, regexps)](#AiMatching__matchRegexp) ⇒ <code>boolean</code>
@@ -380,6 +381,14 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 (1.2 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
+{% raw %}<div id="AiMatching_getSetStateForEntityRules">&nbsp;</div>{% endraw %}
+
+### aiMatching.getSetStateForEntityRules(rule) ⇒ <code>object</code>
+**Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
+**Params**
+
+- rule [<code>PreprocessorOutput</code>](#PreprocessorOutput)
+
 {% raw %}<div id="AiMatching_preprocessRule">&nbsp;</div>{% endraw %}
 
 ### aiMatching.preprocessRule(intent) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
@@ -613,4 +622,5 @@ Text filter function
 | text | <code>function</code> | 
 | intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) \| <code>null</code> | 
 | entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
+| [state] | <code>object</code> | 
 

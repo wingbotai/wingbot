@@ -302,6 +302,7 @@ Creates an instance of Tester.
         * [.attachmentType(type)](#ResponseAssert_attachmentType) ⇒ <code>this</code>
     * _static_
         * [.AnyResponseAssert#contains(search)](#ResponseAssert_AnyResponseAssert_contains) ⇒ <code>this</code>
+        * [.AnyResponseAssert#notContains(search)](#ResponseAssert_AnyResponseAssert_notContains) ⇒ <code>this</code>
         * [.AnyResponseAssert#quickReplyAction(action)](#ResponseAssert_AnyResponseAssert_quickReplyAction) ⇒ <code>this</code>
         * [.AnyResponseAssert#quickReplyTextContains(search)](#ResponseAssert_AnyResponseAssert_quickReplyTextContains) ⇒ <code>this</code>
         * [.AnyResponseAssert#templateType(type)](#ResponseAssert_AnyResponseAssert_templateType) ⇒ <code>this</code>
@@ -368,7 +369,17 @@ Checks attachment type
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_contains">&nbsp;</div>{% endraw %}
 
 ### ResponseAssert.AnyResponseAssert#contains(search) ⇒ <code>this</code>
-Checks, that response contains text
+Checks, that response contains a text
+
+**Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
+**Params**
+
+- search <code>string</code>
+
+{% raw %}<div id="ResponseAssert_AnyResponseAssert_notContains">&nbsp;</div>{% endraw %}
+
+### ResponseAssert.AnyResponseAssert#notContains(search) ⇒ <code>this</code>
+Checks, that response does NOT contain a text
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
 **Params**

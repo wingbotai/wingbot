@@ -31,7 +31,7 @@
         * [.keepConfigFor](#BuildRouter_keepConfigFor)
         * [.loadBot()](#BuildRouter_loadBot) ⇒ <code>Promise.&lt;object&gt;</code>
     * _static_
-        * [.fromData(blocks, plugins, [context])](#BuildRouter_fromData)
+        * [.fromData(blocks, [plugins], [context])](#BuildRouter_fromData)
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
@@ -99,12 +99,12 @@ Loads conversation configuration
 **Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
-### BuildRouter.fromData(blocks, plugins, [context])
+### BuildRouter.fromData(blocks, [plugins], [context])
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
 **Params**
 
 - blocks <code>Array.&lt;object&gt;</code> - blocks list
-- plugins [<code>Plugins</code>](#Plugins)
+- [plugins] [<code>Plugins</code>](#Plugins)
 - [context] <code>object</code>
 
 {% raw %}<div id="BuildRouter">&nbsp;</div>{% endraw %}
@@ -119,7 +119,7 @@ Loads conversation configuration
         * [.keepConfigFor](#BuildRouter_keepConfigFor)
         * [.loadBot()](#BuildRouter_loadBot) ⇒ <code>Promise.&lt;object&gt;</code>
     * _static_
-        * [.fromData(blocks, plugins, [context])](#BuildRouter_fromData)
+        * [.fromData(blocks, [plugins], [context])](#BuildRouter_fromData)
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
@@ -187,12 +187,12 @@ Loads conversation configuration
 **Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
 {% raw %}<div id="BuildRouter_fromData">&nbsp;</div>{% endraw %}
 
-### BuildRouter.fromData(blocks, plugins, [context])
+### BuildRouter.fromData(blocks, [plugins], [context])
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
 **Params**
 
 - blocks <code>Array.&lt;object&gt;</code> - blocks list
-- plugins [<code>Plugins</code>](#Plugins)
+- [plugins] [<code>Plugins</code>](#Plugins)
 - [context] <code>object</code>
 
 {% raw %}<div id="Plugins">&nbsp;</div>{% endraw %}
@@ -203,9 +203,42 @@ Custom code plugins for BuildRouter and wingbot.ai
 **Kind**: global class  
 
 * [Plugins](#Plugins)
+    * [.getWrappedPlugin(name, [paramsData], [items], [context])](#Plugins_getWrappedPlugin)
     * [.register(name, [plugin])](#Plugins_register)
     * [.registerFactory(name, pluginFactory)](#Plugins_registerFactory)
 
+{% raw %}<div id="Plugins_getWrappedPlugin">&nbsp;</div>{% endraw %}
+
+### plugins.getWrappedPlugin(name, [paramsData], [items], [context])
+Get plugin for the router
+
+**Kind**: instance method of [<code>Plugins</code>](#Plugins)  
+**Params**
+
+- name <code>string</code>
+- [paramsData] <code>object</code>
+- [items] <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code>
+- [context] <code>object</code>
+
+**Example**  
+```javascript
+const { Router } = require('wingbot');
+
+const bot = new Router();
+
+// simply
+bot.use('simple-route', plugins.getWrappedPlugin('myCoolPLugin'));
+
+// fully
+bot.use('full-plugin-route', plugins
+ .getWrappedPlugin(
+    'fancyPLugin',
+    { param: 123 },
+    new Map([
+      ['onSuccess', (req, res) => { res.text('yes, success'); }]
+    ])
+));
+```
 {% raw %}<div id="Plugins_register">&nbsp;</div>{% endraw %}
 
 ### plugins.register(name, [plugin])

@@ -1133,6 +1133,8 @@
 <li><a href="#Request_actionData">.actionData()</a> &#x21D2; <code>object</code></li>
 <li><a href="#Request_getSetState">.getSetState()</a> &#x21D2; <code>object</code></li>
 <li><a href="#Request_isConfidentInput">.isConfidentInput()</a> &#x21D2; <code>boolean</code></li>
+<li><a href="#Request_actionByAi">.actionByAi()</a> &#x21D2; <code>string</code> | <code>null</code></li>
+<li><a href="#Request_aiActionsWinner">.aiActionsWinner()</a> &#x21D2; <a href="#IntentAction"><code>IntentAction</code></a> | <code>null</code></li>
 <li><a href="#Request_postBack">.postBack([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></li>
 </ul>
 </li>
@@ -1578,6 +1580,34 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 marked as confident using <code>res.expectedConfidentInput()</code></p>
 <p>It&apos;s good to consider this state in &quot;analytics&quot; integrations.</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<div id="Request_actionByAi">&#xA0;</div>
+
+<h3 id="requestactionbyai-&#x21D2;-string--null"><a name="requestactionbyai-&#x21D2;-string--null" class="plugin-anchor" href="#requestactionbyai-&#x21D2;-string--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.actionByAi() &#x21D2; <code>string</code> | <code>null</code></h3>
+<p>Returs action string, if there is an action detected by NLP</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+
+bot.use(<span class="hljs-string">&apos;question&apos;</span>, (req, res) =&gt; {
+    res.text(<span class="hljs-string">&apos;tell me your email&apos;</span>)
+        .expected(<span class="hljs-string">&apos;email&apos;</span>);
+});
+
+bot.use(<span class="hljs-string">&apos;email&apos;</span>, <span class="hljs-keyword">async</span> (req, res, postBack) =&gt; {
+    <span class="hljs-keyword">if</span> (req.actionByAi()) {
+        <span class="hljs-keyword">await</span> postBack(req.actionByAi(), {}, <span class="hljs-literal">true</span>);
+        <span class="hljs-keyword">return</span>;
+    }
+    res.text(<span class="hljs-string">&apos;thank you for your email&apos;</span>);
+    res.setState({ email: req.text() });
+});
+</code></pre>
+<div id="Request_aiActionsWinner">&#xA0;</div>
+
+<h3 id="requestaiactionswinner-&#x21D2;-intentaction--null"><a name="requestaiactionswinner-&#x21D2;-intentaction--null" class="plugin-anchor" href="#requestaiactionswinner-&#x21D2;-intentaction--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.aiActionsWinner() &#x21D2; <a href="#IntentAction"><code>IntentAction</code></a> | <code>null</code></h3>
+<p>Returns full detected AI action</p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_postBack">&#xA0;</div>
 
 <h3 id="requestpostbackgetdata-&#x21D2;-null--string--object"><a name="requestpostbackgetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestpostbackgetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.postBack([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></h3>
@@ -1703,6 +1733,10 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <td><code>boolean</code></td>
 </tr>
 <tr>
+<td>[setState]</td>
+<td><code>object</code></td>
+</tr>
+<tr>
 <td>[winner]</td>
 <td><code>boolean</code></td>
 </tr>
@@ -1723,6 +1757,10 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <td>[meta.targetAction]</td>
 <td><code>string</code> \</td>
 <td><code>null</code></td>
+</tr>
+<tr>
+<td>[meta.resolverTag]</td>
+<td><code>string</code></td>
 </tr>
 </tbody>
 </table>
@@ -1791,7 +1829,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2020-06-25T15:30:10.370Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2020-08-21T14:40:29.595Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T14:40:39.324Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

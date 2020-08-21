@@ -1098,7 +1098,7 @@
 </ul>
 </li>
 <li><em>static</em><ul>
-<li><a href="#BuildRouter_fromData">.fromData(blocks, plugins, [context])</a></li>
+<li><a href="#BuildRouter_fromData">.fromData(blocks, [plugins], [context])</a></li>
 </ul>
 </li>
 </ul>
@@ -1175,11 +1175,11 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <p><strong>Kind</strong>: instance method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
 <div id="BuildRouter_fromData">&#xA0;</div>
 
-<h3 id="buildrouterfromdatablocks-plugins-context"><a name="buildrouterfromdatablocks-plugins-context" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins-context"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, plugins, [context])</h3>
+<h3 id="buildrouterfromdatablocks-plugins-context"><a name="buildrouterfromdatablocks-plugins-context" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins-context"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, [plugins], [context])</h3>
 <p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a><br><strong>Params</strong></p>
 <ul>
 <li>blocks <code>Array.&lt;object&gt;</code> - blocks list</li>
-<li>plugins <a href="#Plugins"><code>Plugins</code></a></li>
+<li>[plugins] <a href="#Plugins"><code>Plugins</code></a></li>
 <li>[context] <code>object</code></li>
 </ul>
 <div id="BuildRouter">&#xA0;</div>
@@ -1196,7 +1196,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 </ul>
 </li>
 <li><em>static</em><ul>
-<li><a href="#BuildRouter_fromData">.fromData(blocks, plugins, [context])</a></li>
+<li><a href="#BuildRouter_fromData">.fromData(blocks, [plugins], [context])</a></li>
 </ul>
 </li>
 </ul>
@@ -1273,11 +1273,11 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <p><strong>Kind</strong>: instance method of <a href="#BuildRouter"><code>BuildRouter</code></a>  </p>
 <div id="BuildRouter_fromData">&#xA0;</div>
 
-<h3 id="buildrouterfromdatablocks-plugins-context"><a name="buildrouterfromdatablocks-plugins-context" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins-context"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, plugins, [context])</h3>
+<h3 id="buildrouterfromdatablocks-plugins-context"><a name="buildrouterfromdatablocks-plugins-context" class="plugin-anchor" href="#buildrouterfromdatablocks-plugins-context"><i class="fa fa-link" aria-hidden="true"></i></a>BuildRouter.fromData(blocks, [plugins], [context])</h3>
 <p><strong>Kind</strong>: static method of <a href="#BuildRouter"><code>BuildRouter</code></a><br><strong>Params</strong></p>
 <ul>
 <li>blocks <code>Array.&lt;object&gt;</code> - blocks list</li>
-<li>plugins <a href="#Plugins"><code>Plugins</code></a></li>
+<li>[plugins] <a href="#Plugins"><code>Plugins</code></a></li>
 <li>[context] <code>object</code></li>
 </ul>
 <div id="Plugins">&#xA0;</div>
@@ -1287,11 +1287,41 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <p><strong>Kind</strong>: global class  </p>
 <ul>
 <li><a href="#Plugins">Plugins</a><ul>
+<li><a href="#Plugins_getWrappedPlugin">.getWrappedPlugin(name, [paramsData], [items], [context])</a></li>
 <li><a href="#Plugins_register">.register(name, [plugin])</a></li>
 <li><a href="#Plugins_registerFactory">.registerFactory(name, pluginFactory)</a></li>
 </ul>
 </li>
 </ul>
+<div id="Plugins_getWrappedPlugin">&#xA0;</div>
+
+<h3 id="pluginsgetwrappedpluginname-paramsdata-items-context"><a name="pluginsgetwrappedpluginname-paramsdata-items-context" class="plugin-anchor" href="#pluginsgetwrappedpluginname-paramsdata-items-context"><i class="fa fa-link" aria-hidden="true"></i></a>plugins.getWrappedPlugin(name, [paramsData], [items], [context])</h3>
+<p>Get plugin for the router</p>
+<p><strong>Kind</strong>: instance method of <a href="#Plugins"><code>Plugins</code></a><br><strong>Params</strong></p>
+<ul>
+<li>name <code>string</code></li>
+<li>[paramsData] <code>object</code></li>
+<li>[items] <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code></li>
+<li>[context] <code>object</code></li>
+</ul>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+
+<span class="hljs-comment">// simply</span>
+bot.use(<span class="hljs-string">&apos;simple-route&apos;</span>, plugins.getWrappedPlugin(<span class="hljs-string">&apos;myCoolPLugin&apos;</span>));
+
+<span class="hljs-comment">// fully</span>
+bot.use(<span class="hljs-string">&apos;full-plugin-route&apos;</span>, plugins
+ .getWrappedPlugin(
+    <span class="hljs-string">&apos;fancyPLugin&apos;</span>,
+    { param: <span class="hljs-number">123</span> },
+    <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>([
+      [<span class="hljs-string">&apos;onSuccess&apos;</span>, (req, res) =&gt; { res.text(<span class="hljs-string">&apos;yes, success&apos;</span>); }]
+    ])
+));
+</code></pre>
 <div id="Plugins_register">&#xA0;</div>
 
 <h3 id="pluginsregistername-plugin"><a name="pluginsregistername-plugin" class="plugin-anchor" href="#pluginsregistername-plugin"><i class="fa fa-link" aria-hidden="true"></i></a>plugins.register(name, [plugin])</h3>
@@ -1394,7 +1424,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2020-06-25T15:30:13.730Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-06-25T15:30:22.460Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2020-08-21T14:40:31.510Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T14:40:39.324Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
