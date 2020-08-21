@@ -33,9 +33,8 @@ function plugin (params, context, plugins) {
         .reduce((map, itemName) => {
             const item = items[itemName];
             const builtResolvers = router.buildResolvers(item.resolvers);
-            const reducers = router.createReducersArray(builtResolvers);
 
-            map.set(itemName, reducers);
+            map.set(itemName, builtResolvers);
 
             return map;
         }, new Map());
@@ -46,7 +45,7 @@ function plugin (params, context, plugins) {
 
     const fn = customFn(code, description, allowForbiddenSnippetWords);
 
-    return wrapPluginFunction(fn, paramsData, items, context);
+    return wrapPluginFunction(fn, paramsData, itemsMap, context, router);
 }
 
 module.exports = plugin;

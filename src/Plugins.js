@@ -50,6 +50,8 @@ class Plugins {
      * @param {object} [paramsData]
      * @param {Map<string,Function[]>} [items]
      * @param {object} [context]
+     * @param {boolean} [context.isLastIndex]
+     * @param {Router} [context.router]
      * @example
      *
      * const { Router } = require('wingbot');
@@ -65,7 +67,7 @@ class Plugins {
      *     'fancyPLugin',
      *     { param: 123 },
      *     new Map([
-     *       ['onSuccess', (req, res) => { res.text('yes, success'); }]
+     *       ['onSuccess', [(req, res) => { res.text('yes, success'); }]]
      *     ])
      * ));
      */
@@ -76,14 +78,15 @@ class Plugins {
         context = { isLastIndex: true }
     ) {
         const customFn = this.getPluginFactory(name, paramsData);
-
         if (typeof customFn === 'object') {
             // this is an attached router
 
             return new RouterWrap(customFn, items, paramsData);
         }
 
-        return wrapPluginFunction(customFn, paramsData, items, context, Router);
+        const { router = new Router() } = context;
+
+        return wrapPluginFunction(customFn, paramsData, items, context, router);
     }
 
     code (name, factoryFn = null) {

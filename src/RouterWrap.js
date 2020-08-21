@@ -11,7 +11,14 @@ class RouterWrap extends EventEmitter {
     constructor (router, items, params) {
         super();
         this.router = router;
-        this.items = items;
+
+        this.items = new Map();
+
+        for (const [item, builtResolvers] of items.entries()) {
+            this.items
+                .set(item, router.createReducersArray(builtResolvers));
+        }
+
         this.params = params;
 
         // @ts-ignore
