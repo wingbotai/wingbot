@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.0] - 2020-08-21
+
+### Added
+
+- Method `res.send()` is now public.
+- New method `plugins.getWrappedPlugin()` simplifies testing of plugins
+- Entity persistence
+  + entites are persisted inside a dialoge
+  + they're accessible under `@<entity>` state variable
+- Support for designers FAQ Bounce
+- new `botbuild.plugin` resolver, which combines snippets (inlineCode) and plugins (customCode) resolvers
+  + public plugin library is now a part of the core Wingbot lib
+
+### Fixed
+
+- designer resolver `botbuild.postback` now passes the text to next interaction
+- fixes a problem, which affects the API, when an empty conversation occurs
+
+### Changed
+
+- Replaced `request-promise-native` with `node-fetch`
+- Raised code coverage threshold to 90-80-90
 
 ## [3.5.0] - 2020-06-25
 
