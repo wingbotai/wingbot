@@ -6,11 +6,14 @@
 const Router = require('../Router');
 const { stateData, cachedTranslatedCompilator } = require('./utils');
 
-function media ({ type, url }, { isLastIndex }) {
+function media (params, { isLastIndex }) {
+    const { type, url } = params;
 
     const urlString = url || '';
 
     const urlTemplate = cachedTranslatedCompilator(urlString);
+
+    const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
     if (['image', 'file', 'video'].indexOf(type) === -1) {
         throw new Error(`Unsupported media type: ${type}`);
@@ -22,7 +25,7 @@ function media ({ type, url }, { isLastIndex }) {
 
         res[type](sendUrl, true);
 
-        return isLastIndex ? Router.END : Router.CONTINUE;
+        return ret;
     };
 }
 

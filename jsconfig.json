@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es2017",
         "lib": ["es6"],
+        "target": "es2019",
         "allowSyntheticDefaultImports": true,
         "checkJs": true,
         "resolveJsonModule": true

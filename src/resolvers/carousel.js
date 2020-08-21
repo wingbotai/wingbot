@@ -17,19 +17,18 @@ const {
     TYPE_URL_WITH_EXT
 } = require('./utils');
 
-function end (isLastIndex) {
-    return isLastIndex ? Router.END : Router.CONTINUE;
-}
+function carousel (params, { isLastIndex, linksMap, linksTranslator = (a, b, c) => c }) {
+    const {
+        items = [],
+        shareable = false,
+        imageAspect = ASPECT_HORISONTAL
+    } = params;
 
-function carousel ({
-    items = [],
-    shareable = false,
-    imageAspect = ASPECT_HORISONTAL
-}, { isLastIndex, linksMap, linksTranslator }) {
+    const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
     return (req, res) => {
         if (items.length === 0) {
-            return end(isLastIndex);
+            return ret;
         }
 
         const state = stateData(req, res);
@@ -96,7 +95,7 @@ function carousel ({
 
         tpl.send();
 
-        return end(isLastIndex);
+        return ret;
     };
 }
 

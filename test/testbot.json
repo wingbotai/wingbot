@@ -355,7 +355,6 @@
               {
                 "type": "botbuild.carousel",
                 "params": {
-                  "shareable": false,
                   "items": [
                     {
                       "image": null,
@@ -419,6 +418,14 @@
                   "imageAspect": "square"
                 },
                 "id": 1518627281574
+              },
+              {
+                "type": "botbuild.carousel",
+                "params": {
+                  "items": [],
+                  "imageAspect": "square"
+                },
+                "id": 1518627281575
               },
               {
                 "type": "botbuild.message",

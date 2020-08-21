@@ -6,10 +6,13 @@
 const requestNative = require('request-promise-native');
 const path = require('path');
 const Router = require('./Router');
+const Plugins = require('./Plugins');
 const Ai = require('./Ai');
 const expected = require('./resolvers/expected');
+const bounce = require('./resolvers/bounce');
 const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
 const defaultResourceMap = require('./defaultResourceMap');
+const { shouldExecuteResolver } = require('./resolvers/resolverTags');
 
 const MESSAGE_RESOLVER_NAME = 'botbuild.message';
 
@@ -65,7 +68,7 @@ class BuildRouter extends Router {
      *
      * module.exports = bot;
      */
-    constructor (block, plugins, context = {}, request = requestNative) {
+    constructor (block, plugins = new Plugins(), context = {}, request = requestNative) {
         super();
 
         if (!block || typeof block !== 'object') {
@@ -380,7 +383,7 @@ class BuildRouter extends Router {
         });
     }
 
-    _buildRouteHead (route) {
+    _buildRouteHead (route, nextRouteIsSameResponder) {
         const resolvers = [];
 
         if (!route.isFallback) {
@@ -413,19 +416,40 @@ class BuildRouter extends Router {
             } else if (route.path) {
                 resolvers.push(route.path);
             }
+
+            if (route.isResponder) {
+                const referredRoutePath = this._linksMap.get(route.respondsToRouteId);
+                const bounceResolver = bounce(route, nextRouteIsSameResponder, referredRoutePath);
+                if (bounceResolver) {
+                    resolvers.push(bounceResolver);
+                }
+            }
         }
 
         if (route.expectedPath) {
-            resolvers.push(expected({ path: route.expectedPath }, { isLastIndex: false }));
+            resolvers.push(expected({
+                path: route.expectedPath
+            }, {
+                isLastIndex: route.resolvers.length === 0
+            }));
         }
 
         return resolvers;
     }
 
     _buildRoutes (routes) {
-        routes.forEach((route) => {
+        routes.forEach((route, i) => {
+            const nextRoute = routes.length > (i + 1)
+                ? routes[i + 1]
+                : null;
+            let nextRouteIsSameResponder = false;
+
+            if (nextRoute && route.isResponder && nextRoute.isResponder) {
+                nextRouteIsSameResponder = nextRoute.respondsToRouteId === route.respondsToRouteId;
+            }
+
             this.use(...[
-                ...this._buildRouteHead(route),
+                ...this._buildRouteHead(route, nextRouteIsSameResponder),
                 ...this.buildResolvers(route.resolvers, route)
             ]);
         });
@@ -475,17 +499,54 @@ class BuildRouter extends Router {
 
         const factoryFn = this.resources.get(type);
 
-        return factoryFn(resolver.params, context, this._plugins);
+        const fn = factoryFn(resolver.params, context, this._plugins);
+
+        if ([
+            'botbuild.include',
+            'botbuild.path'
+        ].includes(type)) {
+            return fn;
+        }
+
+        const retFn = (req, ...rest) => {
+            if (!shouldExecuteResolver(req, resolver.tag)) {
+                return context.isLastIndex ? Router.END : Router.CONTINUE;
+            }
+            return typeof fn === 'function'
+                ? fn(req, ...rest)
+                : fn.reduce(req, ...rest);
+        };
+
+        if (typeof fn.globalIntentsMeta === 'object') {
+            retFn.globalIntentsMeta = fn.globalIntentsMeta;
+        }
+
+        if (fn.globalIntents) {
+            retFn.globalIntents = fn.globalIntents;
+        }
+
+        if (fn.path) {
+            retFn.path = fn.path;
+        }
+
+        if (resolver.tag) {
+            if (!retFn.globalIntentsMeta) {
+                retFn.globalIntentsMeta = {};
+            }
+            Object.assign(retFn.globalIntentsMeta, { resolverTag: resolver.tag });
+        }
+
+        return retFn;
     }
 
 }
 
 /**
  * @param {object[]} blocks - blocks list
- * @param {Plugins} plugins
+ * @param {Plugins} [plugins]
  * @param {object} [context]
  */
-BuildRouter.fromData = function fromData (blocks, plugins, context = {}) {
+BuildRouter.fromData = function fromData (blocks, plugins = new Plugins(), context = {}) {
 
     const rootBlock = blocks.find((block) => block.isRoot);
 

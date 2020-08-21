@@ -20,7 +20,7 @@ class AnyResponseAssert {
     }
 
     /**
-     * Checks, that response contains text
+     * Checks, that response contains a text
      *
      * @param {string} search
      * @returns {this}
@@ -35,6 +35,26 @@ class AnyResponseAssert {
                 .map((res) => asserts.getText(res))
                 .filter((t) => !!t);
             assert.fail(m('No response contains required text', search, actual));
+        }
+        return this;
+    }
+
+    /**
+     *  Checks, that response does NOT contain a text
+     *
+     * @param {string} search
+     * @returns {this}
+     *
+     * @memberOf ResponseAssert
+     */
+    notContains (search) {
+        const ok = this.responses
+            .every((res) => !asserts.contains(res, search, false));
+        if (!ok) {
+            const actual = this.responses
+                .map((res) => asserts.getText(res))
+                .filter((t) => !!t);
+            assert.fail(m('There is a response containing unwanted text', search, actual));
         }
         return this;
     }

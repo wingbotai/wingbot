@@ -22,7 +22,6 @@ function setState (params, { isLastIndex, allowForbiddenSnippetWords }) {
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
     return async (req, res) => {
-
         if (condition !== null) {
             let condRes = condition(req, res);
 

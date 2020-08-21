@@ -5,13 +5,15 @@
 
 const Router = require('../Router');
 const customFn = require('../utils/customFn');
+const { shouldExecuteResolver } = require('./resolverTags');
 
-function postback ({
-    routeId,
-    postBack: staticAction,
-    hasCondition,
-    conditionFn
-}, { linksMap, isLastIndex, allowForbiddenSnippetWords }) {
+function postback (params, { linksMap, isLastIndex, allowForbiddenSnippetWords }) {
+    const {
+        routeId,
+        postBack: staticAction,
+        hasCondition,
+        conditionFn
+    } = params;
     let action = staticAction;
 
     if (!action && routeId) {
@@ -31,6 +33,10 @@ function postback ({
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
     return (req, res, postBack) => {
+        if (!shouldExecuteResolver(req, params)) {
+            return ret;
+        }
+
         let data = {};
 
         if (condition !== null) {

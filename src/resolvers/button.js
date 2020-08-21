@@ -11,18 +11,18 @@ const {
     processButtons
 } = require('./utils');
 
-function button ({
-    buttons = [],
-    text = null,
-    hasCondition,
-    conditionFn
-}, {
+function button (params, {
     isLastIndex,
     linksMap,
     linksTranslator,
     allowForbiddenSnippetWords
 }) {
-
+    const {
+        buttons = [],
+        text = null,
+        hasCondition,
+        conditionFn
+    } = params;
     const compiledText = cachedTranslatedCompilator(text);
 
     let condition = null;
@@ -37,7 +37,6 @@ function button ({
         if (buttons.length === 0) {
             return ret;
         }
-
         if (condition !== null) {
             if (!condition(req, res)) {
                 return ret;
