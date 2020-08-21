@@ -26,7 +26,7 @@
 
 * [BuildRouter](#BuildRouter)
     * [new BuildRouter()](#new_BuildRouter_new)
-    * [new BuildRouter(block, plugins, context, [request])](#new_BuildRouter_new)
+    * [new BuildRouter(block, plugins, context, [fetchFn])](#new_BuildRouter_new)
     * _instance_
         * [.keepConfigFor](#BuildRouter_keepConfigFor)
         * [.loadBot()](#BuildRouter_loadBot) ⇒ <code>Promise.&lt;object&gt;</code>
@@ -40,7 +40,7 @@ Build bot from Wingbot configuration file or snapshot url
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
-### new BuildRouter(block, plugins, context, [request])
+### new BuildRouter(block, plugins, context, [fetchFn])
 Create new router from configuration
 
 **Params**
@@ -55,7 +55,7 @@ Create new router from configuration
     - [.linksTranslator] <code>object</code> - function, that translates links globally
     - [.configStorage] [<code>ConfigStorage</code>](#ConfigStorage) - function, that translates links globally
     - [.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule
-- [request] <code>function</code> - the building context
+- [fetchFn] <code>fetch</code> - override a request function
 
 **Example**  
 ```javascript
@@ -114,7 +114,7 @@ Loads conversation configuration
 
 * [BuildRouter](#BuildRouter)
     * [new BuildRouter()](#new_BuildRouter_new)
-    * [new BuildRouter(block, plugins, context, [request])](#new_BuildRouter_new)
+    * [new BuildRouter(block, plugins, context, [fetchFn])](#new_BuildRouter_new)
     * _instance_
         * [.keepConfigFor](#BuildRouter_keepConfigFor)
         * [.loadBot()](#BuildRouter_loadBot) ⇒ <code>Promise.&lt;object&gt;</code>
@@ -128,7 +128,7 @@ Build bot from Wingbot configuration file or snapshot url
 
 {% raw %}<div id="new_BuildRouter_new">&nbsp;</div>{% endraw %}
 
-### new BuildRouter(block, plugins, context, [request])
+### new BuildRouter(block, plugins, context, [fetchFn])
 Create new router from configuration
 
 **Params**
@@ -143,7 +143,7 @@ Create new router from configuration
     - [.linksTranslator] <code>object</code> - function, that translates links globally
     - [.configStorage] [<code>ConfigStorage</code>](#ConfigStorage) - function, that translates links globally
     - [.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule
-- [request] <code>function</code> - the building context
+- [fetchFn] <code>fetch</code> - override a request function
 
 **Example**  
 ```javascript
@@ -219,6 +219,8 @@ Get plugin for the router
 - [paramsData] <code>object</code>
 - [items] <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code>
 - [context] <code>object</code>
+    - [.isLastIndex] <code>boolean</code>
+    - [.router] <code>Router</code>
 
 **Example**  
 ```javascript
@@ -235,7 +237,7 @@ bot.use('full-plugin-route', plugins
     'fancyPLugin',
     { param: 123 },
     new Map([
-      ['onSuccess', (req, res) => { res.text('yes, success'); }]
+      ['onSuccess', [(req, res) => { res.text('yes, success'); }]]
     ])
 ));
 ```

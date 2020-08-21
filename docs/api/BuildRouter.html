@@ -1091,7 +1091,7 @@
 <ul>
 <li><a href="#BuildRouter">BuildRouter</a><ul>
 <li><a href="#new_BuildRouter_new">new BuildRouter()</a></li>
-<li><a href="#new_BuildRouter_new">new BuildRouter(block, plugins, context, [request])</a></li>
+<li><a href="#new_BuildRouter_new">new BuildRouter(block, plugins, context, [fetchFn])</a></li>
 <li><em>instance</em><ul>
 <li><a href="#BuildRouter_keepConfigFor">.keepConfigFor</a></li>
 <li><a href="#BuildRouter_loadBot">.loadBot()</a> &#x21D2; <code>Promise.&lt;object&gt;</code></li>
@@ -1110,7 +1110,7 @@
 <p>Build bot from Wingbot configuration file or snapshot url</p>
 <div id="new_BuildRouter_new">&#xA0;</div>
 
-<h3 id="new-buildrouterblock-plugins-context-request"><a name="new-buildrouterblock-plugins-context-request" class="plugin-anchor" href="#new-buildrouterblock-plugins-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, plugins, context, [request])</h3>
+<h3 id="new-buildrouterblock-plugins-context-fetchfn"><a name="new-buildrouterblock-plugins-context-fetchfn" class="plugin-anchor" href="#new-buildrouterblock-plugins-context-fetchfn"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, plugins, context, [fetchFn])</h3>
 <p>Create new router from configuration</p>
 <p><strong>Params</strong></p>
 <ul>
@@ -1128,7 +1128,7 @@
 <li>[.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule</li>
 </ul>
 </li>
-<li>[request] <code>function</code> - the building context</li>
+<li>[fetchFn] <code>fetch</code> - override a request function</li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// usage of plugins</span>
@@ -1189,7 +1189,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <ul>
 <li><a href="#BuildRouter">BuildRouter</a><ul>
 <li><a href="#new_BuildRouter_new">new BuildRouter()</a></li>
-<li><a href="#new_BuildRouter_new">new BuildRouter(block, plugins, context, [request])</a></li>
+<li><a href="#new_BuildRouter_new">new BuildRouter(block, plugins, context, [fetchFn])</a></li>
 <li><em>instance</em><ul>
 <li><a href="#BuildRouter_keepConfigFor">.keepConfigFor</a></li>
 <li><a href="#BuildRouter_loadBot">.loadBot()</a> &#x21D2; <code>Promise.&lt;object&gt;</code></li>
@@ -1208,7 +1208,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <p>Build bot from Wingbot configuration file or snapshot url</p>
 <div id="new_BuildRouter_new">&#xA0;</div>
 
-<h3 id="new-buildrouterblock-plugins-context-request"><a name="new-buildrouterblock-plugins-context-request" class="plugin-anchor" href="#new-buildrouterblock-plugins-context-request"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, plugins, context, [request])</h3>
+<h3 id="new-buildrouterblock-plugins-context-fetchfn"><a name="new-buildrouterblock-plugins-context-fetchfn" class="plugin-anchor" href="#new-buildrouterblock-plugins-context-fetchfn"><i class="fa fa-link" aria-hidden="true"></i></a>new BuildRouter(block, plugins, context, [fetchFn])</h3>
 <p>Create new router from configuration</p>
 <p><strong>Params</strong></p>
 <ul>
@@ -1226,7 +1226,7 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <li>[.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule</li>
 </ul>
 </li>
-<li>[request] <code>function</code> - the building context</li>
+<li>[fetchFn] <code>fetch</code> - override a request function</li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-comment">// usage of plugins</span>
@@ -1302,7 +1302,11 @@ plugins.register(<span class="hljs-string">&apos;exampleBlock&apos;</span>, <spa
 <li>name <code>string</code></li>
 <li>[paramsData] <code>object</code></li>
 <li>[items] <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code></li>
-<li>[context] <code>object</code></li>
+<li>[context] <code>object</code><ul>
+<li>[.isLastIndex] <code>boolean</code></li>
+<li>[.router] <code>Router</code></li>
+</ul>
+</li>
 </ul>
 <p><strong>Example</strong>  </p>
 <pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
@@ -1318,7 +1322,7 @@ bot.use(<span class="hljs-string">&apos;full-plugin-route&apos;</span>, plugins
     <span class="hljs-string">&apos;fancyPLugin&apos;</span>,
     { param: <span class="hljs-number">123</span> },
     <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>([
-      [<span class="hljs-string">&apos;onSuccess&apos;</span>, (req, res) =&gt; { res.text(<span class="hljs-string">&apos;yes, success&apos;</span>); }]
+      [<span class="hljs-string">&apos;onSuccess&apos;</span>, [(req, res) =&gt; { res.text(<span class="hljs-string">&apos;yes, success&apos;</span>); }]]
     ])
 ));
 </code></pre>
@@ -1424,7 +1428,7 @@ bot.use(<span class="hljs-string">&apos;full-plugin-route&apos;</span>, plugins
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2020-08-21T14:40:31.510Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T14:40:39.324Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"next":{"title":"Notifications","level":"3.9","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"previous":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BuildRouter.md","mtime":"2020-08-21T15:32:36.006Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:32:39.278Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

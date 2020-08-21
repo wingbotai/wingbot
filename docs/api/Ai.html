@@ -1318,6 +1318,7 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <ul>
 <li><a href="#WingbotModel">WingbotModel</a><ul>
 <li><a href="#new_WingbotModel_new">new WingbotModel(options, [log])</a></li>
+<li><a href="#WingbotModel__fetch">._fetch</a> : <code>fetch</code></li>
 <li><a href="#WingbotModel__queryModel">._queryModel(text)</a> &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></li>
 </ul>
 </li>
@@ -1332,10 +1333,15 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <li>.model <code>string</code></li>
 <li>[.cacheSize] <code>number</code></li>
 <li>[.matches] <code>number</code></li>
+<li>[.fetch] <code>function</code></li>
 </ul>
 </li>
 <li>[log] <code>Object</code></li>
 </ul>
+<div id="WingbotModel__fetch">&#xA0;</div>
+
+<h3 id="wingbotmodelfetch--fetch"><a name="wingbotmodelfetch--fetch" class="plugin-anchor" href="#wingbotmodelfetch--fetch"><i class="fa fa-link" aria-hidden="true"></i></a>wingbotModel._fetch : <code>fetch</code></h3>
+<p><strong>Kind</strong>: instance property of <a href="#WingbotModel"><code>WingbotModel</code></a>  </p>
 <div id="WingbotModel__queryModel">&#xA0;</div>
 
 <h3 id="wingbotmodelquerymodeltext-&#x21D2;-promiseresult"><a name="wingbotmodelquerymodeltext-&#x21D2;-promiseresult" class="plugin-anchor" href="#wingbotmodelquerymodeltext-&#x21D2;-promiseresult"><i class="fa fa-link" aria-hidden="true"></i></a>wingbotModel._queryModel(text) &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></h3>
@@ -1856,7 +1862,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-08-21T14:40:31.072Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T14:40:39.324Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-08-21T15:32:35.615Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:32:39.278Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

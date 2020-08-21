@@ -1077,9 +1077,11 @@
 <dl>
 <dt><a href="#Resolver">Resolver</a> : <code>function</code></dt>
 <dd></dd>
+<dt><a href="#IRouter">IRouter</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#BotPath">BotPath</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Middleware">Middleware</a> : <code>Resolver</code> | <code>string</code> | <code>RegExp</code> | <code>Router</code> | <code>BotPath</code></dt>
+<dt><a href="#Middleware">Middleware</a> : <code>Resolver</code> | <code>string</code> | <code>RegExp</code> | <code>IRouter</code> | <code>BotPath</code></dt>
 <dd><p>flow control statement or function</p>
 </dd>
 </dl>
@@ -1340,6 +1342,24 @@ router.use(<span class="hljs-string">&apos;disables-firing-processor-event&apos;
 <li>[res] <code>Responder</code></li>
 <li>[postBack] <code>function</code></li>
 </ul>
+<div id="IRouter">&#xA0;</div>
+
+<h2 id="irouter--object"><a name="irouter--object" class="plugin-anchor" href="#irouter--object"><i class="fa fa-link" aria-hidden="true"></i></a>IRouter : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reduce</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
 <div id="BotPath">&#xA0;</div>
 
 <h2 id="botpath--object"><a name="botpath--object" class="plugin-anchor" href="#botpath--object"><i class="fa fa-link" aria-hidden="true"></i></a>BotPath : <code>object</code></h2>
@@ -1360,7 +1380,7 @@ router.use(<span class="hljs-string">&apos;disables-firing-processor-event&apos;
 </table>
 <div id="Middleware">&#xA0;</div>
 
-<h2 id="middleware--resolver--string--regexp--router--botpath"><a name="middleware--resolver--string--regexp--router--botpath" class="plugin-anchor" href="#middleware--resolver--string--regexp--router--botpath"><i class="fa fa-link" aria-hidden="true"></i></a>Middleware : <a href="#Resolver"><code>Resolver</code></a> | <code>string</code> | <code>RegExp</code> | <a href="#Router"><code>Router</code></a> | <a href="#BotPath"><code>BotPath</code></a></h2>
+<h2 id="middleware--resolver--string--regexp--irouter--botpath"><a name="middleware--resolver--string--regexp--irouter--botpath" class="plugin-anchor" href="#middleware--resolver--string--regexp--irouter--botpath"><i class="fa fa-link" aria-hidden="true"></i></a>Middleware : <a href="#Resolver"><code>Resolver</code></a> | <code>string</code> | <code>RegExp</code> | <a href="#IRouter"><code>IRouter</code></a> | <a href="#BotPath"><code>BotPath</code></a></h2>
 <p>flow control statement or function</p>
 <p><strong>Kind</strong>: global typedef  </p>
 
@@ -1406,7 +1426,7 @@ router.use(<span class="hljs-string">&apos;disables-firing-processor-event&apos;
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Router","level":"3.3","depth":1,"next":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"previous":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Router.md","mtime":"2020-08-21T14:40:30.078Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T14:40:39.324Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Router","level":"3.3","depth":1,"next":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"previous":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Router.md","mtime":"2020-08-21T15:32:35.120Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:32:39.278Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

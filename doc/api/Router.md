@@ -12,9 +12,11 @@
 <dl>
 <dt><a href="#Resolver">Resolver</a> : <code>function</code></dt>
 <dd></dd>
+<dt><a href="#IRouter">IRouter</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#BotPath">BotPath</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#Middleware">Middleware</a> : <code><a href="#Resolver">Resolver</a></code> | <code>string</code> | <code>RegExp</code> | <code><a href="#Router">Router</a></code> | <code><a href="#BotPath">BotPath</a></code></dt>
+<dt><a href="#Middleware">Middleware</a> : <code><a href="#Resolver">Resolver</a></code> | <code>string</code> | <code>RegExp</code> | <code><a href="#IRouter">IRouter</a></code> | <code><a href="#BotPath">BotPath</a></code></dt>
 <dd><p>flow control statement or function</p>
 </dd>
 </dl>
@@ -268,6 +270,16 @@ Creates an instance of ReducerWrapper.
 - [res] <code>Responder</code>
 - [postBack] <code>function</code>
 
+{% raw %}<div id="IRouter">&nbsp;</div>{% endraw %}
+
+## IRouter : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| reduce | <code>function</code> | 
+
 {% raw %}<div id="BotPath">&nbsp;</div>{% endraw %}
 
 ## BotPath : <code>object</code>
@@ -280,7 +292,7 @@ Creates an instance of ReducerWrapper.
 
 {% raw %}<div id="Middleware">&nbsp;</div>{% endraw %}
 
-## Middleware : [<code>Resolver</code>](#Resolver) \| <code>string</code> \| <code>RegExp</code> \| [<code>Router</code>](#Router) \| [<code>BotPath</code>](#BotPath)
+## Middleware : [<code>Resolver</code>](#Resolver) \| <code>string</code> \| <code>RegExp</code> \| [<code>IRouter</code>](#IRouter) \| [<code>BotPath</code>](#BotPath)
 flow control statement or function
 
 **Kind**: global typedef  

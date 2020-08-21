@@ -31,6 +31,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
     * [.setNotificationRecipient(recipient)](#Responder_setNotificationRecipient)
     * [.doNotLogTheEvent()](#Responder_doNotLogTheEvent) ⇒ <code>this</code>
+    * [.send(data)](#Responder_send) ⇒ <code>this</code>
     * ~~[.setBookmark([action], [winningIntent])](#Responder_setBookmark) ⇒ <code>this</code>~~
     * ~~[.bookmark()](#Responder_bookmark) ⇒ <code>string</code> \| <code>null</code>~~
     * ~~[.runBookmark(postBack, [data])](#Responder_runBookmark) ⇒ <code>Promise.&lt;(null\|boolean)&gt;</code>~~
@@ -146,6 +147,21 @@ Usefull for sending a one-time notification
 Disables logging the event to history
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+{% raw %}<div id="Responder_send">&nbsp;</div>{% endraw %}
+
+### responder.send(data) ⇒ <code>this</code>
+Send a raw messaging event.
+If no recipient is provided, a default (senderId) will be added.
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+**Params**
+
+- data <code>object</code>
+
+**Example**  
+```javascript
+res.send({ message: { text: 'Hello!' } });
+```
 {% raw %}<div id="Responder_setBookmark">&nbsp;</div>{% endraw %}
 
 ### ~~responder.setBookmark([action], [winningIntent]) ⇒ <code>this</code>~~

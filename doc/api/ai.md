@@ -275,6 +275,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 * [WingbotModel](#WingbotModel)
     * [new WingbotModel(options, [log])](#new_WingbotModel_new)
+    * [._fetch](#WingbotModel__fetch) : <code>fetch</code>
     * [._queryModel(text)](#WingbotModel__queryModel) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 
 {% raw %}<div id="new_WingbotModel_new">&nbsp;</div>{% endraw %}
@@ -287,8 +288,13 @@ bot.use(ai.match('intent1'), (req, res) => {
     - .model <code>string</code>
     - [.cacheSize] <code>number</code>
     - [.matches] <code>number</code>
+    - [.fetch] <code>function</code>
 - [log] <code>Object</code>
 
+{% raw %}<div id="WingbotModel__fetch">&nbsp;</div>{% endraw %}
+
+### wingbotModel.\_fetch : <code>fetch</code>
+**Kind**: instance property of [<code>WingbotModel</code>](#WingbotModel)  
 {% raw %}<div id="WingbotModel__queryModel">&nbsp;</div>{% endraw %}
 
 ### wingbotModel.\_queryModel(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
