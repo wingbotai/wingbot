@@ -70,6 +70,7 @@ const COMPARE = {
  * @prop {Function} text
  * @prop {Intent[]|null} intents
  * @prop {Entity[]} entities
+ * @prop {object} [state]
  */
 
 /**
@@ -206,6 +207,25 @@ class AiMatching {
     }
 
     /**
+     *
+     * @param {PreprocessorOutput} rule
+     * @returns {object}
+     */
+    getSetStateForEntityRules ({ entities }) {
+        return entities.reduce((o, rule) => {
+            if (rule.op === COMPARE.EQUAL
+                && rule.compare
+                && rule.compare.length === 1) {
+
+                return Object.assign(o, {
+                    [`@${rule.entity}`]: rule.compare[0]
+                });
+            }
+            return o;
+        }, {});
+    }
+
+    /**
      * Create a rule to be cached inside a routing structure
      *
      * @param {IntentRule|IntentRule[]} intent
@@ -310,11 +330,12 @@ class AiMatching {
                 const handicap = req.entities.length * this.redundantEntityHandicap;
                 return {
                     intent: null,
-                    entites: [],
+                    entities: [],
                     score: 1 - noIntentHandicap - handicap
                 };
             }
-            const { score, handicap, matched } = this._entityMatching(entities, req.entities);
+            const { score, handicap, matched } = this
+                ._entityMatching(entities, req.entities, req.state);
 
             const allOptional = entities.every((e) => e.optional);
             if (score === 0 && !allOptional) {
@@ -339,27 +360,18 @@ class AiMatching {
             .reduce((total, wantedIntent) => {
                 let max = total;
                 for (const requestIntent of req.intents) {
-                    const score = this
-                        ._intentMatchingScore(wantedIntent, requestIntent, entities, req.entities);
+                    const { score, entities: matchedEntities } = this
+                        ._intentMatchingScore(wantedIntent, requestIntent, entities, req);
 
                     if (score > max) {
                         max = score;
-                        const useEntities = requestIntent.entities || req.entities;
 
                         winningIntent = {
                             ...requestIntent,
                             score,
-                            entities: useEntities
-                                .filter((e) => entities.some((w) => w.entity === e.entity))
+                            entities: matchedEntities
+                                .filter((e) => e.value !== undefined)
                         };
-
-                        // attach used entities
-                        if (!winningIntent.entities && req.entities) {
-                            winningIntent = {
-                                ...winningIntent,
-                                entities: req.entities
-                            };
-                        }
                     }
                 }
 
@@ -375,29 +387,35 @@ class AiMatching {
      * @param {string} wantedIntent
      * @param {Intent} requestIntent
      * @param {EntityExpression[]} wantedEntities
-     * @param {Entity[]} [allEntities]
-     * @returns {number}
+     * @param {AIRequest} req
+     * @returns {{score:number,entities:Entity[]}}
      */
-    _intentMatchingScore (wantedIntent, requestIntent, wantedEntities, allEntities) {
+    _intentMatchingScore (wantedIntent, requestIntent, wantedEntities, req) {
         if (wantedIntent !== requestIntent.intent) {
-            return 0;
+            return { score: 0, entities: [] };
         }
 
-        const useEntities = requestIntent.entities || allEntities;
+        const useEntities = requestIntent.entities || req.entities;
 
         if (wantedEntities.length === 0) {
-            return requestIntent.score - (useEntities.length * this.redundantEntityHandicap);
+            return {
+                score: requestIntent.score - (useEntities.length * this.redundantEntityHandicap),
+                entities: []
+            };
         }
 
         const { score, handicap, matched } = this
-            ._entityMatching(wantedEntities, useEntities);
+            ._entityMatching(wantedEntities, useEntities, req.state);
 
         const allOptional = wantedEntities.every((e) => e.optional);
         if (score === 0 && !allOptional) {
-            return 0;
+            return { score: 0, entities: [] };
         }
 
-        return (requestIntent.score - handicap) * (this.multiMatchGain ** matched.length);
+        return {
+            score: (requestIntent.score - handicap) * (this.multiMatchGain ** matched.length),
+            entities: matched
+        };
     }
 
     /**
@@ -405,9 +423,10 @@ class AiMatching {
      * @private
      * @param {EntityExpression[]} wantedEntities
      * @param {Entity[]} requestEntities
+     * @param {object} [requestState]
      * @returns {{score: number, handicap: number, matched: Entity[] }}
      */
-    _entityMatching (wantedEntities, requestEntities = []) {
+    _entityMatching (wantedEntities, requestEntities = [], requestState = {}) {
         const occurences = new Map();
 
         const matched = [];
@@ -422,7 +441,17 @@ class AiMatching {
             const index = requestEntities
                 .findIndex((e, i) => e.entity === wanted.entity && i >= start);
 
-            const requestEntity = requestEntities[index];
+            let requestEntity = requestEntities[index];
+
+            if (index !== -1) {
+                requestEntity = requestEntities[index];
+            } else if (typeof requestState[`@${wanted.entity}`] !== 'undefined') {
+                requestEntity = {
+                    value: requestState[`@${wanted.entity}`],
+                    entity: wanted.entity,
+                    score: 1
+                };
+            }
 
             const matching = this
                 ._entityIsMatching(wanted.op, wanted.compare, requestEntity && requestEntity.value);

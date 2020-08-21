@@ -40,9 +40,10 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, s
  * @param {string} [path]
  * @param {Function} [translate=w => w]
  * @param {object[]} [quickReplyCollector]
+ * @param {Ai} ai
  * @returns {{quickReplies: object[], expectedKeywords: object[], disambiguationIntents: string[]}}
  */
-function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyCollector = []) {
+function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyCollector = [], ai = null) {
 
     const expectedKeywords = [];
     const disambiguationIntents = [];
@@ -90,10 +91,12 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
                 action,
                 match,
                 data = {},
-                setState = null,
                 isLocation = false,
                 isEmail = false,
                 isPhone = false
+            } = reply;
+            let {
+                setState = null
             } = reply;
 
             if (isLocation) {
@@ -122,8 +125,24 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
 
             let payload = absoluteAction;
 
-            const hasData = Object.keys(data).length > 0;
-            const hasSetState = setState && Object.keys(setState).length > 0;
+            if (match && ai) {
+                const rule = ai.matcher.preprocessRule(match);
+                const entitiesSetState = ai.matcher.getSetStateForEntityRules(rule);
+
+                if (Object.keys(entitiesSetState).length !== 0) {
+                    if (!setState) {
+                        setState = entitiesSetState;
+                    } else {
+                        setState = {
+                            ...setState,
+                            ...entitiesSetState
+                        };
+                    }
+                }
+            }
+
+            const hasData = Object.keys(data).length !== 0;
+            const hasSetState = setState && Object.keys(setState).length !== 0;
 
             if (hasData || hasSetState) {
 
@@ -191,13 +210,29 @@ function quickReplyAction (expectedKeywords, req, ai) {
         return null;
     }
 
-    // @todo sort by score / disamb
-    const found = expectedKeywords
-        .filter((keyword) => ai.ruleIsMatching(keyword.match, req));
+    // @todo disambiguate
+    const found = [];
+    expectedKeywords
+        .forEach((keyword) => {
+            const intent = ai.ruleIsMatching(keyword.match, req);
+            if (intent) {
+                const { score, setState } = intent;
+
+                found.push({
+                    ...keyword,
+                    score,
+                    setState: keyword.setState
+                        ? { ...keyword.setState, ...setState }
+                        : setState
+                });
+            }
+        });
 
     if (found.length === 0) {
         return null;
     }
+
+    found.sort(({ score: a }, { score: z }) => z - a);
 
     return found[0];
 }

@@ -779,7 +779,7 @@ class Request {
         if (!res && this.isTextOrIntent()) {
             const winner = this._getMatchingGlobalIntent();
             res = winner
-                ? { action: winner.action, data: {}, setState: null }
+                ? { action: winner.action, data: {}, setState: winner.setState }
                 : null;
         }
 
@@ -828,6 +828,7 @@ class Request {
                 aiActions.push({
                     ...gi,
                     intent,
+                    setState: intent.setState,
                     aboveConfidence: intent.aboveConfidence,
                     sort,
                     winner: false
@@ -865,11 +866,7 @@ class Request {
         let res = null;
 
         if (!res && this.state._expectedKeywords) {
-            const payload = quickReplyAction(
-                this.state._expectedKeywords,
-                this,
-                Ai.ai
-            );
+            const payload = quickReplyAction(this.state._expectedKeywords, this, Ai.ai);
             if (payload) {
                 res = parseActionPayload(payload);
             }

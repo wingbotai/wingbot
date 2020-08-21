@@ -51,6 +51,8 @@ const NAME_FROM_STATE = (state) => {
     return null;
 };
 
+const ENTITY_REGEXP = /^@/;
+
 class Processor extends EventEmitter {
 
     /**
@@ -628,6 +630,16 @@ class Processor extends EventEmitter {
         if (isUserEvent && !res.newState._expectedKeywords) {
             state._expectedKeywords = null;
         }
+
+        // reset entities if context changed
+        if (previousState._lastVisitedPath !== res.newState._lastVisitedPath) {
+            for (const key of Object.keys(previousState)) {
+                if (key.match(ENTITY_REGEXP) && typeof res.newState[key] === 'undefined') {
+                    delete state[key];
+                }
+            }
+        }
+        // console.log(JSON.stringify({ previousState, newState: res.newState }, null, 2));
 
         // reset expected confident input
         if (isUserEvent
