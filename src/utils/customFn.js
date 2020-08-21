@@ -5,7 +5,15 @@
 
 const Router = require('../Router'); // eslint-disable-line
 const ai = require('../Ai'); // eslint-disable-line
-const request = require('request-promise-native'); // eslint-disable-line
+const fetch = require('node-fetch'); // eslint-disable-line
+let request;
+try {
+    // @ts-ignore
+    request = module.request('request-promise-native');
+} catch (e) {
+    // eslint-disable-next-line no-unused-vars
+    request = () => { throw new Error('To use request, you have to manually install request-promise-native into your bot.'); };
+}
 
 const FORBIDDEN = /([^a-zA-Z0-9]|^)(this|process|require|module|console|global|eval)([^a-zA-Z0-9]|$)/;
 

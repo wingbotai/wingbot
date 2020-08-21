@@ -1,6 +1,6 @@
 'use strict';
 
-const request = require('request-promise-native');
+const { default: fetch } = require('node-fetch');
 const assert = require('assert');
 const { tokenize } = require('../utils');
 const CachedModel = require('./CachedModel');
@@ -39,6 +39,7 @@ class WingbotModel extends CachedModel {
      * @param {string} options.model
      * @param {number} [options.cacheSize]
      * @param {number} [options.matches]
+     * @param {Function} [options.fetch]
      * @param {{ warn: Function }} [log]
      */
     constructor (options, log = console) {
@@ -47,7 +48,12 @@ class WingbotModel extends CachedModel {
         assert.equal(typeof options.model, 'string', 'The model option has to be string');
 
         this._matches = options.matches || DEFAULT_MATCHES;
-        this._request = options.request || request;
+
+        /** @type {fetch} */
+        this._fetch = fetch;
+
+        // @ts-ignore
+        if (options.fetch) this._fetch = options.fetch;
 
         this._serviceUrl = options.serviceUrl || SERVICE_URL;
         this._model = options.model;
@@ -63,18 +69,18 @@ class WingbotModel extends CachedModel {
             return [];
         }
 
-        const qs = {
-            text: tokenize(text).replace(/-/g, ' '),
-            matches: this._matches
-        };
+        const qs = [
+            `text=${encodeURIComponent(tokenize(text).replace(/-/g, ' '))}`,
+            `matches=${encodeURIComponent(this._matches)}`
+        ];
 
         try {
-            const response = await this._request({
-                uri: `${this._serviceUrl}/${this._model}`,
-                qs,
-                json: true,
-                timeout: 20000
-            });
+            const res = await this._fetch(
+                `${this._serviceUrl}/${this._model}?${qs.join('&')}`,
+                { timeout: 20000 }
+            );
+
+            const response = await res.json();
 
             if (response.error || !Array.isArray(response.tags)) {
                 this._log.warn(response.error);

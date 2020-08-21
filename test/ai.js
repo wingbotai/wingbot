@@ -44,16 +44,16 @@ describe('<Ai>', function () {
     beforeEach(function () {
         syncRes = Promise.resolve(createResponse());
 
-        this.fakeRequest = sinon.spy(() => syncRes);
+        this.fakeRequest = sinon.spy(async () => ({ json () { return syncRes; } }));
 
-        const model = new WingbotModel({ model: 'test', request: this.fakeRequest });
+        const model = new WingbotModel({ model: 'test', fetch: this.fakeRequest });
         ai.register(model);
     });
 
     describe('match()', function () {
 
         it('should use cache for responding requests', async function () {
-            const model = new WingbotModel({ model: 'test', request: this.fakeRequest, cacheSize: 1 });
+            const model = new WingbotModel({ model: 'test', fetch: this.fakeRequest, cacheSize: 1 });
             ai.register(model);
 
             const mid = ai.match('hello');

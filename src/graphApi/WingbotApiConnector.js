@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const request = require('request-promise-native');
+const { default: fetch } = require('node-fetch');
 const jwt = require('jsonwebtoken');
 
 class WingbotApiConnector {
@@ -97,14 +97,13 @@ class WingbotApiConnector {
     }
 
     async _loadKeys () {
-        const res = await request({
-            url: this._keysUrl,
-            json: true
-        });
+        const res = await fetch(this._keysUrl);
 
-        this._keys = res.keys;
+        const data = await res.json();
+
+        this._keys = data.keys;
+        this._schema = data.schema;
         this._keysLoaded = Date.now();
-        this._schema = res.schema;
     }
 
 }

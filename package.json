@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.5.0",
+  "version": "3.6.0-alpha.1",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "doc": "npm run doc:gql && node ./bin/makeApiDoc.js && cpy ./CHANGELOG.md ./doc && gitbook install ./doc && gitbook build ./doc && rimraf -rf ./docs && rimraf --rf ./doc/CHANGELOG.md && move-cli ./doc/_book ./docs",
     "test": "npm run test:lint && npm run test:coverage && npm run test:coverage:threshold",
     "test:coverage": "nyc --reporter=html mocha ./test && nyc report",
-    "test:coverage:threshold": "nyc check-coverage --lines 89 --functions 90 --branches 80",
+    "test:coverage:threshold": "nyc check-coverage --lines 90 --functions 90 --branches 80",
     "test:backend": "mocha ./test",
     "test:lint": "eslint --ext .js src test *.js plugins"
   },
@@ -61,12 +61,12 @@
     "graphql": "^15.3.0",
     "graphql-mongodb-projection": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
-    "path-to-regexp": "^6.1.0",
-    "request": "^2.88.2",
-    "request-promise-native": "^1.0.9"
+    "node-fetch": "^2.6.0",
+    "path-to-regexp": "^6.1.0"
   },
   "optionalDependencies": {
     "po2json": "^0.4.5",
-    "handlebars": "^4.0.11"
+    "handlebars": "^4.0.11",
+    "request-promise-native": "^1.0.9"
   }
 }

@@ -245,16 +245,18 @@ describe('<BuildRouter>', async () => {
 
             let cnt = 0;
 
-            mockRequest = sinon.spy(async () => {
-                switch (cnt++) {
-                    case 0:
-                        return makeBot('first');
-                    case 1:
-                        return makeBot('second');
-                    default:
-                        throw new Error('Can be trigged only twice');
+            mockRequest = sinon.spy(async () => ({
+                async json () {
+                    switch (cnt++) {
+                        case 0:
+                            return makeBot('first');
+                        case 1:
+                            return makeBot('second');
+                        default:
+                            throw new Error('Can be trigged only twice');
+                    }
                 }
-            });
+            }));
 
             bot = new BuildRouter({ botId: 'fake-bot-id' }, plugins, config, mockRequest);
 

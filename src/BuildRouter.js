@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const requestNative = require('request-promise-native');
+const { default: fetch } = require('node-fetch');
 const path = require('path');
 const Router = require('./Router');
 const Plugins = require('./Plugins');
@@ -45,7 +45,7 @@ class BuildRouter extends Router {
      * @param {object} [context.linksTranslator] - function, that translates links globally
      * @param {ConfigStorage} [context.configStorage] - function, that translates links globally
      * @param {boolean} [context.allowForbiddenSnippetWords] - disable security rule
-     * @param {Function} [request] - the building context
+     * @param {fetch} [fetchFn] - override a request function
      * @example
      *
      * // usage of plugins
@@ -68,7 +68,7 @@ class BuildRouter extends Router {
      *
      * module.exports = bot;
      */
-    constructor (block, plugins = new Plugins(), context = {}, request = requestNative) {
+    constructor (block, plugins = new Plugins(), context = {}, fetchFn = fetch) {
         super();
 
         if (!block || typeof block !== 'object') {
@@ -87,7 +87,7 @@ class BuildRouter extends Router {
 
         this._botLoaded = null;
 
-        this._request = request;
+        this._fetch = fetchFn;
 
         this._prebuiltRoutesCount = null;
 
@@ -222,19 +222,20 @@ class BuildRouter extends Router {
      * @returns {Promise<object>}
      */
     async loadBot () {
-        const req = {
-            url: this._loadBotUrl,
-            json: true
-        };
+        const options = {};
 
         if (this._loadBotAuthorization) {
             const auth = await Promise.resolve(this._loadBotAuthorization);
-            req.headers = {
-                Authorization: auth
-            };
+            Object.assign(options, {
+                headers: {
+                    Authorization: auth
+                }
+            });
         }
 
-        const snapshot = await this._request(req);
+        const response = await this._fetch(this._loadBotUrl, options);
+
+        const snapshot = await response.json();
 
         if (!snapshot || !Array.isArray(snapshot.blocks)) {
             throw new Error('Bad BOT definition API response');
