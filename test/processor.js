@@ -246,7 +246,7 @@ describe('Processor', function () {
             return proc.processMessage(message, 10)
                 .then(() => {
                     assert.throws(() => {
-                        responder._send({ wait: 1 });
+                        responder.send({ wait: 1 });
                     });
                 });
         });

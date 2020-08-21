@@ -22,12 +22,17 @@ function defaultPathContext () {
  */
 
 /**
+ * @typedef {object} IRouter
+ * @prop {Function} reduce
+ */
+
+/**
  * @typedef {object} BotPath
  * @prop {string} path
  */
 
 /**
- * @typedef {Resolver|string|RegExp|Router|BotPath} Middleware flow control statement or function
+ * @typedef {Resolver|string|RegExp|IRouter|BotPath} Middleware flow control statement or function
  */
 
 /**
@@ -194,7 +199,9 @@ class Router extends ReducerWrapper {
         } else if (typeof reduce === 'object' && reduce.reduce) {
             isReducer = true;
 
+            // @ts-ignore
             reduce.on('action', (...args) => this.emit('action', ...args));
+            // @ts-ignore
             reduce.on('_action', (...args) => this.emit('_action', ...args));
 
             const reduceFn = reduce.reduce.bind(reduce);

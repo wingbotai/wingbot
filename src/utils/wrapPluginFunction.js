@@ -8,20 +8,34 @@ function wrapPluginFunction (
     paramsData,
     items,
     context,
-    // eslint-disable-next-line no-unused-vars
-    Router = class X { processReducers (a, b, c, d, e, f, g) { return null; }}
+    defaultRouter
 ) {
-    const fn = async function (req, res, postBack, path, action, router = new Router()) {
+
+    let preprocessedItems = null;
+    const returnFn = context.isLastIndex
+        ? (ret) => (typeof ret === 'undefined' ? null : ret)
+        : (ret) => (typeof ret === 'undefined' ? true : ret);
+
+    const fn = function (req, res, postBack, path, action, router = defaultRouter) {
         req.params = paramsData;
+
+        if (preprocessedItems === null) {
+            preprocessedItems = new Map();
+
+            for (const [item, builtResolvers] of items.entries()) {
+                preprocessedItems
+                    .set(item, router.createReducersArray(builtResolvers));
+            }
+        }
 
         // attach block runner
         Object.assign(res, {
             run (codeBlockName) {
-                if (!items.has(codeBlockName)) {
+                if (!preprocessedItems.has(codeBlockName)) {
                     return true;
                 }
 
-                const reducers = items.get(codeBlockName);
+                const reducers = preprocessedItems.get(codeBlockName);
                 return router.processReducers(reducers, req, res, postBack, path, action, true);
             }
         });
@@ -34,16 +48,13 @@ function wrapPluginFunction (
                 router
             };
         }
-        let ret = customFn(req, res, postBack, useContext, paramsData);
+        const ret = customFn(req, res, postBack, useContext, paramsData);
 
-        if (typeof ret === 'object' && ret !== null) {
-            ret = await ret;
+        if (ret instanceof Promise) {
+            return ret.then((resolvedRet) => returnFn(resolvedRet));
         }
 
-        if (typeof ret !== 'undefined') {
-            return ret;
-        }
-        return useContext.isLastIndex ? null : true;
+        return returnFn(ret);
     };
 
     if (typeof customFn.globalIntentsMeta === 'object') {

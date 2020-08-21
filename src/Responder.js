@@ -153,7 +153,31 @@ class Responder {
         this._messageSender.visitedInteraction(action);
     }
 
-    _send (data) {
+    /**
+     * Send a raw messaging event.
+     * If no recipient is provided, a default (senderId) will be added.
+     *
+     * @param {object} data
+     * @returns {this}
+     * @example
+     * res.send({ message: { text: 'Hello!' } });
+     */
+    send (data) {
+        if (!data || typeof data !== 'object') {
+            throw new Error('Send method requires an object as first param');
+        }
+        if (!data.recipient && !data.wait) {
+            Object.assign(data, {
+                recipient: {
+                    ...this._recipient
+                }
+            });
+        }
+        if (!data.messagingType) {
+            Object.assign(data, {
+                messaging_type: this._messagingType
+            });
+        }
         if (!data.messagingType) {
             Object.assign(data, {
                 messaging_type: this._messagingType
@@ -177,6 +201,7 @@ class Responder {
         }
         this.startedOutput = true;
         this._messageSender.send(data);
+        return this;
     }
 
     /**
@@ -349,9 +374,6 @@ class Responder {
      */
     text (text, replies = null) {
         const messageData = {
-            recipient: {
-                ...this._recipient
-            },
             message: {
                 text: this._t(text)
             }
@@ -380,7 +402,7 @@ class Responder {
         }
 
         this._autoTypingIfEnabled(messageData.message.text);
-        this._send(messageData);
+        this.send(messageData);
         return this;
     }
     /* eslint jsdoc/check-param-names: 1 */
@@ -649,9 +671,6 @@ class Responder {
         }
 
         const messageData = {
-            recipient: {
-                ...this._recipient
-            },
             message: {
                 attachment: {
                     type,
@@ -665,7 +684,7 @@ class Responder {
 
         const autoTyping = reusable ? null : false;
         this._autoTypingIfEnabled(autoTyping);
-        this._send(messageData);
+        this.send(messageData);
         return this;
     }
 
@@ -696,9 +715,6 @@ class Responder {
 
     template (payload) {
         const messageData = {
-            recipient: {
-                ...this._recipient
-            },
             message: {
                 attachment: {
                     type: 'template',
@@ -709,7 +725,7 @@ class Responder {
 
         const autoTyping = payload.text || payload.title || null;
         this._autoTypingIfEnabled(autoTyping);
-        this._send(messageData);
+        this.send(messageData);
         return this;
     }
 
@@ -720,7 +736,7 @@ class Responder {
      * @returns {this}
      */
     wait (ms = 600) {
-        this._send({ wait: ms });
+        this.send({ wait: ms });
         return this;
     }
 
@@ -786,15 +802,12 @@ class Responder {
         }
 
         const messageData = {
-            recipient: {
-                ...this._recipient
-            },
             target_app_id: targetAppId,
             metadata
         };
 
         this.finalMessageSent = true;
-        this._send(messageData);
+        this.send(messageData);
         return this;
     }
 
@@ -816,13 +829,10 @@ class Responder {
             };
         }
         const messageData = {
-            recipient: {
-                ...this._recipient
-            },
             request_thread_control: metadata
         };
         this.finalMessageSent = true;
-        this._send(messageData);
+        this.send(messageData);
         return this;
     }
 
@@ -845,12 +855,9 @@ class Responder {
             };
         }
         const messageData = {
-            recipient: {
-                ...this._recipient
-            },
             take_thread_control: metadata
         };
-        this._send(messageData);
+        this.send(messageData);
         return this;
     }
 
@@ -988,13 +995,10 @@ class Responder {
 
     _senderAction (action) {
         const messageData = {
-            recipient: {
-                ...this._recipient
-            },
             sender_action: action
         };
 
-        this._send(messageData);
+        this.send(messageData);
         return this;
     }
 

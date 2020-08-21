@@ -697,6 +697,52 @@ describe('Responder', function () {
 
     });
 
+    describe('#requestThread()', function () {
+
+        it('creates request thread event', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.requestThread('123');
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                ...object,
+                request_thread_control: { metadata: '123' }
+            });
+        });
+
+        it('creates request thread event with metadata', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.requestThread({ a: 1 });
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                ...object,
+                request_thread_control: { metadata: '{"a":1}' }
+            });
+        });
+
+        it('should be able to send no metadata', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.requestThread();
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                ...object,
+                request_thread_control: {}
+            });
+        });
+
+    });
+
     describe('#takeThread()', function () {
 
         it('creates take thread event', function () {

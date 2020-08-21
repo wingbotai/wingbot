@@ -34,6 +34,7 @@ const BaseTemplate = require('./src/templates/BaseTemplate');
 const { parseActionPayload } = require('./src/utils/pathUtils');
 const { disambiguationQuickReply } = require('./src/utils/quickReplies');
 const { getUpdate, getValue } = require('./src/utils/getUpdate');
+const plugins = require('./plugins/plugins.json');
 const {
     bufferloader,
     MemoryStateStorage,
@@ -68,6 +69,7 @@ module.exports = {
     Plugins,
     BuildRouter,
     WingbotModel,
+    plugins,
 
     // Notifications
     Notifications,

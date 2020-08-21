@@ -98,7 +98,10 @@ class Request {
 
         this._optin = data.optin || null;
 
-        this.attachments = (data.message && data.message.attachments) || [];
+        this.attachments = (data.message
+            && (data.message.attachment
+                ? [data.message.attachment]
+                : data.message.attachments)) || [];
 
         /**
          * @prop {number|null} timestamp
