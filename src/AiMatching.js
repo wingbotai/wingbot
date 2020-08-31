@@ -96,7 +96,7 @@ class AiMatching {
          *
          * @type {number}
          */
-        this.redundantEntityHandicap = 0.03;
+        this.redundantEntityHandicap = 0.02;
 
         /**
          * When there is additional intent, the final score will be lowered by this value
@@ -104,7 +104,7 @@ class AiMatching {
          *
          * @type {number}
          */
-        this.redundantIntentHandicap = 0.06;
+        this.redundantIntentHandicap = 0.02;
 
         /**
          * When more than one AI features (Intent, Entity, Regex) are matching,
@@ -434,27 +434,47 @@ class AiMatching {
         let sum = 0;
 
         for (const wanted of wantedEntities) {
-            const start = occurences.has(wanted.entity)
+            const usedIndexes = occurences.has(wanted.entity)
                 ? occurences.get(wanted.entity)
-                : 0;
+                : [];
 
+            let entityExists = false;
             const index = requestEntities
-                .findIndex((e, i) => e.entity === wanted.entity && i >= start);
+                .findIndex((e, i) => {
+                    if (e.entity !== wanted.entity || usedIndexes.includes(i)) {
+                        return false;
+                    }
+                    entityExists = true;
+                    return this._entityIsMatching(wanted.op, wanted.compare, e.value);
+                });
 
             let requestEntity = requestEntities[index];
 
+            let matching = false;
             if (index !== -1) {
                 requestEntity = requestEntities[index];
-            } else if (typeof requestState[`@${wanted.entity}`] !== 'undefined') {
-                requestEntity = {
-                    value: requestState[`@${wanted.entity}`],
-                    entity: wanted.entity,
-                    score: 1
-                };
-            }
+                matching = true;
+            } else if (!entityExists && typeof requestState[`@${wanted.entity}`] !== 'undefined') {
 
-            const matching = this
-                ._entityIsMatching(wanted.op, wanted.compare, requestEntity && requestEntity.value);
+                const requestedAbsenceOfEntity = wanted.op === COMPARE.NOT_EQUAL
+                    && wanted.compare.length === 0;
+
+                if (requestedAbsenceOfEntity) {
+                    matching = false;
+                } else {
+                    requestEntity = {
+                        value: requestState[`@${wanted.entity}`],
+                        entity: wanted.entity,
+                        score: 1
+                    };
+
+                    matching = this
+                        ._entityIsMatching(wanted.op, wanted.compare, requestEntity.value);
+                }
+            } else if (!entityExists) {
+                matching = this
+                    ._entityIsMatching(wanted.op, wanted.compare, undefined);
+            }
 
             if (!matching && !wanted.optional) {
                 return { score: 0, handicap: 0, matched: [] };
@@ -478,7 +498,10 @@ class AiMatching {
             if (requestEntity) {
                 matched.push(requestEntity);
                 sum += requestEntity.score;
-                occurences.set(wanted.entity, index + 1);
+                if (index !== -1) {
+                    if (!occurences.has(wanted.entity)) occurences.set(wanted.entity, []);
+                    occurences.get(wanted.entity).push(index);
+                }
             } else {
                 matched.push({
                     entity: wanted.entity,

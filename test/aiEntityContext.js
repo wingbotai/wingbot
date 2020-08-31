@@ -43,7 +43,7 @@ describe('<Ai> entity context', () => {
             res.text('baz with entity');
         });
 
-        second.use(ai.global('baz-without', ['baz']), (req, res) => {
+        second.use(ai.global('baz-without', ['baz', '@entity!=']), (req, res) => {
             res.text('baz without entity');
         });
 

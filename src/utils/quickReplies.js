@@ -200,6 +200,14 @@ function quickReplyAction (expectedKeywords, req, ai) {
     const text = req.text();
 
     if (text) {
+        const lcText = text.toLocaleLowerCase();
+        const lowerCaseMatch = expectedKeywords
+            .filter((keyword) => keyword.title && keyword.title.toLocaleLowerCase() === lcText);
+
+        if (lowerCaseMatch.length === 1) {
+            return lowerCaseMatch[0];
+        }
+
         const exactMatch = expectedKeywords
             .filter((keyword) => keyword.title === text);
 

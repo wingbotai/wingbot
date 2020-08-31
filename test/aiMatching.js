@@ -46,7 +46,7 @@ describe('<AiMatching>', () => {
             assert.deepEqual(ai.match(req, rule), {
                 entities: [],
                 intent: 'intent',
-                score: 0.9375
+                score: 0.9575
             });
         });
 
@@ -243,7 +243,7 @@ describe('<AiMatching>', () => {
 
             const en = entity('en', 'a');
             const goodFoo = intent('intent', [en]);
-            const matchFoo = intent(null, [en], 0.8899999999999999);
+            const matchFoo = intent(null, [en], 0.9299999999999999);
 
             const goodReq = fakeReq([goodFoo], [en]);
 
@@ -260,7 +260,7 @@ describe('<AiMatching>', () => {
             const goodReq = fakeReq([], [goodFoo]);
             const badReq = fakeReq([], [badFoo]);
 
-            const winningIntent = intent(null, [{ entity: 'foo', score: 0.97, value: undefined }], 0.969);
+            const winningIntent = intent(null, [{ entity: 'foo', score: 0.98, value: undefined }], 0.979);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
