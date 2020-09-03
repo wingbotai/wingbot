@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const uuid = require('uuid/v4');
+const uuid = require('uuid');
 
 /**
  * @typedef Tag {Object}
@@ -136,7 +136,7 @@ class NotificationsStorage {
 
         const insert = tasks.map((t) => ({
             ...t,
-            id: uuid(),
+            id: uuid.v4(),
             insEnqueue: t.enqueue
         }));
 
@@ -275,7 +275,7 @@ class NotificationsStorage {
     async upsertCampaign (campaign, updateCampaign = null) {
         let insert = campaign;
         if (!insert.id) {
-            insert = { ...insert, id: uuid() };
+            insert = { ...insert, id: uuid.v4() };
         }
         if (!this._campaigns.has(insert.id)) {
             if (updateCampaign) Object.assign(insert, updateCampaign);
