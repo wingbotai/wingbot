@@ -222,7 +222,7 @@ function quickReplyAction (expectedKeywords, req, ai) {
     const found = [];
     expectedKeywords
         .forEach((keyword) => {
-            const intent = ai.ruleIsMatching(keyword.match, req);
+            const intent = ai.ruleIsMatching(keyword.match, req, true);
             if (intent) {
                 const { score, setState } = intent;
 

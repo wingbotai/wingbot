@@ -313,9 +313,10 @@ class AiMatching {
      *
      * @param {AIRequest} req
      * @param {PreprocessorOutput} rule
+     * @param {boolean} stateless
      * @returns {Intent|null}
      */
-    match (req, rule) {
+    match (req, rule, stateless = false) {
         const { regexps, intents, entities } = rule;
 
         const regexpMatching = this._matchRegexp(req, regexps);
@@ -335,7 +336,7 @@ class AiMatching {
                 };
             }
             const { score, handicap, matched } = this
-                ._entityMatching(entities, req.entities, req.state);
+                ._entityMatching(entities, req.entities, stateless ? {} : req.state);
 
             const allOptional = entities.every((e) => e.optional);
             if (score === 0 && !allOptional) {
@@ -357,11 +358,11 @@ class AiMatching {
         let winningIntent = null;
 
         intents
-            .reduce((total, wantedIntent) => {
+            .reduce((total, wanted) => {
                 let max = total;
                 for (const requestIntent of req.intents) {
                     const { score, entities: matchedEntities } = this
-                        ._intentMatchingScore(wantedIntent, requestIntent, entities, req);
+                        ._intentMatchingScore(wanted, requestIntent, entities, req, stateless);
 
                     if (score > max) {
                         max = score;
@@ -388,9 +389,10 @@ class AiMatching {
      * @param {Intent} requestIntent
      * @param {EntityExpression[]} wantedEntities
      * @param {AIRequest} req
+     * @param {boolean} stateless
      * @returns {{score:number,entities:Entity[]}}
      */
-    _intentMatchingScore (wantedIntent, requestIntent, wantedEntities, req) {
+    _intentMatchingScore (wantedIntent, requestIntent, wantedEntities, req, stateless = false) {
         if (wantedIntent !== requestIntent.intent) {
             return { score: 0, entities: [] };
         }
@@ -405,7 +407,7 @@ class AiMatching {
         }
 
         const { score, handicap, matched } = this
-            ._entityMatching(wantedEntities, useEntities, req.state);
+            ._entityMatching(wantedEntities, useEntities, stateless ? {} : req.state);
 
         const allOptional = wantedEntities.every((e) => e.optional);
         if (score === 0 && !allOptional) {

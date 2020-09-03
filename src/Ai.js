@@ -303,9 +303,9 @@ class Ai {
         };
     }
 
-    ruleIsMatching (intent, req) {
+    ruleIsMatching (intent, req, stateless = false) {
         const rules = this.matcher.preprocessRule(intent);
-        const winningIntent = this.matcher.match(req, rules);
+        const winningIntent = this.matcher.match(req, rules, stateless);
 
         if (!winningIntent || winningIntent.score < this.confidence) {
             return null;
