@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const DEFAULT_CACHE_SIZE = 10;
+const DEFAULT_CACHE_SIZE = 0;
 
 /**
  * @typedef {object} Entity
@@ -64,8 +64,10 @@ class CachedModel {
                 return res;
             });
 
-        this._cache.push(text);
-        this._cacheMap.set(text, promise);
+        if (this._cacheSize !== 0) {
+            this._cache.push(text);
+            this._cacheMap.set(text, promise);
+        }
 
         return promise;
     }
