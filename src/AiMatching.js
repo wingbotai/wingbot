@@ -336,7 +336,13 @@ class AiMatching {
                 };
             }
             const { score, handicap, matched } = this
-                ._entityMatching(entities, req.entities, stateless ? {} : req.state);
+                ._entityMatching(
+                    entities,
+                    req.entities,
+                    stateless || intents.length === 0
+                        ? {}
+                        : req.state
+                );
 
             const allOptional = entities.every((e) => e.optional);
             if (score === 0 && !allOptional) {
@@ -407,7 +413,11 @@ class AiMatching {
         }
 
         const { score, handicap, matched } = this
-            ._entityMatching(wantedEntities, useEntities, stateless ? {} : req.state);
+            ._entityMatching(
+                wantedEntities,
+                useEntities,
+                stateless ? {} : req.state
+            );
 
         const allOptional = wantedEntities.every((e) => e.optional);
         if (score === 0 && !allOptional) {

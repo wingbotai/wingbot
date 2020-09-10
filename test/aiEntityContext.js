@@ -66,6 +66,10 @@ describe('<Ai> entity context', () => {
             res.text('Welcome');
         });
 
+        bot.use(ai.global('fakin', ['@entity']), (req, res) => {
+            res.text('Fakin');
+        });
+
         bot.use('first', first);
         bot.use('second', second);
 
@@ -112,6 +116,16 @@ describe('<Ai> entity context', () => {
         await t.intent('baz');
 
         t.any().contains('baz without entity');
+    });
+
+    it('ignores solo remembered entity', async () => {
+        await t.intentWithEntity('foo', 'entity', 'value');
+
+        t.any().contains('foo with entity');
+
+        await t.intent('sasalele');
+
+        t.any().contains('fallback');
     });
 
     it('keeps the entity while FAQ bounce (and bookmark)', async () => {
