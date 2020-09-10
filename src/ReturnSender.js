@@ -220,22 +220,6 @@ class ReturnSender {
                 text = this.textFilter(text);
             }
 
-            let aiMatch = null;
-
-            if (req._match) {
-                const {
-                    path,
-                    intent,
-                    sort
-                } = req._match;
-
-                aiMatch = {
-                    ...intent,
-                    path,
-                    sort
-                };
-            }
-
             const expected = req.expected();
             Object.assign(meta, {
                 ...res.senderMeta,
@@ -243,7 +227,7 @@ class ReturnSender {
                 text,
                 intent: req.intent(ai.ai.confidence),
                 aiConfidence: ai.ai.confidence,
-                aiMatch,
+                aiActions: req.aiActions(),
                 intents: req.intents || [],
                 entities: (req.entities || []).filter((e) => e.score >= ai.ai.confidence),
                 action: req.action(),

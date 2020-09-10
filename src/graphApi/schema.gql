@@ -72,7 +72,7 @@ type Entity {
 }
 
 type Intent {
-    intent: String!
+    intent: String
     score: Float
     entities: [Entity!]
 }
@@ -83,6 +83,14 @@ type AiMatch {
     intent: String
     score: Float
     entities: [Entity!]
+}
+
+type AiAction {
+    aboveConfidence: Boolean!
+    action: String!
+    intent: Intent!
+    sort: Float!
+    winner: Boolean!
 }
 
 type UserInteraction {
@@ -100,6 +108,7 @@ type UserInteraction {
     expected: String
     aiConfidence: Float
     aiMatch: AiMatch
+    aiActions: [AiAction!]
     flag: String
     likelyIntent: String
 

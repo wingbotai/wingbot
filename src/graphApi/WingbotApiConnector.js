@@ -5,6 +5,8 @@
 
 const { default: fetch } = require('node-fetch');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 
 class WingbotApiConnector {
 
@@ -13,6 +15,7 @@ class WingbotApiConnector {
         this._appToken = options.appToken;
         this._keysUrl = options.keysUrl;
         this._cacheFor = options.cacheKeys;
+        this._useBundledGql = options.useBundledGql;
 
         this._keys = null;
         this._keysLoaded = 0;
@@ -102,7 +105,9 @@ class WingbotApiConnector {
         const data = await res.json();
 
         this._keys = data.keys;
-        this._schema = data.schema;
+        this._schema = this._useBundledGql
+            ? fs.readFileSync(path.resolve(__dirname, 'schema.gql'), { encoding: 'utf8' })
+            : data.schema;
         this._keysLoaded = Date.now();
     }
 

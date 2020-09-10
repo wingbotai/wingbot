@@ -31,6 +31,7 @@ class GraphApi {
      * @param {string|Promise<string>} options.token - wingbot token
      * @param {string} [options.appToken] - public token
      * @param {string[]} [options.groups] - list of allowed bot groups
+     * @param {boolean} [options.useBundledGql] - uses library bundled graphql definition
      */
     constructor (apis, options) {
         this._root = {
@@ -58,7 +59,8 @@ class GraphApi {
             token: opts.token,
             appToken: opts.appToken,
             keysUrl: opts.keysUrl,
-            cacheKeys: opts.cacheKeys
+            cacheKeys: opts.cacheKeys,
+            useBundledGql: opts.useBundledGql
         });
     }
 
