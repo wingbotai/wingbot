@@ -11,7 +11,7 @@ const packageJson = require('../../package.json');
 
 const DEFAULT_GROUPS = ['botEditor', 'botAdmin', 'appToken'];
 const KEYS_URL = 'https://api.wingbot.ai/keys';
-const DEFAULT_CACHE = 5 * 86400000;
+const DEFAULT_CACHE = 86400000; // 24 hours
 
 /**
  * @typedef {object} GraphQlResponse
@@ -52,6 +52,8 @@ class GraphApi {
         apis.forEach((api) => Object.assign(this._root, api));
 
         this._cachedSchema = null;
+
+        this._originalSchema = null;
 
         this._defaultGroups = opts.groups;
 
@@ -95,9 +97,14 @@ class GraphApi {
     }
 
     async _schema () {
-        if (this._cachedSchema === null) {
-            const schema = await this._apiConnector.getSchema();
-            this._cachedSchema = buildSchema(schema);
+        const loadedSchema = await this._apiConnector.getSchema();
+
+        const schemaIsSame = this._originalSchema
+            && this._originalSchema.length === loadedSchema.length;
+
+        if (!schemaIsSame) {
+            this._originalSchema = loadedSchema;
+            this._cachedSchema = buildSchema(loadedSchema);
         }
         return this._cachedSchema;
     }
