@@ -156,6 +156,9 @@ class Request {
         this._aiActions = null;
 
         this._aiWinner = null;
+
+        // protected for now, filled by AI
+        this._anonymizedText = null;
     }
 
     get data () {

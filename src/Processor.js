@@ -9,6 +9,7 @@ const Responder = require('./Responder');
 const Request = require('./Request');
 const Ai = require('./Ai');
 const ReturnSender = require('./ReturnSender');
+const { mergeState } = require('./utils/stateVariables');
 
 /**
  * @typedef {object} AutoTypingConfig
@@ -50,8 +51,6 @@ const NAME_FROM_STATE = (state) => {
     }
     return null;
 };
-
-const ENTITY_REGEXP = /^@/;
 
 class Processor extends EventEmitter {
 
@@ -519,7 +518,8 @@ class Processor extends EventEmitter {
                 state = stateObject.state; // eslint-disable-line prefer-destructuring
             }
 
-            state = this._mergeState(state, req, res, senderUpdate);
+            const lastInTurnover = postbackAcumulator.length === 0;
+            state = mergeState(state, req, res, senderUpdate, fromEvent, lastInTurnover);
 
             let lastTimestamps = stateObject.lastTimestamps || [];
             if (message.timestamp) {
@@ -612,47 +612,6 @@ class Processor extends EventEmitter {
                 }
                 return this._processMessage(request, pageId, messageSender, responderData);
             }), Promise.resolve());
-    }
-
-    _mergeState (previousState, req, res, senderStateUpdate) {
-        const state = { ...previousState, ...res.newState };
-
-        const isUserEvent = req.isMessage() || req.isPostBack()
-            || req.isReferral() || req.isAttachment()
-            || req.isTextOrIntent();
-
-        // reset expectations
-        if (isUserEvent && !res.newState._expected) {
-            state._expected = null;
-        }
-
-        // reset expected keywords
-        if (isUserEvent && !res.newState._expectedKeywords) {
-            state._expectedKeywords = null;
-        }
-
-        // reset entities if context changed
-        if (previousState._lastVisitedPath !== res.newState._lastVisitedPath) {
-            for (const key of Object.keys(previousState)) {
-                if (key.match(ENTITY_REGEXP) && typeof res.newState[key] === 'undefined') {
-                    delete state[key];
-                }
-            }
-        }
-        // console.log(JSON.stringify({ previousState, newState: res.newState }, null, 2));
-
-        // reset expected confident input
-        if (isUserEvent
-            && typeof state._expectedConfidentInput !== 'undefined'
-            && !res.newState._expectedConfidentInput) {
-            state._expectedConfidentInput = false;
-        }
-
-        if (senderStateUpdate && senderStateUpdate.state) {
-            Object.assign(state, senderStateUpdate.state);
-        }
-
-        return state;
     }
 
     _getOrCreateToken (senderId, pageId) {

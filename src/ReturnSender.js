@@ -203,6 +203,22 @@ class ReturnSender {
         return Promise.resolve(this._simulateStateChange);
     }
 
+    _cleanupEntities (entities = []) {
+        return entities.map((e) => ({
+            ...e,
+            value: typeof e.value === 'object'
+                ? JSON.stringify(e.value).substring(0, 20)
+                : e.value
+        }));
+    }
+
+    _cleanupIntent (intent) {
+        return {
+            ...intent,
+            entities: this._cleanupEntities(intent.entities)
+        };
+    }
+
     /**
      * @private
      * @param {Request} req
@@ -227,9 +243,15 @@ class ReturnSender {
                 text,
                 intent: req.intent(ai.ai.confidence),
                 aiConfidence: ai.ai.confidence,
-                aiActions: req.aiActions(),
-                intents: req.intents || [],
-                entities: (req.entities || []).filter((e) => e.score >= ai.ai.confidence),
+                aiActions: req.aiActions()
+                    .map((a) => ({
+                        ...a,
+                        intent: this._cleanupIntent(a.intent)
+                    })),
+                intents: (req.intents || [])
+                    .map((i) => this._cleanupIntent(i)),
+                entities: this._cleanupEntities((req.entities || [])
+                    .filter((e) => e.score >= ai.ai.confidence)),
                 action: req.action(),
                 data: req.actionData(),
                 expected: expected ? expected.action : null,

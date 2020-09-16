@@ -124,7 +124,7 @@ class ReducerWrapper extends EventEmitter {
         const params = [
             req.senderId,
             act,
-            req.text(),
+            req._anonymizedText || req.text(),
             req,
             lastAction,
             shouldNotTrack,

@@ -100,7 +100,7 @@ describe('<Ai>', function () {
 
             assert.ok(this.fakeRequest.called);
             assert.strictEqual(res, Router.BREAK);
-            assert.deepStrictEqual(args[0].intents, [{ intent: 'hello', score: 0.96 }]);
+            assert.deepStrictEqual(args[0].intents, [{ intent: 'hello', score: 0.96, entities: [] }]);
         });
 
         it('mutes errors', async function () {

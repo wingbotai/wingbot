@@ -106,8 +106,11 @@ function getSetState (setState = {}, req, res = null) {
                 }
 
                 set = incremet + previousValue;
+            } else if (k.match(/^(@|_~)/)) {
+                set = val;
             }
-        } else if (val === null || SCALAR_TYPES.includes(typeof val)) {
+        } else if (val === null
+            || SCALAR_TYPES.includes(typeof val)) {
             set = val;
         }
 

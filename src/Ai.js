@@ -5,6 +5,7 @@
 
 const { WingbotModel } = require('./wingbot');
 const AiMatching = require('./AiMatching');
+const { vars } = require('./utils/stateVariables');
 
 const DEFAULT_PREFIX = 'default';
 
@@ -169,6 +170,22 @@ class Ai {
     }
 
     /**
+     * Returns registered AI model
+     *
+     * @param {string} prefix - model prefix
+     *
+     * @returns {WingbotModel}
+     * @memberOf Ai
+     */
+    getModel (prefix = 'default') {
+        const model = this._keyworders.get(prefix);
+        if (!model) {
+            throw new Error(`Model ${prefix} not registered yet. Register the model first.`);
+        }
+        return model;
+    }
+
+    /**
      * Returns matching middleware, that will export the intent to the root router
      * so the intent will be matched in a global context
      *
@@ -321,9 +338,12 @@ class Ai {
 
     _getSetStateForEntities (entities = []) {
         return entities
-            .reduce((o, entity) => Object.assign(o, {
-                [`@${entity.entity}`]: entity.value
-            }), {});
+            .reduce((o, entity) => {
+                // if the entity is already set without metadata, persist it
+                const key = `@${entity.entity}`;
+
+                return Object.assign(o, vars.dialogContext(key, entity.value));
+            }, {});
     }
 
     _createIntentMatcher (intent) {
@@ -403,8 +423,8 @@ class Ai {
     }
 
     async _loadIntents (req, model = null) {
-        const { intents, entities = [] } = await this._queryModel(req, model);
-        Object.assign(req, { intents, entities });
+        const { text = null, intents, entities = [] } = await this._queryModel(req, model);
+        Object.assign(req, { intents, entities, _anonymizedText: text });
     }
 
     async _queryModel (req, useModel = null) {

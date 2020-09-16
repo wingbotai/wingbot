@@ -4,6 +4,7 @@
 'use strict';
 
 const { replaceDiacritics } = require('./utils/tokenizer');
+const { vars } = require('./utils/stateVariables');
 
 const FULL_EMOJI_REGEX = /^#((?:[\u2600-\u27bf].?|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])+)$/;
 const HAS_CLOSING_HASH = /^#(.+)#$/;
@@ -217,9 +218,10 @@ class AiMatching {
                 && rule.compare
                 && rule.compare.length === 1) {
 
-                return Object.assign(o, {
-                    [`@${rule.entity}`]: rule.compare[0]
-                });
+                const key = `@${rule.entity}`;
+                const value = rule.compare[0];
+
+                return Object.assign(o, vars.dialogContext(key, value));
             }
             return o;
         }, {});

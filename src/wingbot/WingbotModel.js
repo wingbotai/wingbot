@@ -2,7 +2,6 @@
 
 const { default: fetch } = require('node-fetch');
 const assert = require('assert');
-const { tokenize } = require('../utils');
 const CachedModel = require('./CachedModel');
 
 const DEFAULT_MATCHES = 3;
@@ -70,7 +69,7 @@ class WingbotModel extends CachedModel {
         }
 
         const qs = [
-            `text=${encodeURIComponent(tokenize(text).replace(/-/g, ' '))}`,
+            `text=${encodeURIComponent(text)}`,
             `matches=${encodeURIComponent(this._matches)}`
         ];
 

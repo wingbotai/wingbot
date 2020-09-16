@@ -3,6 +3,8 @@
  */
 'use strict';
 
+const CustomEntityDetectionModel = require('./CustomEntityDetectionModel');
+
 const DEFAULT_CACHE_SIZE = 0;
 
 /**
@@ -24,16 +26,15 @@ const DEFAULT_CACHE_SIZE = 0;
  * @param {Entity[]} entities
  * @param {Intent[]} intents
  */
-class CachedModel {
+class CachedModel extends CustomEntityDetectionModel {
 
     /**
      * @param {object} options
      * @param {number} [options.cacheSize]
-     * @param {{ warn: Function }} [log]
+     * @param {{ warn: Function, error: Function }} [log]
      */
     constructor (options, log = console) {
-        this._options = options;
-        this._log = log;
+        super(options, log);
 
         this._cacheSize = options.cacheSize || DEFAULT_CACHE_SIZE;
         this._cache = [];
@@ -45,11 +46,13 @@ class CachedModel {
      * @returns {Promise<Result>}
      */
     async resolve (text) {
+        const local = await super.resolve(text);
+
         if (this._cacheMap.has(text)) {
             return this._cacheMap.get(text);
         }
 
-        const promise = this._queryModel(text)
+        const promise = this._queryModel(local.text)
             .then((res) => {
                 // clean the cache
                 while (this._cache.length > this._cacheSize) {
@@ -65,11 +68,24 @@ class CachedModel {
             });
 
         if (this._cacheSize !== 0) {
-            this._cache.push(text);
-            this._cacheMap.set(text, promise);
+            this._cache.push(local.text);
+            this._cacheMap.set(local.text, promise);
         }
 
-        return promise;
+        const res = await promise;
+        let { intents = [], entities = [] } = Array.isArray(res) ? { intents: res } : res;
+
+        entities = [...entities, ...local.entities];
+        intents = intents.map((i) => ({
+            ...i,
+            entities: [...(i.entities || []), ...local.entities]
+        }));
+
+        return {
+            text: local.text,
+            intents,
+            entities
+        };
     }
 
     /**
