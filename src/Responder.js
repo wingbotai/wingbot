@@ -10,6 +10,7 @@ const GenericTemplate = require('./templates/GenericTemplate');
 const ListTemplate = require('./templates/ListTemplate');
 const { makeAbsolute, makeQuickReplies } = require('./utils');
 const { FLAG_DISAMBIGUATION_OFFERED, FLAG_DO_NOT_LOG } = require('./flags');
+const { checkSetState } = require('./utils/stateVariables');
 
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
@@ -419,6 +420,7 @@ class Responder {
      */
     setState (object) {
         Object.assign(this.newState, object);
+        checkSetState(object, this.newState);
         return this;
     }
 

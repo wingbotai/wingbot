@@ -93,6 +93,25 @@ function getVarMeta (req, res, key) {
     return null;
 }
 
+function checkSetState (setState, newState) {
+    // process management state keys
+    // eslint-disable-next-line guard-for-in
+    for (const key in setState) { // eslint-disable-line no-restricted-syntax
+        const match = key.match(/^_~(.+)$/);
+
+        if (!match) {
+            const metaKey = `_~${key}`;
+
+            if (typeof setState[metaKey] === 'undefined'
+                && newState[metaKey]) {
+
+                delete newState[metaKey]; // eslint-disable-line no-param-reassign
+            }
+        }
+
+    }
+}
+
 /**
  *
  * @param {object} previousState
@@ -182,5 +201,6 @@ module.exports = {
     VAR_TYPES,
     mergeState,
     vars,
-    getVarMeta
+    getVarMeta,
+    checkSetState
 };
