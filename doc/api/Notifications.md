@@ -59,9 +59,10 @@ API Factory
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
 **Returns**: <code>object</code> - - the graphql api object  
-**Params**
 
-- [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [acl] | <code>Array.&lt;string&gt;</code> \| <code>function</code> | <code></code> | limit api to array of groups or use auth function |
 
 {% raw %}<div id="Notifications_createCampaign">&nbsp;</div>{% endraw %}
 
@@ -70,12 +71,13 @@ Upsert the campaign
 If the campaing does not exists add new. Otherwise, update it.
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Params**
 
-- name <code>string</code>
-- action <code>string</code>
-- [data] <code>object</code>
-- options <code>object</code> - use { id: '...' } to make campaign accessible from code
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> |  |
+| action | <code>string</code> |  |
+| [data] | <code>object</code> |  |
+| options | <code>object</code> | use { id: '...' } to make campaign accessible from code |
 
 {% raw %}<div id="Notifications_pushTasksToQueue">&nbsp;</div>{% endraw %}
 
@@ -83,9 +85,10 @@ If the campaing does not exists add new. Otherwise, update it.
 Add tasks to process by queue
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Params**
 
-- campaignTargets [<code>Array.&lt;CampaignTarget&gt;</code>](#CampaignTarget)
+| Param | Type |
+| --- | --- |
+| campaignTargets | [<code>Array.&lt;CampaignTarget&gt;</code>](#CampaignTarget) | 
 
 {% raw %}<div id="Notifications_subscribe">&nbsp;</div>{% endraw %}
 
@@ -93,11 +96,12 @@ Add tasks to process by queue
 Subscribe user under certain tag
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Params**
 
-- senderId <code>string</code>
-- pageId <code>string</code>
-- tag <code>string</code>
+| Param | Type |
+| --- | --- |
+| senderId | <code>string</code> | 
+| pageId | <code>string</code> | 
+| tag | <code>string</code> | 
 
 {% raw %}<div id="Notifications_unsubscribe">&nbsp;</div>{% endraw %}
 
@@ -105,13 +109,14 @@ Subscribe user under certain tag
 Unsubscribe user from certain tag or from all tags
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Params**
 
-- senderId <code>string</code>
-- pageId <code>string</code>
-- [tag] <code>string</code> <code> = null</code>
-- [req] <code>object</code> <code> = </code>
-- [res] <code>object</code> <code> = </code>
+| Param | Type | Default |
+| --- | --- | --- |
+| senderId | <code>string</code> |  | 
+| pageId | <code>string</code> |  | 
+| [tag] | <code>string</code> | <code>null</code> | 
+| [req] | <code>object</code> | <code></code> | 
+| [res] | <code>object</code> | <code></code> | 
 
 {% raw %}<div id="Notifications_processMessage">&nbsp;</div>{% endraw %}
 
@@ -119,10 +124,11 @@ Unsubscribe user from certain tag or from all tags
 Preprocess message - for read and delivery
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Params**
 
-- event <code>object</code>
-- pageId <code>string</code>
+| Param | Type |
+| --- | --- |
+| event | <code>object</code> | 
+| pageId | <code>string</code> | 
 
 {% raw %}<div id="Notifications_getSubscribtions">&nbsp;</div>{% endraw %}
 
@@ -130,10 +136,11 @@ Preprocess message - for read and delivery
 Get user subscribtions
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Params**
 
-- senderId <code>string</code>
-- pageId <code>string</code>
+| Param | Type |
+| --- | --- |
+| senderId | <code>string</code> | 
+| pageId | <code>string</code> | 
 
 {% raw %}<div id="Notifications_runCampaign">&nbsp;</div>{% endraw %}
 
@@ -141,9 +148,10 @@ Get user subscribtions
 Run the campaign now (push tasks into the queue)
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Params**
 
-- campaign <code>object</code>
+| Param | Type |
+| --- | --- |
+| campaign | <code>object</code> | 
 
 {% raw %}<div id="Notifications_sendCampaignMessage">&nbsp;</div>{% endraw %}
 
@@ -152,16 +160,17 @@ Sends the message directly (without queue)
 and records it's delivery status at campaign stats
 
 **Kind**: instance method of [<code>Notifications</code>](#Notifications)  
-**Params**
 
-- campaign <code>object</code> - campaign
-- processor <code>object</code> - channel processor instance
-- pageId <code>string</code> - page
-- senderId <code>string</code> - user
-- [data] <code>object</code> <code> = </code> - override the data of campaign
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| campaign | <code>object</code> |  | campaign |
+| processor | <code>object</code> |  | channel processor instance |
+| pageId | <code>string</code> |  | page |
+| senderId | <code>string</code> |  | user |
+| [data] | <code>object</code> | <code></code> | override the data of campaign |
 
 **Example**  
-```javascript
+```js
 const campaign = await notifications
     .createCampaign('Custom campaign', 'camp-action', {}, { id: 'custom-campaign' });
 
@@ -176,13 +185,14 @@ await notifications.sendCampaignMessage(campaign, channel, pageId, senderId);
 #### new Notifications(notificationStorage, options)
 Creates a new instance on notification service
 
-**Params**
 
-- notificationStorage <code>NotificationsStorage</code>
-- options <code>object</code>
-    - [.log] <code>console</code> - logger
-    - [.default24Clearance] <code>number</code> - use this clearance to ensure delivery in 24h
-    - [.allAudienceTag] <code>string</code> - tag to mark all users
+| Param | Type | Description |
+| --- | --- | --- |
+| notificationStorage | <code>NotificationsStorage</code> |  |
+| options | <code>object</code> |  |
+| [options.log] | <code>console</code> | logger |
+| [options.default24Clearance] | <code>number</code> | use this clearance to ensure delivery in 24h |
+| [options.allAudienceTag] | <code>string</code> | tag to mark all users |
 
 {% raw %}<div id="CampaignTarget">&nbsp;</div>{% endraw %}
 

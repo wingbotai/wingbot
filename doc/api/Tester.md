@@ -124,11 +124,12 @@ Clear acquired responses and data
 Use tester as a connector :)
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- message <code>object</code> - wingbot chat event
-- senderId <code>string</code> - chat event sender identifier
-- pageId <code>string</code> - channel/page identifier
+| Param | Type | Description |
+| --- | --- | --- |
+| message | <code>object</code> | wingbot chat event |
+| senderId | <code>string</code> | chat event sender identifier |
+| pageId | <code>string</code> | channel/page identifier |
 
 {% raw %}<div id="Tester_res">&nbsp;</div>{% endraw %}
 
@@ -136,9 +137,10 @@ Use tester as a connector :)
 Returns single response asserter
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- [index] <code>number</code> <code> = 0</code> - response index
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [index] | <code>number</code> | <code>0</code> | response index |
 
 {% raw %}<div id="Tester_any">&nbsp;</div>{% endraw %}
 
@@ -158,9 +160,10 @@ Returns last response asserter
 Checks, that app past the action
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- path <code>string</code>
+| Param | Type |
+| --- | --- |
+| path | <code>string</code> | 
 
 {% raw %}<div id="Tester_respondedWithBlock">&nbsp;</div>{% endraw %}
 
@@ -168,9 +171,10 @@ Checks, that app past the action
 Checks, that a plugin used a block as a responde
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- blockName <code>string</code>
+| Param | Type |
+| --- | --- |
+| blockName | <code>string</code> | 
 
 {% raw %}<div id="Tester_getState">&nbsp;</div>{% endraw %}
 
@@ -184,9 +188,10 @@ Returns state
 Sets state with `Object.assign()`
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- [state] <code>object</code> <code> = {}</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [state] | <code>object</code> | <code>{}</code> | 
 
 {% raw %}<div id="Tester_text">&nbsp;</div>{% endraw %}
 
@@ -194,9 +199,10 @@ Sets state with `Object.assign()`
 Makes text request
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- text <code>string</code>
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
 
 {% raw %}<div id="Tester_intent">&nbsp;</div>{% endraw %}
 
@@ -204,11 +210,12 @@ Makes text request
 Makes recognised AI intent request
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- intent <code>string</code> | <code>Array.&lt;string&gt;</code>
-- [text] <code>string</code> <code> = null</code>
-- [score] <code>number</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| intent | <code>string</code> \| <code>Array.&lt;string&gt;</code> |  | 
+| [text] | <code>string</code> | <code>null</code> | 
+| [score] | <code>number</code> |  | 
 
 {% raw %}<div id="Tester_intentWithEntity">&nbsp;</div>{% endraw %}
 
@@ -216,13 +223,14 @@ Makes recognised AI intent request
 Makes recognised AI intent request with entity
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- intent <code>string</code>
-- entity <code>string</code>
-- [value] <code>string</code>
-- [text] <code>string</code>
-- [score] <code>number</code> <code> = 1</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| intent | <code>string</code> |  | 
+| entity | <code>string</code> |  | 
+| [value] | <code>string</code> |  | 
+| [text] | <code>string</code> |  | 
+| [score] | <code>number</code> | <code>1</code> | 
 
 {% raw %}<div id="Tester_optin">&nbsp;</div>{% endraw %}
 
@@ -230,11 +238,12 @@ Makes recognised AI intent request with entity
 Make optin call
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- action <code>string</code>
-- [data] <code>object</code> <code> = {}</code>
-- [userRef] <code>string</code> <code> = null</code> - specific ref string
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| action | <code>string</code> |  |  |
+| [data] | <code>object</code> | <code>{}</code> |  |
+| [userRef] | <code>string</code> | <code>null</code> | specific ref string |
 
 {% raw %}<div id="Tester_quickReply">&nbsp;</div>{% endraw %}
 
@@ -242,10 +251,11 @@ Make optin call
 Send quick reply
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- action <code>string</code>
-- [data] <code>object</code> <code> = {}</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| action | <code>string</code> |  | 
+| [data] | <code>object</code> | <code>{}</code> | 
 
 {% raw %}<div id="Tester_quickReplyText">&nbsp;</div>{% endraw %}
 
@@ -253,9 +263,10 @@ Send quick reply
 Send quick reply if text exactly matches, otherwise returns false
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- text <code>string</code>
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
 
 {% raw %}<div id="Tester_postBack">&nbsp;</div>{% endraw %}
 
@@ -263,12 +274,13 @@ Send quick reply if text exactly matches, otherwise returns false
 Sends postback, optionally with referrer action
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-**Params**
 
-- action <code>string</code>
-- [data] <code>object</code> <code> = {}</code>
-- [refAction] <code>string</code> <code> = null</code> - referred action
-- [refData] <code>object</code> <code> = {}</code> - referred action data
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| action | <code>string</code> |  |  |
+| [data] | <code>object</code> | <code>{}</code> |  |
+| [refAction] | <code>string</code> | <code>null</code> | referred action |
+| [refData] | <code>object</code> | <code>{}</code> | referred action data |
 
 {% raw %}<div id="Tester_Tester">&nbsp;</div>{% endraw %}
 
@@ -279,13 +291,14 @@ Sends postback, optionally with referrer action
 #### new Tester(reducer, [senderId], [pageId], [processorOptions], [storage])
 Creates an instance of Tester.
 
-**Params**
 
-- reducer <code>Router</code> | <code>ReducerWrapper</code> | <code>function</code>
-- [senderId] <code>string</code> <code> = null</code>
-- [pageId] <code>string</code> <code> = null</code>
-- [processorOptions] <code>object</code> <code> = {}</code> - options for Processor
-- [storage] <code>MemoryStateStorage</code> - place to override the storage
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| reducer | <code>Router</code> \| <code>ReducerWrapper</code> \| <code>function</code> |  |  |
+| [senderId] | <code>string</code> | <code>null</code> |  |
+| [pageId] | <code>string</code> | <code>null</code> |  |
+| [processorOptions] | <code>object</code> | <code>{}</code> | options for Processor |
+| [storage] | <code>MemoryStateStorage</code> |  | place to override the storage |
 
 {% raw %}<div id="ResponseAssert">&nbsp;</div>{% endraw %}
 
@@ -322,9 +335,10 @@ Utility for asserting single response
 Checks, that response contains text
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- search <code>string</code>
+| Param | Type |
+| --- | --- |
+| search | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_quickReplyAction">&nbsp;</div>{% endraw %}
 
@@ -332,9 +346,10 @@ Checks, that response contains text
 Checks quick response action
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- action <code>string</code>
+| Param | Type |
+| --- | --- |
+| action | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_templateType">&nbsp;</div>{% endraw %}
 
@@ -342,9 +357,10 @@ Checks quick response action
 Checks template type
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- type <code>string</code>
+| Param | Type |
+| --- | --- |
+| type | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_passThread">&nbsp;</div>{% endraw %}
 
@@ -352,9 +368,10 @@ Checks template type
 Checks pass thread control
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- [appId] <code>string</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [appId] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="ResponseAssert_attachmentType">&nbsp;</div>{% endraw %}
 
@@ -362,9 +379,10 @@ Checks pass thread control
 Checks attachment type
 
 **Kind**: instance method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- type <code>string</code>
+| Param | Type |
+| --- | --- |
+| type | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_contains">&nbsp;</div>{% endraw %}
 
@@ -372,9 +390,10 @@ Checks attachment type
 Checks, that response contains a text
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- search <code>string</code>
+| Param | Type |
+| --- | --- |
+| search | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_notContains">&nbsp;</div>{% endraw %}
 
@@ -382,9 +401,10 @@ Checks, that response contains a text
 Checks, that response does NOT contain a text
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- search <code>string</code>
+| Param | Type |
+| --- | --- |
+| search | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_quickReplyAction">&nbsp;</div>{% endraw %}
 
@@ -392,9 +412,10 @@ Checks, that response does NOT contain a text
 Checks quick response action
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- action <code>string</code>
+| Param | Type |
+| --- | --- |
+| action | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_quickReplyTextContains">&nbsp;</div>{% endraw %}
 
@@ -402,9 +423,10 @@ Checks quick response action
 Checks quick response text
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- search <code>string</code>
+| Param | Type |
+| --- | --- |
+| search | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_templateType">&nbsp;</div>{% endraw %}
 
@@ -412,9 +434,10 @@ Checks quick response text
 Checks template type
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- type <code>string</code>
+| Param | Type |
+| --- | --- |
+| type | <code>string</code> | 
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_genericTemplate">&nbsp;</div>{% endraw %}
 
@@ -422,9 +445,10 @@ Checks template type
 Checks for generic template
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- itemCount <code>number</code> <code> = </code> - specified item count
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| itemCount | <code>number</code> | <code></code> | specified item count |
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_buttonTemplate">&nbsp;</div>{% endraw %}
 
@@ -432,10 +456,11 @@ Checks for generic template
 Checks for button template
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- search <code>string</code>
-- buttonCount <code>number</code> <code> = </code> - specified button count
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| search | <code>string</code> |  |  |
+| buttonCount | <code>number</code> | <code></code> | specified button count |
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_passThread">&nbsp;</div>{% endraw %}
 
@@ -443,9 +468,10 @@ Checks for button template
 Checks pass thread control
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- [appId] <code>string</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [appId] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="ResponseAssert_AnyResponseAssert_attachmentType">&nbsp;</div>{% endraw %}
 
@@ -453,9 +479,10 @@ Checks pass thread control
 Checks attachment type
 
 **Kind**: static method of [<code>ResponseAssert</code>](#ResponseAssert)  
-**Params**
 
-- type <code>string</code>
+| Param | Type |
+| --- | --- |
+| type | <code>string</code> | 
 
 {% raw %}<div id="AnyResponseAssert">&nbsp;</div>{% endraw %}
 
@@ -489,20 +516,21 @@ Automated Conversation tests runner
 {% raw %}<div id="new_ConversationTester_new">&nbsp;</div>{% endraw %}
 
 ### new ConversationTester(testsSource, botFactory, [options])
-**Params**
 
-- testsSource [<code>TestSource</code>](#TestSource)
-- botFactory <code>function</code>
-- [options] <code>object</code>
-    - [.disableAssertActions] <code>boolean</code>
-    - [.disableAssertTexts] <code>boolean</code>
-    - [.disableAssertQuickReplies] <code>boolean</code>
-    - [.useConversationForTextTestCases] <code>boolean</code>
-    - [.textThreshold] <code>boolean</code>
-    - [.stepCasesPerStep] <code>number</code>
-    - [.textCasesPerStep] <code>number</code>
-    - [.textCaseParallel] <code>number</code>
-    - [.testerFactory] [<code>testerFactory</code>](#testerFactory)
+| Param | Type |
+| --- | --- |
+| testsSource | [<code>TestSource</code>](#TestSource) | 
+| botFactory | <code>function</code> | 
+| [options] | <code>object</code> | 
+| [options.disableAssertActions] | <code>boolean</code> | 
+| [options.disableAssertTexts] | <code>boolean</code> | 
+| [options.disableAssertQuickReplies] | <code>boolean</code> | 
+| [options.useConversationForTextTestCases] | <code>boolean</code> | 
+| [options.textThreshold] | <code>boolean</code> | 
+| [options.stepCasesPerStep] | <code>number</code> | 
+| [options.textCasesPerStep] | <code>number</code> | 
+| [options.textCaseParallel] | <code>number</code> | 
+| [options.testerFactory] | [<code>testerFactory</code>](#testerFactory) | 
 
 {% raw %}<div id="ConversationTester_test">&nbsp;</div>{% endraw %}
 
@@ -510,91 +538,101 @@ Automated Conversation tests runner
 Runs the conversation test
 
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- validationRequestBody <code>object</code> <code> = </code>
-- step <code>number</code> <code> = </code>
+| Param | Type | Default |
+| --- | --- | --- |
+| validationRequestBody | <code>object</code> | <code></code> | 
+| step | <code>number</code> | <code></code> | 
 
 {% raw %}<div id="ConversationTester__getLists">&nbsp;</div>{% endraw %}
 
 ### conversationTester.\_getLists(testCases) ⇒ [<code>Array.&lt;List&gt;</code>](#List)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- testCases [<code>Array.&lt;TestCase&gt;</code>](#TestCase) | [<code>Array.&lt;TextCase&gt;</code>](#TextCase)
+| Param | Type |
+| --- | --- |
+| testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextCase&gt;</code>](#TextCase) | 
 
 {% raw %}<div id="ConversationTester__getListCases">&nbsp;</div>{% endraw %}
 
 ### conversationTester.\_getListCases(testCases) ⇒ <code>Map.&lt;string, (Array.&lt;TestCase&gt;\|Array.&lt;TextCase&gt;)&gt;</code>
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- testCases [<code>Array.&lt;TestCase&gt;</code>](#TestCase) | [<code>Array.&lt;TextCase&gt;</code>](#TextCase)
+| Param | Type |
+| --- | --- |
+| testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextCase&gt;</code>](#TextCase) | 
 
 {% raw %}<div id="ConversationTester__getGroups">&nbsp;</div>{% endraw %}
 
 ### conversationTester.\_getGroups(testCases) ⇒ [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- testCases <code>\*</code>
+| Param | Type |
+| --- | --- |
+| testCases | <code>\*</code> | 
 
 {% raw %}<div id="ConversationTester__getTestsGroups">&nbsp;</div>{% endraw %}
 
 ### conversationTester.\_getTestsGroups(testsGroups, step)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- testsGroups [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup)
-- step <code>number</code>
+| Param | Type |
+| --- | --- |
+| testsGroups | [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup) | 
+| step | <code>number</code> | 
 
 {% raw %}<div id="ConversationTester__createTester">&nbsp;</div>{% endraw %}
 
 ### conversationTester.\_createTester(testsGroup, [botconfig]) ⇒ [<code>Tester</code>](#Tester)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- testsGroup [<code>TestsGroup</code>](#TestsGroup)
-- [botconfig] <code>object</code> <code> = </code>
+| Param | Type | Default |
+| --- | --- | --- |
+| testsGroup | [<code>TestsGroup</code>](#TestsGroup) |  | 
+| [botconfig] | <code>object</code> | <code></code> | 
 
 {% raw %}<div id="ConversationTester__runTextCaseTests">&nbsp;</div>{% endraw %}
 
 ### conversationTester.\_runTextCaseTests(testsGroup, botconfig)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- testsGroup [<code>TestsGroup</code>](#TestsGroup)
-- botconfig <code>object</code> <code> = </code>
+| Param | Type | Default |
+| --- | --- | --- |
+| testsGroup | [<code>TestsGroup</code>](#TestsGroup) |  | 
+| botconfig | <code>object</code> | <code></code> | 
 
 {% raw %}<div id="ConversationTester__runStepCaseTests">&nbsp;</div>{% endraw %}
 
 ### conversationTester.\_runStepCaseTests(testsGroup, botconfig)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- testsGroup [<code>TestsGroup</code>](#TestsGroup)
-- botconfig <code>object</code> <code> = </code>
+| Param | Type | Default |
+| --- | --- | --- |
+| testsGroup | [<code>TestsGroup</code>](#TestsGroup) |  | 
+| botconfig | <code>object</code> | <code></code> | 
 
 {% raw %}<div id="ConversationTester_executeTextCase">&nbsp;</div>{% endraw %}
 
 ### conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- testsGroup [<code>TestsGroup</code>](#TestsGroup)
-- t [<code>Tester</code>](#Tester)
-- textCase [<code>TextTest</code>](#TextTest)
-- botconfig <code>\*</code>
-- longestText <code>number</code>
+| Param | Type |
+| --- | --- |
+| testsGroup | [<code>TestsGroup</code>](#TestsGroup) | 
+| t | [<code>Tester</code>](#Tester) | 
+| textCase | [<code>TextTest</code>](#TextTest) | 
+| botconfig | <code>\*</code> | 
+| longestText | <code>number</code> | 
 
 {% raw %}<div id="ConversationTester_executeStep">&nbsp;</div>{% endraw %}
 
 ### conversationTester.executeStep(t, step)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
-**Params**
 
-- t [<code>Tester</code>](#Tester)
-- step [<code>TestCaseStep</code>](#TestCaseStep)
+| Param | Type |
+| --- | --- |
+| t | [<code>Tester</code>](#Tester) | 
+| step | [<code>TestCaseStep</code>](#TestCaseStep) | 
 
 {% raw %}<div id="TestSource">&nbsp;</div>{% endraw %}
 
@@ -701,10 +739,11 @@ Runs the conversation test
 Callback for getting a tester
 
 **Kind**: global typedef  
-**Params**
 
-- bot <code>Router</code> | <code>ReducerWrapper</code> - the chatbot itself
-- test [<code>TestsGroup</code>](#TestsGroup) - the chatbot itself
+| Param | Type | Description |
+| --- | --- | --- |
+| bot | <code>Router</code> \| <code>ReducerWrapper</code> | the chatbot itself |
+| test | [<code>TestsGroup</code>](#TestsGroup) | the chatbot itself |
 
 {% raw %}<div id="TestsOutput">&nbsp;</div>{% endraw %}
 

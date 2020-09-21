@@ -15,10 +15,16 @@
 
 /**
  * @callback EntityDetector
- * @param {string} text
- * @param {DetectedEntity[]} entities
- * @returns {DetectedEntity[]|DetectedEntity}
- *
+ * @param {string} text - part of text
+ * @param {DetectedEntity[]} entities - dependent entities
+ * @returns {DetectedEntity[]|DetectedEntity|Promise<DetectedEntity>|Promise<DetectedEntity[]>}
+ */
+
+/**
+ * @callback ValueExtractor
+ * @param {string[]} match - regexp result
+ * @param {DetectedEntity[]} entities - dependent entities
+ * @returns {*}
  */
 
 /**
@@ -366,12 +372,13 @@ class CustomEntityDetectionModel {
 
     /**
      *
-     * @param {*} name
-     * @param {*} detector
+     * @param {string} name
+     * @param {EntityDetector|RegExp} detector
      * @param {object} [options]
-     * @param {boolean} [options.anonymize]
-     * @param {Function|string} [options.extractValue]
-     * @param {string[]} [options.dependencies]
+     * @param {boolean} [options.anonymize] - if true, value will not be sent to NLP
+     * @param {Function|string} [options.extractValue] - entity extractor
+     * @param {string[]} [options.dependencies] - array of dependent entities
+     * @returns {this}
      */
     setEntityDetector (name, detector, options = {}) {
         const entity = name;
@@ -395,6 +402,8 @@ class CustomEntityDetectionModel {
             dependencies,
             anonymize: !!options.anonymize
         });
+
+        return this;
     }
 }
 

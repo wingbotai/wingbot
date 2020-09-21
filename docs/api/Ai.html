@@ -64,7 +64,7 @@
     <link rel="next" href="BuildRouter.html" />
     
     
-    <link rel="prev" href="bufferloader.html" />
+    <link rel="prev" href="stateVariables.html" />
     
 
     </head>
@@ -794,6 +794,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.8.6" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#system-entities">
+            
+                    
+                    System entities
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -942,7 +955,20 @@
             
         </li>
     
-        <li class="chapter active" data-level="3.7" data-path="Ai.html">
+        <li class="chapter " data-level="3.7" data-path="stateVariables.html">
+            
+                <a href="stateVariables.html">
+            
+                    
+                    vars tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="3.8" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -955,7 +981,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.8" data-path="BuildRouter.html">
+        <li class="chapter " data-level="3.9" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
@@ -968,7 +994,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.9" data-path="Notifications.html">
+        <li class="chapter " data-level="3.10" data-path="Notifications.html">
             
                 <a href="Notifications.html">
             
@@ -981,7 +1007,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.10" data-path="GraphApi.html">
+        <li class="chapter " data-level="3.11" data-path="GraphApi.html">
             
                 <a href="GraphApi.html">
             
@@ -994,7 +1020,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.11" data-path="graphqlSchema.html">
+        <li class="chapter " data-level="3.12" data-path="graphqlSchema.html">
             
                 <a href="graphqlSchema.html">
             
@@ -1007,7 +1033,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.12" data-path="../CHANGELOG.html">
+        <li class="chapter " data-level="3.13" data-path="../CHANGELOG.html">
             
                 <a href="../CHANGELOG.html">
             
@@ -1069,6 +1095,8 @@
 <dl>
 <dt><a href="#Ai">Ai</a></dt>
 <dd></dd>
+<dt><a href="#CustomEntityDetectionModel">CustomEntityDetectionModel</a></dt>
+<dd></dd>
 <dt><a href="#WingbotModel">WingbotModel</a></dt>
 <dd></dd>
 <dt><a href="#CachedModel">CachedModel</a></dt>
@@ -1091,6 +1119,18 @@
 <dt><a href="#BotPath">BotPath</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#IntentAction">IntentAction</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#DetectedEntity">DetectedEntity</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#EntityDetector">EntityDetector</a> &#x21D2; <code>Array.&lt;DetectedEntity&gt;</code> | <code>DetectedEntity</code> | <code>Promise.&lt;DetectedEntity&gt;</code> | <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code></dt>
+<dd></dd>
+<dt><a href="#ValueExtractor">ValueExtractor</a> &#x21D2; <code>*</code></dt>
+<dd></dd>
+<dt><a href="#Entity">Entity</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#Intent">Intent</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#Result">Result</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Entity">Entity</a> : <code>object</code></dt>
 <dd></dd>
@@ -1136,6 +1176,7 @@
 <li><a href="#Ai_textFilter">.textFilter(text)</a> : <a href="#textFilter"><code>textFilter</code></a></li>
 <li><a href="#Ai_mockIntent">.mockIntent([intent], [score])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Ai_register">.register(model, prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></li>
+<li><a href="#Ai_getModel">.getModel(prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a></li>
 <li><a href="#Ai_global">.global(path, intents, [title], [meta])</a> &#x21D2; <code>object</code></li>
 <li><a href="#Ai_local">.local(path, intents, [title])</a> &#x21D2; <code>object</code></li>
 <li><a href="#Ai_match">.match(intent)</a> &#x21D2; <code>function</code></li>
@@ -1167,31 +1208,76 @@
 
 <h3 id="aigetprefixprefix-req"><a name="aigetprefixprefix-req" class="plugin-anchor" href="#aigetprefixprefix-req"><i class="fa fa-link" aria-hidden="true"></i></a>ai.getPrefix(prefix, req)</h3>
 <p>The prefix translator - for request-specific prefixes</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Params</strong></p>
-<ul>
-<li>prefix <code>string</code></li>
-<li>req <code>Request</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>prefix</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>req</td>
+<td><code>Request</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Ai_textFilter">&#xA0;</div>
 
 <h3 id="aitextfiltertext--textfilter"><a name="aitextfiltertext--textfilter" class="plugin-anchor" href="#aitextfiltertext--textfilter"><i class="fa fa-link" aria-hidden="true"></i></a>ai.textFilter(text) : <a href="#textFilter"><code>textFilter</code></a></h3>
 <p>Preprocess text for NLP
 For example to remove any confidential data</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Ai_mockIntent">&#xA0;</div>
 
 <h3 id="aimockintentintent-score-&#x21D2;-this"><a name="aimockintentintent-score-&#x21D2;-this" class="plugin-anchor" href="#aimockintentintent-score-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ai.mockIntent([intent], [score]) &#x21D2; <code>this</code></h3>
 <p>Usefull method for testing AI routes</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[intent] <code>string</code> <code> = null</code> - intent name</li>
-<li>[score] <code>number</code> <code> = </code> - the score of the top intent</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[intent]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>intent name</td>
+</tr>
+<tr>
+<td>[score]</td>
+<td><code>number</code></td>
+<td><code></code></td>
+<td>the score of the top intent</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Tester, ai, Route } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;bontaut&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Tester, ai, Route } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;bontaut&apos;</span>);
 
 <span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Route();
 
@@ -1219,29 +1305,113 @@ describe(<span class="hljs-string">&apos;bot&apos;</span>, <span class="hljs-fun
 
 <h3 id="airegistermodel-prefix-&#x21D2;-wingbotmodel--t"><a name="airegistermodel-prefix-&#x21D2;-wingbotmodel--t" class="plugin-anchor" href="#airegistermodel-prefix-&#x21D2;-wingbotmodel--t"><i class="fa fa-link" aria-hidden="true"></i></a>ai.register(model, prefix) &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></h3>
 <p>Registers Wingbot AI model</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Params</strong></p>
-<ul>
-<li>model <code>string</code> | <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code> - wingbot model name or AI plugin</li>
-<li>prefix <code>string</code> <code> = &quot;default&quot;</code> - model prefix</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>model</td>
+<td><code>string</code> \</td>
+<td><a href="#WingbotModel"><code>WingbotModel</code></a> \</td>
+<td><code>T</code></td>
+<td></td>
+<td>wingbot model name or AI plugin</td>
+</tr>
+<tr>
+<td>prefix</td>
+<td><code>string</code></td>
+<td><code>&quot;default&quot;</code></td>
+<td>model prefix</td>
+</tr>
+</tbody>
+</table>
+<div id="Ai_getModel">&#xA0;</div>
+
+<h3 id="aigetmodelprefix-&#x21D2;-wingbotmodel"><a name="aigetmodelprefix-&#x21D2;-wingbotmodel" class="plugin-anchor" href="#aigetmodelprefix-&#x21D2;-wingbotmodel"><i class="fa fa-link" aria-hidden="true"></i></a>ai.getModel(prefix) &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a></h3>
+<p>Returns registered AI model</p>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>prefix</td>
+<td><code>string</code></td>
+<td><code>&quot;default&quot;</code></td>
+<td>model prefix</td>
+</tr>
+</tbody>
+</table>
 <div id="Ai_global">&#xA0;</div>
 
 <h3 id="aiglobalpath-intents-title-meta-&#x21D2;-object"><a name="aiglobalpath-intents-title-meta-&#x21D2;-object" class="plugin-anchor" href="#aiglobalpath-intents-title-meta-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>ai.global(path, intents, [title], [meta]) &#x21D2; <code>object</code></h3>
 <p>Returns matching middleware, that will export the intent to the root router
 so the intent will be matched in a global context</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>object</code> - - the middleware<br><strong>Params</strong></p>
-<ul>
-<li>path <code>string</code></li>
-<li>intents <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
-<li>[title] <code>string</code> <code> = null</code> - disambiguation title</li>
-<li>[meta] <code>object</code> - metadata for multibot environments<ul>
-<li>[.targetAppId] <code>object</code> - target application id</li>
-<li>[.targetAction] <code>object</code> - target action</li>
-</ul>
-</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>object</code> - - the middleware  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>intents</td>
+<td><a href="#IntentRule"><code>IntentRule</code></a> \</td>
+<td><a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[title]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>disambiguation title</td>
+</tr>
+<tr>
+<td>[meta]</td>
+<td><code>object</code></td>
+<td></td>
+<td>metadata for multibot environments</td>
+</tr>
+<tr>
+<td>[meta.targetAppId]</td>
+<td><code>object</code></td>
+<td></td>
+<td>target application id</td>
+</tr>
+<tr>
+<td>[meta.targetAction]</td>
+<td><code>object</code></td>
+<td></td>
+<td>target action</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 ai.register(<span class="hljs-string">&apos;app-model&apos;</span>);
 
@@ -1256,14 +1426,40 @@ bot.use(ai.global(<span class="hljs-string">&apos;route-path&apos;</span>, <span
 <h3 id="ailocalpath-intents-title-&#x21D2;-object"><a name="ailocalpath-intents-title-&#x21D2;-object" class="plugin-anchor" href="#ailocalpath-intents-title-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>ai.local(path, intents, [title]) &#x21D2; <code>object</code></h3>
 <p>Returns matching middleware, that will export the intent to the root router
 so the intent will be matched in a context of local dialogue</p>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>object</code> - - the middleware<br><strong>Params</strong></p>
-<ul>
-<li>path <code>string</code></li>
-<li>intents <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
-<li>[title] <code>string</code> <code> = null</code> - disambiguation title</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>object</code> - - the middleware  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>intents</td>
+<td><a href="#IntentRule"><code>IntentRule</code></a> \</td>
+<td><a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[title]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>disambiguation title</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 ai.register(<span class="hljs-string">&apos;app-model&apos;</span>);
 
@@ -1289,12 +1485,24 @@ bot.use(ai.global(<span class="hljs-string">&apos;route-path&apos;</span>, <span
 <li>phrases (<code>&apos;#first-phrase|second-phrase&apos;</code>)</li>
 <li>emojis (<code>&apos;#&#x1F604;&#x1F643;&#x1F61B;&apos;</code>)</li>
 </ul>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware<br><strong>Params</strong></p>
-<ul>
-<li>intent <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Returns</strong>: <code>function</code> - - the middleware  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><a href="#IntentRule"><code>IntentRule</code></a> \</td>
+<td><a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Router, ai } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 ai.register(<span class="hljs-string">&apos;app-model&apos;</span>);
 
@@ -1307,10 +1515,274 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <div id="Ai_shouldDisambiguate">&#xA0;</div>
 
 <h3 id="aishoulddisambiguateaiactions-&#x21D2;-boolean"><a name="aishoulddisambiguateaiactions-&#x21D2;-boolean" class="plugin-anchor" href="#aishoulddisambiguateaiactions-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>ai.shouldDisambiguate(aiActions) &#x21D2; <code>boolean</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a><br><strong>Params</strong></p>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aiActions</td>
+<td><a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel">&#xA0;</div>
+
+<h2 id="customentitydetectionmodel"><a name="customentitydetectionmodel" class="plugin-anchor" href="#customentitydetectionmodel"><i class="fa fa-link" aria-hidden="true"></i></a>CustomEntityDetectionModel</h2>
+<p><strong>Kind</strong>: global class  </p>
 <ul>
-<li>aiActions <a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></li>
+<li><a href="#CustomEntityDetectionModel">CustomEntityDetectionModel</a><ul>
+<li><a href="#new_CustomEntityDetectionModel_new">new CustomEntityDetectionModel(options, [log])</a></li>
+<li><a href="#CustomEntityDetectionModel__normalizeResult">._normalizeResult(entities, entity, text, offset, originalText)</a></li>
+<li><a href="#CustomEntityDetectionModel__detectEntities">._detectEntities(entity, text, entities)</a> &#x21D2; <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code></li>
+<li><a href="#CustomEntityDetectionModel__nonOverlapping">._nonOverlapping(entities)</a></li>
+<li><a href="#CustomEntityDetectionModel_resolve">.resolve(text)</a> &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></li>
+<li><a href="#CustomEntityDetectionModel__extractRegExpDependencies">._extractRegExpDependencies(regexp)</a></li>
+<li><a href="#CustomEntityDetectionModel__entityByDependency">._entityByDependency(entities, dependency)</a> &#x21D2; <a href="#DetectedEntity"><code>DetectedEntity</code></a> | <code>null</code></li>
+<li><a href="#CustomEntityDetectionModel__regexpToDetector">._regexpToDetector(regexp, dependencies, extractValue)</a></li>
+<li><a href="#CustomEntityDetectionModel_setEntityDetector">.setEntityDetector(name, detector, [options])</a> &#x21D2; <code>this</code></li>
 </ul>
+</li>
+</ul>
+<div id="new_CustomEntityDetectionModel_new">&#xA0;</div>
+
+<h3 id="new-customentitydetectionmodeloptions-log"><a name="new-customentitydetectionmodeloptions-log" class="plugin-anchor" href="#new-customentitydetectionmodeloptions-log"><i class="fa fa-link" aria-hidden="true"></i></a>new CustomEntityDetectionModel(options, [log])</h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code>object</code></td>
+</tr>
+<tr>
+<td>[log]</td>
+<td><code>Object</code></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel__normalizeResult">&#xA0;</div>
+
+<h3 id="customentitydetectionmodelnormalizeresultentities-entity-text-offset-originaltext"><a name="customentitydetectionmodelnormalizeresultentities-entity-text-offset-originaltext" class="plugin-anchor" href="#customentitydetectionmodelnormalizeresultentities-entity-text-offset-originaltext"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel._normalizeResult(entities, entity, text, offset, originalText)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entities</td>
+<td><a href="#DetectedEntity"><code>Array.&lt;DetectedEntity&gt;</code></a></td>
+</tr>
+<tr>
+<td>entity</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>offset</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>originalText</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel__detectEntities">&#xA0;</div>
+
+<h3 id="customentitydetectionmodeldetectentitiesentity-text-entities-&#x21D2;-promisearraydetectedentity"><a name="customentitydetectionmodeldetectentitiesentity-text-entities-&#x21D2;-promisearraydetectedentity" class="plugin-anchor" href="#customentitydetectionmodeldetectentitiesentity-text-entities-&#x21D2;-promisearraydetectedentity"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel._detectEntities(entity, text, entities) &#x21D2; <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entity</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>entities</td>
+<td><a href="#DetectedEntity"><code>Array.&lt;DetectedEntity&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel__nonOverlapping">&#xA0;</div>
+
+<h3 id="customentitydetectionmodelnonoverlappingentities"><a name="customentitydetectionmodelnonoverlappingentities" class="plugin-anchor" href="#customentitydetectionmodelnonoverlappingentities"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel._nonOverlapping(entities)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entities</td>
+<td><a href="#DetectedEntity"><code>Array.&lt;DetectedEntity&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel_resolve">&#xA0;</div>
+
+<h3 id="customentitydetectionmodelresolvetext-&#x21D2;-promiseresult"><a name="customentitydetectionmodelresolvetext-&#x21D2;-promiseresult" class="plugin-anchor" href="#customentitydetectionmodelresolvetext-&#x21D2;-promiseresult"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel.resolve(text) &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></h3>
+<p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel__extractRegExpDependencies">&#xA0;</div>
+
+<h3 id="customentitydetectionmodelextractregexpdependenciesregexp"><a name="customentitydetectionmodelextractregexpdependenciesregexp" class="plugin-anchor" href="#customentitydetectionmodelextractregexpdependenciesregexp"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel._extractRegExpDependencies(regexp)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regexp</td>
+<td><code>RegExp</code></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel__entityByDependency">&#xA0;</div>
+
+<h3 id="customentitydetectionmodelentitybydependencyentities-dependency-&#x21D2;-detectedentity--null"><a name="customentitydetectionmodelentitybydependencyentities-dependency-&#x21D2;-detectedentity--null" class="plugin-anchor" href="#customentitydetectionmodelentitybydependencyentities-dependency-&#x21D2;-detectedentity--null"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel._entityByDependency(entities, dependency) &#x21D2; <a href="#DetectedEntity"><code>DetectedEntity</code></a> | <code>null</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entities</td>
+<td><a href="#DetectedEntity"><code>Array.&lt;DetectedEntity&gt;</code></a></td>
+</tr>
+<tr>
+<td>dependency</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel__regexpToDetector">&#xA0;</div>
+
+<h3 id="customentitydetectionmodelregexptodetectorregexp-dependencies-extractvalue"><a name="customentitydetectionmodelregexptodetectorregexp-dependencies-extractvalue" class="plugin-anchor" href="#customentitydetectionmodelregexptodetectorregexp-dependencies-extractvalue"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel._regexpToDetector(regexp, dependencies, extractValue)</h3>
+<p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regexp</td>
+<td><code>RegExp</code></td>
+<td></td>
+</tr>
+<tr>
+<td>dependencies</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td>extractValue</td>
+<td><code>string</code> \</td>
+<td><code>function</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
+<div id="CustomEntityDetectionModel_setEntityDetector">&#xA0;</div>
+
+<h3 id="customentitydetectionmodelsetentitydetectorname-detector-options-&#x21D2;-this"><a name="customentitydetectionmodelsetentitydetectorname-detector-options-&#x21D2;-this" class="plugin-anchor" href="#customentitydetectionmodelsetentitydetectorname-detector-options-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel.setEntityDetector(name, detector, [options]) &#x21D2; <code>this</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>detector</td>
+<td><a href="#EntityDetector"><code>EntityDetector</code></a> \</td>
+<td><code>RegExp</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[options]</td>
+<td><code>object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[options.anonymize]</td>
+<td><code>boolean</code></td>
+<td>if true, value will not be sent to NLP</td>
+</tr>
+<tr>
+<td>[options.extractValue]</td>
+<td><code>function</code> \</td>
+<td><code>string</code></td>
+<td>entity extractor</td>
+</tr>
+<tr>
+<td>[options.dependencies]</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td>array of dependent entities</td>
+</tr>
+</tbody>
+</table>
 <div id="WingbotModel">&#xA0;</div>
 
 <h2 id="wingbotmodel"><a name="wingbotmodel" class="plugin-anchor" href="#wingbotmodel"><i class="fa fa-link" aria-hidden="true"></i></a>WingbotModel</h2>
@@ -1326,18 +1798,44 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <div id="new_WingbotModel_new">&#xA0;</div>
 
 <h3 id="new-wingbotmodeloptions-log"><a name="new-wingbotmodeloptions-log" class="plugin-anchor" href="#new-wingbotmodeloptions-log"><i class="fa fa-link" aria-hidden="true"></i></a>new WingbotModel(options, [log])</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>options <code>object</code><ul>
-<li>[.serviceUrl] <code>string</code></li>
-<li>.model <code>string</code></li>
-<li>[.cacheSize] <code>number</code></li>
-<li>[.matches] <code>number</code></li>
-<li>[.fetch] <code>function</code></li>
-</ul>
-</li>
-<li>[log] <code>Object</code></li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code>object</code></td>
+</tr>
+<tr>
+<td>[options.serviceUrl]</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>options.model</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>[options.cacheSize]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[options.matches]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[options.fetch]</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>[log]</td>
+<td><code>Object</code></td>
+</tr>
+</tbody>
+</table>
 <div id="WingbotModel__fetch">&#xA0;</div>
 
 <h3 id="wingbotmodelfetch--fetch"><a name="wingbotmodelfetch--fetch" class="plugin-anchor" href="#wingbotmodelfetch--fetch"><i class="fa fa-link" aria-hidden="true"></i></a>wingbotModel._fetch : <code>fetch</code></h3>
@@ -1345,10 +1843,21 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <div id="WingbotModel__queryModel">&#xA0;</div>
 
 <h3 id="wingbotmodelquerymodeltext-&#x21D2;-promiseresult"><a name="wingbotmodelquerymodeltext-&#x21D2;-promiseresult" class="plugin-anchor" href="#wingbotmodelquerymodeltext-&#x21D2;-promiseresult"><i class="fa fa-link" aria-hidden="true"></i></a>wingbotModel._queryModel(text) &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#WingbotModel"><code>WingbotModel</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#WingbotModel"><code>WingbotModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="CachedModel">&#xA0;</div>
 
 <h2 id="cachedmodel"><a name="cachedmodel" class="plugin-anchor" href="#cachedmodel"><i class="fa fa-link" aria-hidden="true"></i></a>CachedModel</h2>
@@ -1364,28 +1873,66 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <div id="new_CachedModel_new">&#xA0;</div>
 
 <h3 id="new-cachedmodeloptions-log"><a name="new-cachedmodeloptions-log" class="plugin-anchor" href="#new-cachedmodeloptions-log"><i class="fa fa-link" aria-hidden="true"></i></a>new CachedModel(options, [log])</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>options <code>object</code><ul>
-<li>[.cacheSize] <code>number</code></li>
-</ul>
-</li>
-<li>[log] <code>Object</code></li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code>object</code></td>
+</tr>
+<tr>
+<td>[options.cacheSize]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[log]</td>
+<td><code>Object</code></td>
+</tr>
+</tbody>
+</table>
 <div id="CachedModel_resolve">&#xA0;</div>
 
 <h3 id="cachedmodelresolvetext-&#x21D2;-promiseresult"><a name="cachedmodelresolvetext-&#x21D2;-promiseresult" class="plugin-anchor" href="#cachedmodelresolvetext-&#x21D2;-promiseresult"><i class="fa fa-link" aria-hidden="true"></i></a>cachedModel.resolve(text) &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#CachedModel"><code>CachedModel</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code> - the user input</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#CachedModel"><code>CachedModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+<td>the user input</td>
+</tr>
+</tbody>
+</table>
 <div id="CachedModel__queryModel">&#xA0;</div>
 
 <h3 id="cachedmodelquerymodeltext-&#x21D2;-promisearrayintentresult"><a name="cachedmodelquerymodeltext-&#x21D2;-promisearrayintentresult" class="plugin-anchor" href="#cachedmodelquerymodeltext-&#x21D2;-promisearrayintentresult"><i class="fa fa-link" aria-hidden="true"></i></a>cachedModel._queryModel(text) &#x21D2; <code>Promise.&lt;(Array.&lt;Intent&gt;|Result)&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#CachedModel"><code>CachedModel</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#CachedModel"><code>CachedModel</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="AiMatching">&#xA0;</div>
 
 <h2 id="aimatching"><a name="aimatching" class="plugin-anchor" href="#aimatching"><i class="fa fa-link" aria-hidden="true"></i></a>AiMatching</h2>
@@ -1400,7 +1947,7 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <li><a href="#AiMatching_multiMatchGain">.multiMatchGain</a> : <code>number</code></li>
 <li><a href="#AiMatching_getSetStateForEntityRules">.getSetStateForEntityRules(rule)</a> &#x21D2; <code>object</code></li>
 <li><a href="#AiMatching_preprocessRule">.preprocessRule(intent)</a> &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
-<li><a href="#AiMatching_match">.match(req, rule)</a> &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></li>
+<li><a href="#AiMatching_match">.match(req, rule, stateless)</a> &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></li>
 <li><a href="#AiMatching__matchRegexp">._matchRegexp(req, regexps)</a> &#x21D2; <code>boolean</code></li>
 </ul>
 </li>
@@ -1434,35 +1981,94 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 <div id="AiMatching_getSetStateForEntityRules">&#xA0;</div>
 
 <h3 id="aimatchinggetsetstateforentityrulesrule-&#x21D2;-object"><a name="aimatchinggetsetstateforentityrulesrule-&#x21D2;-object" class="plugin-anchor" href="#aimatchinggetsetstateforentityrulesrule-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.getSetStateForEntityRules(rule) &#x21D2; <code>object</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a><br><strong>Params</strong></p>
-<ul>
-<li>rule <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rule</td>
+<td><a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="AiMatching_preprocessRule">&#xA0;</div>
 
 <h3 id="aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput"><a name="aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput" class="plugin-anchor" href="#aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.preprocessRule(intent) &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></h3>
 <p>Create a rule to be cached inside a routing structure</p>
-<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a><br><strong>Params</strong></p>
-<ul>
-<li>intent <a href="#IntentRule"><code>IntentRule</code></a> | <a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><a href="#IntentRule"><code>IntentRule</code></a> \</td>
+<td><a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="AiMatching_match">&#xA0;</div>
 
-<h3 id="aimatchingmatchreq-rule-&#x21D2;-intent--null"><a name="aimatchingmatchreq-rule-&#x21D2;-intent--null" class="plugin-anchor" href="#aimatchingmatchreq-rule-&#x21D2;-intent--null"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.match(req, rule) &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></h3>
+<h3 id="aimatchingmatchreq-rule-stateless-&#x21D2;-intent--null"><a name="aimatchingmatchreq-rule-stateless-&#x21D2;-intent--null" class="plugin-anchor" href="#aimatchingmatchreq-rule-stateless-&#x21D2;-intent--null"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.match(req, rule, stateless) &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></h3>
 <p>Calculate a matching score of preprocessed rule against the request</p>
-<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a><br><strong>Params</strong></p>
-<ul>
-<li>req <a href="#AIRequest"><code>AIRequest</code></a></li>
-<li>rule <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>req</td>
+<td><a href="#AIRequest"><code>AIRequest</code></a></td>
+<td></td>
+</tr>
+<tr>
+<td>rule</td>
+<td><a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></td>
+<td></td>
+</tr>
+<tr>
+<td>stateless</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
 <div id="AiMatching__matchRegexp">&#xA0;</div>
 
 <h3 id="aimatchingmatchregexpreq-regexps-&#x21D2;-boolean"><a name="aimatchingmatchregexpreq-regexps-&#x21D2;-boolean" class="plugin-anchor" href="#aimatchingmatchregexpreq-regexps-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching._matchRegexp(req, regexps) &#x21D2; <code>boolean</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a><br><strong>Params</strong></p>
-<ul>
-<li>req <a href="#AIRequest"><code>AIRequest</code></a></li>
-<li>regexps <a href="#RegexpComparator"><code>Array.&lt;RegexpComparator&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>req</td>
+<td><a href="#AIRequest"><code>AIRequest</code></a></td>
+</tr>
+<tr>
+<td>regexps</td>
+<td><a href="#RegexpComparator"><code>Array.&lt;RegexpComparator&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="COMPARE">&#xA0;</div>
 
 <h2 id="compare--enum"><a name="compare--enum" class="plugin-anchor" href="#compare--enum"><i class="fa fa-link" aria-hidden="true"></i></a>COMPARE : <code>enum</code></h2>
@@ -1555,10 +2161,23 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 
 <h2 id="textfilter-&#x21D2;-string"><a name="textfilter-&#x21D2;-string" class="plugin-anchor" href="#textfilter-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>textFilter &#x21D2; <code>string</code></h2>
 <p>Text filter function</p>
-<p><strong>Kind</strong>: global typedef<br><strong>Returns</strong>: <code>string</code> - - filtered text<br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code> - input text</li>
-</ul>
+<p><strong>Kind</strong>: global typedef<br><strong>Returns</strong>: <code>string</code> - - filtered text  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+<td>input text</td>
+</tr>
+</tbody>
+</table>
 <div id="IntentRule">&#xA0;</div>
 
 <h2 id="intentrule--string--entityexpression"><a name="intentrule--string--entityexpression" class="plugin-anchor" href="#intentrule--string--entityexpression"><i class="fa fa-link" aria-hidden="true"></i></a>IntentRule : <code>string</code> | <a href="#EntityExpression"><code>EntityExpression</code></a></h2>
@@ -1623,58 +2242,322 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 </tr>
 </tbody>
 </table>
+<div id="DetectedEntity">&#xA0;</div>
+
+<h2 id="detectedentity--object"><a name="detectedentity--object" class="plugin-anchor" href="#detectedentity--object"><i class="fa fa-link" aria-hidden="true"></i></a>DetectedEntity : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[start]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[entity]</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>[end]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[score]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[value]</td>
+<td><code>string</code> \</td>
+<td><code>number</code> \</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[text]</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
+<div id="EntityDetector">&#xA0;</div>
+
+<h2 id="entitydetector-&#x21D2;-arraydetectedentity--detectedentity--promisedetectedentity--promisearraydetectedentity"><a name="entitydetector-&#x21D2;-arraydetectedentity--detectedentity--promisedetectedentity--promisearraydetectedentity" class="plugin-anchor" href="#entitydetector-&#x21D2;-arraydetectedentity--detectedentity--promisedetectedentity--promisearraydetectedentity"><i class="fa fa-link" aria-hidden="true"></i></a>EntityDetector &#x21D2; <a href="#DetectedEntity"><code>Array.&lt;DetectedEntity&gt;</code></a> | <a href="#DetectedEntity"><code>DetectedEntity</code></a> | <a href="#DetectedEntity"><code>Promise.&lt;DetectedEntity&gt;</code></a> | <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+<td>part of text</td>
+</tr>
+<tr>
+<td>entities</td>
+<td><a href="#DetectedEntity"><code>Array.&lt;DetectedEntity&gt;</code></a></td>
+<td>dependent entities</td>
+</tr>
+</tbody>
+</table>
+<div id="ValueExtractor">&#xA0;</div>
+
+<h2 id="valueextractor-&#x21D2;-"><a name="valueextractor-&#x21D2;-" class="plugin-anchor" href="#valueextractor-&#x21D2;-"><i class="fa fa-link" aria-hidden="true"></i></a>ValueExtractor &#x21D2; <code>*</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>match</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td>regexp result</td>
+</tr>
+<tr>
+<td>entities</td>
+<td><a href="#DetectedEntity"><code>Array.&lt;DetectedEntity&gt;</code></a></td>
+<td>dependent entities</td>
+</tr>
+</tbody>
+</table>
 <div id="Entity">&#xA0;</div>
 
 <h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>entity <code>string</code></li>
-<li>value <code>string</code></li>
-<li>score <code>number</code></li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entity</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Intent">&#xA0;</div>
 
 <h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>intent <code>string</code></li>
-<li>score <code>number</code></li>
-<li>[entities] <a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[entities]</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="Result">&#xA0;</div>
 
 <h2 id="result--object"><a name="result--object" class="plugin-anchor" href="#result--object"><i class="fa fa-link" aria-hidden="true"></i></a>Result : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>entities <a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></li>
-<li>intents <a href="#Intent"><code>Array.&lt;Intent&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>entities</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+</tr>
+<tr>
+<td>intents</td>
+<td><a href="#Intent"><code>Array.&lt;Intent&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="Entity">&#xA0;</div>
 
 <h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>entity <code>string</code></li>
-<li>value <code>string</code></li>
-<li>score <code>number</code></li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entity</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Intent">&#xA0;</div>
 
 <h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>intent <code>string</code></li>
-<li>score <code>number</code></li>
-<li>[entities] <a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[entities]</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="Result">&#xA0;</div>
 
 <h2 id="result--object"><a name="result--object" class="plugin-anchor" href="#result--object"><i class="fa fa-link" aria-hidden="true"></i></a>Result : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>entities <a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></li>
-<li>intents <a href="#Intent"><code>Array.&lt;Intent&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entities</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+</tr>
+<tr>
+<td>intents</td>
+<td><a href="#Intent"><code>Array.&lt;Intent&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="Entity">&#xA0;</div>
+
+<h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entity</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
+<div id="Intent">&#xA0;</div>
+
+<h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[entities]</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
+<div id="Result">&#xA0;</div>
+
+<h2 id="result--object"><a name="result--object" class="plugin-anchor" href="#result--object"><i class="fa fa-link" aria-hidden="true"></i></a>Result : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entities</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+</tr>
+<tr>
+<td>intents</td>
+<td><a href="#Intent"><code>Array.&lt;Intent&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="Compare">&#xA0;</div>
 
 <h2 id="compare--string"><a name="compare--string" class="plugin-anchor" href="#compare--string"><i class="fa fa-link" aria-hidden="true"></i></a>Compare : <code>string</code></h2>
@@ -1682,21 +2565,55 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 <div id="Entity">&#xA0;</div>
 
 <h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>entity <code>string</code></li>
-<li>value <code>string</code></li>
-<li>score <code>number</code></li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entity</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Intent">&#xA0;</div>
 
 <h2 id="intent--object"><a name="intent--object" class="plugin-anchor" href="#intent--object"><i class="fa fa-link" aria-hidden="true"></i></a>Intent : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>[intent] <code>string</code></li>
-<li>score <code>number</code></li>
-<li>[entities] <a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[intent]</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>score</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[entities]</td>
+<td><a href="#Entity"><code>Array.&lt;Entity&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="EntityExpression">&#xA0;</div>
 
 <h2 id="entityexpression--object"><a name="entityexpression--object" class="plugin-anchor" href="#entityexpression--object"><i class="fa fa-link" aria-hidden="true"></i></a>EntityExpression : <code>object</code></h2>
@@ -1846,7 +2763,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 
             
                 
-                <a href="bufferloader.html" class="navigation navigation-prev " aria-label="Previous page: Utils">
+                <a href="stateVariables.html" class="navigation navigation-prev " aria-label="Previous page: vars tools">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
@@ -1862,7 +2779,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.7","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.8","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-08-21T15:42:56.403Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:42:59.083Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.8","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.9","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"vars tools","level":"3.7","depth":1,"path":"api/stateVariables.md","ref":"api/stateVariables.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-09-21T19:57:38.282Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

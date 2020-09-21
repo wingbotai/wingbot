@@ -794,6 +794,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.8.6" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#system-entities">
+            
+                    
+                    System entities
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -942,7 +955,20 @@
             
         </li>
     
-        <li class="chapter " data-level="3.7" data-path="Ai.html">
+        <li class="chapter " data-level="3.7" data-path="stateVariables.html">
+            
+                <a href="stateVariables.html">
+            
+                    
+                    vars tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -955,7 +981,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.8" data-path="BuildRouter.html">
+        <li class="chapter " data-level="3.9" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
@@ -968,7 +994,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.9" data-path="Notifications.html">
+        <li class="chapter " data-level="3.10" data-path="Notifications.html">
             
                 <a href="Notifications.html">
             
@@ -981,7 +1007,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.10" data-path="GraphApi.html">
+        <li class="chapter " data-level="3.11" data-path="GraphApi.html">
             
                 <a href="GraphApi.html">
             
@@ -994,7 +1020,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.11" data-path="graphqlSchema.html">
+        <li class="chapter " data-level="3.12" data-path="graphqlSchema.html">
             
                 <a href="graphqlSchema.html">
             
@@ -1007,7 +1033,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.12" data-path="../CHANGELOG.html">
+        <li class="chapter " data-level="3.13" data-path="../CHANGELOG.html">
             
                 <a href="../CHANGELOG.html">
             
@@ -1222,20 +1248,56 @@ It joins them into a single sting</p>
 
 <h3 id="testerprocessmessagemessage-senderid-pageid-&#x21D2;-promiseany"><a name="testerprocessmessagemessage-senderid-pageid-&#x21D2;-promiseany" class="plugin-anchor" href="#testerprocessmessagemessage-senderid-pageid-&#x21D2;-promiseany"><i class="fa fa-link" aria-hidden="true"></i></a>tester.processMessage(message, senderId, pageId) &#x21D2; <code>Promise.&lt;any&gt;</code></h3>
 <p>Use tester as a connector :)</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>message <code>object</code> - wingbot chat event</li>
-<li>senderId <code>string</code> - chat event sender identifier</li>
-<li>pageId <code>string</code> - channel/page identifier</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>message</td>
+<td><code>object</code></td>
+<td>wingbot chat event</td>
+</tr>
+<tr>
+<td>senderId</td>
+<td><code>string</code></td>
+<td>chat event sender identifier</td>
+</tr>
+<tr>
+<td>pageId</td>
+<td><code>string</code></td>
+<td>channel/page identifier</td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_res">&#xA0;</div>
 
 <h3 id="testerresindex-&#x21D2;-responseassert"><a name="testerresindex-&#x21D2;-responseassert" class="plugin-anchor" href="#testerresindex-&#x21D2;-responseassert"><i class="fa fa-link" aria-hidden="true"></i></a>tester.res([index]) &#x21D2; <a href="#ResponseAssert"><code>ResponseAssert</code></a></h3>
 <p>Returns single response asserter</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[index] <code>number</code> <code> = 0</code> - response index</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[index]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+<td>response index</td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_any">&#xA0;</div>
 
 <h3 id="testerany-&#x21D2;-anyresponseassert"><a name="testerany-&#x21D2;-anyresponseassert" class="plugin-anchor" href="#testerany-&#x21D2;-anyresponseassert"><i class="fa fa-link" aria-hidden="true"></i></a>tester.any() &#x21D2; <a href="#AnyResponseAssert"><code>AnyResponseAssert</code></a></h3>
@@ -1250,18 +1312,40 @@ It joins them into a single sting</p>
 
 <h3 id="testerpassedactionpath-&#x21D2;-this"><a name="testerpassedactionpath-&#x21D2;-this" class="plugin-anchor" href="#testerpassedactionpath-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>tester.passedAction(path) &#x21D2; <code>this</code></h3>
 <p>Checks, that app past the action</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>path <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_respondedWithBlock">&#xA0;</div>
 
 <h3 id="testerrespondedwithblockblockname-&#x21D2;-this"><a name="testerrespondedwithblockblockname-&#x21D2;-this" class="plugin-anchor" href="#testerrespondedwithblockblockname-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>tester.respondedWithBlock(blockName) &#x21D2; <code>this</code></h3>
 <p>Checks, that a plugin used a block as a responde</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>blockName <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blockName</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_getState">&#xA0;</div>
 
 <h3 id="testergetstate-&#x21D2;-object"><a name="testergetstate-&#x21D2;-object" class="plugin-anchor" href="#testergetstate-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>tester.getState() &#x21D2; <code>object</code></h3>
@@ -1271,78 +1355,235 @@ It joins them into a single sting</p>
 
 <h3 id="testersetstatestate"><a name="testersetstatestate" class="plugin-anchor" href="#testersetstatestate"><i class="fa fa-link" aria-hidden="true"></i></a>tester.setState([state])</h3>
 <p>Sets state with <code>Object.assign()</code></p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[state] <code>object</code> <code> = {}</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[state]</td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_text">&#xA0;</div>
 
 <h3 id="testertexttext-&#x21D2;-promise"><a name="testertexttext-&#x21D2;-promise" class="plugin-anchor" href="#testertexttext-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>tester.text(text) &#x21D2; <code>Promise</code></h3>
 <p>Makes text request</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_intent">&#xA0;</div>
 
 <h3 id="testerintentintent-text-score-&#x21D2;-promise"><a name="testerintentintent-text-score-&#x21D2;-promise" class="plugin-anchor" href="#testerintentintent-text-score-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>tester.intent(intent, [text], [score]) &#x21D2; <code>Promise</code></h3>
 <p>Makes recognised AI intent request</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>intent <code>string</code> | <code>Array.&lt;string&gt;</code></li>
-<li>[text] <code>string</code> <code> = null</code></li>
-<li>[score] <code>number</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><code>string</code> \</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[text]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+</tr>
+<tr>
+<td>[score]</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_intentWithEntity">&#xA0;</div>
 
 <h3 id="testerintentwithentityintent-entity-value-text-score-&#x21D2;-promise"><a name="testerintentwithentityintent-entity-value-text-score-&#x21D2;-promise" class="plugin-anchor" href="#testerintentwithentityintent-entity-value-text-score-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>tester.intentWithEntity(intent, entity, [value], [text], [score]) &#x21D2; <code>Promise</code></h3>
 <p>Makes recognised AI intent request with entity</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>intent <code>string</code></li>
-<li>entity <code>string</code></li>
-<li>[value] <code>string</code></li>
-<li>[text] <code>string</code></li>
-<li>[score] <code>number</code> <code> = 1</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intent</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>entity</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[value]</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[text]</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[score]</td>
+<td><code>number</code></td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_optin">&#xA0;</div>
 
 <h3 id="testeroptinaction-data-userref-&#x21D2;-promise"><a name="testeroptinaction-data-userref-&#x21D2;-promise" class="plugin-anchor" href="#testeroptinaction-data-userref-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>tester.optin(action, [data], [userRef]) &#x21D2; <code>Promise</code></h3>
 <p>Make optin call</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code></li>
-<li>[data] <code>object</code> <code> = {}</code></li>
-<li>[userRef] <code>string</code> <code> = null</code> - specific ref string</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[userRef]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>specific ref string</td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_quickReply">&#xA0;</div>
 
 <h3 id="testerquickreplyaction-data-&#x21D2;-promise"><a name="testerquickreplyaction-data-&#x21D2;-promise" class="plugin-anchor" href="#testerquickreplyaction-data-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>tester.quickReply(action, [data]) &#x21D2; <code>Promise</code></h3>
 <p>Send quick reply</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code></li>
-<li>[data] <code>object</code> <code> = {}</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_quickReplyText">&#xA0;</div>
 
 <h3 id="testerquickreplytexttext-&#x21D2;-promiseboolean"><a name="testerquickreplytexttext-&#x21D2;-promiseboolean" class="plugin-anchor" href="#testerquickreplytexttext-&#x21D2;-promiseboolean"><i class="fa fa-link" aria-hidden="true"></i></a>tester.quickReplyText(text) &#x21D2; <code>Promise.&lt;boolean&gt;</code></h3>
 <p>Send quick reply if text exactly matches, otherwise returns false</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_postBack">&#xA0;</div>
 
 <h3 id="testerpostbackaction-data-refaction-refdata-&#x21D2;-promise"><a name="testerpostbackaction-data-refaction-refdata-&#x21D2;-promise" class="plugin-anchor" href="#testerpostbackaction-data-refaction-refdata-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>tester.postBack(action, [data], [refAction], [refData]) &#x21D2; <code>Promise</code></h3>
 <p>Sends postback, optionally with referrer action</p>
-<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code></li>
-<li>[data] <code>object</code> <code> = {}</code></li>
-<li>[refAction] <code>string</code> <code> = null</code> - referred action</li>
-<li>[refData] <code>object</code> <code> = {}</code> - referred action data</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Tester"><code>Tester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[refAction]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>referred action</td>
+</tr>
+<tr>
+<td>[refData]</td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>referred action data</td>
+</tr>
+</tbody>
+</table>
 <div id="Tester_Tester">&#xA0;</div>
 
 <h3 id="testertester"><a name="testertester" class="plugin-anchor" href="#testertester"><i class="fa fa-link" aria-hidden="true"></i></a>Tester.Tester</h3>
@@ -1351,14 +1592,50 @@ It joins them into a single sting</p>
 
 <h4 id="new-testerreducer-senderid-pageid-processoroptions-storage"><a name="new-testerreducer-senderid-pageid-processoroptions-storage" class="plugin-anchor" href="#new-testerreducer-senderid-pageid-processoroptions-storage"><i class="fa fa-link" aria-hidden="true"></i></a>new Tester(reducer, [senderId], [pageId], [processorOptions], [storage])</h4>
 <p>Creates an instance of Tester.</p>
-<p><strong>Params</strong></p>
-<ul>
-<li>reducer <code>Router</code> | <code>ReducerWrapper</code> | <code>function</code></li>
-<li>[senderId] <code>string</code> <code> = null</code></li>
-<li>[pageId] <code>string</code> <code> = null</code></li>
-<li>[processorOptions] <code>object</code> <code> = {}</code> - options for Processor</li>
-<li>[storage] <code>MemoryStateStorage</code> - place to override the storage</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reducer</td>
+<td><code>Router</code> \</td>
+<td><code>ReducerWrapper</code> \</td>
+<td><code>function</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[senderId]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[pageId]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[processorOptions]</td>
+<td><code>object</code></td>
+<td><code>{}</code></td>
+<td>options for Processor</td>
+</tr>
+<tr>
+<td>[storage]</td>
+<td><code>MemoryStateStorage</code></td>
+<td></td>
+<td>place to override the storage</td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert">&#xA0;</div>
 
 <h2 id="responseassert"><a name="responseassert" class="plugin-anchor" href="#responseassert"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert</h2>
@@ -1397,115 +1674,286 @@ It joins them into a single sting</p>
 
 <h3 id="responseassertcontainssearch-&#x21D2;-this"><a name="responseassertcontainssearch-&#x21D2;-this" class="plugin-anchor" href="#responseassertcontainssearch-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responseAssert.contains(search) &#x21D2; <code>this</code></h3>
 <p>Checks, that response contains text</p>
-<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>search <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>search</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_quickReplyAction">&#xA0;</div>
 
 <h3 id="responseassertquickreplyactionaction-&#x21D2;-this"><a name="responseassertquickreplyactionaction-&#x21D2;-this" class="plugin-anchor" href="#responseassertquickreplyactionaction-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responseAssert.quickReplyAction(action) &#x21D2; <code>this</code></h3>
 <p>Checks quick response action</p>
-<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_templateType">&#xA0;</div>
 
 <h3 id="responseasserttemplatetypetype-&#x21D2;-this"><a name="responseasserttemplatetypetype-&#x21D2;-this" class="plugin-anchor" href="#responseasserttemplatetypetype-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responseAssert.templateType(type) &#x21D2; <code>this</code></h3>
 <p>Checks template type</p>
-<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>type <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_passThread">&#xA0;</div>
 
 <h3 id="responseassertpassthreadappid-&#x21D2;-this"><a name="responseassertpassthreadappid-&#x21D2;-this" class="plugin-anchor" href="#responseassertpassthreadappid-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responseAssert.passThread([appId]) &#x21D2; <code>this</code></h3>
 <p>Checks pass thread control</p>
-<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[appId] <code>string</code> <code> = null</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[appId]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_attachmentType">&#xA0;</div>
 
 <h3 id="responseassertattachmenttypetype-&#x21D2;-this"><a name="responseassertattachmenttypetype-&#x21D2;-this" class="plugin-anchor" href="#responseassertattachmenttypetype-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responseAssert.attachmentType(type) &#x21D2; <code>this</code></h3>
 <p>Checks attachment type</p>
-<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>type <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_contains">&#xA0;</div>
 
 <h3 id="responseassertanyresponseassertcontainssearch-&#x21D2;-this"><a name="responseassertanyresponseassertcontainssearch-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseassertcontainssearch-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#contains(search) &#x21D2; <code>this</code></h3>
 <p>Checks, that response contains a text</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>search <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>search</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_notContains">&#xA0;</div>
 
 <h3 id="responseassertanyresponseassertnotcontainssearch-&#x21D2;-this"><a name="responseassertanyresponseassertnotcontainssearch-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseassertnotcontainssearch-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#notContains(search) &#x21D2; <code>this</code></h3>
 <p>Checks, that response does NOT contain a text</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>search <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>search</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_quickReplyAction">&#xA0;</div>
 
 <h3 id="responseassertanyresponseassertquickreplyactionaction-&#x21D2;-this"><a name="responseassertanyresponseassertquickreplyactionaction-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseassertquickreplyactionaction-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#quickReplyAction(action) &#x21D2; <code>this</code></h3>
 <p>Checks quick response action</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_quickReplyTextContains">&#xA0;</div>
 
 <h3 id="responseassertanyresponseassertquickreplytextcontainssearch-&#x21D2;-this"><a name="responseassertanyresponseassertquickreplytextcontainssearch-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseassertquickreplytextcontainssearch-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#quickReplyTextContains(search) &#x21D2; <code>this</code></h3>
 <p>Checks quick response text</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>search <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>search</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_templateType">&#xA0;</div>
 
 <h3 id="responseassertanyresponseasserttemplatetypetype-&#x21D2;-this"><a name="responseassertanyresponseasserttemplatetypetype-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseasserttemplatetypetype-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#templateType(type) &#x21D2; <code>this</code></h3>
 <p>Checks template type</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>type <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_genericTemplate">&#xA0;</div>
 
 <h3 id="responseassertanyresponseassertgenerictemplateitemcount"><a name="responseassertanyresponseassertgenerictemplateitemcount" class="plugin-anchor" href="#responseassertanyresponseassertgenerictemplateitemcount"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#genericTemplate(itemCount)</h3>
 <p>Checks for generic template</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>itemCount <code>number</code> <code> = </code> - specified item count</li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>itemCount</td>
+<td><code>number</code></td>
+<td><code></code></td>
+<td>specified item count</td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_buttonTemplate">&#xA0;</div>
 
 <h3 id="responseassertanyresponseassertbuttontemplatesearch-buttoncount"><a name="responseassertanyresponseassertbuttontemplatesearch-buttoncount" class="plugin-anchor" href="#responseassertanyresponseassertbuttontemplatesearch-buttoncount"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#buttonTemplate(search, buttonCount)</h3>
 <p>Checks for button template</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>search <code>string</code></li>
-<li>buttonCount <code>number</code> <code> = </code> - specified button count</li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>search</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>buttonCount</td>
+<td><code>number</code></td>
+<td><code></code></td>
+<td>specified button count</td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_passThread">&#xA0;</div>
 
 <h3 id="responseassertanyresponseassertpassthreadappid-&#x21D2;-this"><a name="responseassertanyresponseassertpassthreadappid-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseassertpassthreadappid-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#passThread([appId]) &#x21D2; <code>this</code></h3>
 <p>Checks pass thread control</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[appId] <code>string</code> <code> = null</code></li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[appId]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ResponseAssert_AnyResponseAssert_attachmentType">&#xA0;</div>
 
 <h3 id="responseassertanyresponseassertattachmenttypetype-&#x21D2;-this"><a name="responseassertanyresponseassertattachmenttypetype-&#x21D2;-this" class="plugin-anchor" href="#responseassertanyresponseassertattachmenttypetype-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>ResponseAssert.AnyResponseAssert#attachmentType(type) &#x21D2; <code>this</code></h3>
 <p>Checks attachment type</p>
-<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a><br><strong>Params</strong></p>
-<ul>
-<li>type <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: static method of <a href="#ResponseAssert"><code>ResponseAssert</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="AnyResponseAssert">&#xA0;</div>
 
 <h2 id="anyresponseassert"><a name="anyresponseassert" class="plugin-anchor" href="#anyresponseassert"><i class="fa fa-link" aria-hidden="true"></i></a>AnyResponseAssert</h2>
@@ -1538,104 +1986,299 @@ It joins them into a single sting</p>
 <div id="new_ConversationTester_new">&#xA0;</div>
 
 <h3 id="new-conversationtestertestssource-botfactory-options"><a name="new-conversationtestertestssource-botfactory-options" class="plugin-anchor" href="#new-conversationtestertestssource-botfactory-options"><i class="fa fa-link" aria-hidden="true"></i></a>new ConversationTester(testsSource, botFactory, [options])</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>testsSource <a href="#TestSource"><code>TestSource</code></a></li>
-<li>botFactory <code>function</code></li>
-<li>[options] <code>object</code><ul>
-<li>[.disableAssertActions] <code>boolean</code></li>
-<li>[.disableAssertTexts] <code>boolean</code></li>
-<li>[.disableAssertQuickReplies] <code>boolean</code></li>
-<li>[.useConversationForTextTestCases] <code>boolean</code></li>
-<li>[.textThreshold] <code>boolean</code></li>
-<li>[.stepCasesPerStep] <code>number</code></li>
-<li>[.textCasesPerStep] <code>number</code></li>
-<li>[.textCaseParallel] <code>number</code></li>
-<li>[.testerFactory] <a href="#testerFactory"><code>testerFactory</code></a></li>
-</ul>
-</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testsSource</td>
+<td><a href="#TestSource"><code>TestSource</code></a></td>
+</tr>
+<tr>
+<td>botFactory</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>[options]</td>
+<td><code>object</code></td>
+</tr>
+<tr>
+<td>[options.disableAssertActions]</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[options.disableAssertTexts]</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[options.disableAssertQuickReplies]</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[options.useConversationForTextTestCases]</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[options.textThreshold]</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[options.stepCasesPerStep]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[options.textCasesPerStep]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[options.textCaseParallel]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[options.testerFactory]</td>
+<td><a href="#testerFactory"><code>testerFactory</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester_test">&#xA0;</div>
 
 <h3 id="conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput"><a name="conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput" class="plugin-anchor" href="#conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.test(validationRequestBody, step) &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></h3>
 <p>Runs the conversation test</p>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>validationRequestBody <code>object</code> <code> = </code></li>
-<li>step <code>number</code> <code> = </code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>validationRequestBody</td>
+<td><code>object</code></td>
+<td><code></code></td>
+</tr>
+<tr>
+<td>step</td>
+<td><code>number</code></td>
+<td><code></code></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester__getLists">&#xA0;</div>
 
 <h3 id="conversationtestergetliststestcases-&#x21D2;-arraylist"><a name="conversationtestergetliststestcases-&#x21D2;-arraylist" class="plugin-anchor" href="#conversationtestergetliststestcases-&#x21D2;-arraylist"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getLists(testCases) &#x21D2; <a href="#List"><code>Array.&lt;List&gt;</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>testCases <a href="#TestCase"><code>Array.&lt;TestCase&gt;</code></a> | <a href="#TextCase"><code>Array.&lt;TextCase&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testCases</td>
+<td><a href="#TestCase"><code>Array.&lt;TestCase&gt;</code></a> \</td>
+<td><a href="#TextCase"><code>Array.&lt;TextCase&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester__getListCases">&#xA0;</div>
 
 <h3 id="conversationtestergetlistcasestestcases-&#x21D2;-mapstring-arraytestcasearraytextcase"><a name="conversationtestergetlistcasestestcases-&#x21D2;-mapstring-arraytestcasearraytextcase" class="plugin-anchor" href="#conversationtestergetlistcasestestcases-&#x21D2;-mapstring-arraytestcasearraytextcase"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getListCases(testCases) &#x21D2; <code>Map.&lt;string, (Array.&lt;TestCase&gt;|Array.&lt;TextCase&gt;)&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>testCases <a href="#TestCase"><code>Array.&lt;TestCase&gt;</code></a> | <a href="#TextCase"><code>Array.&lt;TextCase&gt;</code></a></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testCases</td>
+<td><a href="#TestCase"><code>Array.&lt;TestCase&gt;</code></a> \</td>
+<td><a href="#TextCase"><code>Array.&lt;TextCase&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester__getGroups">&#xA0;</div>
 
 <h3 id="conversationtestergetgroupstestcases-&#x21D2;-arraytestsgroup"><a name="conversationtestergetgroupstestcases-&#x21D2;-arraytestsgroup" class="plugin-anchor" href="#conversationtestergetgroupstestcases-&#x21D2;-arraytestsgroup"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getGroups(testCases) &#x21D2; <a href="#TestsGroup"><code>Array.&lt;TestsGroup&gt;</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>testCases <code>*</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testCases</td>
+<td><code>*</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester__getTestsGroups">&#xA0;</div>
 
 <h3 id="conversationtestergettestsgroupstestsgroups-step"><a name="conversationtestergettestsgroupstestsgroups-step" class="plugin-anchor" href="#conversationtestergettestsgroupstestsgroups-step"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getTestsGroups(testsGroups, step)</h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>testsGroups <a href="#TestsGroup"><code>Array.&lt;TestsGroup&gt;</code></a></li>
-<li>step <code>number</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testsGroups</td>
+<td><a href="#TestsGroup"><code>Array.&lt;TestsGroup&gt;</code></a></td>
+</tr>
+<tr>
+<td>step</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester__createTester">&#xA0;</div>
 
 <h3 id="conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester"><a name="conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester" class="plugin-anchor" href="#conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._createTester(testsGroup, [botconfig]) &#x21D2; <a href="#Tester"><code>Tester</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
-<li>[botconfig] <code>object</code> <code> = </code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testsGroup</td>
+<td><a href="#TestsGroup"><code>TestsGroup</code></a></td>
+<td></td>
+</tr>
+<tr>
+<td>[botconfig]</td>
+<td><code>object</code></td>
+<td><code></code></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester__runTextCaseTests">&#xA0;</div>
 
 <h3 id="conversationtesterruntextcaseteststestsgroup-botconfig"><a name="conversationtesterruntextcaseteststestsgroup-botconfig" class="plugin-anchor" href="#conversationtesterruntextcaseteststestsgroup-botconfig"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._runTextCaseTests(testsGroup, botconfig)</h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
-<li>botconfig <code>object</code> <code> = </code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testsGroup</td>
+<td><a href="#TestsGroup"><code>TestsGroup</code></a></td>
+<td></td>
+</tr>
+<tr>
+<td>botconfig</td>
+<td><code>object</code></td>
+<td><code></code></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester__runStepCaseTests">&#xA0;</div>
 
 <h3 id="conversationtesterrunstepcaseteststestsgroup-botconfig"><a name="conversationtesterrunstepcaseteststestsgroup-botconfig" class="plugin-anchor" href="#conversationtesterrunstepcaseteststestsgroup-botconfig"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._runStepCaseTests(testsGroup, botconfig)</h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
-<li>botconfig <code>object</code> <code> = </code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testsGroup</td>
+<td><a href="#TestsGroup"><code>TestsGroup</code></a></td>
+<td></td>
+</tr>
+<tr>
+<td>botconfig</td>
+<td><code>object</code></td>
+<td><code></code></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester_executeTextCase">&#xA0;</div>
 
 <h3 id="conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext"><a name="conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext" class="plugin-anchor" href="#conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText)</h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>testsGroup <a href="#TestsGroup"><code>TestsGroup</code></a></li>
-<li>t <a href="#Tester"><code>Tester</code></a></li>
-<li>textCase <a href="#TextTest"><code>TextTest</code></a></li>
-<li>botconfig <code>*</code></li>
-<li>longestText <code>number</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>testsGroup</td>
+<td><a href="#TestsGroup"><code>TestsGroup</code></a></td>
+</tr>
+<tr>
+<td>t</td>
+<td><a href="#Tester"><code>Tester</code></a></td>
+</tr>
+<tr>
+<td>textCase</td>
+<td><a href="#TextTest"><code>TextTest</code></a></td>
+</tr>
+<tr>
+<td>botconfig</td>
+<td><code>*</code></td>
+</tr>
+<tr>
+<td>longestText</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester_executeStep">&#xA0;</div>
 
 <h3 id="conversationtesterexecutestept-step"><a name="conversationtesterexecutestept-step" class="plugin-anchor" href="#conversationtesterexecutestept-step"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.executeStep(t, step)</h3>
-<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a><br><strong>Params</strong></p>
-<ul>
-<li>t <a href="#Tester"><code>Tester</code></a></li>
-<li>step <a href="#TestCaseStep"><code>TestCaseStep</code></a></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td><a href="#Tester"><code>Tester</code></a></td>
+</tr>
+<tr>
+<td>step</td>
+<td><a href="#TestCaseStep"><code>TestCaseStep</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="TestSource">&#xA0;</div>
 
 <h2 id="testsource--object"><a name="testsource--object" class="plugin-anchor" href="#testsource--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestSource : <code>object</code></h2>
@@ -1862,11 +2505,29 @@ It joins them into a single sting</p>
 
 <h2 id="testerfactory-&#x21D2;-tester"><a name="testerfactory-&#x21D2;-tester" class="plugin-anchor" href="#testerfactory-&#x21D2;-tester"><i class="fa fa-link" aria-hidden="true"></i></a>testerFactory &#x21D2; <a href="#Tester"><code>Tester</code></a></h2>
 <p>Callback for getting a tester</p>
-<p><strong>Kind</strong>: global typedef<br><strong>Params</strong></p>
-<ul>
-<li>bot <code>Router</code> | <code>ReducerWrapper</code> - the chatbot itself</li>
-<li>test <a href="#TestsGroup"><code>TestsGroup</code></a> - the chatbot itself</li>
-</ul>
+<p><strong>Kind</strong>: global typedef  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bot</td>
+<td><code>Router</code> \</td>
+<td><code>ReducerWrapper</code></td>
+<td>the chatbot itself</td>
+</tr>
+<tr>
+<td>test</td>
+<td><a href="#TestsGroup"><code>TestsGroup</code></a></td>
+<td>the chatbot itself</td>
+</tr>
+</tbody>
+</table>
 <div id="TestsOutput">&#xA0;</div>
 
 <h2 id="testsoutput--object"><a name="testsoutput--object" class="plugin-anchor" href="#testsoutput--object"><i class="fa fa-link" aria-hidden="true"></i></a>TestsOutput : <code>object</code></h2>
@@ -1956,7 +2617,7 @@ It joins them into a single sting</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2020-08-21T15:42:56.393Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:42:59.083Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"Template Builders","level":"3.5","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.5.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.5.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2020-09-21T19:57:38.252Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

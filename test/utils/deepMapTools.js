@@ -4,11 +4,54 @@
 'use strict';
 
 const assert = require('assert');
-const { apiTextOutputFilter } = require('../../src/utils/deepMapTools');
+const { apiTextOutputFilter, deepEqual } = require('../../src/utils/deepMapTools');
 
 // const assert = require('assert');
 
 describe('deepMapTools', () => {
+
+    describe('deepEqual()', () => {
+
+        it('works', () => {
+            // @ts-ignore
+            assert.strictEqual(deepEqual({ a: [{ b: 1 }] }, { a: [{ b: 1 }] }), true);
+            // @ts-ignore
+            assert.strictEqual(deepEqual('abc', 'abc'), true);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(123, 123), true);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(null, null), true);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(false, false), true);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(true, true), true);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(undefined, undefined), true);
+
+            // @ts-ignore
+            assert.strictEqual(deepEqual({ a: [{ b: 1 }] }, { a: [{ b: 2 }] }), false);
+            // @ts-ignore
+            assert.strictEqual(deepEqual('abc', 'abcd'), false);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(123, 1234), false);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(null, false), false);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(false, true), false);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(true, 1), false);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(undefined, null), false);
+
+            // @ts-ignore
+            assert.strictEqual(deepEqual({ a: [{ b: 1 }] }, null), false);
+            // @ts-ignore
+            assert.strictEqual(deepEqual('123', 123), false);
+            // @ts-ignore
+            assert.strictEqual(deepEqual(null, 0), false);
+        });
+
+    });
 
     describe('apiTextOutputFilter()', () => {
 

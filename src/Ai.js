@@ -6,6 +6,7 @@
 const { WingbotModel } = require('./wingbot');
 const AiMatching = require('./AiMatching');
 const { vars } = require('./utils/stateVariables');
+const { deepEqual } = require('./utils/deepMapTools');
 
 const DEFAULT_PREFIX = 'default';
 
@@ -328,7 +329,11 @@ class Ai {
             return null;
         }
 
-        const setState = this._getSetStateForEntities(winningIntent.entities);
+        const setState = this._getSetStateForEntities(
+            winningIntent.entities,
+            req.entities,
+            req.state
+        );
 
         return {
             ...winningIntent,
@@ -336,11 +341,17 @@ class Ai {
         };
     }
 
-    _getSetStateForEntities (entities = []) {
+    _getSetStateForEntities (entities = [], detectedEntities = [], state = {}) {
         return entities
             .reduce((o, entity) => {
                 // if the entity is already set without metadata, persist it
                 const key = `@${entity.entity}`;
+
+                if (deepEqual(state[key], entity.value)
+                    && !detectedEntities.some((e) => e.entity === entity.entity)) {
+
+                    return Object.assign(o, vars.preserveMeta(key, entity.value, state));
+                }
 
                 return Object.assign(o, vars.dialogContext(key, entity.value));
             }, {});
@@ -357,7 +368,11 @@ class Ai {
             }
 
             const aboveConfidence = winningIntent.score >= this.confidence;
-            const setState = this._getSetStateForEntities(winningIntent.entities);
+            const setState = this._getSetStateForEntities(
+                winningIntent.entities,
+                req.entities,
+                req.state
+            );
 
             return {
                 ...winningIntent,

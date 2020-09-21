@@ -6,6 +6,7 @@
   * [Query](#query)
   * [Mutation](#mutation)
   * [Objects](#objects)
+    * [AiAction](#aiaction)
     * [AiMatch](#aimatch)
     * [Campaign](#campaign)
     * [Campaigns](#campaigns)
@@ -408,6 +409,46 @@ subscribe users
 
 ## Objects
 
+### AiAction
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>aboveConfidence</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>action</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>intent</strong></td>
+<td valign="top"><a href="#intent">Intent</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>sort</strong></td>
+<td valign="top"><a href="#float">Float</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>winner</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a>!</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ### AiMatch
 
 <table>
@@ -752,7 +793,7 @@ subscribe users
 <tbody>
 <tr>
 <td colspan="2" valign="top"><strong>intent</strong></td>
-<td valign="top"><a href="#string">String</a>!</td>
+<td valign="top"><a href="#string">String</a></td>
 <td></td>
 </tr>
 <tr>
@@ -1033,6 +1074,11 @@ subscribe users
 <tr>
 <td colspan="2" valign="top"><strong>aiMatch</strong></td>
 <td valign="top"><a href="#aimatch">AiMatch</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>aiActions</strong></td>
+<td valign="top">[<a href="#aiaction">AiAction</a>!]</td>
 <td></td>
 </tr>
 <tr>

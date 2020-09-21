@@ -6,6 +6,7 @@
 const { makeAbsolute } = require('./pathUtils');
 const { tokenize } = require('./tokenizer');
 const { FLAG_DISAMBIGUATION_SELECTED } = require('../flags');
+const { checkSetState } = require('./stateVariables');
 
 function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, setState = null) {
     let match = null;
@@ -133,9 +134,10 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
                     if (!setState) {
                         setState = entitiesSetState;
                     } else {
+                        checkSetState(setState, entitiesSetState);
                         setState = {
-                            ...setState,
-                            ...entitiesSetState
+                            ...entitiesSetState,
+                            ...setState
                         };
                     }
                 }

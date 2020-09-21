@@ -3,7 +3,25 @@
  */
 'use strict';
 
+const assert = require('assert');
+
 /* eslint-disable no-param-reassign */
+
+function deepEqual (left, right) {
+    if (left === right) {
+        return true;
+    }
+    if (left === null || typeof left !== 'object') {
+        return false;
+    }
+    try {
+        // @ts-ignore
+        assert.deepStrictEqual(left, right);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
 
 function apiTextOutputFilter (obj, callback, prevKey = '') {
     let useKey;
@@ -41,4 +59,4 @@ function apiTextOutputFilter (obj, callback, prevKey = '') {
     return obj;
 }
 
-module.exports = { apiTextOutputFilter };
+module.exports = { apiTextOutputFilter, deepEqual };

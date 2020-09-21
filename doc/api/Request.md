@@ -187,11 +187,12 @@ Get all matched actions from NLP intents
 Covert all matched actions for disambiguation purposes
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [limit] <code>number</code> <code> = 5</code>
-- [aiActions] [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction) <code> = </code>
-- [overrideAction] <code>string</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [limit] | <code>number</code> | <code>5</code> | 
+| [aiActions] | [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction) | <code></code> | 
+| [overrideAction] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="Request_hasAiActionsForDisambiguation">&nbsp;</div>{% endraw %}
 
@@ -199,9 +200,10 @@ Covert all matched actions for disambiguation purposes
 Returns true, if there is an action for disambiguation
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- minimum <code>number</code> <code> = 1</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| minimum | <code>number</code> | <code>1</code> | 
 
 {% raw %}<div id="Request_intent">&nbsp;</div>{% endraw %}
 
@@ -209,9 +211,10 @@ Returns true, if there is an action for disambiguation
 Returns intent, when using AI
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- getDataOrScore <code>boolean</code> | <code>number</code> <code> = false</code> - score limit or true for getting intent data
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| getDataOrScore | <code>boolean</code> \| <code>number</code> | <code>false</code> | score limit or true for getting intent data |
 
 {% raw %}<div id="Request_entity">&nbsp;</div>{% endraw %}
 
@@ -219,10 +222,11 @@ Returns intent, when using AI
 Get matched entity value
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- name <code>string</code> - name of requested entity
-- [sequence] <code>number</code> <code> = 0</code> - when there are more then one entity
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>string</code> |  | name of requested entity |
+| [sequence] | <code>number</code> | <code>0</code> | when there are more then one entity |
 
 {% raw %}<div id="Request_isAttachment">&nbsp;</div>{% endraw %}
 
@@ -236,10 +240,11 @@ Checks, when message contains an attachment (file, image or location)
 Checks, when the attachment is an image, but not a sticker
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
-- [includingStickers] <code>boolean</code> <code> = false</code> - return true, when the image is also a sticker
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
+| [includingStickers] | <code>boolean</code> | <code>false</code> | return true, when the image is also a sticker |
 
 {% raw %}<div id="Request_isFile">&nbsp;</div>{% endraw %}
 
@@ -247,9 +252,10 @@ Checks, when the attachment is an image, but not a sticker
 Checks, when the attachment is a file
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
 
 {% raw %}<div id="Request_hasLocation">&nbsp;</div>{% endraw %}
 
@@ -264,7 +270,7 @@ Gets location coordinates from attachment, when exists
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 **Example**  
-```javascript
+```js
 const { Router } = require('wingbot');
 
 const bot = new Router();
@@ -291,9 +297,10 @@ bot.use('locAction', (req, res) => {
 Returns whole attachment or null
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
 
 {% raw %}<div id="Request_attachmentUrl">&nbsp;</div>{% endraw %}
 
@@ -301,9 +308,10 @@ Returns whole attachment or null
 Returns attachment URL
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
 
 {% raw %}<div id="Request_isMessage">&nbsp;</div>{% endraw %}
 
@@ -329,9 +337,10 @@ Check, that message is PURE text
 Returns true, when the attachment is a sticker
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [includeToTextStickers] <code>boolean</code> <code> = false</code> - including strickers transformed into a text
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [includeToTextStickers] | <code>boolean</code> | <code>false</code> | including strickers transformed into a text |
 
 {% raw %}<div id="Request_text">&nbsp;</div>{% endraw %}
 
@@ -339,12 +348,13 @@ Returns true, when the attachment is a sticker
 Returns text of the message
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [tokenized] <code>boolean</code> <code> = false</code> - when true, message is normalized to lowercase with `-`
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [tokenized] | <code>boolean</code> | <code>false</code> | when true, message is normalized to lowercase with `-` |
 
 **Example**  
-```javascript
+```js
 console.log(req.text(true)) // "can-you-help-me"
 ```
 {% raw %}<div id="Request_expected">&nbsp;</div>{% endraw %}
@@ -359,12 +369,13 @@ Returns the request expected handler in case have been set last response
 Returns all expected keywords for the next request (just expected keywords)
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [justOnce] <code>boolean</code> <code> = false</code> - - don't return already retained items
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [justOnce] | <code>boolean</code> | <code>false</code> | - don't return already retained items |
 
 **Example**  
-```javascript
+```js
 bot.use('my-route', (req, res) => {
     res.setState(req.expectedKeywords());
 });
@@ -375,13 +386,14 @@ bot.use('my-route', (req, res) => {
 Returns current turn-around context (expected and expected keywords)
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [justOnce] <code>boolean</code> <code> = false</code> - don't return already retained items
-- [includeKeywords] <code>boolean</code> <code> = false</code> - keep intents from quick replies
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [justOnce] | <code>boolean</code> | <code>false</code> | don't return already retained items |
+| [includeKeywords] | <code>boolean</code> | <code>false</code> | keep intents from quick replies |
 
 **Example**  
-```javascript
+```js
 bot.use('my-route', (req, res) => {
     res.setState(req.expectedContext());
 });
@@ -393,12 +405,13 @@ Returns action or data of quick reply
 When `getData` is `true`, object will be returned. Otherwise string or null.
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [getData] <code>boolean</code> <code> = false</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [getData] | <code>boolean</code> | <code>false</code> | 
 
 **Example**  
-```javascript
+```js
 typeof res.quickReply() === 'string' || res.quickReply() === null;
 typeof res.quickReply(true) === 'object';
 ```
@@ -427,10 +440,11 @@ Sets the action and returns previous action
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 **Returns**: [<code>Action</code>](#Action) \| <code>null</code> \| <code>undefined</code> - - previous action  
-**Params**
 
-- action <code>string</code> | [<code>Action</code>](#Action) | <code>null</code>
-- [data] <code>object</code>
+| Param | Type |
+| --- | --- |
+| action | <code>string</code> \| [<code>Action</code>](#Action) \| <code>null</code> | 
+| [data] | <code>object</code> | 
 
 {% raw %}<div id="Request_action">&nbsp;</div>{% endraw %}
 
@@ -448,12 +462,13 @@ the order, where from the action is resolved
 6. global or local AI intent action
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [getData] <code>boolean</code> <code> = false</code> - deprecated
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [getData] | <code>boolean</code> | <code>false</code> | deprecated |
 
 **Example**  
-```javascript
+```js
 typeof res.action() === 'string' || res.action() === null;
 typeof res.actionData() === 'object';
 ```
@@ -470,7 +485,7 @@ Gets incomming setState action variable
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 **Example**  
-```javascript
+```js
 res.setState(req.getSetState());
 ```
 {% raw %}<div id="Request_isConfidentInput">&nbsp;</div>{% endraw %}
@@ -489,7 +504,7 @@ Returs action string, if there is an action detected by NLP
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 **Example**  
-```javascript
+```js
 const { Router } = require('wingbot');
 
 const bot = new Router();
@@ -521,12 +536,13 @@ Returns action or data of postback
 When `getData` is `true`, object will be returned. Otherwise string or null.
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-**Params**
 
-- [getData] <code>boolean</code> <code> = false</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [getData] | <code>boolean</code> | <code>false</code> | 
 
 **Example**  
-```javascript
+```js
 typeof res.postBack() === 'string' || res.postBack() === null;
 typeof res.postBack(true) === 'object';
 ```

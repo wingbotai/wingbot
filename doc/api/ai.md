@@ -3,6 +3,8 @@
 <dl>
 <dt><a href="#Ai">Ai</a></dt>
 <dd></dd>
+<dt><a href="#CustomEntityDetectionModel">CustomEntityDetectionModel</a></dt>
+<dd></dd>
 <dt><a href="#WingbotModel">WingbotModel</a></dt>
 <dd></dd>
 <dt><a href="#CachedModel">CachedModel</a></dt>
@@ -26,6 +28,18 @@
 <dt><a href="#BotPath">BotPath</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#IntentAction">IntentAction</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#DetectedEntity">DetectedEntity</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#EntityDetector">EntityDetector</a> ⇒ <code><a href="#DetectedEntity">Array.&lt;DetectedEntity&gt;</a></code> | <code><a href="#DetectedEntity">DetectedEntity</a></code> | <code><a href="#DetectedEntity">Promise.&lt;DetectedEntity&gt;</a></code> | <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code></dt>
+<dd></dd>
+<dt><a href="#ValueExtractor">ValueExtractor</a> ⇒ <code>*</code></dt>
+<dd></dd>
+<dt><a href="#Entity">Entity</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#Intent">Intent</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#Result">Result</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Entity">Entity</a> : <code>object</code></dt>
 <dd></dd>
@@ -71,6 +85,7 @@
     * [.textFilter(text)](#Ai_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.mockIntent([intent], [score])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
+    * [.getModel(prefix)](#Ai_getModel) ⇒ [<code>WingbotModel</code>](#WingbotModel)
     * [.global(path, intents, [title], [meta])](#Ai_global) ⇒ <code>object</code>
     * [.local(path, intents, [title])](#Ai_local) ⇒ <code>object</code>
     * [.match(intent)](#Ai_match) ⇒ <code>function</code>
@@ -106,10 +121,11 @@ AI Score provider
 The prefix translator - for request-specific prefixes
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Params**
 
-- prefix <code>string</code>
-- req <code>Request</code>
+| Param | Type |
+| --- | --- |
+| prefix | <code>string</code> | 
+| req | <code>Request</code> | 
 
 {% raw %}<div id="Ai_textFilter">&nbsp;</div>{% endraw %}
 
@@ -118,9 +134,10 @@ Preprocess text for NLP
 For example to remove any confidential data
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Params**
 
-- text <code>string</code>
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
 
 {% raw %}<div id="Ai_mockIntent">&nbsp;</div>{% endraw %}
 
@@ -128,13 +145,14 @@ For example to remove any confidential data
 Usefull method for testing AI routes
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Params**
 
-- [intent] <code>string</code> <code> = null</code> - intent name
-- [score] <code>number</code> <code> = </code> - the score of the top intent
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [intent] | <code>string</code> | <code>null</code> | intent name |
+| [score] | <code>number</code> | <code></code> | the score of the top intent |
 
 **Example**  
-```javascript
+```js
 const { Tester, ai, Route } = require('bontaut');
 
 const bot = new Route();
@@ -165,10 +183,22 @@ describe('bot', function () {
 Registers Wingbot AI model
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Params**
 
-- model <code>string</code> | [<code>WingbotModel</code>](#WingbotModel) | <code>T</code> - wingbot model name or AI plugin
-- prefix <code>string</code> <code> = &quot;default&quot;</code> - model prefix
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| model | <code>string</code> \| [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code> |  | wingbot model name or AI plugin |
+| prefix | <code>string</code> | <code>&quot;default&quot;</code> | model prefix |
+
+{% raw %}<div id="Ai_getModel">&nbsp;</div>{% endraw %}
+
+### ai.getModel(prefix) ⇒ [<code>WingbotModel</code>](#WingbotModel)
+Returns registered AI model
+
+**Kind**: instance method of [<code>Ai</code>](#Ai)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| prefix | <code>string</code> | <code>&quot;default&quot;</code> | model prefix |
 
 {% raw %}<div id="Ai_global">&nbsp;</div>{% endraw %}
 
@@ -178,17 +208,18 @@ so the intent will be matched in a global context
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 **Returns**: <code>object</code> - - the middleware  
-**Params**
 
-- path <code>string</code>
-- intents [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
-- [title] <code>string</code> <code> = null</code> - disambiguation title
-- [meta] <code>object</code> - metadata for multibot environments
-    - [.targetAppId] <code>object</code> - target application id
-    - [.targetAction] <code>object</code> - target action
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| path | <code>string</code> |  |  |
+| intents | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) |  |  |
+| [title] | <code>string</code> | <code>null</code> | disambiguation title |
+| [meta] | <code>object</code> |  | metadata for multibot environments |
+| [meta.targetAppId] | <code>object</code> |  | target application id |
+| [meta.targetAction] | <code>object</code> |  | target action |
 
 **Example**  
-```javascript
+```js
 const { Router, ai } = require('wingbot');
 
 ai.register('app-model');
@@ -207,14 +238,15 @@ so the intent will be matched in a context of local dialogue
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 **Returns**: <code>object</code> - - the middleware  
-**Params**
 
-- path <code>string</code>
-- intents [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
-- [title] <code>string</code> <code> = null</code> - disambiguation title
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| path | <code>string</code> |  |  |
+| intents | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) |  |  |
+| [title] | <code>string</code> | <code>null</code> | disambiguation title |
 
 **Example**  
-```javascript
+```js
 const { Router, ai } = require('wingbot');
 
 ai.register('app-model');
@@ -244,12 +276,13 @@ Returns matching middleware
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 **Returns**: <code>function</code> - - the middleware  
-**Params**
 
-- intent [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
+| Param | Type |
+| --- | --- |
+| intent | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) | 
 
 **Example**  
-```javascript
+```js
 const { Router, ai } = require('wingbot');
 
 ai.register('app-model');
@@ -264,9 +297,121 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 ### ai.shouldDisambiguate(aiActions) ⇒ <code>boolean</code>
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
-**Params**
 
-- aiActions [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
+| Param | Type |
+| --- | --- |
+| aiActions | [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction) | 
+
+{% raw %}<div id="CustomEntityDetectionModel">&nbsp;</div>{% endraw %}
+
+## CustomEntityDetectionModel
+**Kind**: global class  
+
+* [CustomEntityDetectionModel](#CustomEntityDetectionModel)
+    * [new CustomEntityDetectionModel(options, [log])](#new_CustomEntityDetectionModel_new)
+    * [._normalizeResult(entities, entity, text, offset, originalText)](#CustomEntityDetectionModel__normalizeResult)
+    * [._detectEntities(entity, text, entities)](#CustomEntityDetectionModel__detectEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+    * [._nonOverlapping(entities)](#CustomEntityDetectionModel__nonOverlapping)
+    * [.resolve(text)](#CustomEntityDetectionModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
+    * [._extractRegExpDependencies(regexp)](#CustomEntityDetectionModel__extractRegExpDependencies)
+    * [._entityByDependency(entities, dependency)](#CustomEntityDetectionModel__entityByDependency) ⇒ [<code>DetectedEntity</code>](#DetectedEntity) \| <code>null</code>
+    * [._regexpToDetector(regexp, dependencies, extractValue)](#CustomEntityDetectionModel__regexpToDetector)
+    * [.setEntityDetector(name, detector, [options])](#CustomEntityDetectionModel_setEntityDetector) ⇒ <code>this</code>
+
+{% raw %}<div id="new_CustomEntityDetectionModel_new">&nbsp;</div>{% endraw %}
+
+### new CustomEntityDetectionModel(options, [log])
+
+| Param | Type |
+| --- | --- |
+| options | <code>object</code> | 
+| [log] | <code>Object</code> | 
+
+{% raw %}<div id="CustomEntityDetectionModel__normalizeResult">&nbsp;</div>{% endraw %}
+
+### customEntityDetectionModel.\_normalizeResult(entities, entity, text, offset, originalText)
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type |
+| --- | --- |
+| entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+| entity | <code>string</code> | 
+| text | <code>string</code> | 
+| offset | <code>number</code> | 
+| originalText | <code>string</code> | 
+
+{% raw %}<div id="CustomEntityDetectionModel__detectEntities">&nbsp;</div>{% endraw %}
+
+### customEntityDetectionModel.\_detectEntities(entity, text, entities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type |
+| --- | --- |
+| entity | <code>string</code> | 
+| text | <code>string</code> | 
+| entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+
+{% raw %}<div id="CustomEntityDetectionModel__nonOverlapping">&nbsp;</div>{% endraw %}
+
+### customEntityDetectionModel.\_nonOverlapping(entities)
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type |
+| --- | --- |
+| entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+
+{% raw %}<div id="CustomEntityDetectionModel_resolve">&nbsp;</div>{% endraw %}
+
+### customEntityDetectionModel.resolve(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
+
+{% raw %}<div id="CustomEntityDetectionModel__extractRegExpDependencies">&nbsp;</div>{% endraw %}
+
+### customEntityDetectionModel.\_extractRegExpDependencies(regexp)
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type |
+| --- | --- |
+| regexp | <code>RegExp</code> | 
+
+{% raw %}<div id="CustomEntityDetectionModel__entityByDependency">&nbsp;</div>{% endraw %}
+
+### customEntityDetectionModel.\_entityByDependency(entities, dependency) ⇒ [<code>DetectedEntity</code>](#DetectedEntity) \| <code>null</code>
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type |
+| --- | --- |
+| entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+| dependency | <code>string</code> | 
+
+{% raw %}<div id="CustomEntityDetectionModel__regexpToDetector">&nbsp;</div>{% endraw %}
+
+### customEntityDetectionModel.\_regexpToDetector(regexp, dependencies, extractValue)
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| regexp | <code>RegExp</code> |  | 
+| dependencies | <code>Array.&lt;string&gt;</code> |  | 
+| extractValue | <code>string</code> \| <code>function</code> | <code>null</code> | 
+
+{% raw %}<div id="CustomEntityDetectionModel_setEntityDetector">&nbsp;</div>{% endraw %}
+
+### customEntityDetectionModel.setEntityDetector(name, detector, [options]) ⇒ <code>this</code>
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> |  |
+| detector | [<code>EntityDetector</code>](#EntityDetector) \| <code>RegExp</code> |  |
+| [options] | <code>object</code> |  |
+| [options.anonymize] | <code>boolean</code> | if true, value will not be sent to NLP |
+| [options.extractValue] | <code>function</code> \| <code>string</code> | entity extractor |
+| [options.dependencies] | <code>Array.&lt;string&gt;</code> | array of dependent entities |
 
 {% raw %}<div id="WingbotModel">&nbsp;</div>{% endraw %}
 
@@ -281,15 +426,16 @@ bot.use(ai.match('intent1'), (req, res) => {
 {% raw %}<div id="new_WingbotModel_new">&nbsp;</div>{% endraw %}
 
 ### new WingbotModel(options, [log])
-**Params**
 
-- options <code>object</code>
-    - [.serviceUrl] <code>string</code>
-    - .model <code>string</code>
-    - [.cacheSize] <code>number</code>
-    - [.matches] <code>number</code>
-    - [.fetch] <code>function</code>
-- [log] <code>Object</code>
+| Param | Type |
+| --- | --- |
+| options | <code>object</code> | 
+| [options.serviceUrl] | <code>string</code> | 
+| options.model | <code>string</code> | 
+| [options.cacheSize] | <code>number</code> | 
+| [options.matches] | <code>number</code> | 
+| [options.fetch] | <code>function</code> | 
+| [log] | <code>Object</code> | 
 
 {% raw %}<div id="WingbotModel__fetch">&nbsp;</div>{% endraw %}
 
@@ -299,9 +445,10 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 ### wingbotModel.\_queryModel(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>WingbotModel</code>](#WingbotModel)  
-**Params**
 
-- text <code>string</code>
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
 
 {% raw %}<div id="CachedModel">&nbsp;</div>{% endraw %}
 
@@ -316,27 +463,30 @@ bot.use(ai.match('intent1'), (req, res) => {
 {% raw %}<div id="new_CachedModel_new">&nbsp;</div>{% endraw %}
 
 ### new CachedModel(options, [log])
-**Params**
 
-- options <code>object</code>
-    - [.cacheSize] <code>number</code>
-- [log] <code>Object</code>
+| Param | Type |
+| --- | --- |
+| options | <code>object</code> | 
+| [options.cacheSize] | <code>number</code> | 
+| [log] | <code>Object</code> | 
 
 {% raw %}<div id="CachedModel_resolve">&nbsp;</div>{% endraw %}
 
 ### cachedModel.resolve(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
-**Params**
 
-- text <code>string</code> - the user input
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | the user input |
 
 {% raw %}<div id="CachedModel__queryModel">&nbsp;</div>{% endraw %}
 
 ### cachedModel.\_queryModel(text) ⇒ <code>Promise.&lt;(Array.&lt;Intent&gt;\|Result)&gt;</code>
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
-**Params**
 
-- text <code>string</code>
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
 
 {% raw %}<div id="AiMatching">&nbsp;</div>{% endraw %}
 
@@ -354,7 +504,7 @@ Class responsible for NLP Routing by score
     * [.multiMatchGain](#AiMatching_multiMatchGain) : <code>number</code>
     * [.getSetStateForEntityRules(rule)](#AiMatching_getSetStateForEntityRules) ⇒ <code>object</code>
     * [.preprocessRule(intent)](#AiMatching_preprocessRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
-    * [.match(req, rule)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
+    * [.match(req, rule, stateless)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
     * [._matchRegexp(req, regexps)](#AiMatching__matchRegexp) ⇒ <code>boolean</code>
 
 {% raw %}<div id="AiMatching_optionalHandicap">&nbsp;</div>{% endraw %}
@@ -391,9 +541,10 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 
 ### aiMatching.getSetStateForEntityRules(rule) ⇒ <code>object</code>
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
-**Params**
 
-- rule [<code>PreprocessorOutput</code>](#PreprocessorOutput)
+| Param | Type |
+| --- | --- |
+| rule | [<code>PreprocessorOutput</code>](#PreprocessorOutput) | 
 
 {% raw %}<div id="AiMatching_preprocessRule">&nbsp;</div>{% endraw %}
 
@@ -401,29 +552,33 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 Create a rule to be cached inside a routing structure
 
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
-**Params**
 
-- intent [<code>IntentRule</code>](#IntentRule) | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule)
+| Param | Type |
+| --- | --- |
+| intent | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) | 
 
 {% raw %}<div id="AiMatching_match">&nbsp;</div>{% endraw %}
 
-### aiMatching.match(req, rule) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
+### aiMatching.match(req, rule, stateless) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
 Calculate a matching score of preprocessed rule against the request
 
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
-**Params**
 
-- req [<code>AIRequest</code>](#AIRequest)
-- rule [<code>PreprocessorOutput</code>](#PreprocessorOutput)
+| Param | Type | Default |
+| --- | --- | --- |
+| req | [<code>AIRequest</code>](#AIRequest) |  | 
+| rule | [<code>PreprocessorOutput</code>](#PreprocessorOutput) |  | 
+| stateless | <code>boolean</code> | <code>false</code> | 
 
 {% raw %}<div id="AiMatching__matchRegexp">&nbsp;</div>{% endraw %}
 
 ### aiMatching.\_matchRegexp(req, regexps) ⇒ <code>boolean</code>
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
-**Params**
 
-- req [<code>AIRequest</code>](#AIRequest)
-- regexps [<code>Array.&lt;RegexpComparator&gt;</code>](#RegexpComparator)
+| Param | Type |
+| --- | --- |
+| req | [<code>AIRequest</code>](#AIRequest) | 
+| regexps | [<code>Array.&lt;RegexpComparator&gt;</code>](#RegexpComparator) | 
 
 {% raw %}<div id="COMPARE">&nbsp;</div>{% endraw %}
 
@@ -461,9 +616,10 @@ Text filter function
 
 **Kind**: global typedef  
 **Returns**: <code>string</code> - - filtered text  
-**Params**
 
-- text <code>string</code> - input text
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | input text |
 
 {% raw %}<div id="IntentRule">&nbsp;</div>{% endraw %}
 
@@ -495,63 +651,137 @@ Text filter function
 | [winner] | <code>boolean</code> | 
 | [title] | <code>string</code> | 
 
+{% raw %}<div id="DetectedEntity">&nbsp;</div>{% endraw %}
+
+## DetectedEntity : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [start] | <code>number</code> | 
+| [entity] | <code>string</code> | 
+| [end] | <code>number</code> | 
+| [score] | <code>number</code> | 
+| [value] | <code>string</code> \| <code>number</code> \| <code>boolean</code> | 
+| [text] | <code>string</code> | 
+
+{% raw %}<div id="EntityDetector">&nbsp;</div>{% endraw %}
+
+## EntityDetector ⇒ [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) \| [<code>DetectedEntity</code>](#DetectedEntity) \| [<code>Promise.&lt;DetectedEntity&gt;</code>](#DetectedEntity) \| <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | part of text |
+| entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | dependent entities |
+
+{% raw %}<div id="ValueExtractor">&nbsp;</div>{% endraw %}
+
+## ValueExtractor ⇒ <code>\*</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| match | <code>Array.&lt;string&gt;</code> | regexp result |
+| entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | dependent entities |
+
 {% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- entity <code>string</code>
-- value <code>string</code>
-- score <code>number</code>
+| Param | Type |
+| --- | --- |
+| entity | <code>string</code> | 
+| value | <code>string</code> | 
+| score | <code>number</code> | 
 
 {% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- intent <code>string</code>
-- score <code>number</code>
-- [entities] [<code>Array.&lt;Entity&gt;</code>](#Entity)
+| Param | Type |
+| --- | --- |
+| intent | <code>string</code> | 
+| score | <code>number</code> | 
+| [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
 {% raw %}<div id="Result">&nbsp;</div>{% endraw %}
 
 ## Result : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- entities [<code>Array.&lt;Entity&gt;</code>](#Entity)
-- intents [<code>Array.&lt;Intent&gt;</code>](#Intent)
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
+| entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
+| intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | 
 
 {% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- entity <code>string</code>
-- value <code>string</code>
-- score <code>number</code>
+| Param | Type |
+| --- | --- |
+| entity | <code>string</code> | 
+| value | <code>string</code> | 
+| score | <code>number</code> | 
 
 {% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- intent <code>string</code>
-- score <code>number</code>
-- [entities] [<code>Array.&lt;Entity&gt;</code>](#Entity)
+| Param | Type |
+| --- | --- |
+| intent | <code>string</code> | 
+| score | <code>number</code> | 
+| [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
 {% raw %}<div id="Result">&nbsp;</div>{% endraw %}
 
 ## Result : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- entities [<code>Array.&lt;Entity&gt;</code>](#Entity)
-- intents [<code>Array.&lt;Intent&gt;</code>](#Intent)
+| Param | Type |
+| --- | --- |
+| entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
+| intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | 
+
+{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+
+## Entity : <code>object</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| entity | <code>string</code> | 
+| value | <code>string</code> | 
+| score | <code>number</code> | 
+
+{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+
+## Intent : <code>object</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| intent | <code>string</code> | 
+| score | <code>number</code> | 
+| [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
+
+{% raw %}<div id="Result">&nbsp;</div>{% endraw %}
+
+## Result : <code>object</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
+| intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | 
 
 {% raw %}<div id="Compare">&nbsp;</div>{% endraw %}
 
@@ -561,21 +791,23 @@ Text filter function
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- entity <code>string</code>
-- value <code>string</code>
-- score <code>number</code>
+| Param | Type |
+| --- | --- |
+| entity | <code>string</code> | 
+| value | <code>string</code> | 
+| score | <code>number</code> | 
 
 {% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- [intent] <code>string</code>
-- score <code>number</code>
-- [entities] [<code>Array.&lt;Entity&gt;</code>](#Entity)
+| Param | Type |
+| --- | --- |
+| [intent] | <code>string</code> | 
+| score | <code>number</code> | 
+| [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
 {% raw %}<div id="EntityExpression">&nbsp;</div>{% endraw %}
 

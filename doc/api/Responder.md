@@ -120,9 +120,10 @@ Response has been marked with a flag
 Run a code block defined by a plugin
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- blockName <code>string</code>
+| Param | Type |
+| --- | --- |
+| blockName | <code>string</code> | 
 
 **Properties**
 
@@ -137,9 +138,10 @@ Replaces recipient and disables autotyping
 Usefull for sending a one-time notification
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- recipient <code>object</code>
+| Param | Type |
+| --- | --- |
+| recipient | <code>object</code> | 
 
 {% raw %}<div id="Responder_doNotLogTheEvent">&nbsp;</div>{% endraw %}
 
@@ -154,12 +156,13 @@ Send a raw messaging event.
 If no recipient is provided, a default (senderId) will be added.
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- data <code>object</code>
+| Param | Type |
+| --- | --- |
+| data | <code>object</code> | 
 
 **Example**  
-```javascript
+```js
 res.send({ message: { text: 'Hello!' } });
 ```
 {% raw %}<div id="Responder_setBookmark">&nbsp;</div>{% endraw %}
@@ -170,13 +173,14 @@ res.send({ message: { text: 'Hello!' } });
 Stores current action to be able to all it again
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- [action] <code>string</code>
-- [winningIntent] <code>object</code> <code> = </code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [action] | <code>string</code> |  | 
+| [winningIntent] | <code>object</code> | <code></code> | 
 
 **Example**  
-```javascript
+```js
 bot.use(['action-name', /keyword/], (req, res) => {
     if (req.action() !== res.currentAction()) {
         // only for routes with action name (action-name)
@@ -202,13 +206,14 @@ Returns the action of bookmark
 ***Deprecated***
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- postBack <code>function</code> - the postback func
-- [data] <code>object</code> - data for bookmark action
+| Param | Type | Description |
+| --- | --- | --- |
+| postBack | <code>function</code> | the postback func |
+| [data] | <code>object</code> | data for bookmark action |
 
 **Example**  
-```javascript
+```js
 // there should be a named intent intent matcher (ai.match() and 'action-name')
 
 bot.use('action', (req, res) => {
@@ -232,10 +237,11 @@ bot.use('onName', (req, res, postBack) => {
 
 ### responder.setMessagingType(messagingType, [tag]) ⇒ <code>this</code>
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- messagingType <code>string</code>
-- [tag] <code>string</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| messagingType | <code>string</code> |  | 
+| [tag] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="Responder_setPersona">&nbsp;</div>{% endraw %}
 
@@ -243,9 +249,10 @@ bot.use('onName', (req, res, postBack) => {
 Tets the persona for following requests
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- personaId <code>object</code> | <code>string</code> | <code>null</code> <code> = </code>
+| Param | Type | Default |
+| --- | --- | --- |
+| personaId | <code>object</code> \| <code>string</code> \| <code>null</code> | <code></code> | 
 
 {% raw %}<div id="Responder_isResponseType">&nbsp;</div>{% endraw %}
 
@@ -259,12 +266,13 @@ Returns true, when responder is not sending an update (notification) message
 Set temporary data to responder, which are persisted through single event
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- data <code>object</code>
+| Param | Type |
+| --- | --- |
+| data | <code>object</code> | 
 
 **Example**  
-```javascript
+```js
 bot.use('foo', (req, res, postBack) => {
     res.setData({ a: 1 });
     postBack('bar');
@@ -280,13 +288,14 @@ bot.use('bar', (req, res) => {
 Send text as a response
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- text <code>string</code> - text to send to user, can contain placeholders (%s)
-- [replies] <code>object.&lt;string, (string\|QuickReply)&gt;</code> | [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply) <code> = </code> - quick replies
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| text | <code>string</code> |  | text to send to user, can contain placeholders (%s) |
+| [replies] | <code>object.&lt;string, (string\|QuickReply)&gt;</code> \| [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply) | <code></code> | quick replies |
 
 **Example**  
-```javascript
+```js
 // simply
 res.text('Hello', {
     action: 'Quick reply',
@@ -311,12 +320,13 @@ res.text('Hello', [
 Sets new attributes to state (with Object.assign())
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- object <code>object</code>
+| Param | Type |
+| --- | --- |
+| object | <code>object</code> | 
 
 **Example**  
-```javascript
+```js
 res.setState({ visited: true });
 ```
 {% raw %}<div id="Responder_addQuickReply">&nbsp;</div>{% endraw %}
@@ -325,16 +335,17 @@ res.setState({ visited: true });
 Appends quick reply, to be sent with following text method
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- action <code>string</code> | <code>object</code> - relative or absolute action
-- [title] <code>string</code> - quick reply title
-- [data] <code>object</code> - additional data
-- [prepend] <code>boolean</code> <code> = false</code> - set true to add reply at the beginning
-- [justToExisting] <code>boolean</code> <code> = false</code> - add quick reply only to existing replies
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| action | <code>string</code> \| <code>object</code> |  | relative or absolute action |
+| [title] | <code>string</code> |  | quick reply title |
+| [data] | <code>object</code> |  | additional data |
+| [prepend] | <code>boolean</code> | <code>false</code> | set true to add reply at the beginning |
+| [justToExisting] | <code>boolean</code> | <code>false</code> | add quick reply only to existing replies |
 
 **Example**  
-```javascript
+```js
 bot.use((req, res) => {
     res.addQuickReply('barAction', 'last action');
 
@@ -352,14 +363,15 @@ To be able to keep context of previous interaction (expected action and intents)
 Just use this method to let user to answer again.
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- req <code>Request</code>
-- [justOnce] <code>boolean</code> <code> = false</code> - don't do it again
-- [includeKeywords] <code>boolean</code> <code> = false</code> - keep intents from quick replies
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| req | <code>Request</code> |  |  |
+| [justOnce] | <code>boolean</code> | <code>false</code> | don't do it again |
+| [includeKeywords] | <code>boolean</code> | <code>false</code> | keep intents from quick replies |
 
 **Example**  
-```javascript
+```js
 bot.use('start', (req, res) => {
     res.text('What color do you like?', [
         { match: ['@Color=red'], text: 'red', action: 'red' },
@@ -377,12 +389,13 @@ bot.use('need-color', (req, res) => {
 
 ### responder.expectedIntent(intents, action, data, setState)
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- intents <code>string</code> | <code>Array.&lt;string&gt;</code>
-- action <code>string</code>
-- data <code>object</code>
-- setState <code>object</code> <code> = </code>
+| Param | Type | Default |
+| --- | --- | --- |
+| intents | <code>string</code> \| <code>Array.&lt;string&gt;</code> |  | 
+| action | <code>string</code> |  | 
+| data | <code>object</code> |  | 
+| setState | <code>object</code> | <code></code> | 
 
 {% raw %}<div id="Responder_expected">&nbsp;</div>{% endraw %}
 
@@ -390,10 +403,11 @@ bot.use('need-color', (req, res) => {
 When user writes some text as reply, it will be processed as action
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- action <code>string</code> - desired action
-- data <code>object</code> - desired action data
+| Param | Type | Description |
+| --- | --- | --- |
+| action | <code>string</code> | desired action |
+| data | <code>object</code> | desired action data |
 
 {% raw %}<div id="Responder_expectedConfidentInput">&nbsp;</div>{% endraw %}
 
@@ -409,7 +423,7 @@ After processing the user input, next requests will be processed as usual,
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 **Example**  
-```javascript
+```js
 const { Router } = require('wingbot');
 
 const bot = new Router();
@@ -439,9 +453,10 @@ Converts relative action to absolute action path
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 **Returns**: <code>string</code> - absolute action path  
-**Params**
 
-- action <code>string</code> - relative action to covert to absolute
+| Param | Type | Description |
+| --- | --- | --- |
+| action | <code>string</code> | relative action to covert to absolute |
 
 {% raw %}<div id="Responder_currentAction">&nbsp;</div>{% endraw %}
 
@@ -455,13 +470,14 @@ Returns current action path
 Sends image as response. Requires appUrl option to send images from server
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- imageUrl <code>string</code> - relative or absolute url
-- [reusable] <code>boolean</code> <code> = false</code> - force facebook to cache image
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| imageUrl | <code>string</code> |  | relative or absolute url |
+| [reusable] | <code>boolean</code> | <code>false</code> | force facebook to cache image |
 
 **Example**  
-```javascript
+```js
 // image on same server (appUrl option)
 res.image('/img/foo.png');
 
@@ -474,13 +490,14 @@ res.image('https://google.com/img/foo.png');
 Sends video as response. Requires appUrl option to send videos from server
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- videoUrl <code>string</code> - relative or absolute url
-- [reusable] <code>boolean</code> <code> = false</code> - force facebook to cache asset
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| videoUrl | <code>string</code> |  | relative or absolute url |
+| [reusable] | <code>boolean</code> | <code>false</code> | force facebook to cache asset |
 
 **Example**  
-```javascript
+```js
 // file on same server (appUrl option)
 res.video('/img/foo.mp4');
 
@@ -493,13 +510,14 @@ res.video('https://google.com/img/foo.mp4');
 Sends file as response. Requires appUrl option to send files from server
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- fileUrl <code>string</code> - relative or absolute url
-- [reusable] <code>boolean</code> <code> = false</code> - force facebook to cache asset
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| fileUrl | <code>string</code> |  | relative or absolute url |
+| [reusable] | <code>boolean</code> | <code>false</code> | force facebook to cache asset |
 
 **Example**  
-```javascript
+```js
 // file on same server (appUrl option)
 res.file('/img/foo.pdf');
 
@@ -514,12 +532,13 @@ One-time Notification request
 use tag to be able to use the specific token with a specific campaign
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- title <code>string</code> - propmt text
-- action <code>string</code> - target action, when user subscribes
-- [tag] <code>string</code> <code> = null</code> - subscribtion tag, which will be matched against a campaign
-- [data] <code>object</code>
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | <code>string</code> |  | propmt text |
+| action | <code>string</code> |  | target action, when user subscribes |
+| [tag] | <code>string</code> | <code>null</code> | subscribtion tag, which will be matched against a campaign |
+| [data] | <code>object</code> |  |  |
 
 {% raw %}<div id="Responder_wait">&nbsp;</div>{% endraw %}
 
@@ -527,9 +546,10 @@ use tag to be able to use the specific token with a specific campaign
 Sets delay between two responses
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- [ms] <code>number</code> <code> = 600</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [ms] | <code>number</code> | <code>600</code> | 
 
 {% raw %}<div id="Responder_typingOn">&nbsp;</div>{% endraw %}
 
@@ -555,10 +575,11 @@ Reports last message from user as seen
 Pass thread to another app
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- targetAppId <code>string</code>
-- [data] <code>string</code> | <code>object</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| targetAppId | <code>string</code> |  | 
+| [data] | <code>string</code> \| <code>object</code> | <code>null</code> | 
 
 {% raw %}<div id="Responder_requestThread">&nbsp;</div>{% endraw %}
 
@@ -566,9 +587,10 @@ Pass thread to another app
 Request thread from Primary Receiver app
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- [data] <code>string</code> | <code>object</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [data] | <code>string</code> \| <code>object</code> | <code>null</code> | 
 
 {% raw %}<div id="Responder_takeThead">&nbsp;</div>{% endraw %}
 
@@ -576,9 +598,10 @@ Request thread from Primary Receiver app
 Take thread from another app
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- [data] <code>string</code> | <code>object</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [data] | <code>string</code> \| <code>object</code> | <code>null</code> | 
 
 {% raw %}<div id="Responder_receipt">&nbsp;</div>{% endraw %}
 
@@ -586,15 +609,16 @@ Take thread from another app
 Sends Receipt template
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- recipientName <code>string</code>
-- [paymentMethod] <code>string</code> <code> = &quot;&#x27;Cash&#x27;&quot;</code> - should not contain more then 4 numbers
-- [currency] <code>string</code> <code> = &quot;&#x27;USD&#x27;&quot;</code> - sets right currency
-- [uniqueCode] <code>string</code> <code> = null</code> - when omitted, will be generated randomly
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| recipientName | <code>string</code> |  |  |
+| [paymentMethod] | <code>string</code> | <code>&quot;&#x27;Cash&#x27;&quot;</code> | should not contain more then 4 numbers |
+| [currency] | <code>string</code> | <code>&quot;&#x27;USD&#x27;&quot;</code> | sets right currency |
+| [uniqueCode] | <code>string</code> | <code>null</code> | when omitted, will be generated randomly |
 
 **Example**  
-```javascript
+```js
 res.receipt('Name', 'Cash', 'CZK', '1')
     .addElement('Element name', 1, 2, '/inside.png', 'text')
     .send();
@@ -605,12 +629,13 @@ res.receipt('Name', 'Cash', 'CZK', '1')
 Sends nice button template. It can redirect user to server with token in url
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- text <code>string</code>
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
 
 **Example**  
-```javascript
+```js
 res.button('Hello')
     .postBackButton('Text', 'action')
     .urlButton('Url button', '/internal', true) // opens webview with token
@@ -623,13 +648,14 @@ res.button('Hello')
 Creates a generic template
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- [shareable] <code>boolean</code> <code> = false</code> - ability to share template
-- [isSquare] <code>boolean</code> <code> = false</code> - use square aspect ratio for images
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [shareable] | <code>boolean</code> | <code>false</code> | ability to share template |
+| [isSquare] | <code>boolean</code> | <code>false</code> | use square aspect ratio for images |
 
 **Example**  
-```javascript
+```js
 res.genericTemplate()
     .addElement('title', 'subtitle')
         .setElementImage('/local.png')
@@ -647,12 +673,13 @@ res.genericTemplate()
 Creates a generic template
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- [topElementStyle] <code>&#x27;large&#x27;</code> | <code>&#x27;compact&#x27;</code> <code> = &#x27;large&#x27;</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| [topElementStyle] | <code>&#x27;large&#x27;</code> \| <code>&#x27;compact&#x27;</code> | <code>&#x27;large&#x27;</code> | 
 
 **Example**  
-```javascript
+```js
 res.list('compact')
     .postBackButton('Main button', 'action', { actionData: 1 })
     .addElement('title', 'subtitle')
@@ -671,9 +698,10 @@ res.list('compact')
 Override action tracking
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- action <code>string</code> | <code>boolean</code> - use false to not emit analytics events
+| Param | Type | Description |
+| --- | --- | --- |
+| action | <code>string</code> \| <code>boolean</code> | use false to not emit analytics events |
 
 {% raw %}<div id="Responder_trackAsSkill">&nbsp;</div>{% endraw %}
 
@@ -681,9 +709,10 @@ Override action tracking
 Set skill for tracking (will used untill it will be changed)
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-**Params**
 
-- skill <code>string</code> | <code>null</code>
+| Param | Type |
+| --- | --- |
+| skill | <code>string</code> \| <code>null</code> | 
 
 {% raw %}<div id="QuickReply">&nbsp;</div>{% endraw %}
 

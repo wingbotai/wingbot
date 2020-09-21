@@ -794,6 +794,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.8.6" data-path="nlpRouting.html">
+            
+                <a href="nlpRouting.html#system-entities">
+            
+                    
+                    System entities
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -942,7 +955,20 @@
             
         </li>
     
-        <li class="chapter " data-level="3.7" data-path="../api/Ai.html">
+        <li class="chapter " data-level="3.7" data-path="../api/stateVariables.html">
+            
+                <a href="../api/stateVariables.html">
+            
+                    
+                    vars tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" data-path="../api/Ai.html">
             
                 <a href="../api/Ai.html">
             
@@ -955,7 +981,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.8" data-path="../api/BuildRouter.html">
+        <li class="chapter " data-level="3.9" data-path="../api/BuildRouter.html">
             
                 <a href="../api/BuildRouter.html">
             
@@ -968,7 +994,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.9" data-path="../api/Notifications.html">
+        <li class="chapter " data-level="3.10" data-path="../api/Notifications.html">
             
                 <a href="../api/Notifications.html">
             
@@ -981,7 +1007,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.10" data-path="../api/GraphApi.html">
+        <li class="chapter " data-level="3.11" data-path="../api/GraphApi.html">
             
                 <a href="../api/GraphApi.html">
             
@@ -994,7 +1020,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.11" data-path="../api/graphqlSchema.html">
+        <li class="chapter " data-level="3.12" data-path="../api/graphqlSchema.html">
             
                 <a href="../api/graphqlSchema.html">
             
@@ -1007,7 +1033,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.12" data-path="../CHANGELOG.html">
+        <li class="chapter " data-level="3.13" data-path="../CHANGELOG.html">
             
                 <a href="../CHANGELOG.html">
             
@@ -1272,9 +1298,9 @@ tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, (req, r
 
 tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, <span class="hljs-keyword">async</span> (req, res, postBack) =&gt; {
     <span class="hljs-comment">// if there is a bookmark</span>
-    <span class="hljs-keyword">if</span> (res.bookmark()) {
+    <span class="hljs-keyword">if</span> (res.actionByAi()) {
         <span class="hljs-comment">// respond with the bookmark</span>
-        <span class="hljs-keyword">await</span> res.runBookmark(postBack);
+        <span class="hljs-keyword">await</span> postBack(res.actionByAi(), {}, <span class="hljs-literal">true</span>);
 
         <span class="hljs-comment">// stop</span>
         <span class="hljs-keyword">return</span> Router.END;
@@ -1286,6 +1312,70 @@ tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, <span c
         .setState({ email });
 });
 </code></pre>
+<h2 id="system-entities"><a name="system-entities" class="plugin-anchor" href="#system-entities"><i class="fa fa-link" aria-hidden="true"></i></a>System entities</h2>
+<p><strong>Simple RegExp entity</strong></p>
+<p>Simple RegExp entities can be detected by registering an own entity detector.</p>
+<pre><code class="lang-javascript">ai.getModel()
+    .setEntityDetector(<span class="hljs-string">&apos;number&apos;</span>, <span class="hljs-regexp">/[0-9]+/</span>);
+</code></pre>
+<p>The value will be accessible between all detected entities in a NLP result.</p>
+<pre><code class="lang-javascript">bot.use(ai.match(<span class="hljs-string">&apos;@number&apos;</span>), (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> num = req.entity(<span class="hljs-string">&apos;number&apos;</span>)
+  <span class="hljs-comment">// typeof num === &apos;string&apos;</span>
+  res.text(<span class="hljs-string">`Found a number: <span class="hljs-subst">${number}</span>`</span>);
+})
+</code></pre>
+<p><strong>Using an own value extractor</strong></p>
+<p>RegExp detector returns the whole detected string as a value. To normalize the value, you can use <code>extractValue</code> option.</p>
+<pre><code class="lang-javascript">ai.getModel()
+    .setEntityDetector(<span class="hljs-string">&apos;number&apos;</span>, <span class="hljs-regexp">/[0-9][0-9\s]*/</span>, {
+      extractValue: (match) =&gt; <span class="hljs-built_in">parseInt</span>(
+        match[<span class="hljs-number">0</span>].replace(<span class="hljs-regexp">/[^0-9]+/g</span>, <span class="hljs-string">&apos;&apos;</span>),
+        <span class="hljs-number">10</span>
+      )
+    });
+</code></pre>
+<p>Now the detector returns a numeric value.</p>
+<p><strong>Prevent sensitive data to leave your bot</strong></p>
+<p>To keep a sensitive value inside a bot, you can mark your custom entity with an <code>anonymize</code> flag.</p>
+<pre><code class="lang-javascript">ai.getModel()
+    .setEntityDetector(<span class="hljs-string">&apos;number&apos;</span>, <span class="hljs-regexp">/[0-9][0-9\s]*/</span>, {
+      extractValue: (match) =&gt; <span class="hljs-built_in">parseInt</span>(
+        match[<span class="hljs-number">0</span>].replace(<span class="hljs-regexp">/[^0-9]+/g</span>, <span class="hljs-string">&apos;&apos;</span>),
+        <span class="hljs-number">10</span>
+      ),
+      anonymize: <span class="hljs-literal">true</span>
+    });
+</code></pre>
+<p>When writing a sentence like <code>My number is 123 456</code>, a NLP will receive following text:</p>
+<pre><code>my number is @NUMBER
+</code></pre><p><strong>Using compound entities</strong></p>
+<p>Just put an <strong>uppercase name of the entitty starting with @</strong> to your regexp.</p>
+<pre><code class="lang-javascript">ai.getModel()
+    .setEntityDetector(<span class="hljs-string">&apos;dollars&apos;</span>, <span class="hljs-regexp">/\$\s?@NUMBER/</span>);
+</code></pre>
+<p>When there is only one nested entity, the value will contain it&apos;s value. When there will be two or more entities, the value will be an object with a prop for every nested entity (<code>{entityName:123,...}</code>).</p>
+<blockquote>
+<p>Keep in mind, <strong>the regular expression will always be executed as CASE INSENSITIVE</strong>;</p>
+</blockquote>
+<p><strong>Using a custom entity detector</strong></p>
+<p>Just put a function as an entity detector. You can also use <strong>async function</strong> as an entity detector.</p>
+<pre><code class="lang-javascript">ai.getModel()
+    .setEntityDetector(<span class="hljs-string">&apos;number&apos;</span>, (text) =&gt; {
+      <span class="hljs-keyword">const</span> match = text.match(<span class="hljs-regexp">/[0-9]+/</span>);
+
+      <span class="hljs-keyword">if</span> (!match) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+      }
+
+      <span class="hljs-keyword">return</span> {
+        text: match[<span class="hljs-number">0</span>],
+        value: <span class="hljs-built_in">parseInt</span>(match[<span class="hljs-number">0</span>], <span class="hljs-number">10</span>)
+      };
+    });
+});
+</code></pre>
+<p>The return value has to contain <strong>either detected</strong> <code>text</code> <strong>or</strong> <strong>position of the string</strong> (<code>start</code> and <code>end</code>).</p>
 
                                 
                                 </section>
@@ -1329,7 +1419,7 @@ tickets.use(<span class="hljs-string">&apos;email-response&apos;</span>, <span c
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Intents, entities and fallbacks","level":"2.8","depth":1,"next":{"title":"Entities","level":"2.8.1","depth":2,"anchor":"#defining-entities","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#defining-entities","articles":[]},"previous":{"title":"Webviews","level":"2.7.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/nlpRouting.md","mtime":"2019-07-19T13:48:06.433Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:42:59.083Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Intents, entities and fallbacks","level":"2.8","depth":1,"next":{"title":"Entities","level":"2.8.1","depth":2,"anchor":"#defining-entities","path":"tutorial/nlpRouting.md","ref":"tutorial/nlpRouting.md#defining-entities","articles":[]},"previous":{"title":"Webviews","level":"2.7.4","depth":2,"anchor":"#working-with-webviews","path":"tutorial/templates.md","ref":"tutorial/templates.md#working-with-webviews","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"tutorial/nlpRouting.md","mtime":"2020-09-21T19:57:34.120Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

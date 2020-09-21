@@ -8,6 +8,8 @@ devel/sass/_generated
 devel/_env.json
 devel/node_modules
 .idea/
+tempSrc
+tempSrc/**/*
 
 # NodeJs
 

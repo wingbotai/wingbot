@@ -794,6 +794,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.8.6" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#system-entities">
+            
+                    
+                    System entities
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -942,7 +955,20 @@
             
         </li>
     
-        <li class="chapter " data-level="3.7" data-path="Ai.html">
+        <li class="chapter " data-level="3.7" data-path="stateVariables.html">
+            
+                <a href="stateVariables.html">
+            
+                    
+                    vars tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -955,7 +981,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.8" data-path="BuildRouter.html">
+        <li class="chapter " data-level="3.9" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
@@ -968,7 +994,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.9" data-path="Notifications.html">
+        <li class="chapter " data-level="3.10" data-path="Notifications.html">
             
                 <a href="Notifications.html">
             
@@ -981,7 +1007,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.10" data-path="GraphApi.html">
+        <li class="chapter " data-level="3.11" data-path="GraphApi.html">
             
                 <a href="GraphApi.html">
             
@@ -994,7 +1020,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.11" data-path="graphqlSchema.html">
+        <li class="chapter " data-level="3.12" data-path="graphqlSchema.html">
             
                 <a href="graphqlSchema.html">
             
@@ -1007,7 +1033,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.12" data-path="../CHANGELOG.html">
+        <li class="chapter " data-level="3.13" data-path="../CHANGELOG.html">
             
                 <a href="../CHANGELOG.html">
             
@@ -1337,37 +1363,107 @@
 
 <h3 id="requestaiactionsforquickreplieslimit-aiactions-overrideaction-&#x21D2;-arrayquickreply"><a name="requestaiactionsforquickreplieslimit-aiactions-overrideaction-&#x21D2;-arrayquickreply" class="plugin-anchor" href="#requestaiactionsforquickreplieslimit-aiactions-overrideaction-&#x21D2;-arrayquickreply"><i class="fa fa-link" aria-hidden="true"></i></a>request.aiActionsForQuickReplies([limit], [aiActions], [overrideAction]) &#x21D2; <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a></h3>
 <p>Covert all matched actions for disambiguation purposes</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[limit] <code>number</code> <code> = 5</code></li>
-<li>[aiActions] <a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a> <code> = </code></li>
-<li>[overrideAction] <code>string</code> <code> = null</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[limit]</td>
+<td><code>number</code></td>
+<td><code>5</code></td>
+</tr>
+<tr>
+<td>[aiActions]</td>
+<td><a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></td>
+<td><code></code></td>
+</tr>
+<tr>
+<td>[overrideAction]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Request_hasAiActionsForDisambiguation">&#xA0;</div>
 
 <h3 id="requesthasaiactionsfordisambiguationminimum-&#x21D2;-boolean"><a name="requesthasaiactionsfordisambiguationminimum-&#x21D2;-boolean" class="plugin-anchor" href="#requesthasaiactionsfordisambiguationminimum-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.hasAiActionsForDisambiguation(minimum) &#x21D2; <code>boolean</code></h3>
 <p>Returns true, if there is an action for disambiguation</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>minimum <code>number</code> <code> = 1</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>minimum</td>
+<td><code>number</code></td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Request_intent">&#xA0;</div>
 
 <h3 id="requestintentgetdataorscore-&#x21D2;-null--string--intent"><a name="requestintentgetdataorscore-&#x21D2;-null--string--intent" class="plugin-anchor" href="#requestintentgetdataorscore-&#x21D2;-null--string--intent"><i class="fa fa-link" aria-hidden="true"></i></a>request.intent(getDataOrScore) &#x21D2; <code>null</code> | <code>string</code> | <a href="#Intent"><code>Intent</code></a></h3>
 <p>Returns intent, when using AI</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>getDataOrScore <code>boolean</code> | <code>number</code> <code> = false</code> - score limit or true for getting intent data</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getDataOrScore</td>
+<td><code>boolean</code> \</td>
+<td><code>number</code></td>
+<td><code>false</code></td>
+<td>score limit or true for getting intent data</td>
+</tr>
+</tbody>
+</table>
 <div id="Request_entity">&#xA0;</div>
 
 <h3 id="requestentityname-sequence-&#x21D2;-number--string--null"><a name="requestentityname-sequence-&#x21D2;-number--string--null" class="plugin-anchor" href="#requestentityname-sequence-&#x21D2;-number--string--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.entity(name, [sequence]) &#x21D2; <code>number</code> | <code>string</code> | <code>null</code></h3>
 <p>Get matched entity value</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>name <code>string</code> - name of requested entity</li>
-<li>[sequence] <code>number</code> <code> = 0</code> - when there are more then one entity</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><code>string</code></td>
+<td></td>
+<td>name of requested entity</td>
+</tr>
+<tr>
+<td>[sequence]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+<td>when there are more then one entity</td>
+</tr>
+</tbody>
+</table>
 <div id="Request_isAttachment">&#xA0;</div>
 
 <h3 id="requestisattachment-&#x21D2;-boolean"><a name="requestisattachment-&#x21D2;-boolean" class="plugin-anchor" href="#requestisattachment-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isAttachment() &#x21D2; <code>boolean</code></h3>
@@ -1377,19 +1473,54 @@
 
 <h3 id="requestisimageattachmentindex-includingstickers-&#x21D2;-boolean"><a name="requestisimageattachmentindex-includingstickers-&#x21D2;-boolean" class="plugin-anchor" href="#requestisimageattachmentindex-includingstickers-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isImage([attachmentIndex], [includingStickers]) &#x21D2; <code>boolean</code></h3>
 <p>Checks, when the attachment is an image, but not a sticker</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment</li>
-<li>[includingStickers] <code>boolean</code> <code> = false</code> - return true, when the image is also a sticker</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[attachmentIndex]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+<td>use, when user sends more then one attachment</td>
+</tr>
+<tr>
+<td>[includingStickers]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>return true, when the image is also a sticker</td>
+</tr>
+</tbody>
+</table>
 <div id="Request_isFile">&#xA0;</div>
 
 <h3 id="requestisfileattachmentindex-&#x21D2;-boolean"><a name="requestisfileattachmentindex-&#x21D2;-boolean" class="plugin-anchor" href="#requestisfileattachmentindex-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isFile([attachmentIndex]) &#x21D2; <code>boolean</code></h3>
 <p>Checks, when the attachment is a file</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[attachmentIndex]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+<td>use, when user sends more then one attachment</td>
+</tr>
+</tbody>
+</table>
 <div id="Request_hasLocation">&#xA0;</div>
 
 <h3 id="requesthaslocation-&#x21D2;-boolean"><a name="requesthaslocation-&#x21D2;-boolean" class="plugin-anchor" href="#requesthaslocation-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.hasLocation() &#x21D2; <code>boolean</code></h3>
@@ -1400,7 +1531,7 @@
 <h3 id="requestgetlocation-&#x21D2;-null--object"><a name="requestgetlocation-&#x21D2;-null--object" class="plugin-anchor" href="#requestgetlocation-&#x21D2;-null--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.getLocation() &#x21D2; <code>null</code> | <code>Object</code></h3>
 <p>Gets location coordinates from attachment, when exists</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
@@ -1424,18 +1555,48 @@ bot.use(<span class="hljs-string">&apos;locAction&apos;</span>, (req, res) =&gt;
 
 <h3 id="requestattachmentattachmentindex-&#x21D2;-object--null"><a name="requestattachmentattachmentindex-&#x21D2;-object--null" class="plugin-anchor" href="#requestattachmentattachmentindex-&#x21D2;-object--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.attachment([attachmentIndex]) &#x21D2; <code>object</code> | <code>null</code></h3>
 <p>Returns whole attachment or null</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[attachmentIndex]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+<td>use, when user sends more then one attachment</td>
+</tr>
+</tbody>
+</table>
 <div id="Request_attachmentUrl">&#xA0;</div>
 
 <h3 id="requestattachmenturlattachmentindex-&#x21D2;-string--null"><a name="requestattachmenturlattachmentindex-&#x21D2;-string--null" class="plugin-anchor" href="#requestattachmenturlattachmentindex-&#x21D2;-string--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.attachmentUrl([attachmentIndex]) &#x21D2; <code>string</code> | <code>null</code></h3>
 <p>Returns attachment URL</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[attachmentIndex] <code>number</code> <code> = 0</code> - use, when user sends more then one attachment</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[attachmentIndex]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+<td>use, when user sends more then one attachment</td>
+</tr>
+</tbody>
+</table>
 <div id="Request_isMessage">&#xA0;</div>
 
 <h3 id="requestismessage-&#x21D2;-boolean"><a name="requestismessage-&#x21D2;-boolean" class="plugin-anchor" href="#requestismessage-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isMessage() &#x21D2; <code>boolean</code></h3>
@@ -1455,20 +1616,50 @@ bot.use(<span class="hljs-string">&apos;locAction&apos;</span>, (req, res) =&gt;
 
 <h3 id="requestisstickerincludetotextstickers-&#x21D2;-boolean"><a name="requestisstickerincludetotextstickers-&#x21D2;-boolean" class="plugin-anchor" href="#requestisstickerincludetotextstickers-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isSticker([includeToTextStickers]) &#x21D2; <code>boolean</code></h3>
 <p>Returns true, when the attachment is a sticker</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[includeToTextStickers] <code>boolean</code> <code> = false</code> - including strickers transformed into a text</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[includeToTextStickers]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>including strickers transformed into a text</td>
+</tr>
+</tbody>
+</table>
 <div id="Request_text">&#xA0;</div>
 
 <h3 id="requesttexttokenized-&#x21D2;-string"><a name="requesttexttokenized-&#x21D2;-string" class="plugin-anchor" href="#requesttexttokenized-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>request.text([tokenized]) &#x21D2; <code>string</code></h3>
 <p>Returns text of the message</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[tokenized] <code>boolean</code> <code> = false</code> - when true, message is normalized to lowercase with <code>-</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[tokenized]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>when true, message is normalized to lowercase with <code>-</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-built_in">console</span>.log(req.text(<span class="hljs-literal">true</span>)) <span class="hljs-comment">// &quot;can-you-help-me&quot;</span>
+<pre><code class="lang-js"><span class="hljs-built_in">console</span>.log(req.text(<span class="hljs-literal">true</span>)) <span class="hljs-comment">// &quot;can-you-help-me&quot;</span>
 </code></pre>
 <div id="Request_expected">&#xA0;</div>
 
@@ -1479,12 +1670,27 @@ bot.use(<span class="hljs-string">&apos;locAction&apos;</span>, (req, res) =&gt;
 
 <h3 id="requestexpectedkeywordsjustonce"><a name="requestexpectedkeywordsjustonce" class="plugin-anchor" href="#requestexpectedkeywordsjustonce"><i class="fa fa-link" aria-hidden="true"></i></a>request.expectedKeywords([justOnce])</h3>
 <p>Returns all expected keywords for the next request (just expected keywords)</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[justOnce] <code>boolean</code> <code> = false</code> - - don&apos;t return already retained items</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[justOnce]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>- don&apos;t return already retained items</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;my-route&apos;</span>, (req, res) =&gt; {
+<pre><code class="lang-js">bot.use(<span class="hljs-string">&apos;my-route&apos;</span>, (req, res) =&gt; {
     res.setState(req.expectedKeywords());
 });
 </code></pre>
@@ -1492,13 +1698,33 @@ bot.use(<span class="hljs-string">&apos;locAction&apos;</span>, (req, res) =&gt;
 
 <h3 id="requestexpectedcontextjustonce-includekeywords-&#x21D2;-object"><a name="requestexpectedcontextjustonce-includekeywords-&#x21D2;-object" class="plugin-anchor" href="#requestexpectedcontextjustonce-includekeywords-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.expectedContext([justOnce], [includeKeywords]) &#x21D2; <code>object</code></h3>
 <p>Returns current turn-around context (expected and expected keywords)</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[justOnce] <code>boolean</code> <code> = false</code> - don&apos;t return already retained items</li>
-<li>[includeKeywords] <code>boolean</code> <code> = false</code> - keep intents from quick replies</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[justOnce]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>don&apos;t return already retained items</td>
+</tr>
+<tr>
+<td>[includeKeywords]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>keep intents from quick replies</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;my-route&apos;</span>, (req, res) =&gt; {
+<pre><code class="lang-js">bot.use(<span class="hljs-string">&apos;my-route&apos;</span>, (req, res) =&gt; {
     res.setState(req.expectedContext());
 });
 </code></pre>
@@ -1507,12 +1733,25 @@ bot.use(<span class="hljs-string">&apos;locAction&apos;</span>, (req, res) =&gt;
 <h3 id="requestquickreplygetdata-&#x21D2;-null--string--object"><a name="requestquickreplygetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestquickreplygetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.quickReply([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></h3>
 <p>Returns action or data of quick reply
 When <code>getData</code> is <code>true</code>, object will be returned. Otherwise string or null.</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[getData] <code>boolean</code> <code> = false</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[getData]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">typeof</span> res.quickReply() === <span class="hljs-string">&apos;string&apos;</span> || res.quickReply() === <span class="hljs-literal">null</span>;
+<pre><code class="lang-js"><span class="hljs-keyword">typeof</span> res.quickReply() === <span class="hljs-string">&apos;string&apos;</span> || res.quickReply() === <span class="hljs-literal">null</span>;
 <span class="hljs-keyword">typeof</span> res.quickReply(<span class="hljs-literal">true</span>) === <span class="hljs-string">&apos;object&apos;</span>;
 </code></pre>
 <div id="Request_isPostBack">&#xA0;</div>
@@ -1534,11 +1773,27 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 
 <h3 id="requestsetactionaction-data-&#x21D2;-action--null--undefined"><a name="requestsetactionaction-data-&#x21D2;-action--null--undefined" class="plugin-anchor" href="#requestsetactionaction-data-&#x21D2;-action--null--undefined"><i class="fa fa-link" aria-hidden="true"></i></a>request.setAction(action, [data]) &#x21D2; <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code></h3>
 <p>Sets the action and returns previous action</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Returns</strong>: <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code> - - previous action<br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code> | <a href="#Action"><code>Action</code></a> | <code>null</code></li>
-<li>[data] <code>object</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Returns</strong>: <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code> - - previous action  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code> \</td>
+<td><a href="#Action"><code>Action</code></a> \</td>
+<td><code>null</code></td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>object</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Request_action">&#xA0;</div>
 
 <h3 id="requestactiongetdata-&#x21D2;-null--string"><a name="requestactiongetdata-&#x21D2;-null--string" class="plugin-anchor" href="#requestactiongetdata-&#x21D2;-null--string"><i class="fa fa-link" aria-hidden="true"></i></a>request.action([getData]) &#x21D2; <code>null</code> | <code>string</code></h3>
@@ -1553,12 +1808,27 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <li>expected action in state</li>
 <li>global or local AI intent action</li>
 </ol>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[getData] <code>boolean</code> <code> = false</code> - deprecated</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[getData]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>deprecated</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">typeof</span> res.action() === <span class="hljs-string">&apos;string&apos;</span> || res.action() === <span class="hljs-literal">null</span>;
+<pre><code class="lang-js"><span class="hljs-keyword">typeof</span> res.action() === <span class="hljs-string">&apos;string&apos;</span> || res.action() === <span class="hljs-literal">null</span>;
 <span class="hljs-keyword">typeof</span> res.actionData() === <span class="hljs-string">&apos;object&apos;</span>;
 </code></pre>
 <div id="Request_actionData">&#xA0;</div>
@@ -1571,7 +1841,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <h3 id="requestgetsetstate-&#x21D2;-object"><a name="requestgetsetstate-&#x21D2;-object" class="plugin-anchor" href="#requestgetsetstate-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.getSetState() &#x21D2; <code>object</code></h3>
 <p>Gets incomming setState action variable</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">res.setState(req.getSetState());
+<pre><code class="lang-js">res.setState(req.getSetState());
 </code></pre>
 <div id="Request_isConfidentInput">&#xA0;</div>
 
@@ -1585,7 +1855,7 @@ marked as confident using <code>res.expectedConfidentInput()</code></p>
 <h3 id="requestactionbyai-&#x21D2;-string--null"><a name="requestactionbyai-&#x21D2;-string--null" class="plugin-anchor" href="#requestactionbyai-&#x21D2;-string--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.actionByAi() &#x21D2; <code>string</code> | <code>null</code></h3>
 <p>Returs action string, if there is an action detected by NLP</p>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
@@ -1613,12 +1883,25 @@ bot.use(<span class="hljs-string">&apos;email&apos;</span>, <span class="hljs-ke
 <h3 id="requestpostbackgetdata-&#x21D2;-null--string--object"><a name="requestpostbackgetdata-&#x21D2;-null--string--object" class="plugin-anchor" href="#requestpostbackgetdata-&#x21D2;-null--string--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.postBack([getData]) &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></h3>
 <p>Returns action or data of postback
 When <code>getData</code> is <code>true</code>, object will be returned. Otherwise string or null.</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[getData] <code>boolean</code> <code> = false</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[getData]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">typeof</span> res.postBack() === <span class="hljs-string">&apos;string&apos;</span> || res.postBack() === <span class="hljs-literal">null</span>;
+<pre><code class="lang-js"><span class="hljs-keyword">typeof</span> res.postBack() === <span class="hljs-string">&apos;string&apos;</span> || res.postBack() === <span class="hljs-literal">null</span>;
 <span class="hljs-keyword">typeof</span> res.postBack(<span class="hljs-literal">true</span>) === <span class="hljs-string">&apos;object&apos;</span>;
 </code></pre>
 <div id="Entity">&#xA0;</div>
@@ -1829,7 +2112,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2020-08-21T15:42:56.375Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:42:59.083Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2020-09-21T19:57:38.209Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

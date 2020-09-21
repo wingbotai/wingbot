@@ -49,12 +49,13 @@ Cascading router
 Appends middleware, action handler or another router
 
 **Kind**: instance method of [<code>Router</code>](#Router)  
-**Params**
 
-- ...resolvers [<code>Middleware</code>](#Middleware) | [<code>Array.&lt;Middleware&gt;</code>](#Middleware) - list of resolvers
+| Param | Type | Description |
+| --- | --- | --- |
+| ...resolvers | [<code>Middleware</code>](#Middleware) \| [<code>Array.&lt;Middleware&gt;</code>](#Middleware) | list of resolvers |
 
 **Example**  
-```javascript
+```js
 // middleware
 router.use((req, res, postBack) => Router.CONTINUE);
 
@@ -79,11 +80,12 @@ Reducer function
 
 **Kind**: instance method of [<code>Router</code>](#Router)  
 **Overrides**: [<code>reduce</code>](#ReducerWrapper_reduce)  
-**Params**
 
-- req <code>Request</code>
-- res <code>Responder</code>
-- postBack <code>function</code>
+| Param | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+| res | <code>Responder</code> | 
+| postBack | <code>function</code> | 
 
 {% raw %}<div id="ReducerWrapper_emitAction">&nbsp;</div>{% endraw %}
 
@@ -93,14 +95,15 @@ which disables the default automatic tracking
 for a single interaction.
 
 **Kind**: instance method of [<code>Router</code>](#Router)  
-**Params**
 
-- req <code>Request</code>
-- res <code>Responder</code>
-- action <code>string</code> | <code>boolean</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| req | <code>Request</code> |  | 
+| res | <code>Responder</code> |  | 
+| action | <code>string</code> \| <code>boolean</code> | <code>null</code> | 
 
 **Example**  
-```javascript
+```js
 const router = new Router();
 
 router.on('action', (r, action) => {
@@ -186,7 +189,7 @@ Its same as returning `undefined`
 Solution for catching events. This is useful for analytics.
 
 **Example**  
-```javascript
+```js
 const reducer = new ReducerWrapper((req, res) => {
     res.text('Hello');
 });
@@ -201,11 +204,12 @@ reducer.on('action', (senderId, processedAction, text, req, lastAction, skill, r
 Reducer function
 
 **Kind**: instance method of [<code>ReducerWrapper</code>](#ReducerWrapper)  
-**Params**
 
-- req <code>Request</code>
-- res <code>Responder</code>
-- postBack <code>function</code>
+| Param | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+| res | <code>Responder</code> | 
+| postBack | <code>function</code> | 
 
 {% raw %}<div id="ReducerWrapper_emitAction">&nbsp;</div>{% endraw %}
 
@@ -215,14 +219,15 @@ which disables the default automatic tracking
 for a single interaction.
 
 **Kind**: instance method of [<code>ReducerWrapper</code>](#ReducerWrapper)  
-**Params**
 
-- req <code>Request</code>
-- res <code>Responder</code>
-- action <code>string</code> | <code>boolean</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| req | <code>Request</code> |  | 
+| res | <code>Responder</code> |  | 
+| action | <code>string</code> \| <code>boolean</code> | <code>null</code> | 
 
 **Example**  
-```javascript
+```js
 const router = new Router();
 
 router.on('action', (r, action) => {
@@ -256,19 +261,21 @@ router.use('disables-firing-processor-event', (req, res) => {
 #### new ReducerWrapper([reduce])
 Creates an instance of ReducerWrapper.
 
-**Params**
 
-- [reduce] <code>function</code> - the handler function
+| Param | Type | Description |
+| --- | --- | --- |
+| [reduce] | <code>function</code> | the handler function |
 
 {% raw %}<div id="Resolver">&nbsp;</div>{% endraw %}
 
 ## Resolver : <code>function</code>
 **Kind**: global typedef  
-**Params**
 
-- [req] <code>Request</code>
-- [res] <code>Responder</code>
-- [postBack] <code>function</code>
+| Param | Type |
+| --- | --- |
+| [req] | <code>Request</code> | 
+| [res] | <code>Responder</code> | 
+| [postBack] | <code>function</code> | 
 
 {% raw %}<div id="IRouter">&nbsp;</div>{% endraw %}
 

@@ -43,22 +43,23 @@ Build bot from Wingbot configuration file or snapshot url
 ### new BuildRouter(block, plugins, context, [fetchFn])
 Create new router from configuration
 
-**Params**
 
-- block <code>object</code>
-    - [.botId] <code>string</code> - the ID of bot
-    - [.snapshot] <code>string</code> - snapshot stage of bot
-    - [.token] <code>string</code> | <code>Promise.&lt;string&gt;</code> - authorization token for bot
-    - [.url] <code>string</code> - specify alternative configuration resource
-- plugins [<code>Plugins</code>](#Plugins) - custom code blocks resource
-- context <code>object</code> - the building context
-    - [.linksTranslator] <code>object</code> - function, that translates links globally
-    - [.configStorage] [<code>ConfigStorage</code>](#ConfigStorage) - function, that translates links globally
-    - [.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule
-- [fetchFn] <code>fetch</code> - override a request function
+| Param | Type | Description |
+| --- | --- | --- |
+| block | <code>object</code> |  |
+| [block.botId] | <code>string</code> | the ID of bot |
+| [block.snapshot] | <code>string</code> | snapshot stage of bot |
+| [block.token] | <code>string</code> \| <code>Promise.&lt;string&gt;</code> | authorization token for bot |
+| [block.url] | <code>string</code> | specify alternative configuration resource |
+| plugins | [<code>Plugins</code>](#Plugins) | custom code blocks resource |
+| context | <code>object</code> | the building context |
+| [context.linksTranslator] | <code>object</code> | function, that translates links globally |
+| [context.configStorage] | [<code>ConfigStorage</code>](#ConfigStorage) | function, that translates links globally |
+| [context.allowForbiddenSnippetWords] | <code>boolean</code> | disable security rule |
+| [fetchFn] | <code>fetch</code> | override a request function |
 
 **Example**  
-```javascript
+```js
 // usage of plugins
 
 const { BuildRouter, Plugins } = require('wingbot');
@@ -101,11 +102,12 @@ Loads conversation configuration
 
 ### BuildRouter.fromData(blocks, [plugins], [context])
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
-**Params**
 
-- blocks <code>Array.&lt;object&gt;</code> - blocks list
-- [plugins] [<code>Plugins</code>](#Plugins)
-- [context] <code>object</code>
+| Param | Type | Description |
+| --- | --- | --- |
+| blocks | <code>Array.&lt;object&gt;</code> | blocks list |
+| [plugins] | [<code>Plugins</code>](#Plugins) |  |
+| [context] | <code>object</code> |  |
 
 {% raw %}<div id="BuildRouter">&nbsp;</div>{% endraw %}
 
@@ -131,22 +133,23 @@ Build bot from Wingbot configuration file or snapshot url
 ### new BuildRouter(block, plugins, context, [fetchFn])
 Create new router from configuration
 
-**Params**
 
-- block <code>object</code>
-    - [.botId] <code>string</code> - the ID of bot
-    - [.snapshot] <code>string</code> - snapshot stage of bot
-    - [.token] <code>string</code> | <code>Promise.&lt;string&gt;</code> - authorization token for bot
-    - [.url] <code>string</code> - specify alternative configuration resource
-- plugins [<code>Plugins</code>](#Plugins) - custom code blocks resource
-- context <code>object</code> - the building context
-    - [.linksTranslator] <code>object</code> - function, that translates links globally
-    - [.configStorage] [<code>ConfigStorage</code>](#ConfigStorage) - function, that translates links globally
-    - [.allowForbiddenSnippetWords] <code>boolean</code> - disable security rule
-- [fetchFn] <code>fetch</code> - override a request function
+| Param | Type | Description |
+| --- | --- | --- |
+| block | <code>object</code> |  |
+| [block.botId] | <code>string</code> | the ID of bot |
+| [block.snapshot] | <code>string</code> | snapshot stage of bot |
+| [block.token] | <code>string</code> \| <code>Promise.&lt;string&gt;</code> | authorization token for bot |
+| [block.url] | <code>string</code> | specify alternative configuration resource |
+| plugins | [<code>Plugins</code>](#Plugins) | custom code blocks resource |
+| context | <code>object</code> | the building context |
+| [context.linksTranslator] | <code>object</code> | function, that translates links globally |
+| [context.configStorage] | [<code>ConfigStorage</code>](#ConfigStorage) | function, that translates links globally |
+| [context.allowForbiddenSnippetWords] | <code>boolean</code> | disable security rule |
+| [fetchFn] | <code>fetch</code> | override a request function |
 
 **Example**  
-```javascript
+```js
 // usage of plugins
 
 const { BuildRouter, Plugins } = require('wingbot');
@@ -189,11 +192,12 @@ Loads conversation configuration
 
 ### BuildRouter.fromData(blocks, [plugins], [context])
 **Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
-**Params**
 
-- blocks <code>Array.&lt;object&gt;</code> - blocks list
-- [plugins] [<code>Plugins</code>](#Plugins)
-- [context] <code>object</code>
+| Param | Type | Description |
+| --- | --- | --- |
+| blocks | <code>Array.&lt;object&gt;</code> | blocks list |
+| [plugins] | [<code>Plugins</code>](#Plugins) |  |
+| [context] | <code>object</code> |  |
 
 {% raw %}<div id="Plugins">&nbsp;</div>{% endraw %}
 
@@ -213,17 +217,18 @@ Custom code plugins for BuildRouter and wingbot.ai
 Get plugin for the router
 
 **Kind**: instance method of [<code>Plugins</code>](#Plugins)  
-**Params**
 
-- name <code>string</code>
-- [paramsData] <code>object</code>
-- [items] <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code>
-- [context] <code>object</code>
-    - [.isLastIndex] <code>boolean</code>
-    - [.router] <code>Router</code>
+| Param | Type |
+| --- | --- |
+| name | <code>string</code> | 
+| [paramsData] | <code>object</code> | 
+| [items] | <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code> | 
+| [context] | <code>object</code> | 
+| [context.isLastIndex] | <code>boolean</code> | 
+| [context.router] | <code>Router</code> | 
 
 **Example**  
-```javascript
+```js
 const { Router } = require('wingbot');
 
 const bot = new Router();
@@ -247,10 +252,11 @@ bot.use('full-plugin-route', plugins
 Register plugin
 
 **Kind**: instance method of [<code>Plugins</code>](#Plugins)  
-**Params**
 
-- name <code>string</code> | [<code>Plugins</code>](#Plugins) - plugin name or plugins object to include
-- [plugin] [<code>Plugin</code>](#Plugin) | <code>Router</code> - plugin - optional when including plugin object
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> \| [<code>Plugins</code>](#Plugins) | plugin name or plugins object to include |
+| [plugin] | [<code>Plugin</code>](#Plugin) \| <code>Router</code> | plugin - optional when including plugin object |
 
 {% raw %}<div id="Plugins_registerFactory">&nbsp;</div>{% endraw %}
 
@@ -258,10 +264,11 @@ Register plugin
 Register plugin factory
 
 **Kind**: instance method of [<code>Plugins</code>](#Plugins)  
-**Params**
 
-- name <code>string</code> - plugin name or plugins object to include
-- pluginFactory <code>function</code> - function, which returns a plugin
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | plugin name or plugins object to include |
+| pluginFactory | <code>function</code> | function, which returns a plugin |
 
 {% raw %}<div id="ConfigStorage">&nbsp;</div>{% endraw %}
 
@@ -280,11 +287,12 @@ Register plugin factory
 
 ## Plugin : <code>function</code>
 **Kind**: global typedef  
-**Params**
 
-- req <code>Request</code>
-- res <code>Responder</code>
-- [postBack] <code>function</code>
-- [context] <code>Object</code>
-- [paramsData] <code>object</code>
+| Param | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+| res | <code>Responder</code> | 
+| [postBack] | <code>function</code> | 
+| [context] | <code>Object</code> | 
+| [paramsData] | <code>object</code> | 
 

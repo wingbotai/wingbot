@@ -62,28 +62,31 @@ Experimental chatbot API
 {% raw %}<div id="new_GraphApi_new">&nbsp;</div>{% endraw %}
 
 ### new GraphApi(apis, options)
-**Params**
 
-- apis <code>Array.&lt;object&gt;</code> - list of connected APIs
-- options <code>object</code> - API options
-    - .token <code>string</code> | <code>Promise.&lt;string&gt;</code> - wingbot token
-    - [.appToken] <code>string</code> - public token
-    - [.groups] <code>Array.&lt;string&gt;</code> - list of allowed bot groups
+| Param | Type | Description |
+| --- | --- | --- |
+| apis | <code>Array.&lt;object&gt;</code> | list of connected APIs |
+| options | <code>object</code> | API options |
+| options.token | <code>string</code> \| <code>Promise.&lt;string&gt;</code> | wingbot token |
+| [options.appToken] | <code>string</code> | public token |
+| [options.groups] | <code>Array.&lt;string&gt;</code> | list of allowed bot groups |
+| [options.useBundledGql] | <code>boolean</code> | uses library bundled graphql definition |
 
 {% raw %}<div id="GraphApi_request">&nbsp;</div>{% endraw %}
 
 ### graphApi.request(body, headers, [wingbotToken]) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
 **Kind**: instance method of [<code>GraphApi</code>](#GraphApi)  
-**Params**
 
-- body <code>object</code>
-    - .query <code>object</code>
-    - [.variables] <code>object</code>
-    - [.operationName] <code>string</code>
-- headers <code>object</code>
-    - [.Authorization] <code>string</code>
-    - [.authorization] <code>string</code>
-- [wingbotToken] <code>string</code>
+| Param | Type |
+| --- | --- |
+| body | <code>object</code> | 
+| body.query | <code>object</code> | 
+| [body.variables] | <code>object</code> | 
+| [body.operationName] | <code>string</code> | 
+| headers | <code>object</code> | 
+| [headers.Authorization] | <code>string</code> | 
+| [headers.authorization] | <code>string</code> | 
+| [wingbotToken] | <code>string</code> | 
 
 {% raw %}<div id="postBackApi">&nbsp;</div>{% endraw %}
 
@@ -91,13 +94,14 @@ Experimental chatbot API
 Create a postback API
 
 **Kind**: global function  
-**Params**
 
-- processor <code>Object</code> - running messaging channel, like Facebook
-- [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> - limit api to array of groups or use auth function
+| Param | Type | Description |
+| --- | --- | --- |
+| processor | <code>Object</code> | running messaging channel, like Facebook |
+| [acl] | <code>Array.&lt;string&gt;</code> \| <code>function</code> | limit api to array of groups or use auth function |
 
 **Example**  
-```javascript
+```js
 const { GraphApi, postBackApi } = require('wingbot');
 
 const api = new GraphApi([
@@ -110,12 +114,13 @@ const api = new GraphApi([
 
 ## validate(bot, validationRequestBody, postBackTest, textTest)
 **Kind**: global function  
-**Params**
 
-- bot <code>object</code>
-- validationRequestBody <code>object</code>
-- postBackTest <code>string</code> | <code>function</code> <code> = null</code>
-- textTest <code>string</code> | <code>function</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| bot | <code>object</code> |  | 
+| validationRequestBody | <code>object</code> |  | 
+| postBackTest | <code>string</code> \| <code>function</code> | <code>null</code> | 
+| textTest | <code>string</code> \| <code>function</code> | <code>null</code> | 
 
 {% raw %}<div id="validateBotApi">&nbsp;</div>{% endraw %}
 
@@ -123,15 +128,16 @@ const api = new GraphApi([
 Test the bot configuration
 
 **Kind**: global function  
-**Params**
 
-- botFactory <code>function</code> - function, which returns a bot
-- [postBackTest] <code>string</code> | <code>function</code> | <code>null</code> <code> = null</code> - postback action to test
-- [textTest] <code>string</code> | <code>function</code> | <code>null</code> <code> = null</code> - random text to test
-- [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| botFactory | <code>function</code> |  | function, which returns a bot |
+| [postBackTest] | <code>string</code> \| <code>function</code> \| <code>null</code> | <code>null</code> | postback action to test |
+| [textTest] | <code>string</code> \| <code>function</code> \| <code>null</code> | <code>null</code> | random text to test |
+| [acl] | <code>Array.&lt;string&gt;</code> \| <code>function</code> | <code></code> | limit api to array of groups or use auth function |
 
 **Example**  
-```javascript
+```js
 const { GraphApi, validateBotApi, Tester } = require('wingbot');
 
 const api = new GraphApi([
@@ -159,17 +165,18 @@ Create a conversations API
 for retrieving conversations and it's history
 
 **Kind**: global function  
-**Params**
 
-- stateStorage [<code>StateStorage</code>](#StateStorage)
-- chatLogStorage [<code>ChatLogStorage</code>](#ChatLogStorage) <code> = </code>
-- notifications [<code>Notifications</code>](#Notifications) <code> = </code>
-- [acl] <code>Array.&lt;string&gt;</code> | <code>function</code> <code> = </code> - limit api to array of groups or use auth function
-- options <code>object</code>
-    - [.stateTextFilter] [<code>textFilter</code>](#textFilter) - optional funcion for filtering data in states
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| stateStorage | [<code>StateStorage</code>](#StateStorage) |  |  |
+| chatLogStorage | [<code>ChatLogStorage</code>](#ChatLogStorage) | <code></code> |  |
+| notifications | [<code>Notifications</code>](#Notifications) | <code></code> |  |
+| [acl] | <code>Array.&lt;string&gt;</code> \| <code>function</code> | <code></code> | limit api to array of groups or use auth function |
+| options | <code>object</code> |  |  |
+| [options.stateTextFilter] | [<code>textFilter</code>](#textFilter) |  | optional funcion for filtering data in states |
 
 **Example**  
-```javascript
+```js
 const { GraphApi, conversationsApi } = require('wingbot');
 const BOT_UPDATE_GROUPS = ['botEditor', 'botAdmin', 'botUser'];
 
@@ -195,14 +202,15 @@ const api = new GraphApi([
 If API call is authorized - use for own implementations of API endpoints
 
 **Kind**: global function  
-**Params**
 
-- args <code>object</code> - gql request
-- ctx <code>Object</code> - request context
-- acl <code>Array.&lt;string&gt;</code> | <code>null</code> | <code>function</code> - custom acl settings
+| Param | Type | Description |
+| --- | --- | --- |
+| args | <code>object</code> | gql request |
+| ctx | <code>Object</code> | request context |
+| acl | <code>Array.&lt;string&gt;</code> \| <code>null</code> \| <code>function</code> | custom acl settings |
 
 **Example**  
-```javascript
+```js
 const { apiAuthorizer } = require('wingbot');
 
 function createApi (acl = null) {
@@ -219,10 +227,11 @@ function createApi (acl = null) {
 
 ## GraphQlResponse : <code>object</code>
 **Kind**: global typedef  
-**Params**
 
-- [data] <code>\*</code>
-- [errors] <code>Array.&lt;object&gt;</code>
+| Param | Type |
+| --- | --- |
+| [data] | <code>\*</code> | 
+| [errors] | <code>Array.&lt;object&gt;</code> | 
 
 {% raw %}<div id="PostBackAPI">&nbsp;</div>{% endraw %}
 
@@ -285,8 +294,9 @@ function createApi (acl = null) {
 Function for filtration of string output
 
 **Kind**: global typedef  
-**Params**
 
-- value <code>string</code>
-- key <code>string</code>
+| Param | Type |
+| --- | --- |
+| value | <code>string</code> | 
+| key | <code>string</code> | 
 

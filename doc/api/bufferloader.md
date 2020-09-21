@@ -66,40 +66,44 @@ Memory conversation state storage for testing purposes
 
 ### memoryStateStorage.getState(senderId, pageId) ⇒ <code>Promise.&lt;(State\|null)&gt;</code>
 **Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
-**Params**
 
-- senderId <code>string</code>
-- pageId <code>string</code>
+| Param | Type |
+| --- | --- |
+| senderId | <code>string</code> | 
+| pageId | <code>string</code> | 
 
 {% raw %}<div id="MemoryStateStorage_getOrCreateAndLock">&nbsp;</div>{% endraw %}
 
 ### memoryStateStorage.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout) ⇒ [<code>Promise.&lt;State&gt;</code>](#State)
 **Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
 **Returns**: [<code>Promise.&lt;State&gt;</code>](#State) - - conversation state  
-**Params**
 
-- senderId <code>string</code> - sender identifier
-- pageId <code>string</code> - page or channel identifier
-- defaultState <code>object</code> - default state of the conversation
-- lockTimeout <code>number</code> <code> = 300</code> - duration of lock
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| senderId | <code>string</code> |  | sender identifier |
+| pageId | <code>string</code> |  | page or channel identifier |
+| defaultState | <code>object</code> |  | default state of the conversation |
+| lockTimeout | <code>number</code> | <code>300</code> | duration of lock |
 
 {% raw %}<div id="MemoryStateStorage_saveState">&nbsp;</div>{% endraw %}
 
 ### memoryStateStorage.saveState(state) ⇒ <code>Promise</code>
 **Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
-**Params**
 
-- state <code>object</code> - conversation state
+| Param | Type | Description |
+| --- | --- | --- |
+| state | <code>object</code> | conversation state |
 
 {% raw %}<div id="MemoryStateStorage_getStates">&nbsp;</div>{% endraw %}
 
 ### memoryStateStorage.getStates(condition, limit, lastKey) ⇒ <code>Promise.&lt;{Array.&lt;data:State&gt;, lastKey:string}&gt;</code>
 **Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
-**Params**
 
-- condition [<code>StateCondition</code>](#StateCondition)
-- limit <code>number</code> <code> = 20</code>
-- lastKey <code>string</code> <code> = null</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| condition | [<code>StateCondition</code>](#StateCondition) |  | 
+| limit | <code>number</code> | <code>20</code> | 
+| lastKey | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="Translate">&nbsp;</div>{% endraw %}
 
@@ -120,11 +124,12 @@ Tool for text translation
 {% raw %}<div id="new_Translate_new">&nbsp;</div>{% endraw %}
 
 ### new Translate([options])
-**Params**
 
-- [options] <code>object</code>
-    - [.sourcePath] <code>string</code> - optional source path of translation folder
-    - [.fileSuffix] <code>string</code> - by default `.locale.po`
+| Param | Type | Description |
+| --- | --- | --- |
+| [options] | <code>object</code> |  |
+| [options.sourcePath] | <code>string</code> | optional source path of translation folder |
+| [options.fileSuffix] | <code>string</code> | by default `.locale.po` |
 
 {% raw %}<div id="Translate_translator">&nbsp;</div>{% endraw %}
 
@@ -132,12 +137,13 @@ Tool for text translation
 Creates static translator for static settings
 
 **Kind**: instance method of [<code>Translate</code>](#Translate)  
-**Params**
 
-- languages <code>Array.&lt;string&gt;</code> - list of required languages
+| Param | Type | Description |
+| --- | --- | --- |
+| languages | <code>Array.&lt;string&gt;</code> | list of required languages |
 
 **Example**  
-```javascript
+```js
 const { Translate } = require('wingbot');
 
 const translate = new Translate({ sourcePath: __dirname });
@@ -158,12 +164,13 @@ Bots middleware for text translations
 - will be looking for `<lang>.locale.po` by default
 
 **Kind**: instance method of [<code>Translate</code>](#Translate)  
-**Params**
 
-- languageResolver <code>function</code>
+| Param | Type |
+| --- | --- |
+| languageResolver | <code>function</code> | 
 
 **Example**  
-```javascript
+```js
 const { Translate } = require('wingbot');
 
 const translate = new Translate({ sourcePath: __dirname });
@@ -193,11 +200,12 @@ Tool for text translation
 {% raw %}<div id="new_Translate_new">&nbsp;</div>{% endraw %}
 
 ### new Translate([options])
-**Params**
 
-- [options] <code>object</code>
-    - [.sourcePath] <code>string</code> - optional source path of translation folder
-    - [.fileSuffix] <code>string</code> - by default `.locale.po`
+| Param | Type | Description |
+| --- | --- | --- |
+| [options] | <code>object</code> |  |
+| [options.sourcePath] | <code>string</code> | optional source path of translation folder |
+| [options.fileSuffix] | <code>string</code> | by default `.locale.po` |
 
 {% raw %}<div id="Translate_translator">&nbsp;</div>{% endraw %}
 
@@ -205,12 +213,13 @@ Tool for text translation
 Creates static translator for static settings
 
 **Kind**: instance method of [<code>Translate</code>](#Translate)  
-**Params**
 
-- languages <code>Array.&lt;string&gt;</code> - list of required languages
+| Param | Type | Description |
+| --- | --- | --- |
+| languages | <code>Array.&lt;string&gt;</code> | list of required languages |
 
 **Example**  
-```javascript
+```js
 const { Translate } = require('wingbot');
 
 const translate = new Translate({ sourcePath: __dirname });
@@ -231,12 +240,13 @@ Bots middleware for text translations
 - will be looking for `<lang>.locale.po` by default
 
 **Kind**: instance method of [<code>Translate</code>](#Translate)  
-**Params**
 
-- languageResolver <code>function</code>
+| Param | Type |
+| --- | --- |
+| languageResolver | <code>function</code> | 
 
 **Example**  
-```javascript
+```js
 const { Translate } = require('wingbot');
 
 const translate = new Translate({ sourcePath: __dirname });
@@ -261,15 +271,16 @@ bot.use((req, res) => {
 {% raw %}<div id="new_ReturnSender_new">&nbsp;</div>{% endraw %}
 
 ### new ReturnSender(options, userId, incommingMessage, logger)
-**Params**
 
-- options <code>object</code>
-    - [.textFilter] [<code>textFilter</code>](#textFilter) - filter for saving the texts
-    - [.logStandbyEvents] <code>boolean</code> - log the standby events
-    - [.confidentInputFilter] [<code>textFilter</code>](#textFilter) - filter for confident input (@CONFIDENT)
-- userId <code>string</code>
-- incommingMessage <code>object</code>
-- logger <code>console</code> - console like logger
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> |  |
+| [options.textFilter] | [<code>textFilter</code>](#textFilter) | filter for saving the texts |
+| [options.logStandbyEvents] | <code>boolean</code> | log the standby events |
+| [options.confidentInputFilter] | [<code>textFilter</code>](#textFilter) | filter for confident input (@CONFIDENT) |
+| userId | <code>string</code> |  |
+| incommingMessage | <code>object</code> |  |
+| logger | <code>console</code> | console like logger |
 
 {% raw %}<div id="ReturnSender_textFilter">&nbsp;</div>{% endraw %}
 
@@ -278,9 +289,10 @@ Preprocess text for NLP
 For example to remove any confidential data
 
 **Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
-**Params**
 
-- text <code>string</code>
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
 
 {% raw %}<div id="ReturnSender_modifyStateAfterLoad">&nbsp;</div>{% endraw %}
 
@@ -314,15 +326,16 @@ Do not log the event
 Downloads a file from url into a buffer. Supports size limits and redirects.
 
 **Kind**: global function  
-**Params**
 
-- url <code>string</code>
-- [limit] <code>number</code> <code> = 0</code> - limit in bytes
-- [limitJustByBody] <code>boolean</code> <code> = false</code> - when true, content size in header is ignored
-- [redirCount] <code>number</code> <code> = 3</code> - maximmum amount of redirects
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| url | <code>string</code> |  |  |
+| [limit] | <code>number</code> | <code>0</code> | limit in bytes |
+| [limitJustByBody] | <code>boolean</code> | <code>false</code> | when true, content size in header is ignored |
+| [redirCount] | <code>number</code> | <code>3</code> | maximmum amount of redirects |
 
 **Example**  
-```javascript
+```js
 router.use('*', (req, res, postBack) => {
     if (req.isFile()) {
         bufferloader(req.attachmentUrl())
@@ -337,13 +350,14 @@ router.use('*', (req, res, postBack) => {
 Create a disambiguation quick reply
 
 **Kind**: global function  
-**Params**
 
-- title <code>string</code> - quick reply title
-- likelyIntent <code>string</code> - possible intent
-- disambText <code>string</code> - users text input
-- action <code>string</code> - action to process the disambbiguation
-- data <code>object</code> - optional data
+| Param | Type | Description |
+| --- | --- | --- |
+| title | <code>string</code> | quick reply title |
+| likelyIntent | <code>string</code> | possible intent |
+| disambText | <code>string</code> | users text input |
+| action | <code>string</code> | action to process the disambbiguation |
+| data | <code>object</code> | optional data |
 
 {% raw %}<div id="State">&nbsp;</div>{% endraw %}
 
@@ -374,7 +388,8 @@ Text filter function
 
 **Kind**: global typedef  
 **Returns**: <code>string</code> - - filtered text  
-**Params**
 
-- text <code>string</code> - input text
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | input text |
 

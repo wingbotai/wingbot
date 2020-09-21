@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>GraphApi · Wingbot</title>
+        <title>vars tools · Wingbot</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -61,10 +61,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="graphqlSchema.html" />
+    <link rel="next" href="Ai.html" />
     
     
-    <link rel="prev" href="Notifications.html" />
+    <link rel="prev" href="bufferloader.html" />
     
 
     </head>
@@ -955,7 +955,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.7" data-path="stateVariables.html">
+        <li class="chapter active" data-level="3.7" data-path="stateVariables.html">
             
                 <a href="stateVariables.html">
             
@@ -1007,7 +1007,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="3.11" data-path="GraphApi.html">
+        <li class="chapter " data-level="3.11" data-path="GraphApi.html">
             
                 <a href="GraphApi.html">
             
@@ -1076,7 +1076,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >GraphApi</a>
+        <a href=".." >vars tools</a>
     </h1>
 </div>
 
@@ -1091,114 +1091,25 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h2 id="classes"><a name="classes" class="plugin-anchor" href="#classes"><i class="fa fa-link" aria-hidden="true"></i></a>Classes</h2>
-<dl>
-<dt><a href="#GraphApi">GraphApi</a></dt>
-<dd><p>Experimental chatbot API</p>
-</dd>
-</dl>
+                                <div id="vars">&#xA0;</div>
 
-<h2 id="functions"><a name="functions" class="plugin-anchor" href="#functions"><i class="fa fa-link" aria-hidden="true"></i></a>Functions</h2>
-<dl>
-<dt><a href="#postBackApi">postBackApi(processor, [acl])</a> &#x21D2; <code>PostBackAPI</code></dt>
-<dd><p>Create a postback API</p>
-</dd>
-<dt><a href="#validate">validate(bot, validationRequestBody, postBackTest, textTest)</a></dt>
-<dd></dd>
-<dt><a href="#validateBotApi">validateBotApi(botFactory, [postBackTest], [textTest], [acl])</a> &#x21D2; <code>ValidateBotAPI</code></dt>
-<dd><p>Test the bot configuration</p>
-</dd>
-<dt><a href="#conversationsApi">conversationsApi(stateStorage, chatLogStorage, notifications, [acl], options)</a> &#x21D2; <code>ConversationsAPI</code></dt>
-<dd><p>Create a conversations API
-for retrieving conversations and it&apos;s history</p>
-</dd>
-<dt><a href="#apiAuthorizer">apiAuthorizer(args, ctx, acl)</a> &#x21D2; <code>boolean</code></dt>
-<dd><p>If API call is authorized - use for own implementations of API endpoints</p>
-</dd>
-</dl>
-
-<h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
-<dl>
-<dt><a href="#GraphQlResponse">GraphQlResponse</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#PostBackAPI">PostBackAPI</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#ValidateBotAPI">ValidateBotAPI</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#conversation">conversation</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#StateStorage">StateStorage</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#Notifications">Notifications</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>object</code></dt>
-<dd></dd>
-<dt><a href="#textFilter">textFilter</a> &#x21D2; <code>any</code></dt>
-<dd><p>Function for filtration of string output</p>
-</dd>
-</dl>
-
-<div id="GraphApi">&#xA0;</div>
-
-<h2 id="graphapi"><a name="graphapi" class="plugin-anchor" href="#graphapi"><i class="fa fa-link" aria-hidden="true"></i></a>GraphApi</h2>
-<p>Experimental chatbot API</p>
-<p><strong>Kind</strong>: global class  </p>
+<h2 id="vars--object"><a name="vars--object" class="plugin-anchor" href="#vars--object"><i class="fa fa-link" aria-hidden="true"></i></a>vars : <code>object</code></h2>
+<p><strong>Kind</strong>: global constant  </p>
 <ul>
-<li><a href="#GraphApi">GraphApi</a><ul>
-<li><a href="#new_GraphApi_new">new GraphApi(apis, options)</a></li>
-<li><a href="#GraphApi_request">.request(body, headers, [wingbotToken])</a> &#x21D2; <a href="#GraphQlResponse"><code>Promise.&lt;GraphQlResponse&gt;</code></a></li>
+<li><a href="#vars">vars</a> : <code>object</code><ul>
+<li><a href="#vars_dialogContext">.dialogContext(key, value)</a> &#x21D2; <code>object</code></li>
+<li><a href="#vars_expiresAfter">.expiresAfter(key, value, turnovers)</a> &#x21D2; <code>object</code></li>
+<li><a href="#vars_preserveMeta">.preserveMeta(key, value, state)</a> &#x21D2; <code>object</code></li>
 </ul>
 </li>
 </ul>
-<div id="new_GraphApi_new">&#xA0;</div>
+<div id="vars_dialogContext">&#xA0;</div>
 
-<h3 id="new-graphapiapis-options"><a name="new-graphapiapis-options" class="plugin-anchor" href="#new-graphapiapis-options"><i class="fa fa-link" aria-hidden="true"></i></a>new GraphApi(apis, options)</h3>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>apis</td>
-<td><code>Array.&lt;object&gt;</code></td>
-<td>list of connected APIs</td>
-</tr>
-<tr>
-<td>options</td>
-<td><code>object</code></td>
-<td>API options</td>
-</tr>
-<tr>
-<td>options.token</td>
-<td><code>string</code> \</td>
-<td><code>Promise.&lt;string&gt;</code></td>
-<td>wingbot token</td>
-</tr>
-<tr>
-<td>[options.appToken]</td>
-<td><code>string</code></td>
-<td>public token</td>
-</tr>
-<tr>
-<td>[options.groups]</td>
-<td><code>Array.&lt;string&gt;</code></td>
-<td>list of allowed bot groups</td>
-</tr>
-<tr>
-<td>[options.useBundledGql]</td>
-<td><code>boolean</code></td>
-<td>uses library bundled graphql definition</td>
-</tr>
-</tbody>
-</table>
-<div id="GraphApi_request">&#xA0;</div>
-
-<h3 id="graphapirequestbody-headers-wingbottoken-&#x21D2;-promisegraphqlresponse"><a name="graphapirequestbody-headers-wingbottoken-&#x21D2;-promisegraphqlresponse" class="plugin-anchor" href="#graphapirequestbody-headers-wingbottoken-&#x21D2;-promisegraphqlresponse"><i class="fa fa-link" aria-hidden="true"></i></a>graphApi.request(body, headers, [wingbotToken]) &#x21D2; <a href="#GraphQlResponse"><code>Promise.&lt;GraphQlResponse&gt;</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#GraphApi"><code>GraphApi</code></a>  </p>
+<h3 id="varsdialogcontextkey-value-&#x21D2;-object"><a name="varsdialogcontextkey-value-&#x21D2;-object" class="plugin-anchor" href="#varsdialogcontextkey-value-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>vars.dialogContext(key, value) &#x21D2; <code>object</code></h3>
+<p>Sets variable, which will be removed, when user leaves the dialogue.
+<strong>Variable will be available at first interaction of next dialogue.</strong>
+Then it will be removed.</p>
+<p><strong>Kind</strong>: static method of <a href="#vars"><code>vars</code></a>  </p>
 <table>
 <thead>
 <tr>
@@ -1207,444 +1118,79 @@ for retrieving conversations and it&apos;s history</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>body</td>
-<td><code>object</code></td>
-</tr>
-<tr>
-<td>body.query</td>
-<td><code>object</code></td>
-</tr>
-<tr>
-<td>[body.variables]</td>
-<td><code>object</code></td>
-</tr>
-<tr>
-<td>[body.operationName]</td>
-<td><code>string</code></td>
-</tr>
-<tr>
-<td>headers</td>
-<td><code>object</code></td>
-</tr>
-<tr>
-<td>[headers.Authorization]</td>
-<td><code>string</code></td>
-</tr>
-<tr>
-<td>[headers.authorization]</td>
-<td><code>string</code></td>
-</tr>
-<tr>
-<td>[wingbotToken]</td>
-<td><code>string</code></td>
-</tr>
-</tbody>
-</table>
-<div id="postBackApi">&#xA0;</div>
-
-<h2 id="postbackapiprocessor-acl-&#x21D2;-postbackapi"><a name="postbackapiprocessor-acl-&#x21D2;-postbackapi" class="plugin-anchor" href="#postbackapiprocessor-acl-&#x21D2;-postbackapi"><i class="fa fa-link" aria-hidden="true"></i></a>postBackApi(processor, [acl]) &#x21D2; <a href="#PostBackAPI"><code>PostBackAPI</code></a></h2>
-<p>Create a postback API</p>
-<p><strong>Kind</strong>: global function  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>processor</td>
-<td><code>Object</code></td>
-<td>running messaging channel, like Facebook</td>
-</tr>
-<tr>
-<td>[acl]</td>
-<td><code>Array.&lt;string&gt;</code> \</td>
-<td><code>function</code></td>
-<td>limit api to array of groups or use auth function</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> { GraphApi, postBackApi } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-
-<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
-    postBackApi(channel)
-], {
-    appToken: <span class="hljs-string">&apos;API-will-be-accessible-with-this-token-in-Authorization-header&apos;</span>
-})
-</code></pre>
-<div id="validate">&#xA0;</div>
-
-<h2 id="validatebot-validationrequestbody-postbacktest-texttest"><a name="validatebot-validationrequestbody-postbacktest-texttest" class="plugin-anchor" href="#validatebot-validationrequestbody-postbacktest-texttest"><i class="fa fa-link" aria-hidden="true"></i></a>validate(bot, validationRequestBody, postBackTest, textTest)</h2>
-<p><strong>Kind</strong>: global function  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bot</td>
-<td><code>object</code></td>
-<td></td>
-</tr>
-<tr>
-<td>validationRequestBody</td>
-<td><code>object</code></td>
-<td></td>
-</tr>
-<tr>
-<td>postBackTest</td>
-<td><code>string</code> \</td>
-<td><code>function</code></td>
-<td><code>null</code></td>
-</tr>
-<tr>
-<td>textTest</td>
-<td><code>string</code> \</td>
-<td><code>function</code></td>
-<td><code>null</code></td>
-</tr>
-</tbody>
-</table>
-<div id="validateBotApi">&#xA0;</div>
-
-<h2 id="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><a name="validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi" class="plugin-anchor" href="#validatebotapibotfactory-postbacktest-texttest-acl-&#x21D2;-validatebotapi"><i class="fa fa-link" aria-hidden="true"></i></a>validateBotApi(botFactory, [postBackTest], [textTest], [acl]) &#x21D2; <a href="#ValidateBotAPI"><code>ValidateBotAPI</code></a></h2>
-<p>Test the bot configuration</p>
-<p><strong>Kind</strong>: global function  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>botFactory</td>
-<td><code>function</code></td>
-<td></td>
-<td>function, which returns a bot</td>
-</tr>
-<tr>
-<td>[postBackTest]</td>
-<td><code>string</code> \</td>
-<td><code>function</code> \</td>
-<td><code>null</code></td>
-<td><code>null</code></td>
-<td>postback action to test</td>
-</tr>
-<tr>
-<td>[textTest]</td>
-<td><code>string</code> \</td>
-<td><code>function</code> \</td>
-<td><code>null</code></td>
-<td><code>null</code></td>
-<td>random text to test</td>
-</tr>
-<tr>
-<td>[acl]</td>
-<td><code>Array.&lt;string&gt;</code> \</td>
-<td><code>function</code></td>
-<td><code></code></td>
-<td>limit api to array of groups or use auth function</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> { GraphApi, validateBotApi, Tester } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-
-<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
-    validateBotApi(botFactory, <span class="hljs-string">&apos;start&apos;</span>, <span class="hljs-string">&apos;hello&apos;</span>)
-], {
-    token: <span class="hljs-string">&apos;wingbot-token&apos;</span>
-})
-
-<span class="hljs-comment">// OR WITH FUNCTION</span>
-
-<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
-    validateBotApi(botFactory, <span class="hljs-keyword">async</span> (t, bot) =&gt; {
-        <span class="hljs-keyword">const</span> tester = <span class="hljs-keyword">new</span> Tester(bot);
-
-        tester.postBack(<span class="hljs-string">&apos;start&apos;</span>);
-    })
-], {
-    token: <span class="hljs-string">&apos;wingbot-token&apos;</span>
-})
-</code></pre>
-<div id="conversationsApi">&#xA0;</div>
-
-<h2 id="conversationsapistatestorage-chatlogstorage-notifications-acl-options-&#x21D2;-conversationsapi"><a name="conversationsapistatestorage-chatlogstorage-notifications-acl-options-&#x21D2;-conversationsapi" class="plugin-anchor" href="#conversationsapistatestorage-chatlogstorage-notifications-acl-options-&#x21D2;-conversationsapi"><i class="fa fa-link" aria-hidden="true"></i></a>conversationsApi(stateStorage, chatLogStorage, notifications, [acl], options) &#x21D2; <code>ConversationsAPI</code></h2>
-<p>Create a conversations API
-for retrieving conversations and it&apos;s history</p>
-<p><strong>Kind</strong>: global function  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>stateStorage</td>
-<td><a href="#StateStorage"><code>StateStorage</code></a></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>chatLogStorage</td>
-<td><a href="#ChatLogStorage"><code>ChatLogStorage</code></a></td>
-<td><code></code></td>
-<td></td>
-</tr>
-<tr>
-<td>notifications</td>
-<td><a href="#Notifications"><code>Notifications</code></a></td>
-<td><code></code></td>
-<td></td>
-</tr>
-<tr>
-<td>[acl]</td>
-<td><code>Array.&lt;string&gt;</code> \</td>
-<td><code>function</code></td>
-<td><code></code></td>
-<td>limit api to array of groups or use auth function</td>
-</tr>
-<tr>
-<td>options</td>
-<td><code>object</code></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>[options.stateTextFilter]</td>
-<td><a href="#textFilter"><code>textFilter</code></a></td>
-<td></td>
-<td>optional funcion for filtering data in states</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> { GraphApi, conversationsApi } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-<span class="hljs-keyword">const</span> BOT_UPDATE_GROUPS = [<span class="hljs-string">&apos;botEditor&apos;</span>, <span class="hljs-string">&apos;botAdmin&apos;</span>, <span class="hljs-string">&apos;botUser&apos;</span>];
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">stateTextFilter</span> (<span class="hljs-params">value, key</span>) </span>{
-    <span class="hljs-keyword">if</span> (key === <span class="hljs-string">&apos;credentials.password&apos;</span>) {
-        <span class="hljs-keyword">return</span> <span class="hljs-string">&apos;****&apos;</span>;
-    }
-    <span class="hljs-keyword">return</span> value;
-}
-
-<span class="hljs-keyword">const</span> api = <span class="hljs-keyword">new</span> GraphApi([
-    conversationsApi(
-        stateStorage, chatLogStorage, notifications, BOT_UPDATE_GROUPS,
-        { stateTextFilter }
-    )
-], {
-    token: <span class="hljs-string">&apos;my-secret-token&apos;</span>
-});
-</code></pre>
-<div id="apiAuthorizer">&#xA0;</div>
-
-<h2 id="apiauthorizerargs-ctx-acl-&#x21D2;-boolean"><a name="apiauthorizerargs-ctx-acl-&#x21D2;-boolean" class="plugin-anchor" href="#apiauthorizerargs-ctx-acl-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>apiAuthorizer(args, ctx, acl) &#x21D2; <code>boolean</code></h2>
-<p>If API call is authorized - use for own implementations of API endpoints</p>
-<p><strong>Kind</strong>: global function  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>args</td>
-<td><code>object</code></td>
-<td>gql request</td>
-</tr>
-<tr>
-<td>ctx</td>
-<td><code>Object</code></td>
-<td>request context</td>
-</tr>
-<tr>
-<td>acl</td>
-<td><code>Array.&lt;string&gt;</code> \</td>
-<td><code>null</code> \</td>
-<td><code>function</code></td>
-<td>custom acl settings</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Example</strong>  </p>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> { apiAuthorizer } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createApi</span> (<span class="hljs-params">acl = null</span>) </span>{
-    <span class="hljs-keyword">return</span> {
-         gqlEndpoint (args, ctx) {
-             <span class="hljs-keyword">if</span> (!apiAuthorizer(args, ctx, acl)) {
-                 <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
-             }
-         }
-    }
-}
-</code></pre>
-<div id="GraphQlResponse">&#xA0;</div>
-
-<h2 id="graphqlresponse--object"><a name="graphqlresponse--object" class="plugin-anchor" href="#graphqlresponse--object"><i class="fa fa-link" aria-hidden="true"></i></a>GraphQlResponse : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>[data]</td>
-<td><code>*</code></td>
-</tr>
-<tr>
-<td>[errors]</td>
-<td><code>Array.&lt;object&gt;</code></td>
-</tr>
-</tbody>
-</table>
-<div id="PostBackAPI">&#xA0;</div>
-
-<h2 id="postbackapi--object"><a name="postbackapi--object" class="plugin-anchor" href="#postbackapi--object"><i class="fa fa-link" aria-hidden="true"></i></a>PostBackAPI : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>postBack</td>
-<td><code>function</code></td>
-</tr>
-</tbody>
-</table>
-<div id="ValidateBotAPI">&#xA0;</div>
-
-<h2 id="validatebotapi--object"><a name="validatebotapi--object" class="plugin-anchor" href="#validatebotapi--object"><i class="fa fa-link" aria-hidden="true"></i></a>ValidateBotAPI : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>validateBot</td>
-<td><code>function</code></td>
-</tr>
-</tbody>
-</table>
-<div id="conversation">&#xA0;</div>
-
-<h2 id="conversation--object"><a name="conversation--object" class="plugin-anchor" href="#conversation--object"><i class="fa fa-link" aria-hidden="true"></i></a>conversation : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef  </p>
-<div id="StateStorage">&#xA0;</div>
-
-<h2 id="statestorage--object"><a name="statestorage--object" class="plugin-anchor" href="#statestorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>StateStorage : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>getStates</td>
-<td><code>function</code></td>
-</tr>
-<tr>
-<td>getState</td>
-<td><code>function</code></td>
-</tr>
-</tbody>
-</table>
-<div id="Notifications">&#xA0;</div>
-
-<h2 id="notifications--object"><a name="notifications--object" class="plugin-anchor" href="#notifications--object"><i class="fa fa-link" aria-hidden="true"></i></a>Notifications : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>getSubscribtions</td>
-<td><code>function</code></td>
-</tr>
-</tbody>
-</table>
-<div id="ChatLogStorage">&#xA0;</div>
-
-<h2 id="chatlogstorage--object"><a name="chatlogstorage--object" class="plugin-anchor" href="#chatlogstorage--object"><i class="fa fa-link" aria-hidden="true"></i></a>ChatLogStorage : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>getInteractions</td>
-<td><code>function</code></td>
-</tr>
-</tbody>
-</table>
-<div id="textFilter">&#xA0;</div>
-
-<h2 id="textfilter-&#x21D2;-any"><a name="textfilter-&#x21D2;-any" class="plugin-anchor" href="#textfilter-&#x21D2;-any"><i class="fa fa-link" aria-hidden="true"></i></a>textFilter &#x21D2; <code>any</code></h2>
-<p>Function for filtration of string output</p>
-<p><strong>Kind</strong>: global typedef  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>value</td>
-<td><code>string</code></td>
-</tr>
 <tr>
 <td>key</td>
 <td><code>string</code></td>
 </tr>
+<tr>
+<td>value</td>
+<td><code>*</code></td>
+</tr>
 </tbody>
 </table>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-js">res.setState(vars.dialogContext(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>))
+</code></pre>
+<div id="vars_expiresAfter">&#xA0;</div>
+
+<h3 id="varsexpiresafterkey-value-turnovers-&#x21D2;-object"><a name="varsexpiresafterkey-value-turnovers-&#x21D2;-object" class="plugin-anchor" href="#varsexpiresafterkey-value-turnovers-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>vars.expiresAfter(key, value, turnovers) &#x21D2; <code>object</code></h3>
+<p>Sets variable, which will be removed after specified number of conversation turonovers</p>
+<p><strong>Kind</strong>: static method of <a href="#vars"><code>vars</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>*</code></td>
+</tr>
+<tr>
+<td>turnovers</td>
+<td><code>number</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-js">res.setState(vars.expiresAfter(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>, <span class="hljs-number">4</span>))
+</code></pre>
+<div id="vars_preserveMeta">&#xA0;</div>
+
+<h3 id="varspreservemetakey-value-state-&#x21D2;-object"><a name="varspreservemetakey-value-state-&#x21D2;-object" class="plugin-anchor" href="#varspreservemetakey-value-state-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>vars.preserveMeta(key, value, state) &#x21D2; <code>object</code></h3>
+<p>Sets variable while preserving its metadata</p>
+<p><strong>Kind</strong>: static method of <a href="#vars"><code>vars</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>value</td>
+<td><code>*</code></td>
+</tr>
+<tr>
+<td>state</td>
+<td><code>object</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-js">res.setState(vars.expiresAfter(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>, <span class="hljs-number">4</span>))
+</code></pre>
 
                                 
                                 </section>
@@ -1672,12 +1218,12 @@ for retrieving conversations and it&apos;s history</p>
 
             
                 
-                <a href="Notifications.html" class="navigation navigation-prev " aria-label="Previous page: Notifications">
+                <a href="bufferloader.html" class="navigation navigation-prev " aria-label="Previous page: Utils">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="graphqlSchema.html" class="navigation navigation-next " aria-label="Next page: Chatbot API GraphQL schema">
+                <a href="Ai.html" class="navigation navigation-next " aria-label="Next page: Ai">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1688,7 +1234,7 @@ for retrieving conversations and it&apos;s history</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"GraphApi","level":"3.11","depth":1,"next":{"title":"Chatbot API GraphQL schema","level":"3.12","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"previous":{"title":"Notifications","level":"3.10","depth":1,"path":"api/Notifications.md","ref":"api/Notifications.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/GraphApi.md","mtime":"2020-09-21T19:57:38.298Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"vars tools","level":"3.7","depth":1,"next":{"title":"Ai","level":"3.8","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/stateVariables.md","mtime":"2020-09-21T19:57:38.261Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -23,13 +23,24 @@ describe('<Ai> entity context', () => {
             res.text('foo with entity');
         });
 
+        first.use(ai.global('persist-with', ['persist', '@entity']), (req, res) => {
+            res.setState({ '@entity': 'persist' });
+            res.text('persist with entity');
+        });
+
         first.use(ai.global('bar-with', ['bar', '@entity']), (req, res) => {
             res.text('bar with entity');
         });
 
         first.use(ai.global('bar-without', ['bar']), (req, res) => {
             res.text('bar without entity', [
-                { action: 'bar-with', title: 'set en', match: ['@entity=value'] }
+                { action: 'bar-with', title: 'set en', match: ['@entity=value'] },
+                {
+                    action: 'bar-with',
+                    title: 'setstate',
+                    match: ['@entity=value'],
+                    setState: { '@entity': 'value' }
+                }
             ]);
         });
 
@@ -94,6 +105,32 @@ describe('<Ai> entity context', () => {
         t.any().contains('bar with entity');
     });
 
+    it('can override persisted entity', async () => {
+        await t.intentWithEntity('persist', 'entity', 'value');
+
+        t.any().contains('persist with entity');
+
+        await t.intent('foo');
+
+        t.any().contains('foo with entity');
+
+        await t.intent('second');
+
+        t.any().contains('second without entity');
+
+        await t.intent('bar');
+
+        t.any().contains('bar with entity');
+
+        await t.intent('second');
+
+        t.any().contains('second without entity');
+
+        await t.intent('foo');
+
+        t.any().contains('foo with entity');
+    });
+
     it('keeps the entity when changing a dialogue', async () => {
         await t.intentWithEntity('foo', 'entity', 'value');
 
@@ -147,11 +184,43 @@ describe('<Ai> entity context', () => {
     it('saves the entity from quick reply', async () => {
         await t.postBack('/first/bar-without');
 
-        await t.quickReply('bar-with');
+        await t.quickReplyText('set en');
 
         await t.intent('baz');
 
         t.any().contains('baz with entity');
+
+        await t.intent('bar');
+
+        t.any().contains('bar with entity');
+    });
+
+    it('saves the entity from quick reply for limited time', async () => {
+        await t.postBack('/first/bar-without');
+
+        await t.quickReplyText('set en');
+
+        await t.intent('second');
+
+        t.any().contains('second without entity');
+
+        await t.intent('bar');
+
+        t.any().contains('bar without entity');
+    });
+
+    it('setstate from a quick reply is preferred', async () => {
+        await t.postBack('/first/bar-without');
+
+        await t.quickReplyText('setstate');
+
+        await t.intent('second');
+
+        t.any().contains('second without entity');
+
+        await t.intent('bar');
+
+        t.any().contains('bar with entity');
     });
 
     it('saves the entity from expected keywords', async () => {
@@ -159,7 +228,7 @@ describe('<Ai> entity context', () => {
 
         await t.intentWithEntity('any', 'entity', 'value');
 
-        await t.intent('baz');
+        await t.intentWithEntity('baz', 'totally', 'unrelated');
 
         t.any().contains('baz with entity');
     });

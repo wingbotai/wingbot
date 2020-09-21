@@ -245,9 +245,9 @@ tickets.use('ask-for-email', (req, res) => {
 
 tickets.use('email-response', async (req, res, postBack) => {
     // if there is a bookmark
-    if (res.bookmark()) {
+    if (res.actionByAi()) {
         // respond with the bookmark
-        await res.runBookmark(postBack);
+        await postBack(res.actionByAi(), {}, true);
 
         // stop
         return Router.END;
@@ -260,3 +260,96 @@ tickets.use('email-response', async (req, res, postBack) => {
 });
 ```
 
+## System entities
+
+**Simple RegExp entity**
+
+Simple RegExp entities can be detected by registering an own entity detector.
+
+```javascript
+ai.getModel()
+    .setEntityDetector('number', /[0-9]+/);
+```
+
+The value will be accessible between all detected entities in a NLP result.
+
+```javascript
+bot.use(ai.match('@number'), (req, res) => {
+  const num = req.entity('number')
+  // typeof num === 'string'
+  res.text(`Found a number: ${number}`);
+})
+```
+
+**Using an own value extractor**
+
+RegExp detector returns the whole detected string as a value. To normalize the value, you can use `extractValue` option.
+
+```javascript
+ai.getModel()
+    .setEntityDetector('number', /[0-9][0-9\s]*/, {
+      extractValue: (match) => parseInt(
+        match[0].replace(/[^0-9]+/g, ''),
+        10
+      )
+    });
+```
+
+Now the detector returns a numeric value.
+
+**Prevent sensitive data to leave your bot**
+
+To keep a sensitive value inside a bot, you can mark your custom entity with an `anonymize` flag.
+
+```javascript
+ai.getModel()
+    .setEntityDetector('number', /[0-9][0-9\s]*/, {
+      extractValue: (match) => parseInt(
+        match[0].replace(/[^0-9]+/g, ''),
+        10
+      ),
+      anonymize: true
+    });
+```
+
+When writing a sentence like `My number is 123 456`, a NLP will receive following text:
+
+```
+my number is @NUMBER
+```
+
+**Using compound entities**
+
+Just put an **uppercase name of the entitty starting with @** to your regexp.
+
+```javascript
+ai.getModel()
+    .setEntityDetector('dollars', /\$\s?@NUMBER/);
+```
+
+When there is only one nested entity, the value will contain it's value. When there will be two or more entities, the value will be an object with a prop for every nested entity (`{entityName:123,...}`).
+
+> Keep in mind, **the regular expression will always be executed as CASE INSENSITIVE**;
+
+**Using a custom entity detector**
+
+Just put a function as an entity detector. You can also use **async function** as an entity detector.
+
+```javascript
+ai.getModel()
+    .setEntityDetector('number', (text) => {
+      const match = text.match(/[0-9]+/);
+
+      if (!match) {
+        return null;
+      }
+
+      return {
+        text: match[0],
+        value: parseInt(match[0], 10)
+      };
+    });
+});
+```
+
+The return value has to contain **either detected** `text` **or** **position of the string** (`start` and `end`).

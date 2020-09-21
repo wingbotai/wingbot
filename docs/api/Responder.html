@@ -794,6 +794,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.8.6" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#system-entities">
+            
+                    
+                    System entities
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -942,7 +955,20 @@
             
         </li>
     
-        <li class="chapter " data-level="3.7" data-path="Ai.html">
+        <li class="chapter " data-level="3.7" data-path="stateVariables.html">
+            
+                <a href="stateVariables.html">
+            
+                    
+                    vars tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -955,7 +981,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.8" data-path="BuildRouter.html">
+        <li class="chapter " data-level="3.9" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
@@ -968,7 +994,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.9" data-path="Notifications.html">
+        <li class="chapter " data-level="3.10" data-path="Notifications.html">
             
                 <a href="Notifications.html">
             
@@ -981,7 +1007,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.10" data-path="GraphApi.html">
+        <li class="chapter " data-level="3.11" data-path="GraphApi.html">
             
                 <a href="GraphApi.html">
             
@@ -994,7 +1020,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.11" data-path="graphqlSchema.html">
+        <li class="chapter " data-level="3.12" data-path="graphqlSchema.html">
             
                 <a href="graphqlSchema.html">
             
@@ -1007,7 +1033,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.12" data-path="../CHANGELOG.html">
+        <li class="chapter " data-level="3.13" data-path="../CHANGELOG.html">
             
                 <a href="../CHANGELOG.html">
             
@@ -1198,10 +1224,21 @@ into the conversation state.</p>
 
 <h3 id="responderrunblockname-&#x21D2;-promise"><a name="responderrunblockname-&#x21D2;-promise" class="plugin-anchor" href="#responderrunblockname-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>responder.run(blockName) &#x21D2; <code>Promise</code></h3>
 <p>Run a code block defined by a plugin</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>blockName <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blockName</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Properties</strong></p>
 <table>
 <thead>
@@ -1220,10 +1257,21 @@ into the conversation state.</p>
 <h3 id="respondersetnotificationrecipientrecipient"><a name="respondersetnotificationrecipientrecipient" class="plugin-anchor" href="#respondersetnotificationrecipientrecipient"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setNotificationRecipient(recipient)</h3>
 <p>Replaces recipient and disables autotyping
 Usefull for sending a one-time notification</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>recipient <code>object</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>recipient</td>
+<td><code>object</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_doNotLogTheEvent">&#xA0;</div>
 
 <h3 id="responderdonotlogtheevent-&#x21D2;-this"><a name="responderdonotlogtheevent-&#x21D2;-this" class="plugin-anchor" href="#responderdonotlogtheevent-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.doNotLogTheEvent() &#x21D2; <code>this</code></h3>
@@ -1234,25 +1282,53 @@ Usefull for sending a one-time notification</p>
 <h3 id="respondersenddata-&#x21D2;-this"><a name="respondersenddata-&#x21D2;-this" class="plugin-anchor" href="#respondersenddata-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.send(data) &#x21D2; <code>this</code></h3>
 <p>Send a raw messaging event.
 If no recipient is provided, a default (senderId) will be added.</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>data <code>object</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td><code>object</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">res.send({ message: { text: <span class="hljs-string">&apos;Hello!&apos;</span> } });
+<pre><code class="lang-js">res.send({ message: { text: <span class="hljs-string">&apos;Hello!&apos;</span> } });
 </code></pre>
 <div id="Responder_setBookmark">&#xA0;</div>
 
 <h3 id="respondersetbookmarkaction-winningintent-&#x21D2;-this"><a name="respondersetbookmarkaction-winningintent-&#x21D2;-this" class="plugin-anchor" href="#respondersetbookmarkaction-winningintent-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a><del>responder.setBookmark([action], [winningIntent]) &#x21D2; <code>this</code></del></h3>
 <p><strong><em>Deprecated</em></strong></p>
 <p>Stores current action to be able to all it again</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[action] <code>string</code></li>
-<li>[winningIntent] <code>object</code> <code> = </code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[action]</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[winningIntent]</td>
+<td><code>object</code></td>
+<td><code></code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">bot.use([<span class="hljs-string">&apos;action-name&apos;</span>, <span class="hljs-regexp">/keyword/</span>], (req, res) =&gt; {
+<pre><code class="lang-js">bot.use([<span class="hljs-string">&apos;action-name&apos;</span>, <span class="hljs-regexp">/keyword/</span>], (req, res) =&gt; {
     <span class="hljs-keyword">if</span> (req.action() !== res.currentAction()) {
         <span class="hljs-comment">// only for routes with action name (action-name)</span>
         res.setBookmark();
@@ -1273,13 +1349,30 @@ If no recipient is provided, a default (senderId) will be added.</p>
 
 <h3 id="responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean"><a name="responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean" class="plugin-anchor" href="#responderrunbookmarkpostback-data-&#x21D2;-promisenullboolean"><i class="fa fa-link" aria-hidden="true"></i></a><del>responder.runBookmark(postBack, [data]) &#x21D2; <code>Promise.&lt;(null|boolean)&gt;</code></del></h3>
 <p><strong><em>Deprecated</em></strong></p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>postBack <code>function</code> - the postback func</li>
-<li>[data] <code>object</code> - data for bookmark action</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>postBack</td>
+<td><code>function</code></td>
+<td>the postback func</td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>object</code></td>
+<td>data for bookmark action</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">// there should be a named intent intent matcher (ai.match() and &apos;action-name&apos;)
+<pre><code class="lang-js">// there should be a named intent intent matcher (ai.match() and &apos;action-name&apos;)
 
 bot.use(&apos;action&apos;, (req, res) =&gt; {
     res.text(&apos;tell me your name&apos;);
@@ -1301,19 +1394,51 @@ bot.use(&apos;onName&apos;, (req, res, postBack) =&gt; {
 <div id="Responder_setMessagingType">&#xA0;</div>
 
 <h3 id="respondersetmessagingtypemessagingtype-tag-&#x21D2;-this"><a name="respondersetmessagingtypemessagingtype-tag-&#x21D2;-this" class="plugin-anchor" href="#respondersetmessagingtypemessagingtype-tag-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setMessagingType(messagingType, [tag]) &#x21D2; <code>this</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>messagingType <code>string</code></li>
-<li>[tag] <code>string</code> <code> = null</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>messagingType</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[tag]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_setPersona">&#xA0;</div>
 
 <h3 id="respondersetpersonapersonaid-&#x21D2;-this"><a name="respondersetpersonapersonaid-&#x21D2;-this" class="plugin-anchor" href="#respondersetpersonapersonaid-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setPersona(personaId) &#x21D2; <code>this</code></h3>
 <p>Tets the persona for following requests</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>personaId <code>object</code> | <code>string</code> | <code>null</code> <code> = </code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>personaId</td>
+<td><code>object</code> \</td>
+<td><code>string</code> \</td>
+<td><code>null</code></td>
+<td><code></code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_isResponseType">&#xA0;</div>
 
 <h3 id="responderisresponsetype-&#x21D2;-boolean"><a name="responderisresponsetype-&#x21D2;-boolean" class="plugin-anchor" href="#responderisresponsetype-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>responder.isResponseType() &#x21D2; <code>boolean</code></h3>
@@ -1323,12 +1448,23 @@ bot.use(&apos;onName&apos;, (req, res, postBack) =&gt; {
 
 <h3 id="respondersetdatadata-&#x21D2;-this"><a name="respondersetdatadata-&#x21D2;-this" class="plugin-anchor" href="#respondersetdatadata-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setData(data) &#x21D2; <code>this</code></h3>
 <p>Set temporary data to responder, which are persisted through single event</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>data <code>object</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td><code>object</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;foo&apos;</span>, (req, res, postBack) =&gt; {
+<pre><code class="lang-js">bot.use(<span class="hljs-string">&apos;foo&apos;</span>, (req, res, postBack) =&gt; {
     res.setData({ a: <span class="hljs-number">1</span> });
     postBack(<span class="hljs-string">&apos;bar&apos;</span>);
 });
@@ -1341,13 +1477,35 @@ bot.use(<span class="hljs-string">&apos;bar&apos;</span>, (req, res) =&gt; {
 
 <h3 id="respondertexttext-replies-&#x21D2;-this"><a name="respondertexttext-replies-&#x21D2;-this" class="plugin-anchor" href="#respondertexttext-replies-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.text(text, [replies]) &#x21D2; <code>this</code></h3>
 <p>Send text as a response</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code> - text to send to user, can contain placeholders (%s)</li>
-<li>[replies] <code>object.&lt;string, (string|QuickReply)&gt;</code> | <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a> <code> = </code> - quick replies</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+<td></td>
+<td>text to send to user, can contain placeholders (%s)</td>
+</tr>
+<tr>
+<td>[replies]</td>
+<td><code>object.&lt;string, (string\</code></td>
+<td>QuickReply)&gt;&lt;/code&gt; \</td>
+<td><a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a></td>
+<td><code></code></td>
+<td>quick replies</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// simply</span>
+<pre><code class="lang-js"><span class="hljs-comment">// simply</span>
 res.text(<span class="hljs-string">&apos;Hello&apos;</span>, {
     action: <span class="hljs-string">&apos;Quick reply&apos;</span>,
     another: <span class="hljs-string">&apos;Another quick reply&apos;</span>
@@ -1369,27 +1527,74 @@ res.text(<span class="hljs-string">&apos;Hello&apos;</span>, [
 
 <h3 id="respondersetstateobject-&#x21D2;-this"><a name="respondersetstateobject-&#x21D2;-this" class="plugin-anchor" href="#respondersetstateobject-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.setState(object) &#x21D2; <code>this</code></h3>
 <p>Sets new attributes to state (with Object.assign())</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>object <code>object</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>object</td>
+<td><code>object</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">res.setState({ visited: <span class="hljs-literal">true</span> });
+<pre><code class="lang-js">res.setState({ visited: <span class="hljs-literal">true</span> });
 </code></pre>
 <div id="Responder_addQuickReply">&#xA0;</div>
 
 <h3 id="responderaddquickreplyaction-title-data-prepend-justtoexisting"><a name="responderaddquickreplyaction-title-data-prepend-justtoexisting" class="plugin-anchor" href="#responderaddquickreplyaction-title-data-prepend-justtoexisting"><i class="fa fa-link" aria-hidden="true"></i></a>responder.addQuickReply(action, [title], [data], [prepend], [justToExisting])</h3>
 <p>Appends quick reply, to be sent with following text method</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code> | <code>object</code> - relative or absolute action</li>
-<li>[title] <code>string</code> - quick reply title</li>
-<li>[data] <code>object</code> - additional data</li>
-<li>[prepend] <code>boolean</code> <code> = false</code> - set true to add reply at the beginning</li>
-<li>[justToExisting] <code>boolean</code> <code> = false</code> - add quick reply only to existing replies</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code> \</td>
+<td><code>object</code></td>
+<td></td>
+<td>relative or absolute action</td>
+</tr>
+<tr>
+<td>[title]</td>
+<td><code>string</code></td>
+<td></td>
+<td>quick reply title</td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>object</code></td>
+<td></td>
+<td>additional data</td>
+</tr>
+<tr>
+<td>[prepend]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>set true to add reply at the beginning</td>
+</tr>
+<tr>
+<td>[justToExisting]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>add quick reply only to existing replies</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">bot.use((req, res) =&gt; {
+<pre><code class="lang-js">bot.use((req, res) =&gt; {
     res.addQuickReply(<span class="hljs-string">&apos;barAction&apos;</span>, <span class="hljs-string">&apos;last action&apos;</span>);
 
     res.addQuickReply(<span class="hljs-string">&apos;theAction&apos;</span>, <span class="hljs-string">&apos;first action&apos;</span>, {}, <span class="hljs-literal">true</span>);
@@ -1404,14 +1609,39 @@ res.text(<span class="hljs-string">&apos;Hello&apos;</span>, [
 <h3 id="responderkeeppreviouscontextreq-justonce-includekeywords-&#x21D2;-this"><a name="responderkeeppreviouscontextreq-justonce-includekeywords-&#x21D2;-this" class="plugin-anchor" href="#responderkeeppreviouscontextreq-justonce-includekeywords-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.keepPreviousContext(req, [justOnce], [includeKeywords]) &#x21D2; <code>this</code></h3>
 <p>To be able to keep context of previous interaction (expected action and intents)
 Just use this method to let user to answer again.</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>req <code>Request</code></li>
-<li>[justOnce] <code>boolean</code> <code> = false</code> - don&apos;t do it again</li>
-<li>[includeKeywords] <code>boolean</code> <code> = false</code> - keep intents from quick replies</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>req</td>
+<td><code>Request</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[justOnce]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>don&apos;t do it again</td>
+</tr>
+<tr>
+<td>[includeKeywords]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>keep intents from quick replies</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">bot.use(<span class="hljs-string">&apos;start&apos;</span>, (req, res) =&gt; {
+<pre><code class="lang-js">bot.use(<span class="hljs-string">&apos;start&apos;</span>, (req, res) =&gt; {
     res.text(<span class="hljs-string">&apos;What color do you like?&apos;</span>, [
         { match: [<span class="hljs-string">&apos;@Color=red&apos;</span>], text: <span class="hljs-string">&apos;red&apos;</span>, action: <span class="hljs-string">&apos;red&apos;</span> },
         { match: [<span class="hljs-string">&apos;@Color=blue&apos;</span>], text: <span class="hljs-string">&apos;blue&apos;</span>, action: <span class="hljs-string">&apos;blue&apos;</span> }
@@ -1427,22 +1657,65 @@ bot.use(<span class="hljs-string">&apos;need-color&apos;</span>, (req, res) =&gt
 <div id="Responder_expectedIntent">&#xA0;</div>
 
 <h3 id="responderexpectedintentintents-action-data-setstate"><a name="responderexpectedintentintents-action-data-setstate" class="plugin-anchor" href="#responderexpectedintentintents-action-data-setstate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expectedIntent(intents, action, data, setState)</h3>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>intents <code>string</code> | <code>Array.&lt;string&gt;</code></li>
-<li>action <code>string</code></li>
-<li>data <code>object</code></li>
-<li>setState <code>object</code> <code> = </code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intents</td>
+<td><code>string</code> \</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td></td>
+</tr>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>data</td>
+<td><code>object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>setState</td>
+<td><code>object</code></td>
+<td><code></code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_expected">&#xA0;</div>
 
 <h3 id="responderexpectedaction-data-&#x21D2;-this"><a name="responderexpectedaction-data-&#x21D2;-this" class="plugin-anchor" href="#responderexpectedaction-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expected(action, data) &#x21D2; <code>this</code></h3>
 <p>When user writes some text as reply, it will be processed as action</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code> - desired action</li>
-<li>data <code>object</code> - desired action data</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td>desired action</td>
+</tr>
+<tr>
+<td>data</td>
+<td><code>object</code></td>
+<td>desired action data</td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_expectedConfidentInput">&#xA0;</div>
 
 <h3 id="responderexpectedconfidentinput-&#x21D2;-this"><a name="responderexpectedconfidentinput-&#x21D2;-this" class="plugin-anchor" href="#responderexpectedconfidentinput-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.expectedConfidentInput() &#x21D2; <code>this</code></h3>
@@ -1455,7 +1728,7 @@ storing it at ChatLogStorage using a <code>confidentInputFilter</code></li>
 </ul>
 <p>After processing the user input, next requests will be processed as usual,</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
@@ -1481,10 +1754,23 @@ bot.use(<span class="hljs-string">&apos;received-card-number&apos;</span>, (req,
 
 <h3 id="respondertoabsoluteactionaction-&#x21D2;-string"><a name="respondertoabsoluteactionaction-&#x21D2;-string" class="plugin-anchor" href="#respondertoabsoluteactionaction-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>responder.toAbsoluteAction(action) &#x21D2; <code>string</code></h3>
 <p>Converts relative action to absolute action path</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Returns</strong>: <code>string</code> - absolute action path<br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code> - relative action to covert to absolute</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Returns</strong>: <code>string</code> - absolute action path  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td>relative action to covert to absolute</td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_currentAction">&#xA0;</div>
 
 <h3 id="respondercurrentaction-&#x21D2;-string"><a name="respondercurrentaction-&#x21D2;-string" class="plugin-anchor" href="#respondercurrentaction-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>responder.currentAction() &#x21D2; <code>string</code></h3>
@@ -1494,13 +1780,33 @@ bot.use(<span class="hljs-string">&apos;received-card-number&apos;</span>, (req,
 
 <h3 id="responderimageimageurl-reusable-&#x21D2;-this"><a name="responderimageimageurl-reusable-&#x21D2;-this" class="plugin-anchor" href="#responderimageimageurl-reusable-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.image(imageUrl, [reusable]) &#x21D2; <code>this</code></h3>
 <p>Sends image as response. Requires appUrl option to send images from server</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>imageUrl <code>string</code> - relative or absolute url</li>
-<li>[reusable] <code>boolean</code> <code> = false</code> - force facebook to cache image</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>imageUrl</td>
+<td><code>string</code></td>
+<td></td>
+<td>relative or absolute url</td>
+</tr>
+<tr>
+<td>[reusable]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>force facebook to cache image</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// image on same server (appUrl option)</span>
+<pre><code class="lang-js"><span class="hljs-comment">// image on same server (appUrl option)</span>
 res.image(<span class="hljs-string">&apos;/img/foo.png&apos;</span>);
 
 <span class="hljs-comment">// image at url</span>
@@ -1510,13 +1816,33 @@ res.image(<span class="hljs-string">&apos;https://google.com/img/foo.png&apos;</
 
 <h3 id="respondervideovideourl-reusable-&#x21D2;-this"><a name="respondervideovideourl-reusable-&#x21D2;-this" class="plugin-anchor" href="#respondervideovideourl-reusable-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.video(videoUrl, [reusable]) &#x21D2; <code>this</code></h3>
 <p>Sends video as response. Requires appUrl option to send videos from server</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>videoUrl <code>string</code> - relative or absolute url</li>
-<li>[reusable] <code>boolean</code> <code> = false</code> - force facebook to cache asset</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>videoUrl</td>
+<td><code>string</code></td>
+<td></td>
+<td>relative or absolute url</td>
+</tr>
+<tr>
+<td>[reusable]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>force facebook to cache asset</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// file on same server (appUrl option)</span>
+<pre><code class="lang-js"><span class="hljs-comment">// file on same server (appUrl option)</span>
 res.video(<span class="hljs-string">&apos;/img/foo.mp4&apos;</span>);
 
 <span class="hljs-comment">// file at url</span>
@@ -1526,13 +1852,33 @@ res.video(<span class="hljs-string">&apos;https://google.com/img/foo.mp4&apos;</
 
 <h3 id="responderfilefileurl-reusable-&#x21D2;-this"><a name="responderfilefileurl-reusable-&#x21D2;-this" class="plugin-anchor" href="#responderfilefileurl-reusable-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.file(fileUrl, [reusable]) &#x21D2; <code>this</code></h3>
 <p>Sends file as response. Requires appUrl option to send files from server</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>fileUrl <code>string</code> - relative or absolute url</li>
-<li>[reusable] <code>boolean</code> <code> = false</code> - force facebook to cache asset</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fileUrl</td>
+<td><code>string</code></td>
+<td></td>
+<td>relative or absolute url</td>
+</tr>
+<tr>
+<td>[reusable]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>force facebook to cache asset</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-comment">// file on same server (appUrl option)</span>
+<pre><code class="lang-js"><span class="hljs-comment">// file on same server (appUrl option)</span>
 res.file(<span class="hljs-string">&apos;/img/foo.pdf&apos;</span>);
 
 <span class="hljs-comment">// file at url</span>
@@ -1543,21 +1889,63 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 <h3 id="responderonetimenotificationrequesttitle-action-tag-data-&#x21D2;-this"><a name="responderonetimenotificationrequesttitle-action-tag-data-&#x21D2;-this" class="plugin-anchor" href="#responderonetimenotificationrequesttitle-action-tag-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.oneTimeNotificationRequest(title, action, [tag], [data]) &#x21D2; <code>this</code></h3>
 <p>One-time Notification request</p>
 <p>use tag to be able to use the specific token with a specific campaign</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>title <code>string</code> - propmt text</li>
-<li>action <code>string</code> - target action, when user subscribes</li>
-<li>[tag] <code>string</code> <code> = null</code> - subscribtion tag, which will be matched against a campaign</li>
-<li>[data] <code>object</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td><code>string</code></td>
+<td></td>
+<td>propmt text</td>
+</tr>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td></td>
+<td>target action, when user subscribes</td>
+</tr>
+<tr>
+<td>[tag]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>subscribtion tag, which will be matched against a campaign</td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>object</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_wait">&#xA0;</div>
 
 <h3 id="responderwaitms-&#x21D2;-this"><a name="responderwaitms-&#x21D2;-this" class="plugin-anchor" href="#responderwaitms-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.wait([ms]) &#x21D2; <code>this</code></h3>
 <p>Sets delay between two responses</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[ms] <code>number</code> <code> = 600</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[ms]</td>
+<td><code>number</code></td>
+<td><code>600</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_typingOn">&#xA0;</div>
 
 <h3 id="respondertypingon-&#x21D2;-this"><a name="respondertypingon-&#x21D2;-this" class="plugin-anchor" href="#respondertypingon-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.typingOn() &#x21D2; <code>this</code></h3>
@@ -1577,40 +1965,116 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="responderpassthreadtargetappid-data-&#x21D2;-this"><a name="responderpassthreadtargetappid-data-&#x21D2;-this" class="plugin-anchor" href="#responderpassthreadtargetappid-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.passThread(targetAppId, [data]) &#x21D2; <code>this</code></h3>
 <p>Pass thread to another app</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>targetAppId <code>string</code></li>
-<li>[data] <code>string</code> | <code>object</code> <code> = null</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetAppId</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[data]</td>
+<td><code>string</code> \</td>
+<td><code>object</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_requestThread">&#xA0;</div>
 
 <h3 id="responderrequestthreaddata-&#x21D2;-this"><a name="responderrequestthreaddata-&#x21D2;-this" class="plugin-anchor" href="#responderrequestthreaddata-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.requestThread([data]) &#x21D2; <code>this</code></h3>
 <p>Request thread from Primary Receiver app</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[data] <code>string</code> | <code>object</code> <code> = null</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[data]</td>
+<td><code>string</code> \</td>
+<td><code>object</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_takeThead">&#xA0;</div>
 
 <h3 id="respondertaketheaddata-&#x21D2;-this"><a name="respondertaketheaddata-&#x21D2;-this" class="plugin-anchor" href="#respondertaketheaddata-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.takeThead([data]) &#x21D2; <code>this</code></h3>
 <p>Take thread from another app</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[data] <code>string</code> | <code>object</code> <code> = null</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[data]</td>
+<td><code>string</code> \</td>
+<td><code>object</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_receipt">&#xA0;</div>
 
 <h3 id="responderreceiptrecipientname-paymentmethod-currency-uniquecode-&#x21D2;-receipttemplate"><a name="responderreceiptrecipientname-paymentmethod-currency-uniquecode-&#x21D2;-receipttemplate" class="plugin-anchor" href="#responderreceiptrecipientname-paymentmethod-currency-uniquecode-&#x21D2;-receipttemplate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.receipt(recipientName, [paymentMethod], [currency], [uniqueCode]) &#x21D2; <code>ReceiptTemplate</code></h3>
 <p>Sends Receipt template</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>recipientName <code>string</code></li>
-<li>[paymentMethod] <code>string</code> <code> = &quot;&apos;Cash&apos;&quot;</code> - should not contain more then 4 numbers</li>
-<li>[currency] <code>string</code> <code> = &quot;&apos;USD&apos;&quot;</code> - sets right currency</li>
-<li>[uniqueCode] <code>string</code> <code> = null</code> - when omitted, will be generated randomly</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>recipientName</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[paymentMethod]</td>
+<td><code>string</code></td>
+<td><code>&quot;&apos;Cash&apos;&quot;</code></td>
+<td>should not contain more then 4 numbers</td>
+</tr>
+<tr>
+<td>[currency]</td>
+<td><code>string</code></td>
+<td><code>&quot;&apos;USD&apos;&quot;</code></td>
+<td>sets right currency</td>
+</tr>
+<tr>
+<td>[uniqueCode]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>when omitted, will be generated randomly</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">res.receipt(<span class="hljs-string">&apos;Name&apos;</span>, <span class="hljs-string">&apos;Cash&apos;</span>, <span class="hljs-string">&apos;CZK&apos;</span>, <span class="hljs-string">&apos;1&apos;</span>)
+<pre><code class="lang-js">res.receipt(<span class="hljs-string">&apos;Name&apos;</span>, <span class="hljs-string">&apos;Cash&apos;</span>, <span class="hljs-string">&apos;CZK&apos;</span>, <span class="hljs-string">&apos;1&apos;</span>)
     .addElement(<span class="hljs-string">&apos;Element name&apos;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-string">&apos;/inside.png&apos;</span>, <span class="hljs-string">&apos;text&apos;</span>)
     .send();
 </code></pre>
@@ -1618,12 +2082,23 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="responderbuttontext-&#x21D2;-buttontemplate"><a name="responderbuttontext-&#x21D2;-buttontemplate" class="plugin-anchor" href="#responderbuttontext-&#x21D2;-buttontemplate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.button(text) &#x21D2; <code>ButtonTemplate</code></h3>
 <p>Sends nice button template. It can redirect user to server with token in url</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">res.button(<span class="hljs-string">&apos;Hello&apos;</span>)
+<pre><code class="lang-js">res.button(<span class="hljs-string">&apos;Hello&apos;</span>)
     .postBackButton(<span class="hljs-string">&apos;Text&apos;</span>, <span class="hljs-string">&apos;action&apos;</span>)
     .urlButton(<span class="hljs-string">&apos;Url button&apos;</span>, <span class="hljs-string">&apos;/internal&apos;</span>, <span class="hljs-literal">true</span>) <span class="hljs-comment">// opens webview with token</span>
     .urlButton(<span class="hljs-string">&apos;Other button&apos;</span>, <span class="hljs-string">&apos;https://goo.gl&apos;</span>) <span class="hljs-comment">// opens in internal browser</span>
@@ -1633,13 +2108,33 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="respondergenerictemplateshareable-issquare-&#x21D2;-generictemplate"><a name="respondergenerictemplateshareable-issquare-&#x21D2;-generictemplate" class="plugin-anchor" href="#respondergenerictemplateshareable-issquare-&#x21D2;-generictemplate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.genericTemplate([shareable], [isSquare]) &#x21D2; <code>GenericTemplate</code></h3>
 <p>Creates a generic template</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[shareable] <code>boolean</code> <code> = false</code> - ability to share template</li>
-<li>[isSquare] <code>boolean</code> <code> = false</code> - use square aspect ratio for images</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[shareable]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>ability to share template</td>
+</tr>
+<tr>
+<td>[isSquare]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>use square aspect ratio for images</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">res.genericTemplate()
+<pre><code class="lang-js">res.genericTemplate()
     .addElement(<span class="hljs-string">&apos;title&apos;</span>, <span class="hljs-string">&apos;subtitle&apos;</span>)
         .setElementImage(<span class="hljs-string">&apos;/local.png&apos;</span>)
         .setElementAction(<span class="hljs-string">&apos;https://www.seznam.cz&apos;</span>)
@@ -1654,12 +2149,26 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="responderlisttopelementstyle-&#x21D2;-listtemplate"><a name="responderlisttopelementstyle-&#x21D2;-listtemplate" class="plugin-anchor" href="#responderlisttopelementstyle-&#x21D2;-listtemplate"><i class="fa fa-link" aria-hidden="true"></i></a>responder.list([topElementStyle]) &#x21D2; <code>ListTemplate</code></h3>
 <p>Creates a generic template</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>[topElementStyle] <code>&apos;large&apos;</code> | <code>&apos;compact&apos;</code> <code> = &apos;large&apos;</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[topElementStyle]</td>
+<td><code>&apos;large&apos;</code> \</td>
+<td><code>&apos;compact&apos;</code></td>
+<td><code>&apos;large&apos;</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">res.list(<span class="hljs-string">&apos;compact&apos;</span>)
+<pre><code class="lang-js">res.list(<span class="hljs-string">&apos;compact&apos;</span>)
     .postBackButton(<span class="hljs-string">&apos;Main button&apos;</span>, <span class="hljs-string">&apos;action&apos;</span>, { actionData: <span class="hljs-number">1</span> })
     .addElement(<span class="hljs-string">&apos;title&apos;</span>, <span class="hljs-string">&apos;subtitle&apos;</span>)
         .setElementImage(<span class="hljs-string">&apos;/local.png&apos;</span>)
@@ -1675,18 +2184,44 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
 
 <h3 id="respondertrackasaction-&#x21D2;-this"><a name="respondertrackasaction-&#x21D2;-this" class="plugin-anchor" href="#respondertrackasaction-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.trackAs(action) &#x21D2; <code>this</code></h3>
 <p>Override action tracking</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>action <code>string</code> | <code>boolean</code> - use false to not emit analytics events</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code> \</td>
+<td><code>boolean</code></td>
+<td>use false to not emit analytics events</td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_trackAsSkill">&#xA0;</div>
 
 <h3 id="respondertrackasskillskill-&#x21D2;-this"><a name="respondertrackasskillskill-&#x21D2;-this" class="plugin-anchor" href="#respondertrackasskillskill-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.trackAsSkill(skill) &#x21D2; <code>this</code></h3>
 <p>Set skill for tracking (will used untill it will be changed)</p>
-<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a><br><strong>Params</strong></p>
-<ul>
-<li>skill <code>string</code> | <code>null</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>skill</td>
+<td><code>string</code> \</td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="QuickReply">&#xA0;</div>
 
 <h2 id="quickreply--object"><a name="quickreply--object" class="plugin-anchor" href="#quickreply--object"><i class="fa fa-link" aria-hidden="true"></i></a>QuickReply : <code>object</code></h2>
@@ -1797,7 +2332,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2020-08-21T15:42:56.381Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:42:59.083Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2020-09-21T19:57:38.231Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

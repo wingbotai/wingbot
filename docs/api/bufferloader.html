@@ -61,7 +61,7 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="Ai.html" />
+    <link rel="next" href="stateVariables.html" />
     
     
     <link rel="prev" href="ButtonTemplate.html" />
@@ -794,6 +794,19 @@
             
         </li>
     
+        <li class="chapter " data-level="2.8.6" data-path="../tutorial/nlpRouting.html">
+            
+                <a href="../tutorial/nlpRouting.html#system-entities">
+            
+                    
+                    System entities
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -942,7 +955,20 @@
             
         </li>
     
-        <li class="chapter " data-level="3.7" data-path="Ai.html">
+        <li class="chapter " data-level="3.7" data-path="stateVariables.html">
+            
+                <a href="stateVariables.html">
+            
+                    
+                    vars tools
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" data-path="Ai.html">
             
                 <a href="Ai.html">
             
@@ -955,7 +981,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.8" data-path="BuildRouter.html">
+        <li class="chapter " data-level="3.9" data-path="BuildRouter.html">
             
                 <a href="BuildRouter.html">
             
@@ -968,7 +994,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.9" data-path="Notifications.html">
+        <li class="chapter " data-level="3.10" data-path="Notifications.html">
             
                 <a href="Notifications.html">
             
@@ -981,7 +1007,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.10" data-path="GraphApi.html">
+        <li class="chapter " data-level="3.11" data-path="GraphApi.html">
             
                 <a href="GraphApi.html">
             
@@ -994,7 +1020,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.11" data-path="graphqlSchema.html">
+        <li class="chapter " data-level="3.12" data-path="graphqlSchema.html">
             
                 <a href="graphqlSchema.html">
             
@@ -1007,7 +1033,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.12" data-path="../CHANGELOG.html">
+        <li class="chapter " data-level="3.13" data-path="../CHANGELOG.html">
             
                 <a href="../CHANGELOG.html">
             
@@ -1129,37 +1155,115 @@
 <div id="MemoryStateStorage_getState">&#xA0;</div>
 
 <h3 id="memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull"><a name="memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull" class="plugin-anchor" href="#memorystatestoragegetstatesenderid-pageid-&#x21D2;-promisestatenull"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getState(senderId, pageId) &#x21D2; <code>Promise.&lt;(State|null)&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
-<ul>
-<li>senderId <code>string</code></li>
-<li>pageId <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>senderId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>pageId</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="MemoryStateStorage_getOrCreateAndLock">&#xA0;</div>
 
 <h3 id="memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate"><a name="memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate" class="plugin-anchor" href="#memorystatestoragegetorcreateandlocksenderid-pageid-defaultstate-locktimeout-&#x21D2;-promisestate"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout) &#x21D2; <a href="#State"><code>Promise.&lt;State&gt;</code></a></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Returns</strong>: <a href="#State"><code>Promise.&lt;State&gt;</code></a> - - conversation state<br><strong>Params</strong></p>
-<ul>
-<li>senderId <code>string</code> - sender identifier</li>
-<li>pageId <code>string</code> - page or channel identifier</li>
-<li>defaultState <code>object</code> - default state of the conversation</li>
-<li>lockTimeout <code>number</code> <code> = 300</code> - duration of lock</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Returns</strong>: <a href="#State"><code>Promise.&lt;State&gt;</code></a> - - conversation state  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>senderId</td>
+<td><code>string</code></td>
+<td></td>
+<td>sender identifier</td>
+</tr>
+<tr>
+<td>pageId</td>
+<td><code>string</code></td>
+<td></td>
+<td>page or channel identifier</td>
+</tr>
+<tr>
+<td>defaultState</td>
+<td><code>object</code></td>
+<td></td>
+<td>default state of the conversation</td>
+</tr>
+<tr>
+<td>lockTimeout</td>
+<td><code>number</code></td>
+<td><code>300</code></td>
+<td>duration of lock</td>
+</tr>
+</tbody>
+</table>
 <div id="MemoryStateStorage_saveState">&#xA0;</div>
 
 <h3 id="memorystatestoragesavestatestate-&#x21D2;-promise"><a name="memorystatestoragesavestatestate-&#x21D2;-promise" class="plugin-anchor" href="#memorystatestoragesavestatestate-&#x21D2;-promise"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.saveState(state) &#x21D2; <code>Promise</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
-<ul>
-<li>state <code>object</code> - conversation state</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>state</td>
+<td><code>object</code></td>
+<td>conversation state</td>
+</tr>
+</tbody>
+</table>
 <div id="MemoryStateStorage_getStates">&#xA0;</div>
 
 <h3 id="memorystatestoragegetstatescondition-limit-lastkey-&#x21D2;-promisearraydatastate-lastkeystring"><a name="memorystatestoragegetstatescondition-limit-lastkey-&#x21D2;-promisearraydatastate-lastkeystring" class="plugin-anchor" href="#memorystatestoragegetstatescondition-limit-lastkey-&#x21D2;-promisearraydatastate-lastkeystring"><i class="fa fa-link" aria-hidden="true"></i></a>memoryStateStorage.getStates(condition, limit, lastKey) &#x21D2; <code>Promise.&lt;{Array.&lt;data:State&gt;, lastKey:string}&gt;</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a><br><strong>Params</strong></p>
-<ul>
-<li>condition <a href="#StateCondition"><code>StateCondition</code></a></li>
-<li>limit <code>number</code> <code> = 20</code></li>
-<li>lastKey <code>string</code> <code> = null</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#MemoryStateStorage"><code>MemoryStateStorage</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>condition</td>
+<td><a href="#StateCondition"><code>StateCondition</code></a></td>
+<td></td>
+</tr>
+<tr>
+<td>limit</td>
+<td><code>number</code></td>
+<td><code>20</code></td>
+</tr>
+<tr>
+<td>lastKey</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Translate">&#xA0;</div>
 
 <h2 id="translate"><a name="translate" class="plugin-anchor" href="#translate"><i class="fa fa-link" aria-hidden="true"></i></a>Translate</h2>
@@ -1180,24 +1284,55 @@
 <div id="new_Translate_new">&#xA0;</div>
 
 <h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>[options] <code>object</code><ul>
-<li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
-<li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
-</ul>
-</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[options]</td>
+<td><code>object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[options.sourcePath]</td>
+<td><code>string</code></td>
+<td>optional source path of translation folder</td>
+</tr>
+<tr>
+<td>[options.fileSuffix]</td>
+<td><code>string</code></td>
+<td>by default <code>.locale.po</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Translate_translator">&#xA0;</div>
 
 <h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;object&gt;</code></h3>
 <p>Creates static translator for static settings</p>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>languages</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td>list of required languages</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> translate = <span class="hljs-keyword">new</span> Translate({ sourcePath: __dirname });
 
@@ -1216,12 +1351,23 @@ t.en.t(<span class="hljs-string">&apos;requested text&apos;</span>);
 <ul>
 <li>will be looking for <code>&lt;lang&gt;.locale.po</code> by default</li>
 </ul>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languageResolver <code>function</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>languageResolver</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> translate = <span class="hljs-keyword">new</span> Translate({ sourcePath: __dirname });
 
@@ -1251,24 +1397,55 @@ bot.use((req, res) =&gt; {
 <div id="new_Translate_new">&#xA0;</div>
 
 <h3 id="new-translateoptions"><a name="new-translateoptions" class="plugin-anchor" href="#new-translateoptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Translate([options])</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>[options] <code>object</code><ul>
-<li>[.sourcePath] <code>string</code> - optional source path of translation folder</li>
-<li>[.fileSuffix] <code>string</code> - by default <code>.locale.po</code></li>
-</ul>
-</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[options]</td>
+<td><code>object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[options.sourcePath]</td>
+<td><code>string</code></td>
+<td>optional source path of translation folder</td>
+</tr>
+<tr>
+<td>[options.fileSuffix]</td>
+<td><code>string</code></td>
+<td>by default <code>.locale.po</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Translate_translator">&#xA0;</div>
 
 <h3 id="translatetranslatorlanguages-&#x21D2;-promiseobject"><a name="translatetranslatorlanguages-&#x21D2;-promiseobject" class="plugin-anchor" href="#translatetranslatorlanguages-&#x21D2;-promiseobject"><i class="fa fa-link" aria-hidden="true"></i></a>translate.translator(languages) &#x21D2; <code>Promise.&lt;object&gt;</code></h3>
 <p>Creates static translator for static settings</p>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languages <code>Array.&lt;string&gt;</code> - list of required languages</li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>languages</td>
+<td><code>Array.&lt;string&gt;</code></td>
+<td>list of required languages</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> translate = <span class="hljs-keyword">new</span> Translate({ sourcePath: __dirname });
 
@@ -1287,12 +1464,23 @@ t.en.t(<span class="hljs-string">&apos;requested text&apos;</span>);
 <ul>
 <li>will be looking for <code>&lt;lang&gt;.locale.po</code> by default</li>
 </ul>
-<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a><br><strong>Params</strong></p>
-<ul>
-<li>languageResolver <code>function</code></li>
-</ul>
+<p><strong>Kind</strong>: instance method of <a href="#Translate"><code>Translate</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>languageResolver</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { Translate } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
 <span class="hljs-keyword">const</span> translate = <span class="hljs-keyword">new</span> Translate({ sourcePath: __dirname });
 
@@ -1318,27 +1506,72 @@ bot.use((req, res) =&gt; {
 <div id="new_ReturnSender_new">&#xA0;</div>
 
 <h3 id="new-returnsenderoptions-userid-incommingmessage-logger"><a name="new-returnsenderoptions-userid-incommingmessage-logger" class="plugin-anchor" href="#new-returnsenderoptions-userid-incommingmessage-logger"><i class="fa fa-link" aria-hidden="true"></i></a>new ReturnSender(options, userId, incommingMessage, logger)</h3>
-<p><strong>Params</strong></p>
-<ul>
-<li>options <code>object</code><ul>
-<li>[.textFilter] <a href="#textFilter"><code>textFilter</code></a> - filter for saving the texts</li>
-<li>[.logStandbyEvents] <code>boolean</code> - log the standby events</li>
-<li>[.confidentInputFilter] <a href="#textFilter"><code>textFilter</code></a> - filter for confident input (@CONFIDENT)</li>
-</ul>
-</li>
-<li>userId <code>string</code></li>
-<li>incommingMessage <code>object</code></li>
-<li>logger <code>console</code> - console like logger</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code>object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[options.textFilter]</td>
+<td><a href="#textFilter"><code>textFilter</code></a></td>
+<td>filter for saving the texts</td>
+</tr>
+<tr>
+<td>[options.logStandbyEvents]</td>
+<td><code>boolean</code></td>
+<td>log the standby events</td>
+</tr>
+<tr>
+<td>[options.confidentInputFilter]</td>
+<td><a href="#textFilter"><code>textFilter</code></a></td>
+<td>filter for confident input (@CONFIDENT)</td>
+</tr>
+<tr>
+<td>userId</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>incommingMessage</td>
+<td><code>object</code></td>
+<td></td>
+</tr>
+<tr>
+<td>logger</td>
+<td><code>console</code></td>
+<td>console like logger</td>
+</tr>
+</tbody>
+</table>
 <div id="ReturnSender_textFilter">&#xA0;</div>
 
 <h3 id="returnsendertextfilter--textfilter"><a name="returnsendertextfilter--textfilter" class="plugin-anchor" href="#returnsendertextfilter--textfilter"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.textFilter : <a href="#textFilter"><code>textFilter</code></a></h3>
 <p>Preprocess text for NLP
 For example to remove any confidential data</p>
-<p><strong>Kind</strong>: instance property of <a href="#ReturnSender"><code>ReturnSender</code></a><br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code></li>
-</ul>
+<p><strong>Kind</strong>: instance property of <a href="#ReturnSender"><code>ReturnSender</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ReturnSender_modifyStateAfterLoad">&#xA0;</div>
 
 <h3 id="returnsendermodifystateafterload-&#x21D2;-promiseobjectnull"><a name="returnsendermodifystateafterload-&#x21D2;-promiseobjectnull" class="plugin-anchor" href="#returnsendermodifystateafterload-&#x21D2;-promiseobjectnull"><i class="fa fa-link" aria-hidden="true"></i></a>returnSender.modifyStateAfterLoad() &#x21D2; <code>Promise.&lt;(object|null)&gt;</code></h3>
@@ -1366,15 +1599,45 @@ For example to remove any confidential data</p>
 
 <h2 id="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><a name="bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer" class="plugin-anchor" href="#bufferloaderurl-limit-limitjustbybody-redircount-&#x21D2;-promisebuffer"><i class="fa fa-link" aria-hidden="true"></i></a>bufferloader(url, [limit], [limitJustByBody], [redirCount]) &#x21D2; <code>Promise.&lt;Buffer&gt;</code></h2>
 <p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
-<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
-<ul>
-<li>url <code>string</code></li>
-<li>[limit] <code>number</code> <code> = 0</code> - limit in bytes</li>
-<li>[limitJustByBody] <code>boolean</code> <code> = false</code> - when true, content size in header is ignored</li>
-<li>[redirCount] <code>number</code> <code> = 3</code> - maximmum amount of redirects</li>
-</ul>
+<p><strong>Kind</strong>: global function  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td><code>string</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>[limit]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+<td>limit in bytes</td>
+</tr>
+<tr>
+<td>[limitJustByBody]</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>when true, content size in header is ignored</td>
+</tr>
+<tr>
+<td>[redirCount]</td>
+<td><code>number</code></td>
+<td><code>3</code></td>
+<td>maximmum amount of redirects</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-javascript">router.use(<span class="hljs-string">&apos;*&apos;</span>, (req, res, postBack) =&gt; {
+<pre><code class="lang-js">router.use(<span class="hljs-string">&apos;*&apos;</span>, (req, res, postBack) =&gt; {
     <span class="hljs-keyword">if</span> (req.isFile()) {
         bufferloader(req.attachmentUrl())
             .then(buffer =&gt; postBack(<span class="hljs-string">&apos;downloaded&apos;</span>, { data: buffer }))
@@ -1386,14 +1649,43 @@ For example to remove any confidential data</p>
 
 <h2 id="disambiguationquickreplytitle-likelyintent-disambtext-action-data"><a name="disambiguationquickreplytitle-likelyintent-disambtext-action-data" class="plugin-anchor" href="#disambiguationquickreplytitle-likelyintent-disambtext-action-data"><i class="fa fa-link" aria-hidden="true"></i></a>disambiguationQuickReply(title, likelyIntent, disambText, action, data)</h2>
 <p>Create a disambiguation quick reply</p>
-<p><strong>Kind</strong>: global function<br><strong>Params</strong></p>
-<ul>
-<li>title <code>string</code> - quick reply title</li>
-<li>likelyIntent <code>string</code> - possible intent</li>
-<li>disambText <code>string</code> - users text input</li>
-<li>action <code>string</code> - action to process the disambbiguation</li>
-<li>data <code>object</code> - optional data</li>
-</ul>
+<p><strong>Kind</strong>: global function  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td><code>string</code></td>
+<td>quick reply title</td>
+</tr>
+<tr>
+<td>likelyIntent</td>
+<td><code>string</code></td>
+<td>possible intent</td>
+</tr>
+<tr>
+<td>disambText</td>
+<td><code>string</code></td>
+<td>users text input</td>
+</tr>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+<td>action to process the disambbiguation</td>
+</tr>
+<tr>
+<td>data</td>
+<td><code>object</code></td>
+<td>optional data</td>
+</tr>
+</tbody>
+</table>
 <div id="State">&#xA0;</div>
 
 <h2 id="state--object"><a name="state--object" class="plugin-anchor" href="#state--object"><i class="fa fa-link" aria-hidden="true"></i></a>State : <code>object</code></h2>
@@ -1442,10 +1734,23 @@ For example to remove any confidential data</p>
 
 <h2 id="textfilter-&#x21D2;-string"><a name="textfilter-&#x21D2;-string" class="plugin-anchor" href="#textfilter-&#x21D2;-string"><i class="fa fa-link" aria-hidden="true"></i></a>textFilter &#x21D2; <code>string</code></h2>
 <p>Text filter function</p>
-<p><strong>Kind</strong>: global typedef<br><strong>Returns</strong>: <code>string</code> - - filtered text<br><strong>Params</strong></p>
-<ul>
-<li>text <code>string</code> - input text</li>
-</ul>
+<p><strong>Kind</strong>: global typedef<br><strong>Returns</strong>: <code>string</code> - - filtered text  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><code>string</code></td>
+<td>input text</td>
+</tr>
+</tbody>
+</table>
 
                                 
                                 </section>
@@ -1478,7 +1783,7 @@ For example to remove any confidential data</p>
                 </a>
                 
                 
-                <a href="Ai.html" class="navigation navigation-next " aria-label="Next page: Ai">
+                <a href="stateVariables.html" class="navigation navigation-next " aria-label="Next page: vars tools">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1489,7 +1794,7 @@ For example to remove any confidential data</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"Ai","level":"3.7","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2020-08-21T15:42:56.397Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-08-21T15:42:59.083Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Utils","level":"3.6","depth":1,"next":{"title":"vars tools","level":"3.7","depth":1,"path":"api/stateVariables.md","ref":"api/stateVariables.md","articles":[]},"previous":{"title":"ReceiptTemplate","level":"3.5.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/bufferloader.md","mtime":"2020-09-21T19:57:38.259Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

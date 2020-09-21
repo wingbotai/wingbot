@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   + entites are persisted inside a dialoge
   + they're accessible under `@<entity>` state variable
 - Support for designers FAQ Bounce
+- Support for state variable metadata
+  + `vars.dialogContext()`
+  + `vars.expiresAfter()`
+  + `vars.preserveMeta()`
+- Support for system entities
 - new `botbuild.plugin` resolver, which combines snippets (inlineCode) and plugins (customCode) resolvers
   + public plugin library is now a part of the core Wingbot lib
 

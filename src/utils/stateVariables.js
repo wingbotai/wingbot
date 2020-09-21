@@ -14,10 +14,15 @@ const VAR_TYPES = {
     EXPIRES_AFTER
 };
 
+/**
+ * @type {object}
+ */
 const vars = {
 
     /**
-     * Sets variable, which will be removed, when user leaves the dialogue
+     * Sets variable, which will be removed, when user leaves the dialogue.
+     * **Variable will be available at first interaction of next dialogue.**
+     * Then it will be removed.
      *
      * @param {string} key
      * @param {*} value
@@ -45,7 +50,7 @@ const vars = {
     expiresAfter (key, value, turnovers) {
         return {
             [key]: value,
-            [`_~${key}`]: { t: EXPIRES_AFTER, c: turnovers }
+            [`_~${key}`]: { t: EXPIRES_AFTER, c: turnovers + 1 }
         };
     },
 
@@ -74,25 +79,6 @@ const vars = {
     }
 };
 
-/**
- *
- * @param {Request} req
- * @param {Responder} res
- * @param {string} key
- * @returns {string|null}
- */
-function getVarMeta (req, res, key) {
-    const nMeta = res.newState[`_~${key}`];
-    if (nMeta && typeof nMeta.t === 'string') {
-        return nMeta.t;
-    }
-    const sMeta = req.state[`_~${key}`];
-    if (sMeta && typeof sMeta.t === 'string') {
-        return sMeta.t;
-    }
-    return null;
-}
-
 function checkSetState (setState, newState) {
     // process management state keys
     // eslint-disable-next-line guard-for-in
@@ -114,6 +100,7 @@ function checkSetState (setState, newState) {
 
 /**
  *
+ * @private
  * @param {object} previousState
  * @param {Request} req
  * @param {Responder} res
@@ -201,6 +188,5 @@ module.exports = {
     VAR_TYPES,
     mergeState,
     vars,
-    getVarMeta,
     checkSetState
 };

@@ -35,12 +35,13 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 `#token=foo&senderId=23344`
 
 **Kind**: instance method of [<code>ButtonTemplate</code>](#ButtonTemplate)  
-**Params**
 
-- title <code>string</code> - button text
-- linkUrl <code>string</code> - button url
-- hasExtension <code>boolean</code> <code> = false</code> - includes token in url
-- [webviewHeight] <code>string</code> <code> = null</code> - compact|tall|full
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | <code>string</code> |  | button text |
+| linkUrl | <code>string</code> |  | button url |
+| hasExtension | <code>boolean</code> | <code>false</code> | includes token in url |
+| [webviewHeight] | <code>string</code> | <code>null</code> | compact|tall|full |
 
 {% raw %}<div id="ButtonTemplate_postBackButton">&nbsp;</div>{% endraw %}
 
@@ -48,11 +49,12 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 Adds button, which makes another action
 
 **Kind**: instance method of [<code>ButtonTemplate</code>](#ButtonTemplate)  
-**Params**
 
-- title <code>string</code> - Button title
-- action <code>string</code> - Button action (can be absolute or relative)
-- [data] <code>object</code> <code> = {}</code> - Action data
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | <code>string</code> |  | Button title |
+| action | <code>string</code> |  | Button action (can be absolute or relative) |
+| [data] | <code>object</code> | <code>{}</code> | Action data |
 
 {% raw %}<div id="ButtonTemplate_shareButton">&nbsp;</div>{% endraw %}
 
@@ -82,11 +84,12 @@ Generic template utility
 Adds element to generic template
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
-**Params**
 
-- title <code>string</code>
-- [subtitle] <code>string</code> <code> = null</code>
-- [dontTranslate] <code>boolean</code> <code> = false</code>
+| Param | Type | Default |
+| --- | --- | --- |
+| title | <code>string</code> |  | 
+| [subtitle] | <code>string</code> | <code>null</code> | 
+| [dontTranslate] | <code>boolean</code> | <code>false</code> | 
 
 {% raw %}<div id="GenericTemplate_setElementActionShare">&nbsp;</div>{% endraw %}
 
@@ -100,10 +103,11 @@ Sets url of recently added element
 Sets url of recently added element
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
-**Params**
 
-- action <code>string</code> - Button action (can be absolute or relative)
-- [data] <code>object</code> <code> = {}</code> - Action data
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| action | <code>string</code> |  | Button action (can be absolute or relative) |
+| [data] | <code>object</code> | <code>{}</code> | Action data |
 
 {% raw %}<div id="GenericTemplate_setElementImage">&nbsp;</div>{% endraw %}
 
@@ -111,9 +115,10 @@ Sets url of recently added element
 Sets image of recently added element
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
-**Params**
 
-- image <code>string</code>
+| Param | Type |
+| --- | --- |
+| image | <code>string</code> | 
 
 {% raw %}<div id="GenericTemplate_setElementAction">&nbsp;</div>{% endraw %}
 
@@ -121,11 +126,12 @@ Sets image of recently added element
 Sets default action of recently added element
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
-**Params**
 
-- url <code>string</code> - button url
-- hasExtension <code>boolean</code> <code> = false</code> - includes token in url
-- [webviewHeight] <code>string</code> <code> = null</code> - compact|tall|full
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| url | <code>string</code> |  | button url |
+| hasExtension | <code>boolean</code> | <code>false</code> | includes token in url |
+| [webviewHeight] | <code>string</code> | <code>null</code> | compact|tall|full |
 
 {% raw %}<div id="ButtonTemplate_urlButton">&nbsp;</div>{% endraw %}
 
@@ -135,12 +141,13 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
 **Overrides**: [<code>urlButton</code>](#ButtonTemplate_urlButton)  
-**Params**
 
-- title <code>string</code> - button text
-- linkUrl <code>string</code> - button url
-- hasExtension <code>boolean</code> <code> = false</code> - includes token in url
-- [webviewHeight] <code>string</code> <code> = null</code> - compact|tall|full
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | <code>string</code> |  | button text |
+| linkUrl | <code>string</code> |  | button url |
+| hasExtension | <code>boolean</code> | <code>false</code> | includes token in url |
+| [webviewHeight] | <code>string</code> | <code>null</code> | compact|tall|full |
 
 {% raw %}<div id="ButtonTemplate_postBackButton">&nbsp;</div>{% endraw %}
 
@@ -149,11 +156,12 @@ Adds button, which makes another action
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
 **Overrides**: [<code>postBackButton</code>](#ButtonTemplate_postBackButton)  
-**Params**
 
-- title <code>string</code> - Button title
-- action <code>string</code> - Button action (can be absolute or relative)
-- [data] <code>object</code> <code> = {}</code> - Action data
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | <code>string</code> |  | Button title |
+| action | <code>string</code> |  | Button action (can be absolute or relative) |
+| [data] | <code>object</code> | <code>{}</code> | Action data |
 
 {% raw %}<div id="ButtonTemplate_shareButton">&nbsp;</div>{% endraw %}
 
@@ -174,11 +182,12 @@ Instance of button template is returned by {Responder}
 Adds item to receipt
 
 **Kind**: instance method of [<code>ReceiptTemplate</code>](#ReceiptTemplate)  
-**Params**
 
-- title <code>string</code>
-- [price] <code>number</code> <code> = 0</code> - a item price
-- [quantity] <code>number</code> <code> = </code> - amount of items
-- [image] <code>string</code> <code> = null</code> - image of item
-- [subtitle] <code>string</code> <code> = null</code> - optional subtitle
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | <code>string</code> |  |  |
+| [price] | <code>number</code> | <code>0</code> | a item price |
+| [quantity] | <code>number</code> | <code></code> | amount of items |
+| [image] | <code>string</code> | <code>null</code> | image of item |
+| [subtitle] | <code>string</code> | <code>null</code> | optional subtitle |
 
