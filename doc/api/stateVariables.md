@@ -63,5 +63,5 @@ Sets variable while preserving its metadata
 **Example**  
 ```js
 const { vars } = require('wingbot');
-res.setState(vars.expiresAfter('myKey', 'foovalue', 4))
+res.setState(vars.preserveMeta('myKey', 'foovalue', req.state))
 ```
