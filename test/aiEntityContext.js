@@ -29,7 +29,8 @@ describe('<Ai> entity context', () => {
         });
 
         first.use(ai.global('bar-with', ['bar', '@entity']), (req, res) => {
-            res.text('bar with entity');
+            res.text('bar with entity')
+                .text(`req.entity ${req.entity('entity')}`);
         });
 
         first.use(ai.global('bar-without', ['bar']), (req, res) => {
@@ -186,6 +187,8 @@ describe('<Ai> entity context', () => {
 
         await t.quickReplyText('set en');
 
+        t.any().contains('req.entity value');
+
         await t.intent('baz');
 
         t.any().contains('baz with entity');
@@ -227,6 +230,8 @@ describe('<Ai> entity context', () => {
         await t.postBack('/first/bar-without');
 
         await t.intentWithEntity('any', 'entity', 'value');
+
+        t.any().contains('req.entity value');
 
         await t.intentWithEntity('baz', 'totally', 'unrelated');
 

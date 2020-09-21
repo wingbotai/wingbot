@@ -1,6 +1,8 @@
 {% raw %}<div id="vars">&nbsp;</div>{% endraw %}
 
 ## vars : <code>object</code>
+Helpers for `res.setState()` method
+
 **Kind**: global constant  
 
 * [vars](#vars) : <code>object</code>
@@ -24,6 +26,7 @@ Then it will be removed.
 
 **Example**  
 ```js
+const { vars } = require('wingbot');
 res.setState(vars.dialogContext('myKey', 'foovalue'))
 ```
 {% raw %}<div id="vars_expiresAfter">&nbsp;</div>{% endraw %}
@@ -41,6 +44,7 @@ Sets variable, which will be removed after specified number of conversation turo
 
 **Example**  
 ```js
+const { vars } = require('wingbot');
 res.setState(vars.expiresAfter('myKey', 'foovalue', 4))
 ```
 {% raw %}<div id="vars_preserveMeta">&nbsp;</div>{% endraw %}
@@ -58,5 +62,6 @@ Sets variable while preserving its metadata
 
 **Example**  
 ```js
+const { vars } = require('wingbot');
 res.setState(vars.expiresAfter('myKey', 'foovalue', 4))
 ```

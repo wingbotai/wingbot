@@ -279,13 +279,17 @@ class Request {
      */
     entity (name, sequence = 0) {
         const cleanName = name.replace(/^@/, '');
+        const stateKeyName = `@${cleanName}`;
 
         const {
             _winningIntent: intent = this._winningIntent
         } = this.actionData();
+        const setState = this.getSetState();
         let entities;
         if (intent && intent.entities) {
             ({ entities } = intent);
+        } else if (typeof setState[stateKeyName] !== 'undefined') {
+            entities = [{ entity: cleanName, value: setState[stateKeyName] }];
         } else {
             ({ entities } = this);
         }

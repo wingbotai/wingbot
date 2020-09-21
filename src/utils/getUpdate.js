@@ -91,6 +91,15 @@ function getSetState (setState = {}, req, res = null) {
                 set = req.text();
             } else if (val._$entity) {
                 set = req.entity(val._$entity);
+                const cleanEntityName = `${val._$entity}`.replace(/^@/, '');
+                const key = `@${cleanEntityName}`;
+
+                if (set === null
+                    && typeof req.state[key] !== 'undefined'
+                    && (!res || res.newState[key] !== null)) {
+
+                    set = req.state[key];
+                }
             } else if (typeof val._$inc !== 'undefined') {
                 let previousValue = getValue(k, state);
                 const incremet = typeof val._$inc === 'number' && !Number.isNaN(val._$inc)

@@ -15,7 +15,7 @@ const VAR_TYPES = {
 };
 
 /**
- * @type {object}
+ * @type {object} Helpers for `res.setState()` method
  */
 const vars = {
 
@@ -28,6 +28,7 @@ const vars = {
      * @param {*} value
      * @returns {object}
      * @example
+     * const { vars } = require('wingbot');
      * res.setState(vars.dialogContext('myKey', 'foovalue'))
      */
     dialogContext (key, value) {
@@ -45,6 +46,7 @@ const vars = {
      * @param {number} turnovers
      * @returns {object}
      * @example
+     * const { vars } = require('wingbot');
      * res.setState(vars.expiresAfter('myKey', 'foovalue', 4))
      */
     expiresAfter (key, value, turnovers) {
@@ -62,6 +64,7 @@ const vars = {
      * @param {object} state
      * @returns {object}
      * @example
+     * const { vars } = require('wingbot');
      * res.setState(vars.expiresAfter('myKey', 'foovalue', 4))
      */
     preserveMeta (key, value, state) {

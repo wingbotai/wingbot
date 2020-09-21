@@ -1094,6 +1094,7 @@
                                 <div id="vars">&#xA0;</div>
 
 <h2 id="vars--object"><a name="vars--object" class="plugin-anchor" href="#vars--object"><i class="fa fa-link" aria-hidden="true"></i></a>vars : <code>object</code></h2>
+<p>Helpers for <code>res.setState()</code> method</p>
 <p><strong>Kind</strong>: global constant  </p>
 <ul>
 <li><a href="#vars">vars</a> : <code>object</code><ul>
@@ -1129,7 +1130,8 @@ Then it will be removed.</p>
 </tbody>
 </table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-js">res.setState(vars.dialogContext(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>))
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { vars } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+res.setState(vars.dialogContext(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>))
 </code></pre>
 <div id="vars_expiresAfter">&#xA0;</div>
 
@@ -1159,7 +1161,8 @@ Then it will be removed.</p>
 </tbody>
 </table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-js">res.setState(vars.expiresAfter(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>, <span class="hljs-number">4</span>))
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { vars } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+res.setState(vars.expiresAfter(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>, <span class="hljs-number">4</span>))
 </code></pre>
 <div id="vars_preserveMeta">&#xA0;</div>
 
@@ -1189,7 +1192,8 @@ Then it will be removed.</p>
 </tbody>
 </table>
 <p><strong>Example</strong>  </p>
-<pre><code class="lang-js">res.setState(vars.expiresAfter(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>, <span class="hljs-number">4</span>))
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> { vars } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+res.setState(vars.expiresAfter(<span class="hljs-string">&apos;myKey&apos;</span>, <span class="hljs-string">&apos;foovalue&apos;</span>, <span class="hljs-number">4</span>))
 </code></pre>
 
                                 
@@ -1234,7 +1238,7 @@ Then it will be removed.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"vars tools","level":"3.7","depth":1,"next":{"title":"Ai","level":"3.8","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/stateVariables.md","mtime":"2020-09-21T19:57:38.261Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T19:57:42.676Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"vars tools","level":"3.7","depth":1,"next":{"title":"Ai","level":"3.8","depth":1,"path":"api/Ai.md","ref":"api/Ai.md","articles":[]},"previous":{"title":"Utils","level":"3.6","depth":1,"path":"api/bufferloader.md","ref":"api/bufferloader.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/stateVariables.md","mtime":"2020-09-21T20:07:35.157Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-21T20:07:40.686Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
