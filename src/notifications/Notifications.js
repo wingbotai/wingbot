@@ -827,8 +827,8 @@ class Notifications extends EventEmitter {
         try {
             result = await connector.processMessage(message, task.senderId, task.pageId);
             status = result.status; // eslint-disable-line prefer-destructuring
-            mid = result.responses && result.responses.length
-                && result.responses[result.responses.length - 1].message_id;
+            mid = result.results && result.results.length
+                && result.results[result.results.length - 1].message_id;
         } catch (e) {
             this._log.error('send notification error', e);
             const { code = 500 } = e;

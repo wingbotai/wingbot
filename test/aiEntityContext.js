@@ -39,8 +39,8 @@ describe('<Ai> entity context', () => {
                 {
                     action: 'bar-with',
                     title: 'setstate',
-                    match: ['@entity=value'],
-                    setState: { '@entity': 'value' }
+                    // match: ['@entity=value'],
+                    setState: { '@entity': { x: 1 } }
                 }
             ]);
         });

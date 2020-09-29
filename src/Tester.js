@@ -161,7 +161,7 @@ class Tester {
 
             throw new Error(`Processor failed with status ${res.status}`);
         }
-        this.responses = messageSender._sent;
+        this.responses = messageSender.responses;
         this.pluginBlocks = this._pluginBlocksCollector;
         this.actions = this._actionsCollector;
         this._actionsCollector = [];

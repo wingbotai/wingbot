@@ -7,6 +7,7 @@ const path = require('path');
 const docs = [
     'src/Request.js',
     'src/Responder.js',
+    ['src/BotApp.js', 'src/Processor.js'],
     ['src/templates/ButtonTemplate.js', 'src/templates/GenericTemplate.js', 'src/templates/ReceiptTemplate.js'],
     ['src/Router.js', 'src/ReducerWrapper.js'],
     ['src/Tester.js', 'src/testTools/ResponseAssert.js', 'src/testTools/AnyResponseAssert.js', 'src/ConversationTester.js'],
@@ -63,7 +64,11 @@ docs.forEach((doc) => {
             const targetFile = docFileName.replace(srcDir, tempDir);
 
             // filter source files
-            source = source.replace(/\/\*\*\s+@typedef\s+\{import[^*]+\*\//g, '');
+            source = source
+                // imports
+                .replace(/\/\*\*\s+@typedef\s+\{import[^*]+\*\//g, '')
+                // unions
+                .replace(/@typedef\s+\{[a-zA-Z0-9]+\s*&\s*[a-zA-Z0-9]+\}/g, (o) => o.replace('&', '|'));
 
             createDirectoryIfNotExists(targetFile);
             fs.writeFileSync(targetFile, source);

@@ -11,6 +11,10 @@ const Ai = require('./Ai');
 const ReturnSender = require('./ReturnSender');
 const { mergeState } = require('./utils/stateVariables');
 
+/** @typedef {import('./wingbot/CustomEntityDetectionModel').Intent} Intent */
+/** @typedef {import('./ReducerWrapper')} ReducerWrapper */
+/** @typedef {import('./Router')} Router */
+
 /**
  * @typedef {object} AutoTypingConfig
  * @prop {number} time - duration
@@ -25,6 +29,27 @@ const { mergeState } = require('./utils/stateVariables');
  * @prop {Function} [beforeAiPreload]
  * @prop {Function} [beforeProcessMessage]
  * @prop {Function} [afterProcessMessage]
+ */
+
+/**
+ *
+ * @typedef {object} ProcessorOptions
+ * @prop {string} [appUrl] - url basepath for relative links
+ * @prop {object} [stateStorage] - chatbot state storage
+ * @prop {object} [tokenStorage] - frontend token storage
+ * @prop {Function} [translator] - text translate function
+ * @prop {number} [timeout] - chat sesstion lock duration (30000)
+ * @prop {number} [justUpdateTimeout] - simple read and write lock (1000)
+ * @prop {number} [waitForLockedState] - wait when state is locked (12000)
+ * @prop {number} [retriesWhenWaiting] - number of attampts (6)
+ * @prop {Function} [nameFromState] - override the name translator
+ * @prop {boolean|AutoTypingConfig} [autoTyping] - enable or disable automatic typing
+ * @prop {Function} [log] - console like error logger
+ * @prop {object} [defaultState] - default chat state
+ * @prop {boolean} [autoSeen] - send seen automatically
+ * @prop {boolean} [waitsForSender] - use 'false' resolve the processing promise
+ *  without waiting for message sender
+ * @prop {number} [redirectLimit] - maximum number of redirects at single request
  */
 
 /**
@@ -58,23 +83,7 @@ class Processor extends EventEmitter {
      * Creates an instance of Processor
      *
      * @param {ReducerWrapper|Function|Router} reducer
-     * @param {object} [options] - processor options
-     * @param {string} [options.appUrl] - url basepath for relative links
-     * @param {object} [options.stateStorage] - chatbot state storage
-     * @param {object} [options.tokenStorage] - frontend token storage
-     * @param {Function} [options.translator] - text translate function
-     * @param {number} [options.timeout] - chat sesstion lock duration (30000)
-     * @param {number} [options.justUpdateTimeout] - simple read and write lock (1000)
-     * @param {number} [options.waitForLockedState] - wait when state is locked (12000)
-     * @param {number} [options.retriesWhenWaiting] - number of attampts (6)
-     * @param {Function} [options.nameFromState] - override the name translator
-     * @param {boolean|AutoTypingConfig} [options.autoTyping] - enable or disable automatic typing
-     * @param {Function} [options.log] - console like error logger
-     * @param {object} [options.defaultState] - default chat state
-     * @param {boolean} [options.autoSeen] - send seen automatically
-     * @param {boolean} [options.waitsForSender] - use 'false' resolve the processing promise
-     *     without waiting for message sender
-     * @param {number} [options.redirectLimit] - maximum number of redirects at single request
+     * @param {ProcessorOptions} [options] - processor options
      *
      * @memberOf Processor
      */
@@ -280,7 +289,7 @@ class Processor extends EventEmitter {
                 result = await messageSender.finished(req, res);
             } else {
                 messageSender.finished(req, res).catch(() => {});
-                result = { code: 200 };
+                result = { status: 200 };
             }
         } catch (e) {
             const { code = 500 } = e;

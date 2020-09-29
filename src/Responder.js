@@ -168,7 +168,7 @@ class Responder {
         if (!data || typeof data !== 'object') {
             throw new Error('Send method requires an object as first param');
         }
-        if (!data.recipient && !data.wait) {
+        if (!data.recipient) {
             Object.assign(data, {
                 recipient: {
                     ...this._recipient

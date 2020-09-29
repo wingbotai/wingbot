@@ -567,7 +567,7 @@ describe('Responder', function () {
 
             assert(sendFn.calledOnce);
             const object = sendFn.firstCall.args[0];
-            assert.deepStrictEqual(object, { wait: 100, messaging_type: 'RESPONSE' });
+            assert.deepStrictEqual(object, { wait: 100, recipient: { id: 123 }, messaging_type: 'RESPONSE' });
         });
 
     });

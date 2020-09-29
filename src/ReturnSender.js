@@ -6,6 +6,22 @@
 const ai = require('./Ai');
 const { FLAG_DO_NOT_LOG } = require('./flags');
 
+/** @typedef {import('./Request')} Request */
+/** @typedef {import('./Responder')} Responder */
+
+/**
+ * @typedef {object} ChatLogStorage
+ * @property {Function} log
+ * @property {Function} error
+ */
+
+/**
+ * @typedef {object} ReturnSenderOptions
+ * @prop {textFilter} [textFilter] - filter for saving the texts
+ * @prop {boolean} [logStandbyEvents] - log the standby events
+ * @prop {textFilter} [confidentInputFilter] - filter for confident input (@CONFIDENT)
+ */
+
 /**
  * Text filter function
  *
@@ -18,18 +34,19 @@ class ReturnSender {
 
     /**
      *
-     * @param {object} options
-     * @param {textFilter} [options.textFilter] - filter for saving the texts
-     * @param {boolean} [options.logStandbyEvents] - log the standby events
-     * @param {textFilter} [options.confidentInputFilter] - filter for confident input (@CONFIDENT)
+     * @param {ReturnSenderOptions} options
      * @param {string} userId
      * @param {object} incommingMessage
-     * @param {console} logger - console like logger
+     * @param {ChatLogStorage} logger - console like logger
      */
     constructor (options, userId, incommingMessage, logger = null) {
         this._queue = [];
-        this._sent = [];
-        this._responses = [];
+
+        /**
+         * @type {object[]}
+         */
+        this.responses = [];
+        this._results = [];
 
         this._promise = Promise.resolve();
 
@@ -51,7 +68,12 @@ class ReturnSender {
         this._finished = false;
         this._catchedBeforeFinish = null;
 
+        /**
+         * @type {boolean}
+         */
         this.waits = false;
+
+        this.propagatesWaitEvent = false;
 
         this.simulatesOptIn = false;
         this.simulateFail = false;
@@ -107,7 +129,7 @@ class ReturnSender {
         return new Promise((r) => setTimeout(r, nextWait));
     }
 
-    _filterMessage (payload, confidentInput = false) {
+    _filterMessage (payload, confidentInput = false, req = null) {
 
         const filter = confidentInput
             ? this.confidentInputFilter
@@ -115,9 +137,18 @@ class ReturnSender {
 
         // text message
         if (payload.message && payload.message.text) {
+            let { text } = payload.message;
+
+            if (req && req._anonymizedText) {
+                text = req._anonymizedText;
+            }
+
             return {
                 ...payload,
-                message: { ...payload.message, text: filter(payload.message.text) }
+                message: {
+                    ...payload.message,
+                    text: filter(text)
+                }
             };
         }
 
@@ -152,12 +183,12 @@ class ReturnSender {
         while (this._queue.length > 0) {
             payload = this._queue.shift();
 
-            if (payload.wait) {
+            if (payload.wait && !this.propagatesWaitEvent) {
                 await this._wait(payload.wait);
             } else {
-                this._sent.push(payload);
+                this.responses.push(payload);
                 previousResponse = await this._send(payload);
-                this._responses.push(previousResponse);
+                this._results.push(previousResponse);
             }
         }
         this._isWorking = false;
@@ -278,11 +309,11 @@ class ReturnSender {
 
             if (this._sendLogs && meta.flag !== FLAG_DO_NOT_LOG) {
                 this._sendLogs = false;
-                const sent = this._sent.map((s) => this._filterMessage(s));
+                const sent = this.responses.map((s) => this._filterMessage(s));
                 const processedEvent = req
                     ? req.event
                     : this._incommingMessage;
-                let incomming = this._filterMessage(processedEvent, confidentInput);
+                let incomming = this._filterMessage(processedEvent, confidentInput, req);
 
                 if (processedEvent !== this._incommingMessage) {
                     incomming = {
@@ -295,14 +326,14 @@ class ReturnSender {
                     .log(this._userId, sent, incomming, meta));
             }
 
-            const somethingSent = this._responses.length > 0;
+            const somethingSent = this._results.length > 0;
 
             return {
                 status: somethingSent ? 200 : 204,
-                responses: this._responses
+                results: this._results
             };
         } catch (e) {
-            const sent = this._sent.map((s) => this._filterMessage(s));
+            const sent = this.responses.map((s) => this._filterMessage(s));
             const incomming = this._filterMessage(this._incommingMessage, confidentInput);
 
             if (this._logger) {
@@ -313,7 +344,7 @@ class ReturnSender {
             }
             return {
                 status: e.code || 500,
-                responses: this._responses
+                results: this._results
             };
         }
     }

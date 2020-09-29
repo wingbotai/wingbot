@@ -134,7 +134,7 @@ describe('Processor', function () {
                 });
 
                 assert(stateStorage.saveState.called);
-                assert.strictEqual(res.responses.length, 2);
+                assert.strictEqual(res.results.length, 2);
                 assert.deepEqual(stateStorage.getOrCreateAndLock.firstCall.args, [
                     1,
                     10,
@@ -502,7 +502,7 @@ describe('Processor', function () {
                     });
 
                     assert(stateStorage.saveState.called);
-                    assert.equal(res.responses.length, 1);
+                    assert.equal(res.results.length, 1);
 
                     assert(actionSpy.calledOnce);
                 });
@@ -725,7 +725,7 @@ describe('Processor', function () {
             assert.equal(middleware.called, true, 'middleware should be called');
             assert.equal(mockReducer.called, false, 'mockReducer should not be called');
             assert.equal(mockPlugin.processMessage.calledOnce, true, 'plugin process method should  be called');
-            assert.deepEqual(res, { status: 204, responses: [] }, 'response should be ok');
+            assert.deepEqual(res, { status: 204, results: [] }, 'response should be ok');
         });
 
         it('allows middleware to pass the request', async () => {

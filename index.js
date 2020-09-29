@@ -3,10 +3,13 @@
  */
 'use strict';
 
+/** @typedef {import('./src/Processor').ProcessorOptions} ProcessorOptions */
+
 const Processor = require('./src/Processor');
 const Router = require('./src/Router');
 const Request = require('./src/Request');
 const Responder = require('./src/Responder');
+const BotApp = require('./src/BotApp');
 const ReducerWrapper = require('./src/ReducerWrapper');
 const Tester = require('./src/Tester');
 const Ai = require('./src/Ai');
@@ -44,6 +47,9 @@ const {
 const flags = require('./src/flags');
 
 module.exports = {
+    // orchestrator
+    BotApp,
+
     // basic functionality
     ReturnSender,
     Processor,

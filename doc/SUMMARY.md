@@ -63,6 +63,7 @@
 * [Responder](api/Responder.md)
 * [Router](api/Router.md)
 * [Tester](api/Tester.md)
+* [BotApp](api/BotApp.md)
 * [Template Builders](api/ButtonTemplate.md)
     * [ButtonTemplate](api/ButtonTemplate.md#ButtonTemplate)
     * [GenericTemplate](api/ButtonTemplate.md#GenericTemplate)
