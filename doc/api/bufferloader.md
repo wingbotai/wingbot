@@ -44,6 +44,10 @@
 <dd></dd>
 <dt><a href="#StateCondition">StateCondition</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#ReturnSenderOptions">ReturnSenderOptions</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#textFilter">textFilter</a> ⇒ <code>string</code></dt>
 <dd><p>Text filter function</p>
 </dd>
@@ -264,6 +268,8 @@ bot.use((req, res) => {
 
 * [ReturnSender](#ReturnSender)
     * [new ReturnSender(options, userId, incommingMessage, logger)](#new_ReturnSender_new)
+    * [.responses](#ReturnSender_responses) : <code>Array.&lt;object&gt;</code>
+    * [.waits](#ReturnSender_waits) : <code>boolean</code>
     * [.textFilter](#ReturnSender_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.modifyStateAfterLoad()](#ReturnSender_modifyStateAfterLoad) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
     * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
@@ -272,16 +278,21 @@ bot.use((req, res) => {
 
 ### new ReturnSender(options, userId, incommingMessage, logger)
 
-| Param | Type | Description |
-| --- | --- | --- |
-| options | <code>object</code> |  |
-| [options.textFilter] | [<code>textFilter</code>](#textFilter) | filter for saving the texts |
-| [options.logStandbyEvents] | <code>boolean</code> | log the standby events |
-| [options.confidentInputFilter] | [<code>textFilter</code>](#textFilter) | filter for confident input (@CONFIDENT) |
-| userId | <code>string</code> |  |
-| incommingMessage | <code>object</code> |  |
-| logger | <code>console</code> | console like logger |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | [<code>ReturnSenderOptions</code>](#ReturnSenderOptions) |  |  |
+| userId | <code>string</code> |  |  |
+| incommingMessage | <code>object</code> |  |  |
+| logger | [<code>ChatLogStorage</code>](#ChatLogStorage) | <code></code> | console like logger |
 
+{% raw %}<div id="ReturnSender_responses">&nbsp;</div>{% endraw %}
+
+### returnSender.responses : <code>Array.&lt;object&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+{% raw %}<div id="ReturnSender_waits">&nbsp;</div>{% endraw %}
+
+### returnSender.waits : <code>boolean</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
 {% raw %}<div id="ReturnSender_textFilter">&nbsp;</div>{% endraw %}
 
 ### returnSender.textFilter : [<code>textFilter</code>](#textFilter)
@@ -380,6 +391,29 @@ Create a disambiguation quick reply
 | Name | Type |
 | --- | --- |
 | [search] | <code>string</code> | 
+
+{% raw %}<div id="ChatLogStorage">&nbsp;</div>{% endraw %}
+
+## ChatLogStorage : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| log | <code>function</code> | 
+| error | <code>function</code> | 
+
+{% raw %}<div id="ReturnSenderOptions">&nbsp;</div>{% endraw %}
+
+## ReturnSenderOptions : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| [textFilter] | [<code>textFilter</code>](#textFilter) | filter for saving the texts |
+| [logStandbyEvents] | <code>boolean</code> | log the standby events |
+| [confidentInputFilter] | [<code>textFilter</code>](#textFilter) | filter for confident input (@CONFIDENT) |
 
 {% raw %}<div id="textFilter">&nbsp;</div>{% endraw %}
 

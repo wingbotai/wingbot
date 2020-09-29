@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Template Builders · Wingbot</title>
+        <title>BotApp · Wingbot</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -64,7 +64,7 @@
     <link rel="next" href="ButtonTemplate.html" />
     
     
-    <link rel="prev" href="BotApp.html" />
+    <link rel="prev" href="Tester.html" />
     
 
     </head>
@@ -884,7 +884,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.5" data-path="BotApp.html">
+        <li class="chapter active" data-level="3.5" data-path="BotApp.html">
             
                 <a href="BotApp.html">
             
@@ -897,7 +897,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="3.6" data-path="ButtonTemplate.html">
+        <li class="chapter " data-level="3.6" data-path="ButtonTemplate.html">
             
                 <a href="ButtonTemplate.html">
             
@@ -1089,7 +1089,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Template Builders</a>
+        <a href=".." >BotApp</a>
     </h1>
 </div>
 
@@ -1106,388 +1106,380 @@
                                 
                                 <h2 id="classes"><a name="classes" class="plugin-anchor" href="#classes"><i class="fa fa-link" aria-hidden="true"></i></a>Classes</h2>
 <dl>
-<dt><a href="#ButtonTemplate">ButtonTemplate</a> &#x21D0; <code>BaseTemplate</code></dt>
-<dd><p>Helps with creating of button template
-Instance of button template is returned by {Responder}</p>
-</dd>
-<dt><a href="#GenericTemplate">GenericTemplate</a> &#x21D0; <code>ButtonTemplate</code></dt>
-<dd><p>Generic template utility</p>
-</dd>
-<dt><a href="#ReceiptTemplate">ReceiptTemplate</a> &#x21D0; <code>BaseTemplate</code></dt>
-<dd><p>Provides fluent interface to make nice Receipts
-Instance of button template is returned by {Responder}</p>
+<dt><a href="#BotApp">BotApp</a></dt>
+<dd><p>Adapter for Wingbot flight director</p>
 </dd>
 </dl>
 
-<div id="ButtonTemplate">&#xA0;</div>
+<h2 id="typedefs"><a name="typedefs" class="plugin-anchor" href="#typedefs"><i class="fa fa-link" aria-hidden="true"></i></a>Typedefs</h2>
+<dl>
+<dt><a href="#Options">Options</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#ApiResponse">ApiResponse</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#AutoTypingConfig">AutoTypingConfig</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#Plugin">Plugin</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#ProcessorOptions">ProcessorOptions</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#IntentAction">IntentAction</a> : <code>object</code></dt>
+<dd></dd>
+</dl>
 
-<h2 id="buttontemplate-&#x21D0;-basetemplate"><a name="buttontemplate-&#x21D0;-basetemplate" class="plugin-anchor" href="#buttontemplate-&#x21D0;-basetemplate"><i class="fa fa-link" aria-hidden="true"></i></a>ButtonTemplate &#x21D0; <code>BaseTemplate</code></h2>
-<p>Helps with creating of button template
-Instance of button template is returned by {Responder}</p>
-<p><strong>Kind</strong>: global class<br><strong>Extends</strong>: <code>BaseTemplate</code>  </p>
+<div id="BotApp">&#xA0;</div>
+
+<h2 id="botapp"><a name="botapp" class="plugin-anchor" href="#botapp"><i class="fa fa-link" aria-hidden="true"></i></a>BotApp</h2>
+<p>Adapter for Wingbot flight director</p>
+<p><strong>Kind</strong>: global class  </p>
 <ul>
-<li><a href="#ButtonTemplate">ButtonTemplate</a> &#x21D0; <code>BaseTemplate</code><ul>
-<li><a href="#ButtonTemplate_urlButton">.urlButton(title, linkUrl, hasExtension, [webviewHeight])</a> &#x21D2; <code>this</code></li>
-<li><a href="#ButtonTemplate_postBackButton">.postBackButton(title, action, [data])</a> &#x21D2; <code>this</code></li>
-<li><a href="#ButtonTemplate_shareButton">.shareButton()</a> &#x21D2; <code>this</code></li>
+<li><a href="#BotApp">BotApp</a><ul>
+<li><a href="#new_BotApp_new">new BotApp(bot, options)</a></li>
+<li><a href="#BotApp_request">.request(rawBody, rawHeaders)</a> &#x21D2; <a href="#ApiResponse"><code>Promise.&lt;ApiResponse&gt;</code></a></li>
 </ul>
 </li>
 </ul>
-<div id="ButtonTemplate_urlButton">&#xA0;</div>
+<div id="new_BotApp_new">&#xA0;</div>
 
-<h3 id="buttontemplateurlbuttontitle-linkurl-hasextension-webviewheight-&#x21D2;-this"><a name="buttontemplateurlbuttontitle-linkurl-hasextension-webviewheight-&#x21D2;-this" class="plugin-anchor" href="#buttontemplateurlbuttontitle-linkurl-hasextension-webviewheight-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>buttonTemplate.urlButton(title, linkUrl, hasExtension, [webviewHeight]) &#x21D2; <code>this</code></h3>
-<p>Adds button. When <code>hasExtension</code> is set to <code>true</code>, url will contain hash like:
-<code>#token=foo&amp;senderId=23344</code></p>
-<p><strong>Kind</strong>: instance method of <a href="#ButtonTemplate"><code>ButtonTemplate</code></a>  </p>
+<h3 id="new-botappbot-options"><a name="new-botappbot-options" class="plugin-anchor" href="#new-botappbot-options"><i class="fa fa-link" aria-hidden="true"></i></a>new BotApp(bot, options)</h3>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
-<th>Default</th>
-<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>title</td>
-<td><code>string</code></td>
-<td></td>
-<td>button text</td>
+<td>bot</td>
+<td><code>ReducerWrapper</code> \</td>
+<td><code>Router</code></td>
 </tr>
 <tr>
-<td>linkUrl</td>
-<td><code>string</code></td>
-<td></td>
-<td>button url</td>
-</tr>
-<tr>
-<td>hasExtension</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>includes token in url</td>
-</tr>
-<tr>
-<td>[webviewHeight]</td>
-<td><code>string</code></td>
-<td><code>null</code></td>
-<td>compact</td>
-<td>tall</td>
-<td>full</td>
+<td>options</td>
+<td><a href="#Options"><code>Options</code></a></td>
 </tr>
 </tbody>
 </table>
-<div id="ButtonTemplate_postBackButton">&#xA0;</div>
+<div id="BotApp_request">&#xA0;</div>
 
-<h3 id="buttontemplatepostbackbuttontitle-action-data-&#x21D2;-this"><a name="buttontemplatepostbackbuttontitle-action-data-&#x21D2;-this" class="plugin-anchor" href="#buttontemplatepostbackbuttontitle-action-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>buttonTemplate.postBackButton(title, action, [data]) &#x21D2; <code>this</code></h3>
-<p>Adds button, which makes another action</p>
-<p><strong>Kind</strong>: instance method of <a href="#ButtonTemplate"><code>ButtonTemplate</code></a>  </p>
+<h3 id="botapprequestrawbody-rawheaders-&#x21D2;-promiseapiresponse"><a name="botapprequestrawbody-rawheaders-&#x21D2;-promiseapiresponse" class="plugin-anchor" href="#botapprequestrawbody-rawheaders-&#x21D2;-promiseapiresponse"><i class="fa fa-link" aria-hidden="true"></i></a>botApp.request(rawBody, rawHeaders) &#x21D2; <a href="#ApiResponse"><code>Promise.&lt;ApiResponse&gt;</code></a></h3>
+<p>Process incomming API request from the orchestrator.</p>
+<p>The response can be sent using an express, or you can directly return the response to</p>
+<p><strong>Kind</strong>: instance method of <a href="#BotApp"><code>BotApp</code></a>  </p>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
-<th>Default</th>
-<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>title</td>
-<td><code>string</code></td>
-<td></td>
-<td>Button title</td>
+<td>rawBody</td>
+<td><code>string</code> \</td>
+<td><code>null</code></td>
 </tr>
 <tr>
-<td>action</td>
-<td><code>string</code></td>
-<td></td>
-<td>Button action (can be absolute or relative)</td>
-</tr>
-<tr>
-<td>[data]</td>
+<td>rawHeaders</td>
 <td><code>object</code></td>
-<td><code>{}</code></td>
-<td>Action data</td>
 </tr>
 </tbody>
 </table>
-<div id="ButtonTemplate_shareButton">&#xA0;</div>
+<p><strong>Example</strong>  </p>
+<pre><code class="lang-js"><span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;express&apos;</span>);
+<span class="hljs-keyword">const</span> { Router, BotApp } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;express&apos;</span>);
+<span class="hljs-keyword">const</span> app = express();
 
-<h3 id="buttontemplatesharebutton-&#x21D2;-this"><a name="buttontemplatesharebutton-&#x21D2;-this" class="plugin-anchor" href="#buttontemplatesharebutton-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>buttonTemplate.shareButton() &#x21D2; <code>this</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#ButtonTemplate"><code>ButtonTemplate</code></a>  </p>
-<div id="GenericTemplate">&#xA0;</div>
+<span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
 
-<h2 id="generictemplate-&#x21D0;-buttontemplate"><a name="generictemplate-&#x21D0;-buttontemplate" class="plugin-anchor" href="#generictemplate-&#x21D0;-buttontemplate"><i class="fa fa-link" aria-hidden="true"></i></a>GenericTemplate &#x21D0; <a href="#ButtonTemplate"><code>ButtonTemplate</code></a></h2>
-<p>Generic template utility</p>
-<p><strong>Kind</strong>: global class<br><strong>Extends</strong>: <a href="#ButtonTemplate"><code>ButtonTemplate</code></a>  </p>
-<ul>
-<li><a href="#GenericTemplate">GenericTemplate</a> &#x21D0; <a href="#ButtonTemplate"><code>ButtonTemplate</code></a><ul>
-<li><a href="#GenericTemplate_addElement">.addElement(title, [subtitle], [dontTranslate])</a> &#x21D2; <code>this</code></li>
-<li><a href="#GenericTemplate_setElementActionShare">.setElementActionShare()</a> &#x21D2; <code>this</code></li>
-<li><a href="#GenericTemplate_setElementActionPostback">.setElementActionPostback(action, [data])</a> &#x21D2; <code>this</code></li>
-<li><a href="#GenericTemplate_setElementImage">.setElementImage(image)</a> &#x21D2; <code>this</code></li>
-<li><a href="#GenericTemplate_setElementAction">.setElementAction(url, hasExtension, [webviewHeight])</a></li>
-<li><a href="#ButtonTemplate_urlButton">.urlButton(title, linkUrl, hasExtension, [webviewHeight])</a> &#x21D2; <code>this</code></li>
-<li><a href="#ButtonTemplate_postBackButton">.postBackButton(title, action, [data])</a> &#x21D2; <code>this</code></li>
-<li><a href="#ButtonTemplate_shareButton">.shareButton()</a> &#x21D2; <code>this</code></li>
-</ul>
-</li>
-</ul>
-<div id="GenericTemplate_addElement">&#xA0;</div>
+bot.use((req, res) =&gt; { res.text(<span class="hljs-string">&apos;hello!&apos;</span>); });
 
-<h3 id="generictemplateaddelementtitle-subtitle-donttranslate-&#x21D2;-this"><a name="generictemplateaddelementtitle-subtitle-donttranslate-&#x21D2;-this" class="plugin-anchor" href="#generictemplateaddelementtitle-subtitle-donttranslate-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.addElement(title, [subtitle], [dontTranslate]) &#x21D2; <code>this</code></h3>
-<p>Adds element to generic template</p>
-<p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a>  </p>
+<span class="hljs-keyword">const</span> botApp = <span class="hljs-keyword">new</span> BotApp(bot, {
+    apiUrl: <span class="hljs-string">&apos;https://&lt;url to flight director&gt;&apos;</span>,
+    secret: <span class="hljs-string">&apos;&lt;application secret in flight director&gt;&apos;</span>
+});
+
+app.get(<span class="hljs-string">&apos;/bot&apos;</span>, express.text(), (req, res) =&gt; {
+   botApp.request(req.body, req.headers)
+       .then((response) =&gt; {
+           <span class="hljs-keyword">const</span> { body, statusCode, headers } = response;
+
+           res.status(statusCode)
+               .set(headers)
+               .send(body);
+       })
+});
+</code></pre>
+<div id="Options">&#xA0;</div>
+
+<h2 id="options--object"><a name="options--object" class="plugin-anchor" href="#options--object"><i class="fa fa-link" aria-hidden="true"></i></a>Options : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
 <tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>title</td>
-<td><code>string</code></td>
-<td></td>
-</tr>
-<tr>
-<td>[subtitle]</td>
-<td><code>string</code></td>
-<td><code>null</code></td>
-</tr>
-<tr>
-<td>[dontTranslate]</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-</tr>
-</tbody>
-</table>
-<div id="GenericTemplate_setElementActionShare">&#xA0;</div>
-
-<h3 id="generictemplatesetelementactionshare-&#x21D2;-this"><a name="generictemplatesetelementactionshare-&#x21D2;-this" class="plugin-anchor" href="#generictemplatesetelementactionshare-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.setElementActionShare() &#x21D2; <code>this</code></h3>
-<p>Sets url of recently added element</p>
-<p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a>  </p>
-<div id="GenericTemplate_setElementActionPostback">&#xA0;</div>
-
-<h3 id="generictemplatesetelementactionpostbackaction-data-&#x21D2;-this"><a name="generictemplatesetelementactionpostbackaction-data-&#x21D2;-this" class="plugin-anchor" href="#generictemplatesetelementactionpostbackaction-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.setElementActionPostback(action, [data]) &#x21D2; <code>this</code></h3>
-<p>Sets url of recently added element</p>
-<p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>action</td>
-<td><code>string</code></td>
-<td></td>
-<td>Button action (can be absolute or relative)</td>
-</tr>
-<tr>
-<td>[data]</td>
-<td><code>object</code></td>
-<td><code>{}</code></td>
-<td>Action data</td>
-</tr>
-</tbody>
-</table>
-<div id="GenericTemplate_setElementImage">&#xA0;</div>
-
-<h3 id="generictemplatesetelementimageimage-&#x21D2;-this"><a name="generictemplatesetelementimageimage-&#x21D2;-this" class="plugin-anchor" href="#generictemplatesetelementimageimage-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.setElementImage(image) &#x21D2; <code>this</code></h3>
-<p>Sets image of recently added element</p>
-<p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
+<th>Name</th>
 <th>Type</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>image</td>
+<td>secret</td>
+<td><code>string</code> \</td>
+<td><code>Promise.&lt;string&gt;</code></td>
+</tr>
+<tr>
+<td>apiUrl</td>
 <td><code>string</code></td>
+</tr>
+<tr>
+<td>[fetch]</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>[chatLogStorage]</td>
+<td><code>ChatLogStorage</code></td>
 </tr>
 </tbody>
 </table>
-<div id="GenericTemplate_setElementAction">&#xA0;</div>
+<div id="ApiResponse">&#xA0;</div>
 
-<h3 id="generictemplatesetelementactionurl-hasextension-webviewheight"><a name="generictemplatesetelementactionurl-hasextension-webviewheight" class="plugin-anchor" href="#generictemplatesetelementactionurl-hasextension-webviewheight"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.setElementAction(url, hasExtension, [webviewHeight])</h3>
-<p>Sets default action of recently added element</p>
-<p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a>  </p>
+<h2 id="apiresponse--object"><a name="apiresponse--object" class="plugin-anchor" href="#apiresponse--object"><i class="fa fa-link" aria-hidden="true"></i></a>ApiResponse : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
 <table>
 <thead>
 <tr>
-<th>Param</th>
+<th>Name</th>
 <th>Type</th>
-<th>Default</th>
-<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>url</td>
-<td><code>string</code></td>
-<td></td>
-<td>button url</td>
-</tr>
-<tr>
-<td>hasExtension</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>includes token in url</td>
-</tr>
-<tr>
-<td>[webviewHeight]</td>
-<td><code>string</code></td>
-<td><code>null</code></td>
-<td>compact</td>
-<td>tall</td>
-<td>full</td>
-</tr>
-</tbody>
-</table>
-<div id="ButtonTemplate_urlButton">&#xA0;</div>
-
-<h3 id="generictemplateurlbuttontitle-linkurl-hasextension-webviewheight-&#x21D2;-this"><a name="generictemplateurlbuttontitle-linkurl-hasextension-webviewheight-&#x21D2;-this" class="plugin-anchor" href="#generictemplateurlbuttontitle-linkurl-hasextension-webviewheight-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.urlButton(title, linkUrl, hasExtension, [webviewHeight]) &#x21D2; <code>this</code></h3>
-<p>Adds button. When <code>hasExtension</code> is set to <code>true</code>, url will contain hash like:
-<code>#token=foo&amp;senderId=23344</code></p>
-<p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a><br><strong>Overrides</strong>: <a href="#ButtonTemplate_urlButton"><code>urlButton</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>title</td>
-<td><code>string</code></td>
-<td></td>
-<td>button text</td>
-</tr>
-<tr>
-<td>linkUrl</td>
-<td><code>string</code></td>
-<td></td>
-<td>button url</td>
-</tr>
-<tr>
-<td>hasExtension</td>
-<td><code>boolean</code></td>
-<td><code>false</code></td>
-<td>includes token in url</td>
-</tr>
-<tr>
-<td>[webviewHeight]</td>
-<td><code>string</code></td>
-<td><code>null</code></td>
-<td>compact</td>
-<td>tall</td>
-<td>full</td>
-</tr>
-</tbody>
-</table>
-<div id="ButtonTemplate_postBackButton">&#xA0;</div>
-
-<h3 id="generictemplatepostbackbuttontitle-action-data-&#x21D2;-this"><a name="generictemplatepostbackbuttontitle-action-data-&#x21D2;-this" class="plugin-anchor" href="#generictemplatepostbackbuttontitle-action-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.postBackButton(title, action, [data]) &#x21D2; <code>this</code></h3>
-<p>Adds button, which makes another action</p>
-<p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a><br><strong>Overrides</strong>: <a href="#ButtonTemplate_postBackButton"><code>postBackButton</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>title</td>
-<td><code>string</code></td>
-<td></td>
-<td>Button title</td>
-</tr>
-<tr>
-<td>action</td>
-<td><code>string</code></td>
-<td></td>
-<td>Button action (can be absolute or relative)</td>
-</tr>
-<tr>
-<td>[data]</td>
-<td><code>object</code></td>
-<td><code>{}</code></td>
-<td>Action data</td>
-</tr>
-</tbody>
-</table>
-<div id="ButtonTemplate_shareButton">&#xA0;</div>
-
-<h3 id="generictemplatesharebutton-&#x21D2;-this"><a name="generictemplatesharebutton-&#x21D2;-this" class="plugin-anchor" href="#generictemplatesharebutton-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.shareButton() &#x21D2; <code>this</code></h3>
-<p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a><br><strong>Overrides</strong>: <a href="#ButtonTemplate_shareButton"><code>shareButton</code></a>  </p>
-<div id="ReceiptTemplate">&#xA0;</div>
-
-<h2 id="receipttemplate-&#x21D0;-basetemplate"><a name="receipttemplate-&#x21D0;-basetemplate" class="plugin-anchor" href="#receipttemplate-&#x21D0;-basetemplate"><i class="fa fa-link" aria-hidden="true"></i></a>ReceiptTemplate &#x21D0; <code>BaseTemplate</code></h2>
-<p>Provides fluent interface to make nice Receipts
-Instance of button template is returned by {Responder}</p>
-<p><strong>Kind</strong>: global class<br><strong>Extends</strong>: <code>BaseTemplate</code>  </p>
-<div id="ReceiptTemplate_addElement">&#xA0;</div>
-
-<h3 id="receipttemplateaddelementtitle-price-quantity-image-subtitle-&#x21D2;-this"><a name="receipttemplateaddelementtitle-price-quantity-image-subtitle-&#x21D2;-this" class="plugin-anchor" href="#receipttemplateaddelementtitle-price-quantity-image-subtitle-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>receiptTemplate.addElement(title, [price], [quantity], [image], [subtitle]) &#x21D2; <code>this</code></h3>
-<p>Adds item to receipt</p>
-<p><strong>Kind</strong>: instance method of <a href="#ReceiptTemplate"><code>ReceiptTemplate</code></a>  </p>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>title</td>
-<td><code>string</code></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>[price]</td>
+<td>statusCode</td>
 <td><code>number</code></td>
-<td><code>0</code></td>
-<td>a item price</td>
 </tr>
 <tr>
-<td>[quantity]</td>
+<td>body</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>headers</td>
+<td><code>object</code></td>
+</tr>
+</tbody>
+</table>
+<div id="AutoTypingConfig">&#xA0;</div>
+
+<h2 id="autotypingconfig--object"><a name="autotypingconfig--object" class="plugin-anchor" href="#autotypingconfig--object"><i class="fa fa-link" aria-hidden="true"></i></a>AutoTypingConfig : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>time</td>
 <td><code>number</code></td>
-<td><code></code></td>
-<td>amount of items</td>
+<td>duration</td>
 </tr>
 <tr>
-<td>[image]</td>
-<td><code>string</code></td>
-<td><code>null</code></td>
-<td>image of item</td>
+<td>perCharacters</td>
+<td><code>number</code></td>
+<td>number of characters</td>
 </tr>
 <tr>
-<td>[subtitle]</td>
+<td>minTime</td>
+<td><code>number</code></td>
+<td>minimum writing time</td>
+</tr>
+<tr>
+<td>maxTime</td>
+<td><code>number</code></td>
+<td>maximum writing time</td>
+</tr>
+</tbody>
+</table>
+<div id="Plugin">&#xA0;</div>
+
+<h2 id="plugin--object"><a name="plugin--object" class="plugin-anchor" href="#plugin--object"><i class="fa fa-link" aria-hidden="true"></i></a>Plugin : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[processMessage]</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>[beforeAiPreload]</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>[beforeProcessMessage]</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>[afterProcessMessage]</td>
+<td><code>function</code></td>
+</tr>
+</tbody>
+</table>
+<div id="ProcessorOptions">&#xA0;</div>
+
+<h2 id="processoroptions--object"><a name="processoroptions--object" class="plugin-anchor" href="#processoroptions--object"><i class="fa fa-link" aria-hidden="true"></i></a>ProcessorOptions : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[appUrl]</td>
 <td><code>string</code></td>
+<td>url basepath for relative links</td>
+</tr>
+<tr>
+<td>[stateStorage]</td>
+<td><code>object</code></td>
+<td>chatbot state storage</td>
+</tr>
+<tr>
+<td>[tokenStorage]</td>
+<td><code>object</code></td>
+<td>frontend token storage</td>
+</tr>
+<tr>
+<td>[translator]</td>
+<td><code>function</code></td>
+<td>text translate function</td>
+</tr>
+<tr>
+<td>[timeout]</td>
+<td><code>number</code></td>
+<td>chat sesstion lock duration (30000)</td>
+</tr>
+<tr>
+<td>[justUpdateTimeout]</td>
+<td><code>number</code></td>
+<td>simple read and write lock (1000)</td>
+</tr>
+<tr>
+<td>[waitForLockedState]</td>
+<td><code>number</code></td>
+<td>wait when state is locked (12000)</td>
+</tr>
+<tr>
+<td>[retriesWhenWaiting]</td>
+<td><code>number</code></td>
+<td>number of attampts (6)</td>
+</tr>
+<tr>
+<td>[nameFromState]</td>
+<td><code>function</code></td>
+<td>override the name translator</td>
+</tr>
+<tr>
+<td>[autoTyping]</td>
+<td><code>boolean</code> \</td>
+<td><a href="#AutoTypingConfig"><code>AutoTypingConfig</code></a></td>
+<td>enable or disable automatic typing</td>
+</tr>
+<tr>
+<td>[log]</td>
+<td><code>function</code></td>
+<td>console like error logger</td>
+</tr>
+<tr>
+<td>[defaultState]</td>
+<td><code>object</code></td>
+<td>default chat state</td>
+</tr>
+<tr>
+<td>[autoSeen]</td>
+<td><code>boolean</code></td>
+<td>send seen automatically</td>
+</tr>
+<tr>
+<td>[waitsForSender]</td>
+<td><code>boolean</code></td>
+<td>use &apos;false&apos; resolve the processing promise  without waiting for message sender</td>
+</tr>
+<tr>
+<td>[redirectLimit]</td>
+<td><code>number</code></td>
+<td>maximum number of redirects at single request</td>
+</tr>
+</tbody>
+</table>
+<div id="IntentAction">&#xA0;</div>
+
+<h2 id="intentaction--object"><a name="intentaction--object" class="plugin-anchor" href="#intentaction--object"><i class="fa fa-link" aria-hidden="true"></i></a>IntentAction : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>intent</td>
+<td><code>Intent</code></td>
+</tr>
+<tr>
+<td>sort</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>[score]</td>
+<td><code>number</code></td>
+</tr>
+<tr>
+<td>local</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>aboveConfidence</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>[winner]</td>
+<td><code>boolean</code></td>
+</tr>
+<tr>
+<td>meta</td>
+<td><code>object</code></td>
+</tr>
+<tr>
+<td>title</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>[meta.targetAppId]</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>[meta.targetAction]</td>
+<td><code>string</code> \</td>
 <td><code>null</code></td>
-<td>optional subtitle</td>
 </tr>
 </tbody>
 </table>
@@ -1518,12 +1510,12 @@ Instance of button template is returned by {Responder}</p>
 
             
                 
-                <a href="BotApp.html" class="navigation navigation-prev " aria-label="Previous page: BotApp">
+                <a href="Tester.html" class="navigation navigation-prev " aria-label="Previous page: Tester">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="ButtonTemplate.html#ButtonTemplate" class="navigation navigation-next " aria-label="Next page: ButtonTemplate">
+                <a href="ButtonTemplate.html" class="navigation navigation-next " aria-label="Next page: Template Builders">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -1534,7 +1526,7 @@ Instance of button template is returned by {Responder}</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Template Builders","level":"3.6","depth":1,"next":{"title":"ButtonTemplate","level":"3.6.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},"previous":{"title":"BotApp","level":"3.5","depth":1,"path":"api/BotApp.md","ref":"api/BotApp.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/ButtonTemplate.md","mtime":"2020-09-29T09:18:06.603Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-29T09:18:18.700Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"BotApp","level":"3.5","depth":1,"next":{"title":"Template Builders","level":"3.6","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.6.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.6.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.6.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BotApp.md","mtime":"2020-09-29T09:18:06.226Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-29T09:18:18.700Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
