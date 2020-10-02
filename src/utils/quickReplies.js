@@ -233,8 +233,9 @@ function quickReplyAction (expectedKeywords, req, ai) {
                 found.push({
                     ...keyword,
                     score,
+                    _aiKeys,
                     setState: keyword.setState
-                        ? { ...keyword.setState, ...setState, _aiKeys }
+                        ? { ...keyword.setState, ...setState }
                         : { ...setState, _aiKeys }
                 });
             }

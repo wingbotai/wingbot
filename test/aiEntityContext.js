@@ -40,6 +40,10 @@ describe('<Ai> entity context', () => {
             res.text(`e ${req.entity('customentity')}`);
         });
 
+        first.use('chacha', (req, res) => {
+            res.text(`X ${req.state['@customentity']}`);
+        });
+
         first.use(ai.global('foo-with', ['foo', '@entity']), (req, res) => {
             res.text('foo with entity');
         });
@@ -62,7 +66,8 @@ describe('<Ai> entity context', () => {
                     title: 'setstate',
                     // match: ['@entity=value'],
                     setState: { '@entity': { x: 1 }, '@customentity': 'youyou' }
-                }
+                },
+                { action: 'chacha', match: ['@customentity'], title: 'try' }
             ]);
         });
 
@@ -237,6 +242,17 @@ describe('<Ai> entity context', () => {
         await t.text('youyou');
 
         t.any().contains('e detected');
+
+        // @ts-ignore
+        assert.strictEqual(t.getState().state['@customentity'], 'detected');
+    });
+
+    it('passes the text through entity detector just once', async () => {
+        await t.postBack('/first/bar-without');
+
+        await t.text('youyou');
+
+        t.any().contains('X detected');
 
         // @ts-ignore
         assert.strictEqual(t.getState().state['@customentity'], 'detected');

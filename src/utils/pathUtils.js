@@ -28,6 +28,7 @@ function parseActionPayload (object, needRawData = false) {
     let action;
     let data = {};
     let setState = null;
+    let _aiKeys;
     if (typeof object === 'string') {
         action = object;
     } else if (typeof object.action === 'string') {
@@ -35,6 +36,9 @@ function parseActionPayload (object, needRawData = false) {
         data = object.data || data;
         if (typeof object.setState === 'object') {
             setState = object.setState || null;
+        }
+        if (object._aiKeys) {
+            ({ _aiKeys } = object);
         }
     } else {
         let payload = object.payload || object;
@@ -51,6 +55,9 @@ function parseActionPayload (object, needRawData = false) {
             if (typeof payload.setState === 'object') {
                 setState = payload.setState || null;
             }
+            if (object._aiKeys) {
+                ({ _aiKeys } = object);
+            }
         } else {
             action = payload;
         }
@@ -61,7 +68,9 @@ function parseActionPayload (object, needRawData = false) {
     if (!action && !needRawData) {
         return null;
     }
-    return { action, data, setState };
+    return {
+        action, data, setState, _aiKeys
+    };
 }
 
 module.exports = {
