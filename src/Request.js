@@ -70,6 +70,10 @@ function makeTimestamp () {
  */
 
 /**
+ * @typedef {number} AiSetStateOption
+ */
+
+/**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
  * @class
@@ -82,6 +86,15 @@ class Request {
         this.taskId = data.taskId || null;
 
         this._event = data;
+
+        /**
+         * @enum {AiSetStateOption}
+         */
+        this.AI_SETSTATE = {
+            ONLY: 1,
+            INCLUDE: 0,
+            EXCLUDE: -1
+        };
 
         this.globalIntents = globalIntents;
 
@@ -722,15 +735,20 @@ class Request {
         return this._action ? this._action.data : {};
     }
 
+    getAiSetState () {
+
+    }
+
     /**
      * Gets incomming setState action variable
      *
+     * @param {AiSetStateOption} keysFromAi
      * @returns {object}
      *
      * @example
      * res.setState(req.getSetState());
      */
-    getSetState () {
+    getSetState (keysFromAi = this.AI_SETSTATE.INCLUDE) {
         if (typeof this._action === 'undefined') {
             this._action = this._resolveAction();
         }
@@ -742,7 +760,29 @@ class Request {
             return {};
         }
 
-        return getSetState(setState, this);
+        const res = getSetState(setState, this);
+
+        if (keysFromAi === this.AI_SETSTATE.INCLUDE) {
+            return res;
+        }
+
+        // @ts-ignore
+        const { _aiKeys: keys = [] } = this._action || {};
+
+        const ret = {};
+
+        Object.keys(res)
+            .forEach((key) => {
+                const includes = keys.includes(key);
+
+                if ((includes && keysFromAi === this.AI_SETSTATE.ONLY)
+                    || (!includes && keysFromAi === this.AI_SETSTATE.EXCLUDE)) {
+
+                    ret[key] = res[key];
+                }
+            });
+
+        return ret;
     }
 
     /**
@@ -790,9 +830,13 @@ class Request {
 
         if (!res && this.isTextOrIntent()) {
             const winner = this.aiActionsWinner();
-            res = winner
-                ? { action: winner.action, data: {}, setState: winner.setState }
-                : null;
+            if (winner) {
+                const _aiKeys = winner.setState ? Object.keys(winner.setState) : [];
+
+                res = {
+                    action: winner.action, data: {}, setState: winner.setState, _aiKeys
+                };
+            }
         }
 
         return res;

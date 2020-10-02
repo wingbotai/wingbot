@@ -228,12 +228,14 @@ function quickReplyAction (expectedKeywords, req, ai) {
             if (intent) {
                 const { score, setState } = intent;
 
+                const _aiKeys = Object.keys(setState);
+
                 found.push({
                     ...keyword,
                     score,
                     setState: keyword.setState
-                        ? { ...keyword.setState, ...setState }
-                        : setState
+                        ? { ...keyword.setState, ...setState, _aiKeys }
+                        : { ...setState, _aiKeys }
                 });
             }
         });

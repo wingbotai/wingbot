@@ -101,7 +101,8 @@ function message (params, {
         }
 
         const data = stateData(req, res);
-        const text = textTemplate(data);
+        const text = textTemplate(data)
+            .trim();
 
         if (quickReplies) {
             const okQuickReplies = quickReplies

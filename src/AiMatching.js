@@ -468,7 +468,7 @@ class AiMatching {
             if (index !== -1) {
                 requestEntity = requestEntities[index];
                 matching = true;
-            } else if (!entityExists && typeof requestState[`@${wanted.entity}`] !== 'undefined') {
+            } else if (!entityExists && requestState[`@${wanted.entity}`]) {
 
                 const requestedAbsenceOfEntity = wanted.op === COMPARE.NOT_EQUAL
                     && wanted.compare.length === 0;

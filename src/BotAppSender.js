@@ -83,7 +83,13 @@ class BotAppSender extends ReturnSender {
         const response = await this._fetch(this._apiUrl, { headers, body, method: 'POST' })
             .then((r) => r.json());
 
-        const { request } = response;
+        const { request, errors = null } = response;
+
+        if (errors) {
+            const [{ error, description = '', code = 500 }] = errors;
+
+            throw new Error(`[${code}] ${error} ${description}`);
+        }
 
         return {
             message_id: request.mid

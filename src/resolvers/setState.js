@@ -4,6 +4,7 @@
 'use strict';
 
 const Router = require('../Router');
+const Ai = require('../Ai');
 const { getSetState } = require('../utils/getUpdate');
 const customFn = require('../utils/customFn');
 
@@ -35,6 +36,7 @@ function setState (params, { isLastIndex, allowForbiddenSnippetWords }) {
         }
 
         const obj = getSetState(params.setState, req, res);
+        await Ai.ai.processSetStateEntities(req, setState);
         res.setState(obj);
 
         return ret;

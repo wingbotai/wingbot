@@ -186,6 +186,26 @@ class Ai {
         return model;
     }
 
+    async processSetStateEntities (req, setState) {
+        const keys = Object.keys(setState);
+
+        for (const key of keys) {
+            if (!key.match(/^@/) || typeof setState[key] !== 'string') continue;
+
+            const cleanKey = `${key}`.replace(/^@/, '');
+            // eslint-disable-next-line no-param-reassign
+            setState[key] = await this._resolveCustomEntityValue(req, cleanKey, setState[key]);
+        }
+    }
+
+    async _resolveCustomEntityValue (req, entity, text) {
+        const model = this._getModelForRequest(req);
+        if (!model || typeof model.resolveEntityValue !== 'function') {
+            return text;
+        }
+        return model.resolveEntityValue(entity, text);
+    }
+
     /**
      * Returns matching middleware, that will export the intent to the root router
      * so the intent will be matched in a global context

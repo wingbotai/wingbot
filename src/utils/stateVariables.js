@@ -151,7 +151,9 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
         }
         switch (value.t) {
             case DIALOG_CONTEXT:
-                if (previousState._lastVisitedPath !== res.newState._lastVisitedPath) {
+                if (previousState._lastVisitedPath !== undefined
+                    && previousState._lastVisitedPath !== res.newState._lastVisitedPath) {
+
                     delete state[key];
                     delete state[referencedKey];
                 }

@@ -117,7 +117,7 @@ class CustomEntityDetectionModel {
                     return null;
                 }
 
-                if (e.end < e.start || e.end >= text.length) {
+                if (e.end < e.start || e.end > text.length) {
                     throw new Error(`Entity matcher '${entity}' retuned end out of bounds: ${e.end} (start: ${e.start}, length: ${text.length})`);
                 }
 
@@ -216,13 +216,13 @@ class CustomEntityDetectionModel {
         return res;
     }
 
-    async _resolveEntities (text) {
+    async _resolveEntities (text, singleEntity = null) {
         const resolved = new Set();
         let missing = Array.from(this._entityDetectors.keys());
         const entities = [];
 
         while (missing.length !== 0) {
-            const detect = [];
+            let detect = [];
 
             missing = missing.filter((e) => {
                 const { dependencies } = this._entityDetectors.get(e);
@@ -239,6 +239,11 @@ class CustomEntityDetectionModel {
                 break;
             }
 
+            if (singleEntity && detect.includes(singleEntity)) {
+                detect = [singleEntity];
+                missing = [];
+            }
+
             const results = await Promise.all(
                 detect.map((entity) => this._detectEntities(entity, text, entities))
             );
@@ -248,7 +253,27 @@ class CustomEntityDetectionModel {
             results.forEach((res) => entities.push(...res));
         }
 
-        return this._nonOverlapping(entities);
+        const clean = this._nonOverlapping(entities);
+
+        if (!singleEntity) {
+            return clean;
+        }
+
+        const entity = clean.find((e) => e.entity === singleEntity);
+
+        if (!entity) {
+            return [];
+        }
+
+        return [entity];
+    }
+
+    async resolveEntityValue (entity, text) {
+        if (!this._entityDetectors.has(entity)) {
+            return text;
+        }
+        const [res = null] = await this._resolveEntities(text, entity);
+        return res ? res.value : null;
     }
 
     /**

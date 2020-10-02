@@ -3,9 +3,11 @@
  */
 'use strict';
 
+const assert = require('assert');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const Ai = require('../src/Ai');
+const CustomEntityDetectionModel = require('../src/wingbot/CustomEntityDetectionModel');
 
 const { ai } = Ai;
 
@@ -14,10 +16,29 @@ describe('<Ai> entity context', () => {
     /** @type {Tester} */
     let t;
 
+    before(() => {
+        ai.register(new CustomEntityDetectionModel({}))
+            .setEntityDetector('customentity', (text) => {
+                const match = text.match(/youyou/);
+
+                if (!match) {
+                    return null;
+                }
+                return {
+                    text: match[0],
+                    value: 'detected'
+                };
+            });
+    });
+
     beforeEach(() => {
         const bot = new Router();
 
         const first = new Router();
+
+        first.use(ai.global('custom', ['@customentity']), (req, res) => {
+            res.text(`e ${req.entity('customentity')}`);
+        });
 
         first.use(ai.global('foo-with', ['foo', '@entity']), (req, res) => {
             res.text('foo with entity');
@@ -40,7 +61,7 @@ describe('<Ai> entity context', () => {
                     action: 'bar-with',
                     title: 'setstate',
                     // match: ['@entity=value'],
-                    setState: { '@entity': { x: 1 } }
+                    setState: { '@entity': { x: 1 }, '@customentity': 'youyou' }
                 }
             ]);
         });
@@ -212,10 +233,22 @@ describe('<Ai> entity context', () => {
         t.any().contains('bar without entity');
     });
 
+    it('passes the text through entity detector just once', async () => {
+        await t.text('youyou');
+
+        t.any().contains('e detected');
+
+        // @ts-ignore
+        assert.strictEqual(t.getState().state['@customentity'], 'detected');
+    });
+
     it('setstate from a quick reply is preferred', async () => {
         await t.postBack('/first/bar-without');
 
         await t.quickReplyText('setstate');
+
+        // @ts-ignore
+        assert.strictEqual(t.getState().state['@customentity'], 'detected');
 
         await t.intent('second');
 

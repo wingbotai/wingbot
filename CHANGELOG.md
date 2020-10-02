@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for system entities
 - new `botbuild.plugin` resolver, which combines snippets (inlineCode) and plugins (customCode) resolvers
   + public plugin library is now a part of the core Wingbot lib
+- New flight director adapter class `BotApp`
 
 ### Fixed
 
