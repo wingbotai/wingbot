@@ -128,7 +128,8 @@ class CustomEntityDetectionModel {
                     entity,
                     text: entityText,
                     start: offset + e.start,
-                    end: offset + e.end
+                    end: offset + e.end,
+                    score
                 };
             })
             .filter((e) => e !== null);
