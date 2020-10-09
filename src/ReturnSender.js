@@ -339,14 +339,14 @@ class ReturnSender {
             if (this._logger) {
                 await Promise.resolve(this._logger
                     .error(e, this._userId, sent, incomming, meta));
-            } else {
-                console.error(e, this._userId, sent, incomming); // eslint-disable-line
             }
-            return {
-                status: e.code || 500,
-                results: this._results
-            };
+
+            throw e;
         }
+    }
+
+    get results () {
+        return this._results;
     }
 
 }

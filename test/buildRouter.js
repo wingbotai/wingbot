@@ -18,7 +18,80 @@ function wait (ms) {
     return new Promise((r) => setTimeout(r, ms));
 }
 
-describe('<BuildRouter>', async () => {
+async function throws (fn, expectedMessage) {
+    let message = 'none';
+    try {
+        await Promise.resolve(fn());
+    } catch (e) {
+        message = e.message;
+    }
+    // @ts-ignore
+    assert.strictEqual(message, expectedMessage, 'Exception does not match');
+}
+
+describe('<BuildRouter>', function () {
+
+    this.timeout(6000);
+
+    it('throws nice exceptions', async () => {
+
+        await throws(
+            () => new BuildRouter(undefined),
+            'Bot build failed: expected the block to be an object, undefined given'
+        );
+        await throws(
+            () => new BuildRouter({}),
+            'Bot build failed: "url", "botId" or "routes" in block, none given'
+        );
+        await throws(
+            () => BuildRouter.fromData({}),
+            'Bot build failed: "blocks" should be an array'
+        );
+        await throws(
+            () => BuildRouter.fromData(['haha']),
+            'Bot build failed: "blocks" should be an array of objects'
+        );
+        await throws(
+            () => BuildRouter.fromData([{}]),
+            'Bot build failed: there is no block with "block.isRoot=true" property'
+        );
+        await throws(
+            async () => {
+                const b = new BuildRouter({ botId: '1' });
+                await b.preload();
+            },
+            'Bot load failed: Snapshot \'production\' does not exist or not deployed on botId \'1\''
+        );
+        await throws(
+            async () => {
+                const b = new BuildRouter({ botId: '591ef270-b5d5-4310-af77-b0d435fac3cb' });
+                await b.preload();
+            },
+            'Bot load failed: 401 - missing authorization token'
+        );
+        await throws(
+            async () => {
+                const b = new BuildRouter({ botId: '591ef270-b5d5-4310-af77-b0d435fac3cb', token: 'a' });
+                await b.preload();
+            },
+            'Bot load failed: 401 - The token probably does not match snapshot \'production\' and botId \'591ef270-b5d5-4310-af77-b0d435fac3cb\''
+        );
+        await throws(
+            async () => {
+                const b = new BuildRouter({ url: 'https://google.com' });
+                await b.preload();
+            },
+            'invalid json response body at https://www.google.com/ reason: Unexpected token < in JSON at position 0'
+        );
+        const url = 'https://raw.githubusercontent.com/wingbotai/wingbot/master/test/faq-testbot.json';
+        await throws(
+            async () => {
+                const b = new BuildRouter({ url });
+                await b.preload();
+            },
+            'Bot load failed: expected array of "blocks" in the body'
+        );
+    });
 
     it('should behave as router', async () => {
         const plugins = new Plugins();

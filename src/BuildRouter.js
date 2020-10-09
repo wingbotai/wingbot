@@ -4,6 +4,7 @@
 'use strict';
 
 const { default: fetch } = require('node-fetch');
+const assert = require('assert');
 const path = require('path');
 const Router = require('./Router');
 const Plugins = require('./Plugins');
@@ -71,9 +72,7 @@ class BuildRouter extends Router {
     constructor (block, plugins = new Plugins(), context = {}, fetchFn = fetch) {
         super();
 
-        if (!block || typeof block !== 'object') {
-            throw new Error('Params should be an object');
-        }
+        this._validateBlock(block);
 
         this._plugins = plugins;
 
@@ -110,15 +109,37 @@ class BuildRouter extends Router {
          */
         this.keepConfigFor = 60000;
 
+        this._snapshot = null;
+        this._botId = null;
+
         if (typeof block.routes === 'object') {
             this._buildBot(block);
         } else if (typeof block.url === 'string') {
             this._loadBotUrl = block.url;
         } else if (typeof block.botId === 'string') {
-            const snapshot = block.snapshot || 'production';
-            this._loadBotUrl = `https://api.wingbot.ai/bots/${block.botId}/snapshots/${snapshot}/blocks`;
-        } else {
-            throw new Error('Not implemented yet');
+            this._snapshot = block.snapshot || 'production';
+            this._botId = block.botId;
+            this._loadBotUrl = `https://api.wingbot.ai/bots/${this._botId}/snapshots/${this._snapshot}/blocks`;
+        }
+    }
+
+    _validateBlock (block, action = 'build') {
+        // @ts-ignore
+        assert.ok(block && typeof block === 'object', `Bot ${action} failed: expected the block to be an object, ${typeof block} given`);
+
+        // @ts-ignore
+        assert.ok(
+            block.url || block.botId || block.routes,
+            `Bot ${action} failed: "url", "botId" or "routes" in block, none given`
+        );
+        // @ts-ignore
+        assert.ok(
+            block.url || block.botId || block.routes,
+            `Bot ${action} failed: "url", "botId" or "routes" in block, none given`
+        );
+        if (block.routes) {
+            // @ts-ignore
+            assert.ok(Array.isArray(block.routes), `Bot ${action} failed: "routes" in a block should be an array`);
         }
     }
 
@@ -176,7 +197,7 @@ class BuildRouter extends Router {
                 if (this._configTs > 0 && !botLoaded) {
                     // mute
                     // eslint-disable-next-line no-console
-                    console.info('loading new state failed - nothing has ben broken', e);
+                    console.info('Loading new state failed - recovering', e);
                 } else {
                     throw e;
                 }
@@ -224,8 +245,9 @@ class BuildRouter extends Router {
     async loadBot () {
         const options = {};
 
+        let auth;
         if (this._loadBotAuthorization) {
-            const auth = await Promise.resolve(this._loadBotAuthorization);
+            auth = await Promise.resolve(this._loadBotAuthorization);
             Object.assign(options, {
                 headers: {
                     Authorization: auth
@@ -235,16 +257,42 @@ class BuildRouter extends Router {
 
         const response = await this._fetch(this._loadBotUrl, options);
 
+        if (response.status === 404) {
+            throw new Error(this._botId
+                ? `Bot load failed: Snapshot '${this._snapshot}' does not exist or not deployed on botId '${this._botId}'`
+                : `Bot load failed: Url ${this._loadBotUrl} does not exist (returned status 404)`);
+        }
+        if (response.status === 401 && !auth) {
+            throw new Error('Bot load failed: 401 - missing authorization token');
+        }
+        if (response.status === 403 || response.status === 401) {
+            const reason = this._botId
+                ? `The token probably does not match snapshot '${this._snapshot}' and botId '${this._botId}'`
+                : `The call to '${this._loadBotUrl}' was unauthorized`;
+
+            throw new Error(`Bot load failed: ${response.status} - ${reason}`);
+        }
+        if (response.status >= 400) {
+            throw new Error(`Bot load failed: ${response.status} - ${response.statusText} (snapshot '${this._snapshot}', botId '${this._botId})`);
+        }
+
         const snapshot = await response.json();
 
-        if (!snapshot || !Array.isArray(snapshot.blocks)) {
-            throw new Error('Bad BOT definition API response');
-        }
+        this._validateBlocks(snapshot && snapshot.blocks, 'load');
 
         return snapshot;
     }
 
+    _validateBlocks (blocks, action = 'build') {
+        if (!Array.isArray(blocks)) {
+            throw new Error(`Bot ${action} failed: expected array of "blocks" in the body`);
+        }
+        blocks.forEach((b) => this._validateBlock(b, action));
+    }
+
     buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER) {
+        this._validateBlocks(blocks);
+
         Object.assign(this._context, { blocks });
 
         const rootBlock = blocks.find((block) => block.isRoot);
@@ -362,7 +410,7 @@ class BuildRouter extends Router {
     }
 
     _findEntryPointsInResolver (linksMap, resolver, route, context) {
-        const includedBlock = context.blocks
+        const includedBlock = (context.blocks || [])
             .find((b) => b.staticBlockId === resolver.params.staticBlockId);
 
         if (!includedBlock) {
@@ -549,7 +597,15 @@ class BuildRouter extends Router {
  */
 BuildRouter.fromData = function fromData (blocks, plugins = new Plugins(), context = {}) {
 
+    // @ts-ignore
+    assert.ok(Array.isArray(blocks), 'Bot build failed: "blocks" should be an array');
+    // @ts-ignore
+    assert.ok(blocks.every((b) => b && typeof b === 'object'), 'Bot build failed: "blocks" should be an array of objects');
+
     const rootBlock = blocks.find((block) => block.isRoot);
+
+    // @ts-ignore
+    assert.ok(rootBlock, 'Bot build failed: there is no block with "block.isRoot=true" property');
 
     return new BuildRouter(rootBlock, plugins, ({ blocks, ...context }));
 };

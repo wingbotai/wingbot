@@ -8,8 +8,52 @@ const sinon = require('sinon');
 const ReturnSender = require('../src/ReturnSender');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
+const { Processor, Request } = require('..');
 
 describe('<ReturnSender>', () => {
+
+    it('throws an error through the processor', async () => {
+
+        const bot = new Router();
+
+        bot.use((req, res) => {
+            res.text('foo');
+        });
+
+        const log = {
+            error: sinon.spy(),
+            log: sinon.spy()
+        };
+
+        const p = new Processor(bot, { log });
+
+        class MockSender extends ReturnSender {
+
+            async _send (m) {
+                if (m.message && m.message.text === 'foo') {
+                    throw new Error('fails');
+                }
+
+                return { message_id: '0' };
+            }
+
+        }
+
+        const req = Request.text('u', 'bar');
+        const s = new MockSender({}, 'u', req);
+
+        let error = null;
+        try {
+            await p.processMessage(req, 'i', s);
+        } catch (e) {
+            error = e;
+        }
+
+        assert.ok(log.error.calledOnce);
+        assert.ok(log.error.firstCall.args[0] instanceof Error, 'there should be an error');
+        assert.strictEqual(log.error.firstCall.args[1], req);
+        assert.strictEqual(error, null, 'there should no an error');
+    });
 
     describe('#send() & finished()', () => {
 
@@ -28,9 +72,14 @@ describe('<ReturnSender>', () => {
 
             await new Promise((r) => setTimeout(r, 10));
 
-            const res = await rs.finished();
+            let err = null;
+            try {
+                await rs.finished();
+            } catch (e) {
+                err = e;
+            }
 
-            assert.equal(res.status, 500);
+            assert.equal(err && err.message, 'Fail');
         });
 
         it('should not log, if requested', async () => {
