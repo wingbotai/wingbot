@@ -39,7 +39,7 @@ class WingbotModel extends CachedModel {
      * @param {number} [options.cacheSize]
      * @param {number} [options.matches]
      * @param {Function} [options.fetch]
-     * @param {{ warn: Function }} [log]
+     * @param {{ warn: Function, log: Function }} [log]
      */
     constructor (options, log = console) {
         super(options, log);
@@ -79,20 +79,26 @@ class WingbotModel extends CachedModel {
                 { timeout: 20000 }
             );
 
+            if (res.status === 403) {
+                // model does not exist
+                this._log.log(`NLP model '${this._model}' does not exist or is not deployed yet.`);
+                return { intents: [], entities: [] };
+            }
+
             const response = await res.json();
 
-            if (response.error || !Array.isArray(response.tags)) {
-                this._log.warn(response.error);
-                return [];
+            if (res.status >= 300) {
+                this._log.warn(response.message || res.statusText);
+                return { intents: [], entities: [] };
             }
 
             return {
-                intents: response.tags,
+                intents: response.intents || response.tags,
                 entities: response.entities
             };
         } catch (e) {
             this._log.warn('AI query failed', e);
-            return [];
+            return { intents: [], entities: [] };
         }
     }
 
