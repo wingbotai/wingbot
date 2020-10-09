@@ -206,8 +206,10 @@ class Processor extends EventEmitter {
                 Object.assign(state, {
                     lastSendError: new Date(),
                     lastErrorMessage: err.message,
-                    lastErrorCode: err.code
+                    lastErrorCode: err.code,
+                    lastInteraction: new Date()
                 });
+
                 return this.stateStorage.saveState(state);
             })
             .catch((e) => {
@@ -288,13 +290,14 @@ class Processor extends EventEmitter {
             if (this.options.waitsForSender) {
                 result = await messageSender.finished(req, res);
             } else {
-                messageSender.finished(req, res).catch(() => {});
+                messageSender.finished(req, res)
+                    .catch((e) => this.reportSendError(e, message, pageId));
                 result = { status: 200 };
             }
         } catch (e) {
             const { code = 500 } = e;
             this.reportSendError(e, message, pageId);
-            result = { status: code, error: e.message };
+            result = { status: code, error: e.message, results: messageSender.results };
         }
         await preloadPromise;
         return result;
