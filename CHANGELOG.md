@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - designer resolver `botbuild.postback` now passes the text to next interaction
 - fixes a problem, which affects the API, when an empty conversation occurs
+- nice NLP & BuildRouted exceptions
+
+### Changed
+
+- Return sended now throws the exception through processor
 
 ### Changed
 
