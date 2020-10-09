@@ -22,6 +22,8 @@ node_modules
 /.nyc_output
 /html-report
 
+/test/my-bot.js
+
 # Dont remove, because it's used in tests
 
 !/public/assets/img/minify/fb-share.jpg
