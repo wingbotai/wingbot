@@ -31,7 +31,7 @@ async function throws (fn, expectedMessage) {
 
 describe('<BuildRouter>', function () {
 
-    this.timeout(6000);
+    this.timeout(10000);
 
     it('throws nice exceptions', async () => {
 

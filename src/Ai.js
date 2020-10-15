@@ -37,16 +37,8 @@ let uq = 1;
  * @prop {string} path
  */
 
-/**
- * @typedef {object} IntentAction
- * @prop {string} action
- * @prop {Intent} intent
- * @prop {number} sort
- * @prop {boolean} local
- * @prop {boolean} aboveConfidence
- * @prop {boolean} [winner]
- * @prop {string} [title]
- */
+/** @typedef {import('./Request').IntentAction} IntentAction */
+/** @typedef {import('./Request')} Request */
 
 /**
  * @class Ai
@@ -492,17 +484,22 @@ class Ai {
         if (aiActions.length > 1 && aiActions[1].aboveConfidence !== false) {
 
             const [first, second] = aiActions;
-            const firstScore = first.sort || first.score;
-            const secondScore = second.sort || second.score;
+
+            const firstScore = first.sort;
+            const secondScore = second.sort;
 
             const margin = 1 - (secondScore / firstScore);
-            const oneHasTitle = first.title || second.title;
+            const bothHaveTitle = first.title && second.title;
             const similarScore = margin < (1 - Ai.ai.confidence);
+
             const intentIsNotTheSame = !first.intent || !second.intent
                 || !first.intent.intent
                 || first.intent.intent !== second.intent.intent;
 
-            if (oneHasTitle && similarScore && intentIsNotTheSame) {
+            if (bothHaveTitle
+                && similarScore
+                && intentIsNotTheSame) {
+
                 return true;
             }
         }

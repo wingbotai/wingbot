@@ -205,7 +205,17 @@ class CustomEntityDetectionModel {
         for (let i = 0; i < entities.length; i++) {
             const entity = entities[i];
 
-            const notOverlapping = res.every((e) => e.start >= entity.end || e.end <= entity.start);
+            let notOverlapping = res
+                .every((e) => e.start >= entity.end || e.end <= entity.start);
+
+            if (!notOverlapping) {
+                const isDuplicate = res
+                    .some((e) => e.start === entity.start && e.end === entity.end);
+
+                if (isDuplicate) {
+                    notOverlapping = true;
+                }
+            }
 
             if (notOverlapping) {
                 res.push(entity);
