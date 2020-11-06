@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.6.0-alpha.28",
+  "version": "3.6.0",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -37,37 +37,37 @@
   "homepage": "https://github.com/wingbot.ai/wingbot#readme",
   "devDependencies": {
     "cpy-cli": "^3.1.1",
-    "eslint": "^7.6.0",
+    "eslint": "^7.12.1",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-mocha": "^0.7.3",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jsdoc": "^30.2.1",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^30.7.7",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-mocha": "^8.0.0",
-    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react": "^7.21.5",
     "gitbook-cli": "^2.3.2",
     "graphql-markdown": "^5.2.0",
     "handlebars": "^4.7.6",
     "jsdoc-to-markdown": "^6.0.1",
-    "mocha": "^8.0.1",
+    "mocha": "^8.2.1",
     "move-cli": "^1.2.1",
     "nyc": "^15.1.0",
     "po2json": "^0.4.5",
     "rimraf": "^3.0.2",
-    "sinon": "^9.0.2",
+    "sinon": "^9.2.1",
     "tsd-jsdoc": "^2.5.0"
   },
   "dependencies": {
-    "graphql": "^15.3.0",
+    "graphql": "^15.4.0",
     "graphql-mongodb-projection": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
-    "node-fetch": "^2.6.0",
-    "path-to-regexp": "^6.1.0",
-    "uuid": "^8.3.0"
+    "node-fetch": "^2.6.1",
+    "path-to-regexp": "^6.2.0",
+    "uuid": "^8.3.1"
   },
   "optionalDependencies": {
     "po2json": "^0.4.5",
-    "handlebars": "^4.0.11",
+    "handlebars": "^4.0.0",
     "request-promise-native": "^1.0.9"
   }
 }
