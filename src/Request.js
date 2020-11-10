@@ -283,6 +283,7 @@ class Request {
         return intent.intent;
     }
 
+    // eslint-disable-next-line jsdoc/require-param
     /**
      * Get matched entity value
      *
@@ -290,14 +291,14 @@ class Request {
      * @param {number} [sequence] - when there are more then one entity
      * @returns {number|string|null}
      */
-    entity (name, sequence = 0) {
+    entity (name, sequence = 0, useSetState = null) {
         const cleanName = name.replace(/^@/, '');
         const stateKeyName = `@${cleanName}`;
 
         const {
             _winningIntent: intent = this._winningIntent
         } = this.actionData();
-        const setState = this.getSetState();
+        const setState = useSetState || this.getSetState();
         let entities;
         if (intent && intent.entities) {
             ({ entities } = intent);

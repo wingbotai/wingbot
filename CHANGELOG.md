@@ -33,9 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Return sended now throws the exception through processor
-
-### Changed
-
 - Replaced `request-promise-native` with `node-fetch`
 - Raised code coverage threshold to 90-80-90
 

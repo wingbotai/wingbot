@@ -55,7 +55,9 @@ describe('<Ai> entity context', () => {
 
         first.use(ai.global('bar-with', ['bar', '@entity']), (req, res) => {
             res.text('bar with entity')
-                .text(`req.entity ${req.entity('entity')}`);
+                .text(`req.entity ${req.entity('entity')}`, [
+                    { action: '/second/a', title: 'goto', match: ['@entity?'] }
+                ]);
         });
 
         first.use(ai.global('bar-without', ['bar']), (req, res) => {
@@ -89,6 +91,14 @@ describe('<Ai> entity context', () => {
             res.text('second without entity');
         });
 
+        second.use('a', (req, res) => {
+            res.text(`A ${req.state['@entity']}`, { b: 'goto' });
+        });
+
+        second.use('b', (req, res) => {
+            res.text(`B ${req.state['@entity']}`);
+        });
+
         first.use('expect', (req, res) => {
             res.text('gimme').expected('next');
         });
@@ -116,6 +126,20 @@ describe('<Ai> entity context', () => {
         });
 
         t = new Tester(bot);
+    });
+
+    it('optional entity in quick reply prolongs a context', async () => {
+        await t.intentWithEntity('bar', 'entity', 'sasalele');
+
+        t.passedAction('bar-with');
+
+        await t.quickReplyText('goto');
+
+        t.any().contains('A sasalele');
+
+        await t.quickReplyText('goto');
+
+        t.any().contains('B sasalele');
     });
 
     it('keeps the entity inside a context', async () => {

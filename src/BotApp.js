@@ -62,6 +62,15 @@ class BotApp {
         this._verify = promisify(jwt.verify);
     }
 
+    /**
+     * Get the processor instance
+     *
+     * @returns {Processor}
+     */
+    get processor () {
+        return this.processor;
+    }
+
     _errorResponse (message, status) {
         return {
             statusCode: status,
