@@ -21,6 +21,24 @@ describe('FAQ BOUNCE', async () => {
         t = new Tester(bot);
     });
 
+    it('passes recognized entity to the target interaction', async () => {
+        await t.postBack('allowed-and-then-do-not-return');
+
+        await t.intentWithEntity('faq-with-entity', 'entity', 'sasalele');
+
+        t.any().contains('entity is sasalele');
+
+        // ensure the context works
+        await t.postBack('/faq/with-faq-and-entity');
+
+        t.any().contains('entity is sasalele');
+
+        // the second attempt resets the context
+        await t.postBack('/faq/with-faq-and-entity');
+
+        t.any().contains('entity is');
+    });
+
     it('allowed and then do not return WITH FAQ', async () => {
         await t.postBack('allowed-and-then-do-not-return');
 

@@ -68,6 +68,12 @@ function bounce (route, nextRouteIsSameResponder, referredRoutePath = null) {
             };
         }
 
+        // do the setstate
+        if (winner.setState) {
+            Object.assign(req.state, winner.setState);
+            res.setState(winner.setState);
+        }
+
         await postback(winner.action, resolverTagData, true);
 
         switch (route.bounceReturn) {

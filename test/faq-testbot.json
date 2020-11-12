@@ -410,6 +410,31 @@
                     "aiGlobal" : true
                 },
                 {
+                    "id" : "71f23dd0-e147-11ea-b4f2-ef90cb7950de",
+                    "path" : "with-faq-and-entity",
+                    "name" : "with-faq-and-entity",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "aiTags" : [
+                        "faq-with-entity",
+                        "@entity"
+                    ],
+                    "aiGlobal" : true,
+                    "resolvers" : [
+                        {
+                            "tag": "faq",
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "entity is {{[@entity]}}"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
                     "id" : "71f23dd0-e147-11ea-b4f2-ef90cb7940de",
                     "path" : "without-faq",
                     "name" : "without faq",
