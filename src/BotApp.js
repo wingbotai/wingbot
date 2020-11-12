@@ -55,8 +55,15 @@ class BotApp {
         this._processor = new Processor(bot, processorOptions);
 
         this._secret = Promise.resolve(secret);
-        this._apiUrl = options.apiUrl;
         this._fetch = fetch; // mock
+
+        let { apiUrl } = options;
+
+        if (`${apiUrl}`.match(/^https?:\/\/[0-9.:a-zA-Z\-_]+\/?$/)) {
+            apiUrl = `${apiUrl}`.replace(/\/?$/, '/webhook/api');
+        }
+
+        this._apiUrl = apiUrl;
 
         this._senderLogger = chatLogStorage;
         this._verify = promisify(jwt.verify);
@@ -68,7 +75,7 @@ class BotApp {
      * @returns {Processor}
      */
     get processor () {
-        return this.processor;
+        return this._processor;
     }
 
     _errorResponse (message, status) {
@@ -146,8 +153,8 @@ class BotApp {
      * bot.use((req, res) => { res.text('hello!'); });
      *
      * const botApp = new BotApp(bot, {
-     *     apiUrl: 'https://<url to flight director>',
-     *     secret: '<application secret in flight director>'
+     *     apiUrl: 'https://<url to orchestrator>',
+     *     secret: '<application secret in orchestrator>'
      * });
      *
      * app.get('/bot', express.text(), (req, res) => {
