@@ -846,6 +846,8 @@ class Request {
     /**
      * Returs action string, if there is an action detected by NLP
      *
+     * > use rather designer's bounce feature instead of this pattern
+     *
      * @returns {string|null}
      * @example
      *

@@ -391,6 +391,8 @@ class CustomEntityDetectionModel {
 
                 const entity = this._entityByDependency(useEntities, entityName);
                 value = entity ? entity.value : null;
+            } else if (entities.length === 0) {
+                [value] = match;
             } else {
                 value = useEntities.reduce((o, e) => Object.assign(o, {
                     [e.entity]: e.value
