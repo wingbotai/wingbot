@@ -26,6 +26,8 @@ const DEFAULT_CACHE_SIZE = 0;
  * @param {Entity[]} entities
  * @param {Intent[]} intents
  */
+
+/** @typedef {import('../Request')} Request */
 class CachedModel extends CustomEntityDetectionModel {
 
     /**
@@ -43,10 +45,11 @@ class CachedModel extends CustomEntityDetectionModel {
 
     /**
      * @param {string} text - the user input
+     * @param {Request} [req] - the user input
      * @returns {Promise<Result>}
      */
-    async resolve (text) {
-        const local = await super.resolve(text);
+    async resolve (text, req = null) {
+        const local = await super.resolve(text, req);
 
         if (this._cacheMap.has(text)) {
             return this._cacheMap.get(text);

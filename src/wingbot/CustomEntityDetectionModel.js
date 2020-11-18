@@ -48,6 +48,8 @@
  * @param {Intent[]} intents
  */
 
+/** @typedef {import('../Request')} Request */
+
 class CustomEntityDetectionModel {
 
     /**
@@ -187,8 +189,9 @@ class CustomEntityDetectionModel {
     /**
      *
      * @param {DetectedEntity[]} entities
+     * @param {string[]} expectedEntities
      */
-    _nonOverlapping (entities) {
+    _nonOverlapping (entities, expectedEntities) {
         // longest first
         entities.sort(({ start: a, end: b }, { start: z, end: y }) => {
             const aLen = b - a;
@@ -200,24 +203,59 @@ class CustomEntityDetectionModel {
             return zLen - aLen;
         });
 
-        const res = [];
+        let res = [];
 
         for (let i = 0; i < entities.length; i++) {
             const entity = entities[i];
 
-            let notOverlapping = res
-                .every((e) => e.start >= entity.end || e.end <= entity.start);
+            const isExpected = expectedEntities.includes(entity.entity);
 
-            if (!notOverlapping) {
-                const isDuplicate = res
-                    .some((e) => e.start === entity.start && e.end === entity.end);
+            let overlapping = res
+                .some((e) => e.start < entity.end && e.end > entity.start);
 
-                if (isDuplicate) {
-                    notOverlapping = true;
+            if (overlapping) {
+                const duplicate = res
+                    .find((e) => e.start === entity.start && e.end === entity.end);
+
+                if (duplicate) {
+                    overlapping = !isExpected && expectedEntities.includes(duplicate.entity);
+                }
+
+                if (isExpected) {
+                    overlapping = false;
+                    res = res.filter((e) => {
+                        const isOverlapping = e.start < entity.end && e.end > entity.start;
+
+                        if (!isOverlapping) {
+                            return true;
+                        }
+
+                        const expectedEntity = expectedEntities.includes(e.entity);
+
+                        if (expectedEntity && !duplicate) {
+                            overlapping = true;
+                        }
+
+                        return expectedEntity;
+                    });
+
+                    // try to put back previously ignored entities
+                    for (let k = 0; k < i; k++) {
+                        const putback = entities[k];
+                        const currentConflict = putback.start < entity.end
+                            && putback.end > entity.start;
+
+                        const othersConflict = res.some((e) => putback === e
+                            || (e.start < putback.end && e.end > putback.start));
+
+                        if (!currentConflict && !othersConflict) {
+                            res.push(putback);
+                        }
+                    }
                 }
             }
 
-            if (notOverlapping) {
+            if (!overlapping) {
                 res.push(entity);
             }
         }
@@ -227,7 +265,7 @@ class CustomEntityDetectionModel {
         return res;
     }
 
-    async _resolveEntities (text, singleEntity = null) {
+    async _resolveEntities (text, singleEntity = null, expectedEntities = []) {
         const resolved = new Set();
         let missing = Array.from(this._entityDetectors.keys());
         const entities = [];
@@ -264,7 +302,7 @@ class CustomEntityDetectionModel {
             results.forEach((res) => entities.push(...res));
         }
 
-        const clean = this._nonOverlapping(entities);
+        const clean = this._nonOverlapping(entities, expectedEntities);
 
         if (!singleEntity) {
             return clean;
@@ -289,11 +327,13 @@ class CustomEntityDetectionModel {
 
     /**
      *
-     * @param {string} text
+     * @param {string} text - the user input
+     * @param {Request} [req]
      * @returns {Promise<Result>}
      */
-    async resolve (text) {
-        const entities = await this._resolveEntities(text);
+    async resolve (text, req) {
+        const expectedEntities = req ? req.expectedEntities() : [];
+        const entities = await this._resolveEntities(text, null, expectedEntities);
         let cleanText = text.toLocaleLowerCase();
 
         // filter the text

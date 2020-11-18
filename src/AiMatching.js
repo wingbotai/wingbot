@@ -237,13 +237,30 @@ class AiMatching {
     /**
      * Create a rule to be cached inside a routing structure
      *
-     * @param {IntentRule|IntentRule[]} intent
-     * @returns {PreprocessorOutput}
+     * @param {IntentRule|IntentRule[]} intentRule
+     * @param {boolean} onlyExpected
+     * @returns {string[]}
      */
-    preprocessRule (intent) {
-        const expressions = Array.isArray(intent) ? intent : [intent];
+    parseEntitiesFromIntentRule (intentRule, onlyExpected = false) {
+        const expressions = Array.isArray(intentRule) ? intentRule : [intentRule];
 
-        const entities = expressions
+        let entities = this._parseEntitiesFromIntentRule(expressions);
+
+        if (onlyExpected) {
+            entities = entities
+                .filter((e) => e.op !== COMPARE.NOT_EQUAL || e.compare.length !== 0);
+        }
+
+        return entities.map((e) => e.entity);
+    }
+
+    /**
+     *
+     * @param {IntentRule[]} intentRules
+     * @returns {EntityExpression[]}
+     */
+    _parseEntitiesFromIntentRule (intentRules) {
+        return intentRules
             .filter((ex) => typeof ex === 'object' || ex.match(/^@/))
             .map((ex) => {
                 if (typeof ex === 'string') {
@@ -258,6 +275,18 @@ class AiMatching {
                     compare: this._normalizeComparisonArray(ex.compare, ex.op)
                 };
             });
+    }
+
+    /**
+     * Create a rule to be cached inside a routing structure
+     *
+     * @param {IntentRule|IntentRule[]} intentRule
+     * @returns {PreprocessorOutput}
+     */
+    preprocessRule (intentRule) {
+        const expressions = Array.isArray(intentRule) ? intentRule : [intentRule];
+
+        const entities = this._parseEntitiesFromIntentRule(expressions);
 
         /** @type {string[]} */
         // @ts-ignore

@@ -104,7 +104,7 @@ class Router extends ReducerWrapper {
         reducers.forEach(({ globalIntents }) => {
             for (const gi of globalIntents.values()) {
                 const {
-                    id, matcher, action: intentPath, local, title, meta = {}
+                    id, matcher, action: intentPath, local, title, usedEntities, meta = {}
                 } = gi;
                 const action = intentPath === '/*'
                     ? pathContext.path
@@ -113,6 +113,7 @@ class Router extends ReducerWrapper {
                 this.globalIntents.set(id, {
                     id,
                     matcher,
+                    usedEntities,
                     action,
                     localPath: pathContext.path,
                     local,

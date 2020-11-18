@@ -26,7 +26,8 @@ function fakeReq (text = 'text') {
             isTextOrIntent () { return !!text; },
             intents: null,
             isQuickReply () { return false; },
-            isConfidentInput () { return false; }
+            isConfidentInput () { return false; },
+            expectedEntities () { return []; }
         },
         {
             bookmark: () => null

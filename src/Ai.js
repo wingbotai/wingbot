@@ -163,6 +163,15 @@ class Ai {
     }
 
     /**
+     * Remove registered model
+     *
+     * @param {string} [prefix]
+     */
+    deregister (prefix = 'default') {
+        this._keyworders.delete(prefix);
+    }
+
+    /**
      * Returns registered AI model
      *
      * @param {string} prefix - model prefix
@@ -223,6 +232,7 @@ class Ai {
      */
     global (path, intents, title = null, meta = {}) {
         const matcher = this._createIntentMatcher(intents);
+        const usedEntities = this.matcher.parseEntitiesFromIntentRule(intents, true);
         const id = uq++;
 
         const resolver = {
@@ -230,6 +240,7 @@ class Ai {
             globalIntents: new Map([[id, {
                 id,
                 matcher,
+                usedEntities,
                 local: false,
                 action: '/*',
                 title,
@@ -262,6 +273,7 @@ class Ai {
      */
     local (path, intents, title = null) {
         const matcher = this._createIntentMatcher(intents);
+        const usedEntities = this.matcher.parseEntitiesFromIntentRule(intents, true);
         const id = uq++;
 
         const resolver = {
@@ -269,6 +281,7 @@ class Ai {
             globalIntents: new Map([[id, {
                 id,
                 matcher,
+                usedEntities,
                 local: true,
                 action: '/*',
                 title,

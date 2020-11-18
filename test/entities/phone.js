@@ -39,6 +39,11 @@ describe('@phone ENTITY', () => {
         await ask('+4 721481142', '+4721481142');
         await ask('+42341 721481142', '721481142');
         await ask('call me maybe:721 48 11 42?', '721481142');
+
+        const r = await m.resolve('č. 4200930372');
+
+        // @ts-ignore
+        assert.strictEqual(r.entities[0].start, 3);
     });
 
 });

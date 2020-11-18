@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.7.0] - 2020-11-16
 
-ional entity in quick reply accepts also entities in state
-
 ### Added
 
 - system entities for `email` and `phone`
+
+### Fixed
+
+- entity transformation for regexp entities
 
 ## [3.6.1] - 2020-11-10
 

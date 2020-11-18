@@ -875,6 +875,19 @@ class Request {
         return winner ? winner.action : null;
     }
 
+    _getLocalPathRegexp () {
+        if (this.state._lastVisitedPath) {
+            return new RegExp(`^${this.state._lastVisitedPath}/[^/]+`);
+        }
+        let expected = this.expected();
+        if (expected) {
+            // @ts-ignore
+            expected = expected.action.replace(/\/?[^/]+$/, '');
+            return new RegExp(`^${expected}/[^/]+$`);
+        }
+        return null;
+    }
+
     /**
      * Returns full detected AI action
      *
@@ -892,17 +905,7 @@ class Request {
         const aiActions = [];
 
         // to match the local context intent
-        let localRegexToMatch = null;
-        if (this.state._lastVisitedPath) {
-            localRegexToMatch = new RegExp(`^${this.state._lastVisitedPath}/[^/]+`);
-        } else {
-            let expected = this.expected();
-            if (expected) {
-                // @ts-ignore
-                expected = expected.action.replace(/\/?[^/]+$/, '');
-                localRegexToMatch = new RegExp(`^${expected}/[^/]+$`);
-            }
-        }
+        const localRegexToMatch = this._getLocalPathRegexp();
 
         const localEnhancement = (1 - Ai.ai.confidence) / 2;
         for (const gi of this.globalIntents.values()) {
@@ -1006,6 +1009,41 @@ class Request {
 
         const { action } = parseActionPayload(object, true);
         return action;
+    }
+
+    /**
+     * @returns {string[]}
+     */
+    expectedEntities () {
+        const {
+            _expectedKeywords: exKeywords
+        } = this.state;
+
+        if (exKeywords) {
+            const entities = exKeywords.reduce((arr, expectedKeyword) => {
+                const got = Ai.ai.matcher.parseEntitiesFromIntentRule(expectedKeyword.match, true);
+                arr.push(...got);
+                return arr;
+            }, []);
+
+            if (entities.length !== 0) {
+                return entities;
+            }
+        }
+
+        const localRegexToMatch = this._getLocalPathRegexp();
+
+        const entitySet = new Set();
+
+        for (const gi of this.globalIntents.values()) {
+            const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.action);
+            if (gi.local && !pathMatches) {
+                continue;
+            }
+            gi.usedEntities.forEach((e) => entitySet.add(e));
+        }
+
+        return Array.from(entitySet.values());
     }
 
     static timestamp () {
