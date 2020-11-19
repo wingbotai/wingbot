@@ -32,6 +32,7 @@ Adapter for Wingbot flight director
 
 * [BotApp](#BotApp)
     * [new BotApp(bot, options)](#new_BotApp_new)
+    * [.processor](#BotApp_processor) ⇒ <code>Processor</code>
     * [.request(rawBody, rawHeaders)](#BotApp_request) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
 
 {% raw %}<div id="new_BotApp_new">&nbsp;</div>{% endraw %}
@@ -43,6 +44,12 @@ Adapter for Wingbot flight director
 | bot | <code>ReducerWrapper</code> \| <code>Router</code> | 
 | options | [<code>Options</code>](#Options) | 
 
+{% raw %}<div id="BotApp_processor">&nbsp;</div>{% endraw %}
+
+### botApp.processor ⇒ <code>Processor</code>
+Get the processor instance
+
+**Kind**: instance property of [<code>BotApp</code>](#BotApp)  
 {% raw %}<div id="BotApp_request">&nbsp;</div>{% endraw %}
 
 ### botApp.request(rawBody, rawHeaders) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
@@ -68,8 +75,8 @@ const bot = new Router();
 bot.use((req, res) => { res.text('hello!'); });
 
 const botApp = new BotApp(bot, {
-    apiUrl: 'https://<url to flight director>',
-    secret: '<application secret in flight director>'
+    apiUrl: 'https://<url to orchestrator>',
+    secret: '<application secret in orchestrator>'
 });
 
 app.get('/bot', express.text(), (req, res) => {

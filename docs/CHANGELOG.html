@@ -1106,6 +1106,24 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/" target="_blank">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html" target="_blank">Semantic Versioning</a>.</p>
+<h2 id="370---2020-11-16"><a name="370---2020-11-16" class="plugin-anchor" href="#370---2020-11-16"><i class="fa fa-link" aria-hidden="true"></i></a>[3.7.0] - 2020-11-16</h2>
+<h3 id="added"><a name="added" class="plugin-anchor" href="#added"><i class="fa fa-link" aria-hidden="true"></i></a>Added</h3>
+<ul>
+<li>system entities for <code>email</code> and <code>phone</code></li>
+</ul>
+<h3 id="fixed"><a name="fixed" class="plugin-anchor" href="#fixed"><i class="fa fa-link" aria-hidden="true"></i></a>Fixed</h3>
+<ul>
+<li>entity transformation for regexp entities</li>
+</ul>
+<h2 id="361---2020-11-10"><a name="361---2020-11-10" class="plugin-anchor" href="#361---2020-11-10"><i class="fa fa-link" aria-hidden="true"></i></a>[3.6.1] - 2020-11-10</h2>
+<h3 id="changed"><a name="changed" class="plugin-anchor" href="#changed"><i class="fa fa-link" aria-hidden="true"></i></a>Changed</h3>
+<ul>
+<li>optional entity in quick reply accepts also entities in state</li>
+</ul>
+<h3 id="added"><a name="added" class="plugin-anchor" href="#added"><i class="fa fa-link" aria-hidden="true"></i></a>Added</h3>
+<ul>
+<li>public <code>.processor</code> property on BotApp class</li>
+</ul>
 <h2 id="360---2020-08-21"><a name="360---2020-08-21" class="plugin-anchor" href="#360---2020-08-21"><i class="fa fa-link" aria-hidden="true"></i></a>[3.6.0] - 2020-08-21</h2>
 <h3 id="added"><a name="added" class="plugin-anchor" href="#added"><i class="fa fa-link" aria-hidden="true"></i></a>Added</h3>
 <ul>
@@ -1128,14 +1146,17 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html" target
 <li>public plugin library is now a part of the core Wingbot lib</li>
 </ul>
 </li>
+<li>New flight director adapter class <code>BotApp</code></li>
 </ul>
 <h3 id="fixed"><a name="fixed" class="plugin-anchor" href="#fixed"><i class="fa fa-link" aria-hidden="true"></i></a>Fixed</h3>
 <ul>
 <li>designer resolver <code>botbuild.postback</code> now passes the text to next interaction</li>
 <li>fixes a problem, which affects the API, when an empty conversation occurs</li>
+<li>nice NLP &amp; BuildRouted exceptions</li>
 </ul>
 <h3 id="changed"><a name="changed" class="plugin-anchor" href="#changed"><i class="fa fa-link" aria-hidden="true"></i></a>Changed</h3>
 <ul>
+<li>Return sended now throws the exception through processor</li>
 <li>Replaced <code>request-promise-native</code> with <code>node-fetch</code></li>
 <li>Raised code coverage threshold to 90-80-90</li>
 </ul>
@@ -1210,7 +1231,7 @@ and this project adheres to <a href="https://semver.org/spec/v2.0.0.html" target
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Changelog","level":"3.14","depth":1,"previous":{"title":"Chatbot API GraphQL schema","level":"3.13","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"CHANGELOG.md","mtime":"2020-09-21T19:08:31.214Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-29T09:18:18.700Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Changelog","level":"3.14","depth":1,"previous":{"title":"Chatbot API GraphQL schema","level":"3.13","depth":1,"path":"api/graphqlSchema.md","ref":"api/graphqlSchema.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"CHANGELOG.md","mtime":"2020-11-16T08:25:12.420Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-19T11:16:53.826Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

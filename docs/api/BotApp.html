@@ -1135,6 +1135,7 @@
 <ul>
 <li><a href="#BotApp">BotApp</a><ul>
 <li><a href="#new_BotApp_new">new BotApp(bot, options)</a></li>
+<li><a href="#BotApp_processor">.processor</a> &#x21D2; <code>Processor</code></li>
 <li><a href="#BotApp_request">.request(rawBody, rawHeaders)</a> &#x21D2; <a href="#ApiResponse"><code>Promise.&lt;ApiResponse&gt;</code></a></li>
 </ul>
 </li>
@@ -1161,6 +1162,11 @@
 </tr>
 </tbody>
 </table>
+<div id="BotApp_processor">&#xA0;</div>
+
+<h3 id="botappprocessor-&#x21D2;-processor"><a name="botappprocessor-&#x21D2;-processor" class="plugin-anchor" href="#botappprocessor-&#x21D2;-processor"><i class="fa fa-link" aria-hidden="true"></i></a>botApp.processor &#x21D2; <code>Processor</code></h3>
+<p>Get the processor instance</p>
+<p><strong>Kind</strong>: instance property of <a href="#BotApp"><code>BotApp</code></a>  </p>
 <div id="BotApp_request">&#xA0;</div>
 
 <h3 id="botapprequestrawbody-rawheaders-&#x21D2;-promiseapiresponse"><a name="botapprequestrawbody-rawheaders-&#x21D2;-promiseapiresponse" class="plugin-anchor" href="#botapprequestrawbody-rawheaders-&#x21D2;-promiseapiresponse"><i class="fa fa-link" aria-hidden="true"></i></a>botApp.request(rawBody, rawHeaders) &#x21D2; <a href="#ApiResponse"><code>Promise.&lt;ApiResponse&gt;</code></a></h3>
@@ -1196,8 +1202,8 @@
 bot.use((req, res) =&gt; { res.text(<span class="hljs-string">&apos;hello!&apos;</span>); });
 
 <span class="hljs-keyword">const</span> botApp = <span class="hljs-keyword">new</span> BotApp(bot, {
-    apiUrl: <span class="hljs-string">&apos;https://&lt;url to flight director&gt;&apos;</span>,
-    secret: <span class="hljs-string">&apos;&lt;application secret in flight director&gt;&apos;</span>
+    apiUrl: <span class="hljs-string">&apos;https://&lt;url to orchestrator&gt;&apos;</span>,
+    secret: <span class="hljs-string">&apos;&lt;application secret in orchestrator&gt;&apos;</span>
 });
 
 app.get(<span class="hljs-string">&apos;/bot&apos;</span>, express.text(), (req, res) =&gt; {
@@ -1526,7 +1532,7 @@ app.get(<span class="hljs-string">&apos;/bot&apos;</span>, express.text(), (req,
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"BotApp","level":"3.5","depth":1,"next":{"title":"Template Builders","level":"3.6","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.6.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.6.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.6.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BotApp.md","mtime":"2020-09-29T09:18:06.226Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-29T09:18:18.700Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"BotApp","level":"3.5","depth":1,"next":{"title":"Template Builders","level":"3.6","depth":1,"path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md","articles":[{"title":"ButtonTemplate","level":"3.6.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},{"title":"GenericTemplate","level":"3.6.2","depth":2,"anchor":"#GenericTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#GenericTemplate","articles":[]},{"title":"ReceiptTemplate","level":"3.6.3","depth":2,"anchor":"#ReceiptTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ReceiptTemplate","articles":[]}]},"previous":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/BotApp.md","mtime":"2020-11-19T11:16:39.494Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-19T11:16:53.826Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

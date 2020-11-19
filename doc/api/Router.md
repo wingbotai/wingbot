@@ -37,6 +37,7 @@
         * [.CONTINUE](#Router_CONTINUE)
         * [.BREAK](#Router_BREAK)
         * [.END](#Router_END)
+        * [.NEXT](#Router_NEXT)
 
 {% raw %}<div id="new_Router_new">&nbsp;</div>{% endraw %}
 
@@ -158,7 +159,7 @@ Its same as returning `false`
 
 ### Router.END
 Returning `Router.END` constant stops dispatching request
-Its same as returning `undefined`
+Its same as returning `undefined`, but not in plugin. Returning undefined in plugin
 
 **Kind**: static property of [<code>Router</code>](#Router)  
 **Properties**
@@ -166,6 +167,19 @@ Its same as returning `undefined`
 | Type |
 | --- |
 | <code>null</code> | 
+
+{% raw %}<div id="Router_NEXT">&nbsp;</div>{% endraw %}
+
+### Router.NEXT
+Let the plugin wrapper to decide, when end or not
+Its same as returning `undefined`
+
+**Kind**: static property of [<code>Router</code>](#Router)  
+**Properties**
+
+| Type |
+| --- |
+| <code>undefined</code> | 
 
 {% raw %}<div id="ReducerWrapper">&nbsp;</div>{% endraw %}
 

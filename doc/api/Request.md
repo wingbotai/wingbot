@@ -19,6 +19,8 @@
 <dd></dd>
 <dt><a href="#QuickReply">QuickReply</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#AiSetStateOption">AiSetStateOption</a> : <code>number</code></dt>
+<dd></dd>
 </dl>
 
 {% raw %}<div id="Request">&nbsp;</div>{% endraw %}
@@ -39,6 +41,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.entities](#Request_entities)
     * [.intents](#Request_intents)
     * [.event](#Request_event) : <code>object</code>
+    * [.AI_SETSTATE](#Request_AI_SETSTATE) : <code>enum</code>
     * [.isStandby()](#Request_isStandby) ⇒ <code>boolean</code>
     * [.aiActions()](#Request_aiActions) ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
     * [.aiActionsForQuickReplies([limit], [aiActions], [overrideAction])](#Request_aiActionsForQuickReplies) ⇒ [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply)
@@ -67,11 +70,12 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.setAction(action, [data])](#Request_setAction) ⇒ [<code>Action</code>](#Action) \| <code>null</code> \| <code>undefined</code>
     * [.action([getData])](#Request_action) ⇒ <code>null</code> \| <code>string</code>
     * [.actionData()](#Request_actionData) ⇒ <code>object</code>
-    * [.getSetState()](#Request_getSetState) ⇒ <code>object</code>
+    * [.getSetState(keysFromAi)](#Request_getSetState) ⇒ <code>object</code>
     * [.isConfidentInput()](#Request_isConfidentInput) ⇒ <code>boolean</code>
     * [.actionByAi()](#Request_actionByAi) ⇒ <code>string</code> \| <code>null</code>
     * [.aiActionsWinner()](#Request_aiActionsWinner) ⇒ [<code>IntentAction</code>](#IntentAction) \| <code>null</code>
     * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
+    * [.expectedEntities()](#Request_expectedEntities) ⇒ <code>Array.&lt;string&gt;</code>
 
 {% raw %}<div id="Request_params">&nbsp;</div>{% endraw %}
 
@@ -169,6 +173,18 @@ Instance of {Request} class is passed as first parameter of handler (req)
 The original messaging event
 
 **Kind**: instance property of [<code>Request</code>](#Request)  
+{% raw %}<div id="Request_AI_SETSTATE">&nbsp;</div>{% endraw %}
+
+### request.AI\_SETSTATE : <code>enum</code>
+**Kind**: instance enum of [<code>Request</code>](#Request)  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| ONLY | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>1</code> | 
+| INCLUDE | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>0</code> | 
+| EXCLUDE | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>-1</code> | 
+
 {% raw %}<div id="Request_isStandby">&nbsp;</div>{% endraw %}
 
 ### request.isStandby() ⇒ <code>boolean</code>
@@ -480,10 +496,15 @@ Returns action data of postback or quick reply
 **Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_getSetState">&nbsp;</div>{% endraw %}
 
-### request.getSetState() ⇒ <code>object</code>
+### request.getSetState(keysFromAi) ⇒ <code>object</code>
 Gets incomming setState action variable
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+
+| Param | Type |
+| --- | --- |
+| keysFromAi | [<code>AiSetStateOption</code>](#AiSetStateOption) | 
+
 **Example**  
 ```js
 res.setState(req.getSetState());
@@ -501,6 +522,8 @@ It's good to consider this state in "analytics" integrations.
 
 ### request.actionByAi() ⇒ <code>string</code> \| <code>null</code>
 Returs action string, if there is an action detected by NLP
+
+> use rather designer's bounce feature instead of this pattern
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 **Example**  
@@ -546,6 +569,10 @@ When `getData` is `true`, object will be returned. Otherwise string or null.
 typeof res.postBack() === 'string' || res.postBack() === null;
 typeof res.postBack(true) === 'object';
 ```
+{% raw %}<div id="Request_expectedEntities">&nbsp;</div>{% endraw %}
+
+### request.expectedEntities() ⇒ <code>Array.&lt;string&gt;</code>
+**Kind**: instance method of [<code>Request</code>](#Request)  
 {% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
 
 ## Entity : <code>object</code>
@@ -614,3 +641,7 @@ typeof res.postBack(true) === 'object';
 | action | <code>string</code> | 
 | title | <code>\*</code> | 
 
+{% raw %}<div id="AiSetStateOption">&nbsp;</div>{% endraw %}
+
+## AiSetStateOption : <code>number</code>
+**Kind**: global typedef  

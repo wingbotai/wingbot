@@ -1123,6 +1123,8 @@
 <dd></dd>
 <dt><a href="#QuickReply">QuickReply</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#AiSetStateOption">AiSetStateOption</a> : <code>number</code></dt>
+<dd></dd>
 </dl>
 
 <div id="Request">&#xA0;</div>
@@ -1142,6 +1144,7 @@
 <li><a href="#Request_entities">.entities</a></li>
 <li><a href="#Request_intents">.intents</a></li>
 <li><a href="#Request_event">.event</a> : <code>object</code></li>
+<li><a href="#Request_AI_SETSTATE">.AI_SETSTATE</a> : <code>enum</code></li>
 <li><a href="#Request_isStandby">.isStandby()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_aiActions">.aiActions()</a> &#x21D2; <a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></li>
 <li><a href="#Request_aiActionsForQuickReplies">.aiActionsForQuickReplies([limit], [aiActions], [overrideAction])</a> &#x21D2; <a href="#QuickReply"><code>Array.&lt;QuickReply&gt;</code></a></li>
@@ -1170,11 +1173,12 @@
 <li><a href="#Request_setAction">.setAction(action, [data])</a> &#x21D2; <a href="#Action"><code>Action</code></a> | <code>null</code> | <code>undefined</code></li>
 <li><a href="#Request_action">.action([getData])</a> &#x21D2; <code>null</code> | <code>string</code></li>
 <li><a href="#Request_actionData">.actionData()</a> &#x21D2; <code>object</code></li>
-<li><a href="#Request_getSetState">.getSetState()</a> &#x21D2; <code>object</code></li>
+<li><a href="#Request_getSetState">.getSetState(keysFromAi)</a> &#x21D2; <code>object</code></li>
 <li><a href="#Request_isConfidentInput">.isConfidentInput()</a> &#x21D2; <code>boolean</code></li>
 <li><a href="#Request_actionByAi">.actionByAi()</a> &#x21D2; <code>string</code> | <code>null</code></li>
 <li><a href="#Request_aiActionsWinner">.aiActionsWinner()</a> &#x21D2; <a href="#IntentAction"><code>IntentAction</code></a> | <code>null</code></li>
 <li><a href="#Request_postBack">.postBack([getData])</a> &#x21D2; <code>null</code> | <code>string</code> | <code>object</code></li>
+<li><a href="#Request_expectedEntities">.expectedEntities()</a> &#x21D2; <code>Array.&lt;string&gt;</code></li>
 </ul>
 </li>
 </ul>
@@ -1362,6 +1366,36 @@
 <h3 id="requestevent--object"><a name="requestevent--object" class="plugin-anchor" href="#requestevent--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.event : <code>object</code></h3>
 <p>The original messaging event</p>
 <p><strong>Kind</strong>: instance property of <a href="#Request"><code>Request</code></a>  </p>
+<div id="Request_AI_SETSTATE">&#xA0;</div>
+
+<h3 id="requestaisetstate--enum"><a name="requestaisetstate--enum" class="plugin-anchor" href="#requestaisetstate--enum"><i class="fa fa-link" aria-hidden="true"></i></a>request.AI_SETSTATE : <code>enum</code></h3>
+<p><strong>Kind</strong>: instance enum of <a href="#Request"><code>Request</code></a><br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ONLY</td>
+<td><a href="#AiSetStateOption"><code>AiSetStateOption</code></a></td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td>INCLUDE</td>
+<td><a href="#AiSetStateOption"><code>AiSetStateOption</code></a></td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td>EXCLUDE</td>
+<td><a href="#AiSetStateOption"><code>AiSetStateOption</code></a></td>
+<td><code>-1</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Request_isStandby">&#xA0;</div>
 
 <h3 id="requestisstandby-&#x21D2;-boolean"><a name="requestisstandby-&#x21D2;-boolean" class="plugin-anchor" href="#requestisstandby-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>request.isStandby() &#x21D2; <code>boolean</code></h3>
@@ -1851,9 +1885,24 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_getSetState">&#xA0;</div>
 
-<h3 id="requestgetsetstate-&#x21D2;-object"><a name="requestgetsetstate-&#x21D2;-object" class="plugin-anchor" href="#requestgetsetstate-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.getSetState() &#x21D2; <code>object</code></h3>
+<h3 id="requestgetsetstatekeysfromai-&#x21D2;-object"><a name="requestgetsetstatekeysfromai-&#x21D2;-object" class="plugin-anchor" href="#requestgetsetstatekeysfromai-&#x21D2;-object"><i class="fa fa-link" aria-hidden="true"></i></a>request.getSetState(keysFromAi) &#x21D2; <code>object</code></h3>
 <p>Gets incomming setState action variable</p>
-<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Example</strong>  </p>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>keysFromAi</td>
+<td><a href="#AiSetStateOption"><code>AiSetStateOption</code></a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>  </p>
 <pre><code class="lang-js">res.setState(req.getSetState());
 </code></pre>
 <div id="Request_isConfidentInput">&#xA0;</div>
@@ -1867,6 +1916,9 @@ marked as confident using <code>res.expectedConfidentInput()</code></p>
 
 <h3 id="requestactionbyai-&#x21D2;-string--null"><a name="requestactionbyai-&#x21D2;-string--null" class="plugin-anchor" href="#requestactionbyai-&#x21D2;-string--null"><i class="fa fa-link" aria-hidden="true"></i></a>request.actionByAi() &#x21D2; <code>string</code> | <code>null</code></h3>
 <p>Returs action string, if there is an action detected by NLP</p>
+<blockquote>
+<p>use rather designer&apos;s bounce feature instead of this pattern</p>
+</blockquote>
 <p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a><br><strong>Example</strong>  </p>
 <pre><code class="lang-js"><span class="hljs-keyword">const</span> { Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
 
@@ -1917,6 +1969,10 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 <pre><code class="lang-js"><span class="hljs-keyword">typeof</span> res.postBack() === <span class="hljs-string">&apos;string&apos;</span> || res.postBack() === <span class="hljs-literal">null</span>;
 <span class="hljs-keyword">typeof</span> res.postBack(<span class="hljs-literal">true</span>) === <span class="hljs-string">&apos;object&apos;</span>;
 </code></pre>
+<div id="Request_expectedEntities">&#xA0;</div>
+
+<h3 id="requestexpectedentities-&#x21D2;-arraystring"><a name="requestexpectedentities-&#x21D2;-arraystring" class="plugin-anchor" href="#requestexpectedentities-&#x21D2;-arraystring"><i class="fa fa-link" aria-hidden="true"></i></a>request.expectedEntities() &#x21D2; <code>Array.&lt;string&gt;</code></h3>
+<p><strong>Kind</strong>: instance method of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Entity">&#xA0;</div>
 
 <h2 id="entity--object"><a name="entity--object" class="plugin-anchor" href="#entity--object"><i class="fa fa-link" aria-hidden="true"></i></a>Entity : <code>object</code></h2>
@@ -2082,6 +2138,10 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </tr>
 </tbody>
 </table>
+<div id="AiSetStateOption">&#xA0;</div>
+
+<h2 id="aisetstateoption--number"><a name="aisetstateoption--number" class="plugin-anchor" href="#aisetstateoption--number"><i class="fa fa-link" aria-hidden="true"></i></a>AiSetStateOption : <code>number</code></h2>
+<p><strong>Kind</strong>: global typedef  </p>
 
                                 
                                 </section>
@@ -2125,7 +2185,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2020-09-29T09:18:04.621Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-29T09:18:18.700Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2020-11-19T11:16:38.107Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-19T11:16:53.826Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

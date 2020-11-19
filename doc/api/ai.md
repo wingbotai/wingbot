@@ -27,8 +27,6 @@
 <dd></dd>
 <dt><a href="#BotPath">BotPath</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#IntentAction">IntentAction</a> : <code>object</code></dt>
-<dd></dd>
 <dt><a href="#DetectedEntity">DetectedEntity</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#EntityDetector">EntityDetector</a> ⇒ <code><a href="#DetectedEntity">Array.&lt;DetectedEntity&gt;</a></code> | <code><a href="#DetectedEntity">DetectedEntity</a></code> | <code><a href="#DetectedEntity">Promise.&lt;DetectedEntity&gt;</a></code> | <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code></dt>
@@ -85,6 +83,7 @@
     * [.textFilter(text)](#Ai_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.mockIntent([intent], [score])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
+    * [.deregister([prefix])](#Ai_deregister)
     * [.getModel(prefix)](#Ai_getModel) ⇒ [<code>WingbotModel</code>](#WingbotModel)
     * [.global(path, intents, [title], [meta])](#Ai_global) ⇒ <code>object</code>
     * [.local(path, intents, [title])](#Ai_local) ⇒ <code>object</code>
@@ -188,6 +187,17 @@ Registers Wingbot AI model
 | --- | --- | --- | --- |
 | model | <code>string</code> \| [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code> |  | wingbot model name or AI plugin |
 | prefix | <code>string</code> | <code>&quot;default&quot;</code> | model prefix |
+
+{% raw %}<div id="Ai_deregister">&nbsp;</div>{% endraw %}
+
+### ai.deregister([prefix])
+Remove registered model
+
+**Kind**: instance method of [<code>Ai</code>](#Ai)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [prefix] | <code>string</code> | <code>&quot;default&quot;</code> | 
 
 {% raw %}<div id="Ai_getModel">&nbsp;</div>{% endraw %}
 
@@ -300,7 +310,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 | Param | Type |
 | --- | --- |
-| aiActions | [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction) | 
+| aiActions | <code>Array.&lt;IntentAction&gt;</code> | 
 
 {% raw %}<div id="CustomEntityDetectionModel">&nbsp;</div>{% endraw %}
 
@@ -311,8 +321,8 @@ bot.use(ai.match('intent1'), (req, res) => {
     * [new CustomEntityDetectionModel(options, [log])](#new_CustomEntityDetectionModel_new)
     * [._normalizeResult(entities, entity, text, offset, originalText)](#CustomEntityDetectionModel__normalizeResult)
     * [._detectEntities(entity, text, entities)](#CustomEntityDetectionModel__detectEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
-    * [._nonOverlapping(entities)](#CustomEntityDetectionModel__nonOverlapping)
-    * [.resolve(text)](#CustomEntityDetectionModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
+    * [._nonOverlapping(entities, expectedEntities)](#CustomEntityDetectionModel__nonOverlapping)
+    * [.resolve(text, [req])](#CustomEntityDetectionModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
     * [._extractRegExpDependencies(regexp)](#CustomEntityDetectionModel__extractRegExpDependencies)
     * [._entityByDependency(entities, dependency)](#CustomEntityDetectionModel__entityByDependency) ⇒ [<code>DetectedEntity</code>](#DetectedEntity) \| <code>null</code>
     * [._regexpToDetector(regexp, dependencies, extractValue)](#CustomEntityDetectionModel__regexpToDetector)
@@ -353,21 +363,23 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 {% raw %}<div id="CustomEntityDetectionModel__nonOverlapping">&nbsp;</div>{% endraw %}
 
-### customEntityDetectionModel.\_nonOverlapping(entities)
+### customEntityDetectionModel.\_nonOverlapping(entities, expectedEntities)
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
 
 | Param | Type |
 | --- | --- |
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+| expectedEntities | <code>Array.&lt;string&gt;</code> | 
 
 {% raw %}<div id="CustomEntityDetectionModel_resolve">&nbsp;</div>{% endraw %}
 
-### customEntityDetectionModel.resolve(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
+### customEntityDetectionModel.resolve(text, [req]) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
 
-| Param | Type |
-| --- | --- |
-| text | <code>string</code> | 
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | the user input |
+| [req] | <code>Request</code> |  |
 
 {% raw %}<div id="CustomEntityDetectionModel__extractRegExpDependencies">&nbsp;</div>{% endraw %}
 
@@ -457,7 +469,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 * [CachedModel](#CachedModel)
     * [new CachedModel(options, [log])](#new_CachedModel_new)
-    * [.resolve(text)](#CachedModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
+    * [.resolve(text, [req])](#CachedModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
     * [._queryModel(text)](#CachedModel__queryModel) ⇒ <code>Promise.&lt;(Array.&lt;Intent&gt;\|Result)&gt;</code>
 
 {% raw %}<div id="new_CachedModel_new">&nbsp;</div>{% endraw %}
@@ -472,12 +484,13 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 {% raw %}<div id="CachedModel_resolve">&nbsp;</div>{% endraw %}
 
-### cachedModel.resolve(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
+### cachedModel.resolve(text, [req]) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| text | <code>string</code> | the user input |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| text | <code>string</code> |  | the user input |
+| [req] | <code>Request</code> | <code></code> | the user input |
 
 {% raw %}<div id="CachedModel__queryModel">&nbsp;</div>{% endraw %}
 
@@ -503,7 +516,9 @@ Class responsible for NLP Routing by score
     * [.redundantIntentHandicap](#AiMatching_redundantIntentHandicap) : <code>number</code>
     * [.multiMatchGain](#AiMatching_multiMatchGain) : <code>number</code>
     * [.getSetStateForEntityRules(rule)](#AiMatching_getSetStateForEntityRules) ⇒ <code>object</code>
-    * [.preprocessRule(intent)](#AiMatching_preprocessRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
+    * [.parseEntitiesFromIntentRule(intentRule, onlyExpected)](#AiMatching_parseEntitiesFromIntentRule) ⇒ <code>Array.&lt;string&gt;</code>
+    * [._parseEntitiesFromIntentRule(intentRules)](#AiMatching__parseEntitiesFromIntentRule) ⇒ [<code>Array.&lt;EntityExpression&gt;</code>](#EntityExpression)
+    * [.preprocessRule(intentRule)](#AiMatching_preprocessRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
     * [.match(req, rule, stateless)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
     * [._matchRegexp(req, regexps)](#AiMatching__matchRegexp) ⇒ <code>boolean</code>
 
@@ -546,16 +561,37 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 | --- | --- |
 | rule | [<code>PreprocessorOutput</code>](#PreprocessorOutput) | 
 
+{% raw %}<div id="AiMatching_parseEntitiesFromIntentRule">&nbsp;</div>{% endraw %}
+
+### aiMatching.parseEntitiesFromIntentRule(intentRule, onlyExpected) ⇒ <code>Array.&lt;string&gt;</code>
+Create a rule to be cached inside a routing structure
+
+**Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| intentRule | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) |  | 
+| onlyExpected | <code>boolean</code> | <code>false</code> | 
+
+{% raw %}<div id="AiMatching__parseEntitiesFromIntentRule">&nbsp;</div>{% endraw %}
+
+### aiMatching.\_parseEntitiesFromIntentRule(intentRules) ⇒ [<code>Array.&lt;EntityExpression&gt;</code>](#EntityExpression)
+**Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
+
+| Param | Type |
+| --- | --- |
+| intentRules | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) | 
+
 {% raw %}<div id="AiMatching_preprocessRule">&nbsp;</div>{% endraw %}
 
-### aiMatching.preprocessRule(intent) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
+### aiMatching.preprocessRule(intentRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
 Create a rule to be cached inside a routing structure
 
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
 
 | Param | Type |
 | --- | --- |
-| intent | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) | 
+| intentRule | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) | 
 
 {% raw %}<div id="AiMatching_match">&nbsp;</div>{% endraw %}
 
@@ -634,22 +670,6 @@ Text filter function
 | Name | Type |
 | --- | --- |
 | path | <code>string</code> | 
-
-{% raw %}<div id="IntentAction">&nbsp;</div>{% endraw %}
-
-## IntentAction : <code>object</code>
-**Kind**: global typedef  
-**Properties**
-
-| Name | Type |
-| --- | --- |
-| action | <code>string</code> | 
-| intent | [<code>Intent</code>](#Intent) | 
-| sort | <code>number</code> | 
-| local | <code>boolean</code> | 
-| aboveConfidence | <code>boolean</code> | 
-| [winner] | <code>boolean</code> | 
-| [title] | <code>string</code> | 
 
 {% raw %}<div id="DetectedEntity">&nbsp;</div>{% endraw %}
 

@@ -1131,8 +1131,6 @@
 <dd></dd>
 <dt><a href="#BotPath">BotPath</a> : <code>object</code></dt>
 <dd></dd>
-<dt><a href="#IntentAction">IntentAction</a> : <code>object</code></dt>
-<dd></dd>
 <dt><a href="#DetectedEntity">DetectedEntity</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#EntityDetector">EntityDetector</a> &#x21D2; <code>Array.&lt;DetectedEntity&gt;</code> | <code>DetectedEntity</code> | <code>Promise.&lt;DetectedEntity&gt;</code> | <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code></dt>
@@ -1189,6 +1187,7 @@
 <li><a href="#Ai_textFilter">.textFilter(text)</a> : <a href="#textFilter"><code>textFilter</code></a></li>
 <li><a href="#Ai_mockIntent">.mockIntent([intent], [score])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Ai_register">.register(model, prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a> | <code>T</code></li>
+<li><a href="#Ai_deregister">.deregister([prefix])</a></li>
 <li><a href="#Ai_getModel">.getModel(prefix)</a> &#x21D2; <a href="#WingbotModel"><code>WingbotModel</code></a></li>
 <li><a href="#Ai_global">.global(path, intents, [title], [meta])</a> &#x21D2; <code>object</code></li>
 <li><a href="#Ai_local">.local(path, intents, [title])</a> &#x21D2; <code>object</code></li>
@@ -1342,6 +1341,27 @@ describe(<span class="hljs-string">&apos;bot&apos;</span>, <span class="hljs-fun
 <td><code>string</code></td>
 <td><code>&quot;default&quot;</code></td>
 <td>model prefix</td>
+</tr>
+</tbody>
+</table>
+<div id="Ai_deregister">&#xA0;</div>
+
+<h3 id="aideregisterprefix"><a name="aideregisterprefix" class="plugin-anchor" href="#aideregisterprefix"><i class="fa fa-link" aria-hidden="true"></i></a>ai.deregister([prefix])</h3>
+<p>Remove registered model</p>
+<p><strong>Kind</strong>: instance method of <a href="#Ai"><code>Ai</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[prefix]</td>
+<td><code>string</code></td>
+<td><code>&quot;default&quot;</code></td>
 </tr>
 </tbody>
 </table>
@@ -1539,7 +1559,7 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <tbody>
 <tr>
 <td>aiActions</td>
-<td><a href="#IntentAction"><code>Array.&lt;IntentAction&gt;</code></a></td>
+<td><code>Array.&lt;IntentAction&gt;</code></td>
 </tr>
 </tbody>
 </table>
@@ -1552,8 +1572,8 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <li><a href="#new_CustomEntityDetectionModel_new">new CustomEntityDetectionModel(options, [log])</a></li>
 <li><a href="#CustomEntityDetectionModel__normalizeResult">._normalizeResult(entities, entity, text, offset, originalText)</a></li>
 <li><a href="#CustomEntityDetectionModel__detectEntities">._detectEntities(entity, text, entities)</a> &#x21D2; <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code></li>
-<li><a href="#CustomEntityDetectionModel__nonOverlapping">._nonOverlapping(entities)</a></li>
-<li><a href="#CustomEntityDetectionModel_resolve">.resolve(text)</a> &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></li>
+<li><a href="#CustomEntityDetectionModel__nonOverlapping">._nonOverlapping(entities, expectedEntities)</a></li>
+<li><a href="#CustomEntityDetectionModel_resolve">.resolve(text, [req])</a> &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></li>
 <li><a href="#CustomEntityDetectionModel__extractRegExpDependencies">._extractRegExpDependencies(regexp)</a></li>
 <li><a href="#CustomEntityDetectionModel__entityByDependency">._entityByDependency(entities, dependency)</a> &#x21D2; <a href="#DetectedEntity"><code>DetectedEntity</code></a> | <code>null</code></li>
 <li><a href="#CustomEntityDetectionModel__regexpToDetector">._regexpToDetector(regexp, dependencies, extractValue)</a></li>
@@ -1644,7 +1664,7 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 </table>
 <div id="CustomEntityDetectionModel__nonOverlapping">&#xA0;</div>
 
-<h3 id="customentitydetectionmodelnonoverlappingentities"><a name="customentitydetectionmodelnonoverlappingentities" class="plugin-anchor" href="#customentitydetectionmodelnonoverlappingentities"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel._nonOverlapping(entities)</h3>
+<h3 id="customentitydetectionmodelnonoverlappingentities-expectedentities"><a name="customentitydetectionmodelnonoverlappingentities-expectedentities" class="plugin-anchor" href="#customentitydetectionmodelnonoverlappingentities-expectedentities"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel._nonOverlapping(entities, expectedEntities)</h3>
 <p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
 <table>
 <thead>
@@ -1658,23 +1678,33 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <td>entities</td>
 <td><a href="#DetectedEntity"><code>Array.&lt;DetectedEntity&gt;</code></a></td>
 </tr>
+<tr>
+<td>expectedEntities</td>
+<td><code>Array.&lt;string&gt;</code></td>
+</tr>
 </tbody>
 </table>
 <div id="CustomEntityDetectionModel_resolve">&#xA0;</div>
 
-<h3 id="customentitydetectionmodelresolvetext-&#x21D2;-promiseresult"><a name="customentitydetectionmodelresolvetext-&#x21D2;-promiseresult" class="plugin-anchor" href="#customentitydetectionmodelresolvetext-&#x21D2;-promiseresult"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel.resolve(text) &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></h3>
+<h3 id="customentitydetectionmodelresolvetext-req-&#x21D2;-promiseresult"><a name="customentitydetectionmodelresolvetext-req-&#x21D2;-promiseresult" class="plugin-anchor" href="#customentitydetectionmodelresolvetext-req-&#x21D2;-promiseresult"><i class="fa fa-link" aria-hidden="true"></i></a>customEntityDetectionModel.resolve(text, [req]) &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></h3>
 <p><strong>Kind</strong>: instance method of <a href="#CustomEntityDetectionModel"><code>CustomEntityDetectionModel</code></a>  </p>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>text</td>
 <td><code>string</code></td>
+<td>the user input</td>
+</tr>
+<tr>
+<td>[req]</td>
+<td><code>Request</code></td>
 </tr>
 </tbody>
 </table>
@@ -1878,7 +1908,7 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <ul>
 <li><a href="#CachedModel">CachedModel</a><ul>
 <li><a href="#new_CachedModel_new">new CachedModel(options, [log])</a></li>
-<li><a href="#CachedModel_resolve">.resolve(text)</a> &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></li>
+<li><a href="#CachedModel_resolve">.resolve(text, [req])</a> &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></li>
 <li><a href="#CachedModel__queryModel">._queryModel(text)</a> &#x21D2; <code>Promise.&lt;(Array.&lt;Intent&gt;|Result)&gt;</code></li>
 </ul>
 </li>
@@ -1910,13 +1940,14 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 </table>
 <div id="CachedModel_resolve">&#xA0;</div>
 
-<h3 id="cachedmodelresolvetext-&#x21D2;-promiseresult"><a name="cachedmodelresolvetext-&#x21D2;-promiseresult" class="plugin-anchor" href="#cachedmodelresolvetext-&#x21D2;-promiseresult"><i class="fa fa-link" aria-hidden="true"></i></a>cachedModel.resolve(text) &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></h3>
+<h3 id="cachedmodelresolvetext-req-&#x21D2;-promiseresult"><a name="cachedmodelresolvetext-req-&#x21D2;-promiseresult" class="plugin-anchor" href="#cachedmodelresolvetext-req-&#x21D2;-promiseresult"><i class="fa fa-link" aria-hidden="true"></i></a>cachedModel.resolve(text, [req]) &#x21D2; <a href="#Result"><code>Promise.&lt;Result&gt;</code></a></h3>
 <p><strong>Kind</strong>: instance method of <a href="#CachedModel"><code>CachedModel</code></a>  </p>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
+<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -1924,6 +1955,13 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <tr>
 <td>text</td>
 <td><code>string</code></td>
+<td></td>
+<td>the user input</td>
+</tr>
+<tr>
+<td>[req]</td>
+<td><code>Request</code></td>
+<td><code></code></td>
 <td>the user input</td>
 </tr>
 </tbody>
@@ -1959,7 +1997,9 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <li><a href="#AiMatching_redundantIntentHandicap">.redundantIntentHandicap</a> : <code>number</code></li>
 <li><a href="#AiMatching_multiMatchGain">.multiMatchGain</a> : <code>number</code></li>
 <li><a href="#AiMatching_getSetStateForEntityRules">.getSetStateForEntityRules(rule)</a> &#x21D2; <code>object</code></li>
-<li><a href="#AiMatching_preprocessRule">.preprocessRule(intent)</a> &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
+<li><a href="#AiMatching_parseEntitiesFromIntentRule">.parseEntitiesFromIntentRule(intentRule, onlyExpected)</a> &#x21D2; <code>Array.&lt;string&gt;</code></li>
+<li><a href="#AiMatching__parseEntitiesFromIntentRule">._parseEntitiesFromIntentRule(intentRules)</a> &#x21D2; <a href="#EntityExpression"><code>Array.&lt;EntityExpression&gt;</code></a></li>
+<li><a href="#AiMatching_preprocessRule">.preprocessRule(intentRule)</a> &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
 <li><a href="#AiMatching_match">.match(req, rule, stateless)</a> &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></li>
 <li><a href="#AiMatching__matchRegexp">._matchRegexp(req, regexps)</a> &#x21D2; <code>boolean</code></li>
 </ul>
@@ -2009,9 +2049,54 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 </tr>
 </tbody>
 </table>
+<div id="AiMatching_parseEntitiesFromIntentRule">&#xA0;</div>
+
+<h3 id="aimatchingparseentitiesfromintentruleintentrule-onlyexpected-&#x21D2;-arraystring"><a name="aimatchingparseentitiesfromintentruleintentrule-onlyexpected-&#x21D2;-arraystring" class="plugin-anchor" href="#aimatchingparseentitiesfromintentruleintentrule-onlyexpected-&#x21D2;-arraystring"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.parseEntitiesFromIntentRule(intentRule, onlyExpected) &#x21D2; <code>Array.&lt;string&gt;</code></h3>
+<p>Create a rule to be cached inside a routing structure</p>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intentRule</td>
+<td><a href="#IntentRule"><code>IntentRule</code></a> \</td>
+<td><a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></td>
+<td></td>
+</tr>
+<tr>
+<td>onlyExpected</td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<div id="AiMatching__parseEntitiesFromIntentRule">&#xA0;</div>
+
+<h3 id="aimatchingparseentitiesfromintentruleintentrules-&#x21D2;-arrayentityexpression"><a name="aimatchingparseentitiesfromintentruleintentrules-&#x21D2;-arrayentityexpression" class="plugin-anchor" href="#aimatchingparseentitiesfromintentruleintentrules-&#x21D2;-arrayentityexpression"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching._parseEntitiesFromIntentRule(intentRules) &#x21D2; <a href="#EntityExpression"><code>Array.&lt;EntityExpression&gt;</code></a></h3>
+<p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intentRules</td>
+<td><a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="AiMatching_preprocessRule">&#xA0;</div>
 
-<h3 id="aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput"><a name="aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput" class="plugin-anchor" href="#aimatchingpreprocessruleintent-&#x21D2;-preprocessoroutput"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.preprocessRule(intent) &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></h3>
+<h3 id="aimatchingpreprocessruleintentrule-&#x21D2;-preprocessoroutput"><a name="aimatchingpreprocessruleintentrule-&#x21D2;-preprocessoroutput" class="plugin-anchor" href="#aimatchingpreprocessruleintentrule-&#x21D2;-preprocessoroutput"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching.preprocessRule(intentRule) &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></h3>
 <p>Create a rule to be cached inside a routing structure</p>
 <p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
 <table>
@@ -2023,7 +2108,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 </thead>
 <tbody>
 <tr>
-<td>intent</td>
+<td>intentRule</td>
 <td><a href="#IntentRule"><code>IntentRule</code></a> \</td>
 <td><a href="#IntentRule"><code>Array.&lt;IntentRule&gt;</code></a></td>
 </tr>
@@ -2209,48 +2294,6 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 <tbody>
 <tr>
 <td>path</td>
-<td><code>string</code></td>
-</tr>
-</tbody>
-</table>
-<div id="IntentAction">&#xA0;</div>
-
-<h2 id="intentaction--object"><a name="intentaction--object" class="plugin-anchor" href="#intentaction--object"><i class="fa fa-link" aria-hidden="true"></i></a>IntentAction : <code>object</code></h2>
-<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>action</td>
-<td><code>string</code></td>
-</tr>
-<tr>
-<td>intent</td>
-<td><a href="#Intent"><code>Intent</code></a></td>
-</tr>
-<tr>
-<td>sort</td>
-<td><code>number</code></td>
-</tr>
-<tr>
-<td>local</td>
-<td><code>boolean</code></td>
-</tr>
-<tr>
-<td>aboveConfidence</td>
-<td><code>boolean</code></td>
-</tr>
-<tr>
-<td>[winner]</td>
-<td><code>boolean</code></td>
-</tr>
-<tr>
-<td>[title]</td>
 <td><code>string</code></td>
 </tr>
 </tbody>
@@ -2792,7 +2835,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.9","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.10","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"vars tools","level":"3.8","depth":1,"path":"api/stateVariables.md","ref":"api/stateVariables.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-09-29T09:18:09.013Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-29T09:18:18.700Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.9","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.10","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"vars tools","level":"3.8","depth":1,"path":"api/stateVariables.md","ref":"api/stateVariables.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2020-11-19T11:16:43.960Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-11-19T11:16:53.826Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
