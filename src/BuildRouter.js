@@ -475,14 +475,6 @@ class BuildRouter extends Router {
             }
         }
 
-        if (route.expectedPath) {
-            resolvers.push(expected({
-                path: route.expectedPath
-            }, {
-                isLastIndex: route.resolvers.length === 0
-            }));
-        }
-
         return resolvers;
     }
 
@@ -497,10 +489,21 @@ class BuildRouter extends Router {
                 nextRouteIsSameResponder = nextRoute.respondsToRouteId === route.respondsToRouteId;
             }
 
-            this.use(...[
+            const resolvers = [
                 ...this._buildRouteHead(route, nextRouteIsSameResponder),
-                ...this.buildResolvers(route.resolvers, route)
-            ]);
+                ...this.buildResolvers(route.resolvers, route, route.expectedPath)
+            ];
+
+            if (route.expectedPath) {
+                // attach expected before last message, if there is
+                resolvers.push(expected({
+                    path: route.expectedPath
+                }, {
+                    isLastIndex: true
+                }));
+            }
+
+            this.use(...resolvers);
         });
     }
 
@@ -513,7 +516,7 @@ class BuildRouter extends Router {
         return -1;
     }
 
-    buildResolvers (resolvers, route = {}) {
+    buildResolvers (resolvers, route = {}, expectedToAddResolver = false) {
         const {
             path: ctxPath, isFallback, isResponder, expectedPath, id
         } = route;
@@ -524,7 +527,7 @@ class BuildRouter extends Router {
         return resolvers.map((resolver, i) => {
             const context = {
                 ...this._context,
-                isLastIndex: lastIndex === i,
+                isLastIndex: lastIndex === i && !expectedToAddResolver,
                 isLastMessage: lastMessageIndex === i,
                 router: this,
                 linksMap: this._linksMap,

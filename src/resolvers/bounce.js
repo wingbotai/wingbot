@@ -78,14 +78,14 @@ function bounce (route, nextRouteIsSameResponder, referredRoutePath = null) {
 
         switch (route.bounceReturn) {
             case BOUNCE_RETURN.NO_RETURN:
-                return null;
+                return -1; // Router.ENDED_PREVIOUSLY
             case BOUNCE_RETURN.INTERACTION:
                 if (referredRoutePath) {
                     postback(referredRoutePath);
                 }
                 return null;
             case BOUNCE_RETURN.IF_POSSIBLE:
-                return actionIsFaq ? true : null;
+                return actionIsFaq ? true : -1; // Router.ENDED_PREVIOUSLY
             case BOUNCE_RETURN.HERE:
             default:
                 return true;

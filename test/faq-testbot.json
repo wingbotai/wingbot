@@ -435,6 +435,28 @@
                     ]
                 },
                 {
+                    "id" : "71f23dd0-e147-11ea-b4f2-ef90cb7950de",
+                    "path" : "entity-test",
+                    "name" : "entity-test",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "replies" : [],
+                    "aiTags" : [],
+                    "aiGlobal" : true,
+                    "resolvers" : [
+                        {
+                            "tag": "faq",
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "entity in state {{[@entity]}}"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
                     "id" : "71f23dd0-e147-11ea-b4f2-ef90cb7940de",
                     "path" : "without-faq",
                     "name" : "without faq",

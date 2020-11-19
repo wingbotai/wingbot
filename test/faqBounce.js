@@ -176,4 +176,24 @@ describe('FAQ BOUNCE', async () => {
             .notContains('followup')
             .contains('fallback');
     });
+
+    it('keeps context when bouncing to entity', async () => {
+        await t.postBack('allowed-and-then-do-not-return');
+
+        await t.intentWithEntity('faq-with-entity', 'entity', 'lala');
+
+        t.any()
+            .contains('entity is lala');
+
+        await t.postBack('/faq/entity-test');
+
+        t.any()
+            .contains('entity in state lala');
+
+        await t.postBack('/faq/entity-test');
+
+        t.any()
+            .contains('entity in state lala');
+    });
+
 });

@@ -311,9 +311,11 @@ class Router extends ReducerWrapper {
                 pathContext = `${path === '/' ? '' : path}${route.path}`;
 
                 // store the last visited path
-                res.setState({ _lastVisitedPath: path === '/' ? null : path });
-                // console.log({ action: req.action(), pathContext, path });
-                this._emitAction(req, res, pathContext, doNotTrack);
+                if (result !== Router.ENDED_PREVIOUSLY) {
+                    res.setState({ _lastVisitedPath: path === '/' ? null : path });
+                    // console.log({ action: req.action(), pathContext, path });
+                    this._emitAction(req, res, pathContext, doNotTrack);
+                }
             }
 
             if (result === breakOn) {
@@ -377,10 +379,20 @@ Router.BREAK = false;
 
 /**
  * Returning `Router.END` constant stops dispatching request
- * Its same as returning `undefined`
+ * Its same as returning `undefined`, but not in plugin. Returning undefined in plugin
  *
  * @property {null}
  */
 Router.END = null;
+
+/**
+ * Let the plugin wrapper to decide, when end or not
+ * Its same as returning `undefined`
+ *
+ * @property {undefined}
+ */
+Router.NEXT = undefined;
+
+Router.ENDED_PREVIOUSLY = -1; // system status
 
 module.exports = Router;
