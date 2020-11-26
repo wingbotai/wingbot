@@ -143,7 +143,7 @@ describe('BotApp', () => {
                                     sender: {
                                         id: PAGE_ID
                                     },
-                                    wait: 400
+                                    wait: 550
                                 },
                                 {
                                     message: {

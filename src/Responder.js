@@ -67,10 +67,10 @@ class Responder {
         Object.assign(this.options, options);
         if (this.options.autoTyping) {
             this.options.autoTyping = {
-                time: 450,
-                perCharacters: 'Sample text Sample texts'.length,
-                minTime: 400,
-                maxTime: 1400,
+                time: 750,
+                perCharacters: 'Sample text Sample texts Sample texts'.length,
+                minTime: 550,
+                maxTime: 1750,
                 ...this.options.autoTyping
             };
         }

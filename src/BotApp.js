@@ -10,6 +10,8 @@ const BotAppSender = require('./BotAppSender');
 const Processor = require('./Processor');
 const ReturnSender = require('./ReturnSender');
 
+const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
+
 /** @typedef {import('./ReducerWrapper')} ReducerWrapper */
 /** @typedef {import('./Router')} Router */
 /** @typedef {import('./Processor').ProcessorOptions} ProcessorOptions */
@@ -18,7 +20,7 @@ const ReturnSender = require('./ReturnSender');
 /**
  * @typedef {object} BotAppOptions
  * @prop {string|Promise<string>} secret
- * @prop {string} apiUrl
+ * @prop {string} [apiUrl]
  * @prop {Function} [fetch]
  * @prop {ChatLogStorage} [chatLogStorage]
  *
@@ -58,6 +60,8 @@ class BotApp {
         this._fetch = fetch; // mock
 
         let { apiUrl } = options;
+
+        if (!apiUrl) apiUrl = DEFAULT_API_URL;
 
         if (`${apiUrl}`.match(/^https?:\/\/[0-9.:a-zA-Z\-_]+\/?$/)) {
             apiUrl = `${apiUrl}`.replace(/\/?$/, '/webhook/api');
