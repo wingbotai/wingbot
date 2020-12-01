@@ -7,6 +7,7 @@ const Ai = require('./Ai');
 const { tokenize, parseActionPayload } = require('./utils');
 const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickReplies');
 const { getSetState } = require('./utils/getUpdate');
+const { vars } = require('./utils/stateVariables');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
@@ -602,7 +603,7 @@ class Request {
                         }
                     }
                 });
-            } else if (justOnce && shouldIncludeKeywords) {
+            } else if (justOnce) {
                 shouldIncludeKeywords = false;
             }
         }
@@ -611,6 +612,17 @@ class Request {
             Object.assign(ret, {
                 ...this.expectedKeywords(justOnce)
             });
+
+            // get entities
+            Object.keys(this.state)
+                .forEach((k) => {
+                    const match = k.match(/^_~(.+)$/);
+                    if (!match) {
+                        return;
+                    }
+                    const [, key] = match;
+                    Object.assign(ret, vars.preserveMeta(key, this.state[key], this.state));
+                });
         }
 
         if (confident) {

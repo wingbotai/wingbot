@@ -128,6 +128,19 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
         state._expectedKeywords = null;
     }
 
+    // set right path, when path was set
+    // eslint-disable-next-line guard-for-in
+    for (const key in res.newState) { // eslint-disable-line no-restricted-syntax
+        const match = key.match(/^_~(.+)$/);
+        if (!match) {
+            continue;
+        }
+        const value = res.newState[key];
+        if (value.t === DIALOG_CONTEXT && typeof value.p === 'undefined') {
+            Object.assign(value, { p: res.newState._lastVisitedPath });
+        }
+    }
+
     // process management state keys
     // eslint-disable-next-line guard-for-in
     for (const key in previousState) { // eslint-disable-line no-restricted-syntax
@@ -150,14 +163,19 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
             continue;
         }
         switch (value.t) {
-            case DIALOG_CONTEXT:
+            case DIALOG_CONTEXT: {
+                // compare state
+
                 if (previousState._lastVisitedPath !== undefined
-                    && previousState._lastVisitedPath !== res.newState._lastVisitedPath) {
+                    && value.p !== res.newState._lastVisitedPath) {
 
                     delete state[key];
                     delete state[referencedKey];
                 }
+
                 break;
+            }
+
             case EXPIRES_AFTER:
                 if (lastInTurnover) {
                     const setTurnovers = (value.c - 1) || 0;

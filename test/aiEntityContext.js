@@ -74,7 +74,8 @@ describe('<Ai> entity context', () => {
         });
 
         first.use(ai.global('first', ['first']), (req, res) => {
-            res.text('first without entity');
+            res.text('first without entity')
+                .text(`x ${req.state['@entity']}`);
         });
 
         const second = new Router();
@@ -123,9 +124,62 @@ describe('<Ai> entity context', () => {
 
         bot.use((req, res) => {
             res.text('fallback');
+            if (req.state.mockKeepPreviousContext) {
+                res.setState(req.expectedContext(false, true));
+            }
         });
 
         t = new Tester(bot);
+    });
+
+    it('is able to keep whole entity context, when using req.expectedContext', async () => {
+        t.setState({ mockKeepPreviousContext: true });
+
+        // set some context
+        await t.intentWithEntity('bar', 'entity', 'sasalele');
+
+        // get into a fallback
+        await t.text('nnnnnnnnnnn');
+
+        // and back
+        await t.intent('first');
+
+        t.any().contains('first without entity');
+
+        // ant try local intent
+        await t.intent('bar');
+
+        t.any().contains('bar with entity');
+
+        // check, if its still there
+        await t.intent('first');
+
+        t.any().contains('x sasalele');
+    });
+
+    it('is able to keep the entity in context, when using req.expectedContext', async () => {
+        t.setState({ mockKeepPreviousContext: true });
+
+        // set some context
+        await t.intentWithEntity('bar', 'entity', 'sasalele');
+
+        // get into a fallback
+        await t.text('nnnnnnnnnnn');
+
+        // and back
+        await t.intent('bar');
+
+        t.any().contains('bar with entity');
+
+        // ant try local intent again
+        await t.intent('bar');
+
+        t.any().contains('bar with entity');
+
+        // check, if its still there
+        await t.intent('first');
+
+        t.any().contains('x sasalele');
     });
 
     it('optional entity in quick reply prolongs a context', async () => {
