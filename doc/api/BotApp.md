@@ -99,7 +99,7 @@ app.get('/bot', express.text(), (req, res) => {
 | Name | Type |
 | --- | --- |
 | secret | <code>string</code> \| <code>Promise.&lt;string&gt;</code> | 
-| apiUrl | <code>string</code> | 
+| [apiUrl] | <code>string</code> | 
 | [fetch] | <code>function</code> | 
 | [chatLogStorage] | <code>ChatLogStorage</code> | 
 

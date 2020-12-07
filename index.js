@@ -35,8 +35,8 @@ const ButtonTemplate = require('./src/templates/ButtonTemplate');
 const GenericTemplate = require('./src/templates/GenericTemplate');
 const BaseTemplate = require('./src/templates/BaseTemplate');
 const { parseActionPayload } = require('./src/utils/pathUtils');
-const { disambiguationQuickReply } = require('./src/utils/quickReplies');
-const { getUpdate, getValue } = require('./src/utils/getUpdate');
+const { disambiguationQuickReply, quickReplyAction } = require('./src/utils/quickReplies');
+const { getUpdate, getValue, getSetState } = require('./src/utils/getUpdate');
 const { vars } = require('./src/utils/stateVariables');
 const plugins = require('./plugins/plugins.json');
 const {
@@ -70,6 +70,8 @@ module.exports = {
     getUpdate,
     getValue,
     disambiguationQuickReply,
+    quickReplyAction,
+    getSetState,
 
     // Wingbot
     ai: Ai.ai,

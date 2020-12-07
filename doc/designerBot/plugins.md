@@ -83,6 +83,11 @@ plugins.register('exampleBlock', async (req, res, postBack) => {
 
 module.exports = plugins;
 ```
+## Understanding return values
+
+How to use directives `Router.NEXT`, `Router.END`, `Router.CONTINUE` and `Router.BREAK`
+
+![wingbot plugin](./returns.png "Wingbot Chatbot Plugin")
 
 ## Plugin as a nested Router
 
