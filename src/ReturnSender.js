@@ -318,7 +318,7 @@ class ReturnSender {
                 if (processedEvent !== this._incommingMessage) {
                     incomming = {
                         ...incomming,
-                        _incommingMessage: this._incommingMessage
+                        original_event: this._incommingMessage
                     };
                 }
 
