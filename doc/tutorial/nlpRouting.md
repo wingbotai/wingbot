@@ -349,7 +349,6 @@ ai.getModel()
         value: parseInt(match[0], 10)
       };
     });
-});
 ```
 
 The return value has to contain **either detected** `text` **or** **position of the string** (`start` and `end`).
