@@ -184,6 +184,8 @@ The original messaging event
 | ONLY | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>1</code> | 
 | INCLUDE | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>0</code> | 
 | EXCLUDE | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>-1</code> | 
+| EXCLUDE_WITH_SET_ENTITIES | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>-2</code> | 
+| EXCLUDE_WITHOUT_SET_ENTITIES | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>-3</code> | 
 
 {% raw %}<div id="Request_isStandby">&nbsp;</div>{% endraw %}
 
