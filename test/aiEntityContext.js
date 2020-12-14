@@ -28,6 +28,28 @@ describe('<Ai> entity context', () => {
                     text: match[0],
                     value: 'detected'
                 };
+            })
+            .setEntityDetector('fromEntity', (text) => {
+                const match = text.match(/fromentity/);
+
+                if (!match) {
+                    return null;
+                }
+                return {
+                    text: match[0],
+                    value: 'detected'
+                };
+            })
+            .setEntityDetector('toEntity', (text) => {
+                const match = text.match(/toentity/);
+
+                if (!match) {
+                    return null;
+                }
+                return {
+                    text: match[0],
+                    value: 'detected'
+                };
             });
     });
 
@@ -69,8 +91,30 @@ describe('<Ai> entity context', () => {
                     // match: ['@entity=value'],
                     setState: { '@entity': { x: 1 }, '@customentity': 'youyou' }
                 },
-                { action: 'chacha', match: ['@customentity'], title: 'try' }
+                { action: 'chacha', match: ['@customentity'], title: 'try' },
+
+                {
+                    action: 'setStateToEntity',
+                    match: ['@toEntity=toentity'],
+                    setState: { here: { _$entity: 'toEntity' }, lele: { _$textInput: true } },
+                    title: 'setStateToEntity'
+                },
+
+                {
+                    action: 'setStateFromEntity',
+                    match: ['@fromEntity'],
+                    setState: { here: { _$entity: 'fromEntity' } },
+                    title: 'setStateFromEntity'
+                }
             ]);
+        });
+
+        first.use('setStateToEntity', (req, res) => {
+            res.text(`en ${req.state.here} ${req.state['@toEntity']} ${req.state.lele}`);
+        });
+
+        first.use('setStateFromEntity', (req, res) => {
+            res.text(`en ${req.state.here}`);
         });
 
         first.use(ai.global('first', ['first']), (req, res) => {
@@ -130,6 +174,28 @@ describe('<Ai> entity context', () => {
         });
 
         t = new Tester(bot);
+    });
+
+    it('is able to set state from the entity condition in quick reply', async () => {
+        // set some context
+        await t.postBack('/first/bar-without');
+
+        // run the quick reply with entity
+        await t.text('setStateToEntity');
+
+        // check it
+        t.any().contains('en detected detected setStateToEntity');
+    });
+
+    it('is able to detect entity from quick reply', async () => {
+        // set some context
+        await t.postBack('/first/bar-without');
+
+        // run the quick reply with entity
+        await t.text('fromentity');
+
+        // check it
+        t.any().contains('en detected');
     });
 
     it('is able to keep whole entity context, when using req.expectedContext', async () => {

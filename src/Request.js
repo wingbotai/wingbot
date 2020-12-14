@@ -94,7 +94,9 @@ class Request {
         this.AI_SETSTATE = {
             ONLY: 1,
             INCLUDE: 0,
-            EXCLUDE: -1
+            EXCLUDE: -1,
+            EXCLUDE_WITH_SET_ENTITIES: -2,
+            EXCLUDE_WITHOUT_SET_ENTITIES: -3
         };
 
         this.globalIntents = globalIntents;
@@ -752,6 +754,7 @@ class Request {
 
     }
 
+    // eslint-disable-next-line jsdoc/require-param
     /**
      * Gets incomming setState action variable
      *
@@ -761,7 +764,7 @@ class Request {
      * @example
      * res.setState(req.getSetState());
      */
-    getSetState (keysFromAi = this.AI_SETSTATE.INCLUDE) {
+    getSetState (keysFromAi = this.AI_SETSTATE.INCLUDE, useState = null) {
         if (typeof this._action === 'undefined') {
             this._action = this._resolveAction();
         }
@@ -773,10 +776,8 @@ class Request {
             return {};
         }
 
-        const res = getSetState(setState, this);
-
         if (keysFromAi === this.AI_SETSTATE.INCLUDE) {
-            return res;
+            return getSetState(setState, this, null, useState);
         }
 
         // @ts-ignore
@@ -784,18 +785,31 @@ class Request {
 
         const ret = {};
 
-        Object.keys(res)
+        const findEntity = [
+            this.AI_SETSTATE.EXCLUDE_WITHOUT_SET_ENTITIES,
+            this.AI_SETSTATE.EXCLUDE_WITH_SET_ENTITIES
+        ].includes(keysFromAi);
+
+        Object.keys(setState)
             .forEach((key) => {
                 const includes = keys.includes(key);
 
-                if ((includes && keysFromAi === this.AI_SETSTATE.ONLY)
+                if (findEntity && !includes) {
+                    const isEntity = key.match(/^@/);
+
+                    if ((isEntity && keysFromAi === this.AI_SETSTATE.EXCLUDE_WITH_SET_ENTITIES)
+                        || (!isEntity
+                            && keysFromAi === this.AI_SETSTATE.EXCLUDE_WITHOUT_SET_ENTITIES)) {
+                        ret[key] = setState[key];
+                    }
+                } else if ((includes && keysFromAi === this.AI_SETSTATE.ONLY)
                     || (!includes && keysFromAi === this.AI_SETSTATE.EXCLUDE)) {
 
-                    ret[key] = res[key];
+                    ret[key] = setState[key];
                 }
             });
 
-        return ret;
+        return getSetState(ret, this, null, useState);
     }
 
     /**

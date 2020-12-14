@@ -15,6 +15,7 @@ const Tester = require('./src/Tester');
 const Ai = require('./src/Ai');
 const WingbotModel = require('./src/wingbot/WingbotModel');
 const CachedModel = require('./src/wingbot/CachedModel');
+const CustomEntityDetectionModel = require('./src/wingbot/CustomEntityDetectionModel');
 const ConversationTester = require('./src/ConversationTester');
 const { asserts } = require('./src/testTools');
 const BuildRouter = require('./src/BuildRouter');
@@ -66,6 +67,7 @@ module.exports = {
     MemoryBotConfigStorage,
     Translate,
     CachedModel,
+    CustomEntityDetectionModel,
     parseActionPayload,
     getUpdate,
     getValue,

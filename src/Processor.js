@@ -449,11 +449,13 @@ class Processor extends EventEmitter {
             }
 
             // process setState
-            const setState = req.getSetState(req.AI_SETSTATE.EXCLUDE);
-            const aiSetState = req.getSetState(req.AI_SETSTATE.ONLY);
+            const setState = req.getSetState(req.AI_SETSTATE.EXCLUDE_WITH_SET_ENTITIES);
             await Ai.ai.processSetStateEntities(req, setState);
-            Object.assign(req.state, setState, aiSetState);
-            res.setState({ ...setState, ...aiSetState });
+            const afterSetState = req
+                .getSetState(req.AI_SETSTATE.EXCLUDE_WITHOUT_SET_ENTITIES, setState);
+            const aiSetState = req.getSetState(req.AI_SETSTATE.ONLY);
+            Object.assign(req.state, setState, aiSetState, afterSetState);
+            res.setState({ ...setState, ...aiSetState, ...afterSetState });
 
             // attach sender meta
             const data = req.actionData();

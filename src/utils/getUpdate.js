@@ -59,7 +59,7 @@ function getValue (attr, currentState = {}) {
     return rest ? undefined : state;
 }
 
-function getSetState (setState = {}, req, res = null) {
+function getSetState (setState = {}, req, res = null, useState = null) {
 
     const keys = Object.keys(setState)
         .filter((k) => k !== '_');
@@ -67,7 +67,8 @@ function getSetState (setState = {}, req, res = null) {
     let obj = {};
     let state = {
         ...req.state,
-        ...(res ? res.newState : {})
+        ...(res ? res.newState : {}),
+        ...(useState || {})
     };
 
     keys.forEach((k) => {

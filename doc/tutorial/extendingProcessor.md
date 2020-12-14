@@ -53,7 +53,8 @@ class MySpecialStatePlugin {
             setMySpecialState (data) {
                 Object.assign(this._updateMySpecialState, data);
             }
-        })
+        });
+        return true;
     }
 
     afterProcessMessage (req, res) {
