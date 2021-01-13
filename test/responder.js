@@ -783,6 +783,21 @@ describe('Responder', function () {
             });
         });
 
+        it.only('sentTextResponses', () => {
+
+            const { opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            const msgs = ['sale', 'sale', 'sasa', 'lele'];
+
+            msgs.forEach((msg) => res.text(msg));
+
+            const response = res.textResponses;
+
+            assert.deepStrictEqual(response, msgs);
+
+        });
+
     });
 
 });

@@ -118,6 +118,8 @@ class Responder {
         this._persona = null;
 
         this._recipient = { id: senderId };
+
+        this._textResponses = [];
     }
 
     /**
@@ -380,6 +382,8 @@ class Responder {
                 text: this._t(text)
             }
         };
+
+        this._textResponses.push(text);
 
         if (replies || this._quickReplyCollector.length !== 0) {
             const {
@@ -904,7 +908,10 @@ class Responder {
      */
     button (text) {
         const btn = new ButtonTemplate(
-            (payload) => this.template(payload),
+            (payload) => {
+                this._textResponses.push(text);
+                this.template(payload);
+            },
             this._createContext(),
             text
         );
@@ -994,6 +1001,15 @@ class Responder {
     trackAsSkill (skill) {
         this.setState({ _trackAsSkill: skill });
         return this;
+    }
+
+    /**
+     * Return array of text responses
+     *
+     * @returns {string[]}
+     */
+    get textResponses () {
+        return this._textResponses;
     }
 
     _senderAction (action) {
