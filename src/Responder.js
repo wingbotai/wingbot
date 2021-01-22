@@ -382,9 +382,10 @@ class Responder {
         };
 
         if (replies || this._quickReplyCollector.length !== 0) {
+            const qrc = this._quickReplyCollector;
             const {
                 quickReplies: qrs, expectedKeywords, disambiguationIntents
-            } = makeQuickReplies(replies, this.path, this._t, this._quickReplyCollector, Ai.ai);
+            } = makeQuickReplies(replies, this.path, this._t, qrc, Ai.ai, this.currentAction());
 
             if (disambiguationIntents.length > 0) {
                 this._senderMeta = {
@@ -1012,7 +1013,8 @@ class Responder {
             appUrl,
             token: this.token || '',
             senderId: this._senderId,
-            path: this.path
+            path: this.path,
+            currentAction: this.currentAction()
         };
     }
 

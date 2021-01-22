@@ -88,7 +88,10 @@ class GenericTemplate extends ButtonTemplate {
                 type: 'postback',
                 payload: JSON.stringify({
                     action: makeAbsolute(action, this.context.path),
-                    data
+                    data: {
+                        _ca: this.context.currentAction,
+                        ...data
+                    }
                 })
             }
         });
