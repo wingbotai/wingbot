@@ -113,18 +113,18 @@ router.on('action', (r, action) => {
 
 router.use('interaction', (req, res) => {
     // track 'foo' and 'bar', but not 'interaction'
-    router.trackAs(req, res, 'foo');
-    router.trackAs(req, res, 'bar');
+    router.emitAction(req, res, 'foo');
+    router.emitAction(req, res, 'bar');
 });
 
 router.use('will-not-be-tracked', (req, res) => {
     // will stop Processor to fire an "event" event and also router will track nothing
-    router.trackAs(req, res, false);
+    router.emitAction(req, res, false);
 });
 
 router.use('disables-firing-processor-event', (req, res) => {
     // will track 'foo-bar'
-    router.trackAs(req, res, 'foo-bar');
+    router.emitAction(req, res, 'foo-bar');
     // will stop Processor to fire an "event" event
     res.trackAs(false);
 });
@@ -250,18 +250,18 @@ router.on('action', (r, action) => {
 
 router.use('interaction', (req, res) => {
     // track 'foo' and 'bar', but not 'interaction'
-    router.trackAs(req, res, 'foo');
-    router.trackAs(req, res, 'bar');
+    router.emitAction(req, res, 'foo');
+    router.emitAction(req, res, 'bar');
 });
 
 router.use('will-not-be-tracked', (req, res) => {
     // will stop Processor to fire an "event" event and also router will track nothing
-    router.trackAs(req, res, false);
+    router.emitAction(req, res, false);
 });
 
 router.use('disables-firing-processor-event', (req, res) => {
     // will track 'foo-bar'
-    router.trackAs(req, res, 'foo-bar');
+    router.emitAction(req, res, 'foo-bar');
     // will stop Processor to fire an "event" event
     res.trackAs(false);
 });

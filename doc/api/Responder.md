@@ -28,6 +28,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.startedOutput](#Responder_startedOutput)
     * [.senderMeta](#Responder_senderMeta) ⇒ [<code>SenderMeta</code>](#SenderMeta)
     * [.data](#Responder_data) : <code>object</code>
+    * [.textResponses](#Responder_textResponses) ⇒ <code>Array.&lt;string&gt;</code>
     * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
     * [.setNotificationRecipient(recipient)](#Responder_setNotificationRecipient)
     * [.doNotLogTheEvent()](#Responder_doNotLogTheEvent) ⇒ <code>this</code>
@@ -113,6 +114,12 @@ Response has been marked with a flag
 {% raw %}<div id="Responder_data">&nbsp;</div>{% endraw %}
 
 ### responder.data : <code>object</code>
+**Kind**: instance property of [<code>Responder</code>](#Responder)  
+{% raw %}<div id="Responder_textResponses">&nbsp;</div>{% endraw %}
+
+### responder.textResponses ⇒ <code>Array.&lt;string&gt;</code>
+Return array of text responses
+
 **Kind**: instance property of [<code>Responder</code>](#Responder)  
 {% raw %}<div id="Responder_run">&nbsp;</div>{% endraw %}
 

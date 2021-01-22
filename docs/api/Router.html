@@ -1262,18 +1262,18 @@ router.on(<span class="hljs-string">&apos;action&apos;</span>, (r, action) =&gt;
 
 router.use(<span class="hljs-string">&apos;interaction&apos;</span>, (req, res) =&gt; {
     <span class="hljs-comment">// track &apos;foo&apos; and &apos;bar&apos;, but not &apos;interaction&apos;</span>
-    router.trackAs(req, res, <span class="hljs-string">&apos;foo&apos;</span>);
-    router.trackAs(req, res, <span class="hljs-string">&apos;bar&apos;</span>);
+    router.emitAction(req, res, <span class="hljs-string">&apos;foo&apos;</span>);
+    router.emitAction(req, res, <span class="hljs-string">&apos;bar&apos;</span>);
 });
 
 router.use(<span class="hljs-string">&apos;will-not-be-tracked&apos;</span>, (req, res) =&gt; {
     <span class="hljs-comment">// will stop Processor to fire an &quot;event&quot; event and also router will track nothing</span>
-    router.trackAs(req, res, <span class="hljs-literal">false</span>);
+    router.emitAction(req, res, <span class="hljs-literal">false</span>);
 });
 
 router.use(<span class="hljs-string">&apos;disables-firing-processor-event&apos;</span>, (req, res) =&gt; {
     <span class="hljs-comment">// will track &apos;foo-bar&apos;</span>
-    router.trackAs(req, res, <span class="hljs-string">&apos;foo-bar&apos;</span>);
+    router.emitAction(req, res, <span class="hljs-string">&apos;foo-bar&apos;</span>);
     <span class="hljs-comment">// will stop Processor to fire an &quot;event&quot; event</span>
     res.trackAs(<span class="hljs-literal">false</span>);
 });
@@ -1455,18 +1455,18 @@ router.on(<span class="hljs-string">&apos;action&apos;</span>, (r, action) =&gt;
 
 router.use(<span class="hljs-string">&apos;interaction&apos;</span>, (req, res) =&gt; {
     <span class="hljs-comment">// track &apos;foo&apos; and &apos;bar&apos;, but not &apos;interaction&apos;</span>
-    router.trackAs(req, res, <span class="hljs-string">&apos;foo&apos;</span>);
-    router.trackAs(req, res, <span class="hljs-string">&apos;bar&apos;</span>);
+    router.emitAction(req, res, <span class="hljs-string">&apos;foo&apos;</span>);
+    router.emitAction(req, res, <span class="hljs-string">&apos;bar&apos;</span>);
 });
 
 router.use(<span class="hljs-string">&apos;will-not-be-tracked&apos;</span>, (req, res) =&gt; {
     <span class="hljs-comment">// will stop Processor to fire an &quot;event&quot; event and also router will track nothing</span>
-    router.trackAs(req, res, <span class="hljs-literal">false</span>);
+    router.emitAction(req, res, <span class="hljs-literal">false</span>);
 });
 
 router.use(<span class="hljs-string">&apos;disables-firing-processor-event&apos;</span>, (req, res) =&gt; {
     <span class="hljs-comment">// will track &apos;foo-bar&apos;</span>
-    router.trackAs(req, res, <span class="hljs-string">&apos;foo-bar&apos;</span>);
+    router.emitAction(req, res, <span class="hljs-string">&apos;foo-bar&apos;</span>);
     <span class="hljs-comment">// will stop Processor to fire an &quot;event&quot; event</span>
     res.trackAs(<span class="hljs-literal">false</span>);
 });
@@ -1605,7 +1605,7 @@ router.use(<span class="hljs-string">&apos;disables-firing-processor-event&apos;
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Router","level":"3.3","depth":1,"next":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"previous":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Router.md","mtime":"2020-12-14T07:58:52.960Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-12-14T07:59:05.963Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Router","level":"3.3","depth":1,"next":{"title":"Tester","level":"3.4","depth":1,"path":"api/Tester.md","ref":"api/Tester.md","articles":[]},"previous":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Router.md","mtime":"2021-01-22T19:54:49.296Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-01-22T19:54:52.604Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

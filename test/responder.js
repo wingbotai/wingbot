@@ -783,7 +783,7 @@ describe('Responder', function () {
             });
         });
 
-        it.only('sentTextResponses', () => {
+        it('sentTextResponses', () => {
 
             const { opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
