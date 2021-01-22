@@ -79,7 +79,10 @@ class ButtonTemplate extends BaseTemplate {
             title: this._t(title),
             payload: JSON.stringify({
                 action: makeAbsolute(action, this.context.path),
-                data
+                data: {
+                    _ca: this.context.currentAction,
+                    ...data
+                }
             })
         });
         return this;

@@ -80,7 +80,7 @@ describe('Responder', function () {
             assert(sendFn.calledOnce);
             assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text');
-            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, 'option');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, '{"action":"option","data":{"_ca":"/"}}');
 
             assert(opts.translator.calledTwice);
         });
@@ -136,7 +136,7 @@ describe('Responder', function () {
             assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
             assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text Title');
-            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, '{"action":"/foo/option","data":{"information":1}}');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, '{"action":"/foo/option","data":{"_ca":"/","information":1}}');
 
             assert.equal(opts.translator.callCount, 4);
 
@@ -208,9 +208,9 @@ describe('Responder', function () {
             assert(sendFn.calledOnce);
             assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text');
-            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, 'option');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, '{"action":"option","data":{"_ca":"/"}}');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[1].title, '-Y');
-            assert.equal(sendFn.firstCall.args[0].message.quick_replies[1].payload, 'x');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[1].payload, '{"action":"x","data":{"_ca":"/"}}');
         });
 
         it('is able to add the quick reply only when replies presents', () => {
@@ -227,7 +227,7 @@ describe('Responder', function () {
             assert.equal(sendFn.firstCall.args[0].message.text, '-Hi');
             assert.equal(sendFn.secondCall.args[0].message.text, '-Hello');
             assert.equal(sendFn.secondCall.args[0].message.quick_replies[0].title, '-Y');
-            assert.equal(sendFn.secondCall.args[0].message.quick_replies[0].payload, 'x');
+            assert.equal(sendFn.secondCall.args[0].message.quick_replies[0].payload, '{"action":"x","data":{"_ca":"/"}}');
         });
 
     });
@@ -297,7 +297,7 @@ describe('Responder', function () {
 
             assert.equal(payload.buttons[0].title, '-Text');
             assert.equal(payload.buttons[0].type, 'postback');
-            assert.equal(payload.buttons[0].payload, '{"action":"/hello/action","data":{}}');
+            assert.equal(payload.buttons[0].payload, '{"action":"/hello/action","data":{"_ca":"/"}}');
 
             assert.equal(payload.buttons[1].title, '-Url button');
             assert.equal(payload.buttons[1].type, 'web_url');

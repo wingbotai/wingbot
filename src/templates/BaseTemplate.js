@@ -9,6 +9,7 @@
  * @prop {string} [token]
  * @prop {string} [senderId]
  * @prop {Function} [translator]
+ * @prop {string} [currentAction]
  */
 
 /**
@@ -30,7 +31,8 @@ class BaseTemplate {
             token: '',
             senderId: '',
             translator: (w) => w,
-            path: ''
+            path: '',
+            currentAction: null
         };
 
         Object.assign(this.context, context);

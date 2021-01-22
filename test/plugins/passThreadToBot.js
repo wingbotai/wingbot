@@ -117,7 +117,7 @@ describe('Plugins<ai.wingbot.passThreadToBot>', () => {
             {
                 ...t.responses[0],
                 target_app_id: 'a',
-                metadata: '{"action":null,"data":{"$hopCount":0,"_senderMeta":{"flag":"d","likelyIntent":"foo","disambText":"random"}},"text":"random"}'
+                metadata: '{"action":null,"data":{"$hopCount":0,"_ca":"/*","_senderMeta":{"flag":"d","likelyIntent":"foo","disambText":"random"}},"text":"random"}'
             }
         ]);
     });

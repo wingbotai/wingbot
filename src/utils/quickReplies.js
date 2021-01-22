@@ -42,9 +42,10 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, s
  * @param {Function} [translate=w => w]
  * @param {object[]} [quickReplyCollector]
  * @param {Ai} ai
+ * @param {string} [currentAction]
  * @returns {{quickReplies: object[], expectedKeywords: object[], disambiguationIntents: string[]}}
  */
-function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyCollector = [], ai = null) {
+function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyCollector = [], ai = null, currentAction = null) {
 
     const expectedKeywords = [];
     const disambiguationIntents = [];
@@ -146,20 +147,21 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
             const hasData = Object.keys(data).length !== 0;
             const hasSetState = setState && Object.keys(setState).length !== 0;
 
-            if (hasData || hasSetState) {
+            if (data._senderMeta
+                && data._senderMeta.flag === FLAG_DISAMBIGUATION_SELECTED) {
 
-                if (data._senderMeta
-                    && data._senderMeta.flag === FLAG_DISAMBIGUATION_SELECTED) {
+                const { likelyIntent } = data._senderMeta;
+                disambiguationIntents.push(likelyIntent);
+            }
 
-                    const { likelyIntent } = data._senderMeta;
-                    disambiguationIntents.push(likelyIntent);
-                }
-
+            if (payload || hasData || hasSetState) {
                 payload = {
-                    action: absoluteAction
+                    action: absoluteAction,
+                    data: {
+                        _ca: currentAction,
+                        ...data
+                    }
                 };
-
-                if (hasData) Object.assign(payload, { data });
                 if (hasSetState) Object.assign(payload, { setState });
 
                 payload = JSON.stringify(payload);
