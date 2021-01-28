@@ -50,6 +50,9 @@ const { mergeState } = require('./utils/stateVariables');
  * @prop {boolean} [waitsForSender] - use 'false' resolve the processing promise
  *  without waiting for message sender
  * @prop {number} [redirectLimit] - maximum number of redirects at single request
+ * @prop {string} [secret] - Secret for calling orchestrator API
+ * @prop {string} [apiUrl] - Url for calling orchestrator API
+ * @prop {Function} [fetch] - Fetch function for calling orchestrator API
  */
 
 /**
@@ -421,7 +424,18 @@ class Processor extends EventEmitter {
             let { state } = stateObject;
 
             // @ts-ignore
-            req = new Request(message, state, pageId, this.reducer.globalIntents);
+            req = new Request(
+                message,
+                state,
+                pageId,
+                this.reducer.globalIntents,
+                {
+                    apiUrl: this.options.apiUrl,
+                    secret: this.options.secret,
+                    fetch: this.options.fetch,
+                    appId: responderData.appId
+                }
+            );
             res = new Responder(senderId, messageSender, token, this.options, responderData);
             const postBack = this._createPostBack(postbackAcumulator, req, res);
 

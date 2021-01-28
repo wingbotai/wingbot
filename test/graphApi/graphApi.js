@@ -561,6 +561,25 @@ describe('<GraphApi>', function () {
 
     });
 
+    describe('{ chat }', () => {
+
+        it('should return null, when not attached', async () => {
+            const res = await api.request({
+                query: `query RunTest ($senderId: String!, $pageId: String!) {
+                    chat {
+                        conversationstoken(senderId: $senderId, pageId: $pageId)
+                    }
+                }`,
+                variables: {
+                    bot: {}
+                }
+            }, headers);
+
+            assert.strictEqual(res.data.conversationTest, null);
+        });
+
+    });
+
     describe('mutation { createCampaign () }', () => {
 
         it('should create a campaign', async () => {

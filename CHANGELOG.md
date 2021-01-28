@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 -  support for controlling quick reply and button source (`req.actionData()._ca`);
 -  support for modification of senderIds when subscribing them
+-  [WIN-367] Added `orchestratorClient` with calling `getConversationToken` to orchestrator inside the Request
 
 ### Fixed
 
