@@ -6,7 +6,7 @@
 const { infoToProjection } = require('graphql-mongodb-projection');
 const apiAuthorizer = require('../../graphApi/apiAuthorizer');
 
-function notificationsApiFactory (storage, notifications, acl) {
+function notificationsApiFactory (storage, notifications, acl, options = {}) {
     return {
         async campaigns (args, ctx) {
             if (!apiAuthorizer(args, ctx, acl)) {
@@ -32,14 +32,14 @@ function notificationsApiFactory (storage, notifications, acl) {
             } = args.campaign;
 
             // other options
-            const options = { ...args.campaign };
+            const opts = { ...args.campaign };
 
-            delete options.name;
-            delete options.action;
-            delete options.data;
+            delete opts.name;
+            delete opts.action;
+            delete opts.data;
 
             const parsedData = JSON.parse(data);
-            return notifications.createCampaign(name, action, parsedData, options);
+            return notifications.createCampaign(name, action, parsedData, opts);
         },
 
         async runCampaign (args, ctx) {
@@ -145,10 +145,19 @@ function notificationsApiFactory (storage, notifications, acl) {
             }
 
             const {
-                senderIds,
                 pageId,
                 tag
             } = args;
+
+            let {
+                senderIds
+            } = args;
+
+            if (typeof options.preprocessSubscribers === 'function') {
+                senderIds = await Promise.resolve(
+                    options.preprocessSubscribers(senderIds, pageId, tag)
+                );
+            }
 
             for (const senderId of senderIds) {
                 await storage.subscribe(`${senderId}`, pageId, tag);

@@ -118,6 +118,7 @@ class Notifications extends EventEmitter {
      * @param {console} [options.log] - logger
      * @param {number} [options.default24Clearance] - use this clearance to ensure delivery in 24h
      * @param {string} [options.allAudienceTag] - tag to mark all users
+     * @param {Function} [options.preprocessSubscribers] - to preprocess GQL api given senderIds
      */
     constructor (notificationStorage = new NotificationsStorage(), options = {}) {
         super();
@@ -132,6 +133,8 @@ class Notifications extends EventEmitter {
 
         // ensure unique timestamps for messages
         this._lts = new Map();
+
+        this._preprocessSubscribers = options.preprocessSubscribers;
     }
 
     /**
@@ -143,7 +146,10 @@ class Notifications extends EventEmitter {
      * @returns {object} - the graphql api object
      */
     api (acl = null) {
-        return api(this._storage, this, acl);
+        const options = {
+            preprocessSubscribers: this._preprocessSubscribers
+        };
+        return api(this._storage, this, acl, options);
     }
 
     /**
