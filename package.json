@@ -65,7 +65,8 @@
     "jsonwebtoken": "^8.5.1",
     "node-fetch": "^2.6.1",
     "path-to-regexp": "^6.2.0",
-    "uuid": "^8.3.1"
+    "uuid": "^8.3.1",
+    "webalize": "^0.1.0"
   },
   "optionalDependencies": {
     "po2json": "^0.4.5",

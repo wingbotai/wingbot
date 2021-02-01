@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const { withParams } = require('webalize');
 const { default: fetch, Headers } = require('node-fetch');
 const BotAppSender = require('./BotAppSender');
 
@@ -31,9 +32,10 @@ class OrchestratorClient {
     }
 
     /**
+     *  Returns conversation token used to authorize and continue in a conversation
      *
      * @param {number} expirationInSeconds
-     * @returns {Promise<{conversationToken: string}>}
+     * @returns {Promise<{conversationToken: string, expirationInSeconds: number}>}
      */
     async getConversationToken (expirationInSeconds) {
         const res = await this._send({
@@ -55,14 +57,32 @@ class OrchestratorClient {
         && res.body.data.chat.conversationToken;
 
         return {
+            expirationInSeconds,
             conversationToken
         };
 
     }
 
-    // TODO udelat metodu co vraci celou url. Tzn. ze do url prida wingbot token
-    // getUrlWithConversationToken(url:string)
-    // Poznamka k pouzit z bota. Url vezmu z konfigu. Mela by to byt pageUrl.
+    /**
+     * Create and add conversation token to url as a query param.
+     *
+     * E.g.:
+     * http://www.xxx.cz/aaa?param1=lambada
+     * =>
+     * http://www.xxx.cz/aaa?param1=lambada&token=aSDasjdasjdas
+     *
+     * @param {string} url
+     * @param {number} expirationInSeconds
+     * @param {string} tokenName - Query parameter name to store token
+     */
+    async addConversationTokenToUrl (url, expirationInSeconds, tokenName = 'token') {
+        const { conversationToken } = await this.getConversationToken(expirationInSeconds);
+        return withParams(
+            url, {
+                query: { [tokenName]: conversationToken }
+            }
+        );
+    }
 
     /**
      * @param {object} payload

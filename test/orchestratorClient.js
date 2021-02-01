@@ -8,6 +8,7 @@ const sinon = require('sinon');
 const { mockServer } = require('graphql-tools');
 const Router = require('../src/Router');
 const Tester = require('../src/Tester');
+const OrchestratorClient = require('../src/OrchestratorClient');
 
 const SECRET = 'a';
 
@@ -104,6 +105,59 @@ It looks like the bot isn't connected to class BotApp`);
         } catch (e) {
             assert.strictEqual(e.message, 'Request doesn\'t receive \'pageId\' from Processor!');
         }
+    });
+
+    it('should return token', async () => {
+
+        const client = new OrchestratorClient({
+            secret: Promise.resolve(SECRET),
+            apiUrl: 'api.url',
+            fetch,
+            appId: 'my-appId',
+            pageId: 'my-pageId',
+            senderId: 'my-senderId'
+        });
+
+        assert.strictEqual(
+            await client.getConversationToken(10),
+            {
+                conversationToken: 'my-conversation-token-my-senderId-my-pageId-10',
+                expirationInSeconds: 10
+            }
+        );
+    });
+
+    it('should create and add conversation token to url', async () => {
+
+        const client = new OrchestratorClient({
+            secret: Promise.resolve(SECRET),
+            apiUrl: 'api.url',
+            fetch,
+            appId: 'my-appId',
+            pageId: 'my-pageId',
+            senderId: 'my-senderId'
+        });
+
+        assert.strictEqual(
+            await client.addConversationTokenToUrl('http://www.site.com', 10),
+            'http://www.site.com/?token=my-conversation-token-my-senderId-my-pageId-10'
+        );
+        assert.strictEqual(
+            await client.addConversationTokenToUrl('http://www.site.com/bla', 10),
+            'http://www.site.com/bla?token=my-conversation-token-my-senderId-my-pageId-10'
+        );
+        assert.strictEqual(
+            await client.addConversationTokenToUrl('http://www.site.com/bla?param=foo', 10),
+            'http://www.site.com/bla?param=foo&token=my-conversation-token-my-senderId-my-pageId-10'
+        );
+        assert.strictEqual(
+            await client.addConversationTokenToUrl('http://www.site.com/bla?param1=foo&param2=bar', 10),
+            'http://www.site.com/bla?param1=foo&param2=bar&token=my-conversation-token-my-senderId-my-pageId-10'
+        );
+        assert.strictEqual(
+            await client.addConversationTokenToUrl('http://www.site.com/bla?param1=foo&param2=bar#x=123&y=789', 10),
+            'http://www.site.com/bla?param1=foo&param2=bar&token=my-conversation-token-my-senderId-my-pageId-10#x=123&y=789'
+        );
     });
 
 });
