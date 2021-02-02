@@ -197,7 +197,7 @@ describe('<GraphApi>', function () {
             assert.deepEqual(res.data, {
                 validateBot: {
                     ok: false,
-                    error: 'Bot build failed: Cannot destructure property `blockName` of \'undefined\' or \'null\'.'
+                    error: 'Bot build failed: Cannot destructure property \'blockName\' of \'block\' as it is undefined.'
                 }
             });
         });
@@ -549,25 +549,6 @@ describe('<GraphApi>', function () {
                 query: `query RunTest ($bot: Any!) {
                     conversationTest (bot: $bot) {
                         output
-                    }
-                }`,
-                variables: {
-                    bot: {}
-                }
-            }, headers);
-
-            assert.strictEqual(res.data.conversationTest, null);
-        });
-
-    });
-
-    describe('{ chat }', () => {
-
-        it('should return null, when not attached', async () => {
-            const res = await api.request({
-                query: `query RunTest ($senderId: String!, $pageId: String!) {
-                    chat {
-                        conversationstoken(senderId: $senderId, pageId: $pageId)
                     }
                 }`,
                 variables: {

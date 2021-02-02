@@ -5,7 +5,9 @@
 
 const { withParams } = require('webalize');
 const { default: fetch, Headers } = require('node-fetch');
-const BotAppSender = require('./BotAppSender');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { promisify } = require('util');
 
 /**
  * @typedef OrchestratorClientOptions
@@ -16,6 +18,8 @@ const BotAppSender = require('./BotAppSender');
  * @property {string} [appId]
  * @property {Function} [fetch]
  */
+
+const sign = promisify(jwt.sign);
 
 class OrchestratorClient {
 
@@ -51,10 +55,10 @@ class OrchestratorClient {
             }
         });
 
-        const conversationToken = res.body
-        && res.body.data
-        && res.body.data.chat
-        && res.body.data.chat.conversationToken;
+        const conversationToken = res.data
+        && res.data
+        && res.data.chat
+        && res.data.chat.conversationToken;
 
         return {
             expirationInSeconds,
@@ -90,17 +94,22 @@ class OrchestratorClient {
     async _send (payload) {
         const body = JSON.stringify(payload);
 
-        const token = await BotAppSender.signBody(body, this._secret, this._appId);
+        const token = await OrchestratorClient.signBody(
+            body,
+            this._secret,
+            this._appId,
+            this._pageId
+        );
 
         const headers = new Headers();
 
         headers.set('Authorization', token);
         headers.set('Content-Type', 'application/json');
 
-        const response = await this._fetch(this._apiUrl, { headers, body, method: 'POST' })
-            .then((r) => r.json());
+        const response = await this._fetch(this._apiUrl, { headers, body, method: 'POST' });
 
-        const { errors = null } = response;
+        const responseJson = response.json();
+        const { errors = null } = responseJson;
 
         if (errors) {
             const [{ error, description = '', code = 500 }] = errors;
@@ -108,8 +117,25 @@ class OrchestratorClient {
             throw new Error(`[${code}] ${error} ${description}`);
         }
 
-        return response;
+        return responseJson;
     }
+
+    static async signBody (body, secret, appId, pageId) {
+        const goodSecret = await secret;
+
+        const sha1 = crypto.createHash('sha1')
+            .update(body)
+            .digest('hex');
+
+        return sign({
+            appId,
+            sha1,
+            pageId,
+            iss: 'apiapp',
+            t: 'at'
+        }, goodSecret);
+    }
+
 }
 
 module.exports = OrchestratorClient;

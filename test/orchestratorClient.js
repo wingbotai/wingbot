@@ -10,7 +10,7 @@ const Router = require('../src/Router');
 const Tester = require('../src/Tester');
 const OrchestratorClient = require('../src/OrchestratorClient');
 
-const SECRET = 'a';
+const SECRET = 'xxx';
 
 describe('OrchestratorClient', () => {
 
@@ -54,7 +54,7 @@ describe('OrchestratorClient', () => {
             // Pass request to mock graphql server
             const res = await server.query(req.query, req.variables);
             // Return result in format like from orchestrator
-            return { json: () => ({ body: res, request: {} }) };
+            return { json: () => ({ data: res.data, request: {} }) };
         });
     });
 
@@ -88,7 +88,7 @@ describe('OrchestratorClient', () => {
             throw new Error('Should raised exception!');
         } catch (e) {
             assert.strictEqual(e.message, `Missing mandatory properties: apiUrl,secret,fetch which are need to connect to orchestrator! 
-It looks like the bot isn't connected to class BotApp`);
+It looks like the bot isn't connected to class BotApp or the Processor is used without a BotApp`);
         }
     });
 
@@ -118,7 +118,7 @@ It looks like the bot isn't connected to class BotApp`);
             senderId: 'my-senderId'
         });
 
-        assert.strictEqual(
+        assert.deepStrictEqual(
             await client.getConversationToken(10),
             {
                 conversationToken: 'my-conversation-token-my-senderId-my-pageId-10',
@@ -158,6 +158,20 @@ It looks like the bot isn't connected to class BotApp`);
             await client.addConversationTokenToUrl('http://www.site.com/bla?param1=foo&param2=bar#x=123&y=789', 10),
             'http://www.site.com/bla?param1=foo&param2=bar&token=my-conversation-token-my-senderId-my-pageId-10#x=123&y=789'
         );
+    });
+
+    // Test for running orchestrator
+    it.skip('call orchestrator tester', async () => {
+        const client = new OrchestratorClient({
+            secret: Promise.resolve(SECRET),
+            apiUrl: 'http://localhost:3000/api/api',
+            appId: 'ced24e1e-8383-4ab0-95d8-e566fb7354e6',
+            pageId: 'cfe27018-f5e3-4919-93cf-75bfb20ea449',
+            senderId: 'FfNVjz2zABy71Y'
+        });
+
+        const url = await client.addConversationTokenToUrl('http://localhost:3000/test', 3600, 'wbchtoken');
+        assert.strictEqual(url, '');
     });
 
 });

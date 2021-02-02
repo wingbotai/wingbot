@@ -9,7 +9,6 @@ const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickRep
 const { getSetState } = require('./utils/getUpdate');
 const { vars } = require('./utils/stateVariables');
 const OrchestratorClient = require('./OrchestratorClient');
-const { media } = require('./resolvers');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
@@ -105,15 +104,6 @@ class Request {
 
         this._event = data;
 
-        const senderId = data.sender && data.sender.id;
-
-        /** @type {import('./OrchestratorClient').OrchestratorClientOptions} */
-        this._orchestratorClientOptions = {
-            ...orchestratorOptions,
-            pageId,
-            senderId
-        };
-
         /**
          * @enum {AiSetStateOption}
          */
@@ -201,6 +191,13 @@ class Request {
 
         // protected for now, filled by AI
         this._anonymizedText = null;
+
+        /** @type {import('./OrchestratorClient').OrchestratorClientOptions} */
+        this._orchestratorClientOptions = {
+            ...orchestratorOptions,
+            pageId: this.pageId,
+            senderId: this.senderId
+        };
     }
 
     get data () {
@@ -1106,13 +1103,7 @@ class Request {
         if (missingProps.length > 0) {
             throw new Error(
                 `Missing mandatory properties: ${missingProps.join(',')} which are need to connect to orchestrator! 
-It looks like the bot isn't connected to class BotApp`
-            );
-        }
-
-        if (!this._orchestratorClientOptions.senderId) {
-            throw new Error(
-                'Message data doesn\'t contain \'senderId\'!'
+It looks like the bot isn't connected to class BotApp or the Processor is used without a BotApp`
             );
         }
 
