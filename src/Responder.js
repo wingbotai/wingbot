@@ -607,7 +607,13 @@ class Responder {
      * @returns {string}
      */
     currentAction () {
-        const ret = makeAbsolute(this.routePath.replace(/^\//, ''), this.path);
+        const routePath = this.routePath.replace(/^\//, '');
+        let ret;
+        if (!routePath) {
+            ret = this.path;
+        } else {
+            ret = makeAbsolute(routePath, this.path);
+        }
         if (!ret.match(/^\//)) {
             return `/${ret}`;
         }

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 -  support for controlling quick reply and button source (`req.actionData()._ca`);
 -  support for modification of senderIds when subscribing them
+
+### Fixed
+
+- `res.currentPath()` method now returns correct path at root routes
 ## [3.9.0] 2021-01-13
 
 ### Added

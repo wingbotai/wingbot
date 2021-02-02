@@ -6,6 +6,30 @@
 const assert = require('assert');
 const Router = require('../src/Router');
 const Tester = require('../src/Tester');
+const Plugins = require('../src/Plugins');
+
+function pluginFactory () {
+    const bot = new Router();
+
+    bot.use('/', (req, res) => {
+        res.text('go', [
+            {
+                action: 'next',
+                title: 'hoho'
+            }
+        ]);
+    });
+
+    bot.use('next', (req, res) => {
+        res.text(`given ${req.text()}`);
+    });
+
+    return bot;
+}
+
+const plugins = new Plugins();
+
+plugins.registerFactory('gogo', pluginFactory);
 
 describe('handling late buttons', () => {
 
@@ -36,6 +60,8 @@ describe('handling late buttons', () => {
             return Router.CONTINUE;
         });
 
+        bot.use('gogo', plugins.getWrappedPlugin('gogo'));
+
         bot.use('start', (req, res) => {
             res.text('hello', [
                 { action: 'next', title: 'next' }
@@ -62,6 +88,16 @@ describe('handling late buttons', () => {
         });
 
         t = new Tester(bot);
+    });
+
+    it('should work in nested plugins', async () => {
+        await t.postBack('gogo');
+
+        t.any().contains('go');
+
+        await t.quickReplyText('hoho');
+
+        t.any().contains('given hoho');
     });
 
     it('should work', async () => {

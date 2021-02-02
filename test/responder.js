@@ -136,7 +136,7 @@ describe('Responder', function () {
             assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
             assert.equal(sendFn.firstCall.args[0].message.text, '-Hello');
             assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].title, '-Text Title');
-            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, '{"action":"/foo/option","data":{"_ca":"/","information":1}}');
+            assert.equal(sendFn.firstCall.args[0].message.quick_replies[0].payload, '{"action":"/foo/option","data":{"_ca":"/foo","information":1}}');
 
             assert.equal(opts.translator.callCount, 4);
 
@@ -297,7 +297,7 @@ describe('Responder', function () {
 
             assert.equal(payload.buttons[0].title, '-Text');
             assert.equal(payload.buttons[0].type, 'postback');
-            assert.equal(payload.buttons[0].payload, '{"action":"/hello/action","data":{"_ca":"/"}}');
+            assert.equal(payload.buttons[0].payload, '{"action":"/hello/action","data":{"_ca":"/hello"}}');
 
             assert.equal(payload.buttons[1].title, '-Url button');
             assert.equal(payload.buttons[1].type, 'web_url');
