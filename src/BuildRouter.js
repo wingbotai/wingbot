@@ -297,6 +297,10 @@ class BuildRouter extends Router {
 
         const rootBlock = blocks.find((block) => block.isRoot);
 
+        if (!rootBlock) {
+            throw new Error('Root block (block.isRoot = true) not found - probably invalid bot snapshot used');
+        }
+
         this._buildBot(rootBlock, setConfigTimestamp);
     }
 

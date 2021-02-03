@@ -8,6 +8,7 @@ const { tokenize, parseActionPayload } = require('./utils');
 const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickReplies');
 const { getSetState } = require('./utils/getUpdate');
 const { vars } = require('./utils/stateVariables');
+const OrchestratorClient = require('./OrchestratorClient');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
@@ -71,6 +72,14 @@ function makeTimestamp () {
  */
 
 /**
+ * @typedef {object} RequestOrchestratorOptions
+ * @prop {string} [apiUrl]
+ * @prop {Promise<string>} [secret]
+ * @prop {Function} [fetch]
+ * @prop {string} [appId]
+ */
+
+/**
  * @typedef {number} AiSetStateOption
  */
 
@@ -81,7 +90,14 @@ function makeTimestamp () {
  */
 class Request {
 
-    constructor (data, state, pageId, globalIntents = new Map()) {
+    /**
+     * @param {*} data
+     * @param {*} state
+     * @param {string} pageId
+     * @param {Map} globalIntents
+     * @param {RequestOrchestratorOptions} [orchestratorOptions]
+     */
+    constructor (data, state, pageId, globalIntents = new Map(), orchestratorOptions = {}) {
         this.campaign = data.campaign || null;
 
         this.taskId = data.taskId || null;
@@ -175,6 +191,13 @@ class Request {
 
         // protected for now, filled by AI
         this._anonymizedText = null;
+
+        /** @type {import('./OrchestratorClient').OrchestratorClientOptions} */
+        this._orchestratorClientOptions = {
+            ...orchestratorOptions,
+            pageId: this.pageId,
+            senderId: this.senderId
+        };
     }
 
     get data () {
@@ -1070,6 +1093,27 @@ class Request {
         }
 
         return Array.from(entitySet.values());
+    }
+
+    get orchestratorClient () {
+
+        const missingProps = ['apiUrl', 'secret', 'appId', 'fetch']
+            .filter((p) => this._orchestratorClientOptions[p] === null
+            || this._orchestratorClientOptions[p] === undefined);
+        if (missingProps.length > 0) {
+            throw new Error(
+                `Missing mandatory properties: ${missingProps.join(',')} which are need to connect to orchestrator! 
+It looks like the bot isn't connected to class BotApp or the Processor is used without a BotApp`
+            );
+        }
+
+        if (!this._orchestratorClientOptions.pageId) {
+            throw new Error(
+                'Request doesn\'t receive \'pageId\' from Processor!'
+            );
+        }
+
+        return new OrchestratorClient(this._orchestratorClientOptions);
     }
 
     static timestamp () {

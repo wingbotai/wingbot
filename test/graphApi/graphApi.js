@@ -197,7 +197,7 @@ describe('<GraphApi>', function () {
             assert.deepEqual(res.data, {
                 validateBot: {
                     ok: false,
-                    error: 'Bot build failed: Cannot destructure property `blockName` of \'undefined\' or \'null\'.'
+                    error: 'Bot build failed: Root block (block.isRoot = true) not found - probably invalid bot snapshot used'
                 }
             });
         });

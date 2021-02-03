@@ -54,8 +54,6 @@ class BotApp {
             ...processorOptions
         } = options;
 
-        this._processor = new Processor(bot, processorOptions);
-
         this._secret = Promise.resolve(secret);
         this._fetch = fetch; // mock
 
@@ -71,6 +69,16 @@ class BotApp {
 
         this._senderLogger = chatLogStorage;
         this._verify = promisify(jwt.verify);
+
+        this._processor = new Processor(
+            bot, {
+                ...processorOptions,
+                secret,
+                fetch: this._fetch,
+                apiUrl: this._apiUrl
+            }
+        );
+
     }
 
     /**
