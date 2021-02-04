@@ -19,6 +19,8 @@
 <dd></dd>
 <dt><a href="#QuickReply">QuickReply</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#RequestOrchestratorOptions">RequestOrchestratorOptions</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#AiSetStateOption">AiSetStateOption</a> : <code>number</code></dt>
 <dd></dd>
 </dl>
@@ -31,6 +33,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 **Kind**: global class  
 
 * [Request](#Request)
+    * [new Request(data, state, pageId, globalIntents, [orchestratorOptions])](#new_Request_new)
     * [.params](#Request_params)
     * [.timestamp](#Request_timestamp)
     * [.senderId](#Request_senderId)
@@ -40,6 +43,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.subscribtions](#Request_subscribtions)
     * [.entities](#Request_entities)
     * [.intents](#Request_intents)
+    * [._orchestratorClientOptions](#Request__orchestratorClientOptions) : <code>OrchestratorClientOptions</code>
     * [.event](#Request_event) : <code>object</code>
     * [.AI_SETSTATE](#Request_AI_SETSTATE) : <code>enum</code>
     * [.isStandby()](#Request_isStandby) ⇒ <code>boolean</code>
@@ -76,6 +80,18 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.aiActionsWinner()](#Request_aiActionsWinner) ⇒ [<code>IntentAction</code>](#IntentAction) \| <code>null</code>
     * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
     * [.expectedEntities()](#Request_expectedEntities) ⇒ <code>Array.&lt;string&gt;</code>
+
+{% raw %}<div id="new_Request_new">&nbsp;</div>{% endraw %}
+
+### new Request(data, state, pageId, globalIntents, [orchestratorOptions])
+
+| Param | Type |
+| --- | --- |
+| data | <code>\*</code> | 
+| state | <code>\*</code> | 
+| pageId | <code>string</code> | 
+| globalIntents | <code>Map</code> | 
+| [orchestratorOptions] | [<code>RequestOrchestratorOptions</code>](#RequestOrchestratorOptions) | 
 
 {% raw %}<div id="Request_params">&nbsp;</div>{% endraw %}
 
@@ -167,6 +183,10 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | list of resolved intents |
 
+{% raw %}<div id="Request__orchestratorClientOptions">&nbsp;</div>{% endraw %}
+
+### request.\_orchestratorClientOptions : <code>OrchestratorClientOptions</code>
+**Kind**: instance property of [<code>Request</code>](#Request)  
 {% raw %}<div id="Request_event">&nbsp;</div>{% endraw %}
 
 ### request.event : <code>object</code>
@@ -642,6 +662,19 @@ typeof res.postBack(true) === 'object';
 | --- | --- |
 | action | <code>string</code> | 
 | title | <code>\*</code> | 
+
+{% raw %}<div id="RequestOrchestratorOptions">&nbsp;</div>{% endraw %}
+
+## RequestOrchestratorOptions : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [apiUrl] | <code>string</code> | 
+| [secret] | <code>Promise.&lt;string&gt;</code> | 
+| [fetch] | <code>function</code> | 
+| [appId] | <code>string</code> | 
 
 {% raw %}<div id="AiSetStateOption">&nbsp;</div>{% endraw %}
 

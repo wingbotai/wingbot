@@ -193,6 +193,7 @@ Creates a new instance on notification service
 | [options.log] | <code>console</code> | logger |
 | [options.default24Clearance] | <code>number</code> | use this clearance to ensure delivery in 24h |
 | [options.allAudienceTag] | <code>string</code> | tag to mark all users |
+| [options.preprocessSubscribers] | <code>function</code> | to preprocess GQL api given senderIds |
 
 {% raw %}<div id="CampaignTarget">&nbsp;</div>{% endraw %}
 

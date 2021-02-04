@@ -164,6 +164,9 @@ app.get('/bot', express.text(), (req, res) => {
 | [autoSeen] | <code>boolean</code> | send seen automatically |
 | [waitsForSender] | <code>boolean</code> | use 'false' resolve the processing promise  without waiting for message sender |
 | [redirectLimit] | <code>number</code> | maximum number of redirects at single request |
+| [secret] | <code>string</code> | Secret for calling orchestrator API |
+| [apiUrl] | <code>string</code> | Url for calling orchestrator API |
+| [fetch] | <code>function</code> | Fetch function for calling orchestrator API |
 
 {% raw %}<div id="IntentAction">&nbsp;</div>{% endraw %}
 

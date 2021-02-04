@@ -1123,6 +1123,8 @@
 <dd></dd>
 <dt><a href="#QuickReply">QuickReply</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#RequestOrchestratorOptions">RequestOrchestratorOptions</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#AiSetStateOption">AiSetStateOption</a> : <code>number</code></dt>
 <dd></dd>
 </dl>
@@ -1134,6 +1136,7 @@
 <p><strong>Kind</strong>: global class  </p>
 <ul>
 <li><a href="#Request">Request</a><ul>
+<li><a href="#new_Request_new">new Request(data, state, pageId, globalIntents, [orchestratorOptions])</a></li>
 <li><a href="#Request_params">.params</a></li>
 <li><a href="#Request_timestamp">.timestamp</a></li>
 <li><a href="#Request_senderId">.senderId</a></li>
@@ -1143,6 +1146,7 @@
 <li><a href="#Request_subscribtions">.subscribtions</a></li>
 <li><a href="#Request_entities">.entities</a></li>
 <li><a href="#Request_intents">.intents</a></li>
+<li><a href="#Request__orchestratorClientOptions">._orchestratorClientOptions</a> : <code>OrchestratorClientOptions</code></li>
 <li><a href="#Request_event">.event</a> : <code>object</code></li>
 <li><a href="#Request_AI_SETSTATE">.AI_SETSTATE</a> : <code>enum</code></li>
 <li><a href="#Request_isStandby">.isStandby()</a> &#x21D2; <code>boolean</code></li>
@@ -1182,6 +1186,39 @@
 </ul>
 </li>
 </ul>
+<div id="new_Request_new">&#xA0;</div>
+
+<h3 id="new-requestdata-state-pageid-globalintents-orchestratoroptions"><a name="new-requestdata-state-pageid-globalintents-orchestratoroptions" class="plugin-anchor" href="#new-requestdata-state-pageid-globalintents-orchestratoroptions"><i class="fa fa-link" aria-hidden="true"></i></a>new Request(data, state, pageId, globalIntents, [orchestratorOptions])</h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td><code>*</code></td>
+</tr>
+<tr>
+<td>state</td>
+<td><code>*</code></td>
+</tr>
+<tr>
+<td>pageId</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>globalIntents</td>
+<td><code>Map</code></td>
+</tr>
+<tr>
+<td>[orchestratorOptions]</td>
+<td><a href="#RequestOrchestratorOptions"><code>RequestOrchestratorOptions</code></a></td>
+</tr>
+</tbody>
+</table>
 <div id="Request_params">&#xA0;</div>
 
 <h3 id="requestparams"><a name="requestparams" class="plugin-anchor" href="#requestparams"><i class="fa fa-link" aria-hidden="true"></i></a>request.params</h3>
@@ -1361,6 +1398,10 @@
 </tr>
 </tbody>
 </table>
+<div id="Request__orchestratorClientOptions">&#xA0;</div>
+
+<h3 id="requestorchestratorclientoptions--orchestratorclientoptions"><a name="requestorchestratorclientoptions--orchestratorclientoptions" class="plugin-anchor" href="#requestorchestratorclientoptions--orchestratorclientoptions"><i class="fa fa-link" aria-hidden="true"></i></a>request._orchestratorClientOptions : <code>OrchestratorClientOptions</code></h3>
+<p><strong>Kind</strong>: instance property of <a href="#Request"><code>Request</code></a>  </p>
 <div id="Request_event">&#xA0;</div>
 
 <h3 id="requestevent--object"><a name="requestevent--object" class="plugin-anchor" href="#requestevent--object"><i class="fa fa-link" aria-hidden="true"></i></a>request.event : <code>object</code></h3>
@@ -2148,6 +2189,36 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
 </tr>
 </tbody>
 </table>
+<div id="RequestOrchestratorOptions">&#xA0;</div>
+
+<h2 id="requestorchestratoroptions--object"><a name="requestorchestratoroptions--object" class="plugin-anchor" href="#requestorchestratoroptions--object"><i class="fa fa-link" aria-hidden="true"></i></a>RequestOrchestratorOptions : <code>object</code></h2>
+<p><strong>Kind</strong>: global typedef<br><strong>Properties</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[apiUrl]</td>
+<td><code>string</code></td>
+</tr>
+<tr>
+<td>[secret]</td>
+<td><code>Promise.&lt;string&gt;</code></td>
+</tr>
+<tr>
+<td>[fetch]</td>
+<td><code>function</code></td>
+</tr>
+<tr>
+<td>[appId]</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="AiSetStateOption">&#xA0;</div>
 
 <h2 id="aisetstateoption--number"><a name="aisetstateoption--number" class="plugin-anchor" href="#aisetstateoption--number"><i class="fa fa-link" aria-hidden="true"></i></a>AiSetStateOption : <code>number</code></h2>
@@ -2195,7 +2266,7 @@ When <code>getData</code> is <code>true</code>, object will be returned. Otherwi
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2021-01-22T19:54:48.135Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-01-22T19:54:52.604Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Request","level":"3.1","depth":1,"next":{"title":"Responder","level":"3.2","depth":1,"path":"api/Responder.md","ref":"api/Responder.md","articles":[]},"previous":{"title":"Extending the Processor","level":"2.9","depth":1,"path":"tutorial/extendingProcessor.md","ref":"tutorial/extendingProcessor.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Request.md","mtime":"2021-02-04T09:35:22.085Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-04T09:35:38.382Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

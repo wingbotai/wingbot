@@ -83,6 +83,8 @@ function makeTimestamp () {
  * @typedef {number} AiSetStateOption
  */
 
+/** @typedef {import('./OrchestratorClient').OrchestratorClientOptions} OrchestratorClientOptions */
+
 /**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
@@ -192,7 +194,7 @@ class Request {
         // protected for now, filled by AI
         this._anonymizedText = null;
 
-        /** @type {import('./OrchestratorClient').OrchestratorClientOptions} */
+        /** @type {OrchestratorClientOptions} */
         this._orchestratorClientOptions = {
             ...orchestratorOptions,
             pageId: this.pageId,

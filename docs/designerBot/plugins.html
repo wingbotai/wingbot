@@ -1229,7 +1229,7 @@ plugins.registerFactory(<span class="hljs-string">&apos;exampleBlock&apos;</span
 describe(<span class="hljs-string">&apos;exampleBlock plugin&apos;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
 
     it(<span class="hljs-string">&apos;should work&apos;</span>, <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
-        <span class="hljs-keyword">const</span> t = <span class="hljs-keyword">new</span> Tester(plugins.getPluginFactory(<span class="hljs-string">&apos;exampleBlock&apos;</span>));
+        <span class="hljs-keyword">const</span> t = <span class="hljs-keyword">new</span> Tester(plugins.getWrappedPlugin(<span class="hljs-string">&apos;exampleBlock&apos;</span>));
 
         <span class="hljs-keyword">await</span> t.postBack(<span class="hljs-string">&apos;/&apos;</span>); <span class="hljs-comment">// run the initial action</span>
 
@@ -1238,6 +1238,44 @@ describe(<span class="hljs-string">&apos;exampleBlock plugin&apos;</span>, <span
         <span class="hljs-comment">// asserts</span>
         t.respondedWithBlock(<span class="hljs-string">&apos;responseBlockName&apos;</span>);
         t.passedAction(<span class="hljs-string">&apos;after-timeout&apos;</span>);
+    });
+
+});
+</code></pre>
+<p>There is a complex example.</p>
+<ul>
+<li>it passes params to plugins</li>
+<li>implements some conversation items, which can be trigged with <code>res.run()</code> method</li>
+<li>allows to test behavior of plugin in attached in a bot</li>
+</ul>
+<pre><code class="lang-javascript"><span class="hljs-keyword">const</span> { Tester, Router } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;wingbot&apos;</span>);
+<span class="hljs-keyword">const</span> plugins = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;../../bot/plugins&apos;</span>);
+
+describe(<span class="hljs-string">&apos;complex plugin&apos;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+
+    it(<span class="hljs-string">&apos;should work&apos;</span>, <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">const</span> bot = <span class="hljs-keyword">new</span> Router();
+
+        <span class="hljs-keyword">const</span> items = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>([
+            [<span class="hljs-string">&apos;responseBlockName&apos;</span>, [(req, res) =&gt; { res.text(<span class="hljs-string">&apos;done&apos;</span>); }]]
+        ]);
+
+        bot.use(<span class="hljs-string">&apos;there-is-plugin&apos;</span>, plugins
+            .getWrappedPlugin(<span class="hljs-string">&apos;exampleBlock&apos;</span>, { text: <span class="hljs-string">&apos;the text&apos;</span> }, items));
+
+        bot.use((req, res) =&gt; {
+            res.text(<span class="hljs-string">&apos;fallback&apos;</span>);
+        });
+
+        <span class="hljs-keyword">const</span> t = <span class="hljs-keyword">new</span> Tester(bot);
+
+        <span class="hljs-keyword">await</span> t.postBack(<span class="hljs-string">&apos;there-is-plugin&apos;</span>); <span class="hljs-comment">// run the initial action</span>
+
+        t.any().contains(<span class="hljs-string">&apos;the text&apos;</span>);
+
+        <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(r =&gt; setTimeout(r, <span class="hljs-number">1500</span>));
+
+        t.any().contains(<span class="hljs-string">&apos;after-timeout&apos;</span>);
     });
 
 });
@@ -1330,7 +1368,7 @@ describe(<span class="hljs-string">&apos;exampleBlock plugin&apos;</span>, <span
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Plugins","level":"1.4","depth":1,"next":{"title":"Testing","level":"1.5","depth":1,"path":"tutorial/testing.md","ref":"tutorial/testing.md","articles":[]},"previous":{"title":"Loading data from APIs","level":"1.3.4","depth":2,"anchor":"#loading-data-from-apis","path":"designerBot/scripting.md","ref":"designerBot/scripting.md#loading-data-from-apis","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"designerBot/plugins.md","mtime":"2020-12-03T12:47:41.586Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-01-22T19:54:52.604Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Plugins","level":"1.4","depth":1,"next":{"title":"Testing","level":"1.5","depth":1,"path":"tutorial/testing.md","ref":"tutorial/testing.md","articles":[]},"previous":{"title":"Loading data from APIs","level":"1.3.4","depth":2,"anchor":"#loading-data-from-apis","path":"designerBot/scripting.md","ref":"designerBot/scripting.md#loading-data-from-apis","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"designerBot/plugins.md","mtime":"2021-02-04T09:29:50.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-04T09:35:38.382Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
