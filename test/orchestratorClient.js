@@ -87,8 +87,7 @@ describe('OrchestratorClient', () => {
             await t.postBack('/token');
             throw new Error('Should raised exception!');
         } catch (e) {
-            assert.strictEqual(e.message, `Missing mandatory properties: apiUrl,secret,fetch which are need to connect to orchestrator! 
-It looks like the bot isn't connected to class BotApp or the Processor is used without a BotApp`);
+            assert.ok(e.message.startsWith('Missing mandatory properties'));
         }
     });
 
@@ -140,23 +139,23 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
 
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com', 10),
-            'http://www.site.com/?token=my-conversation-token-my-senderId-my-pageId-10'
+            'http://www.site.com/?wbchtoken=my-conversation-token-my-senderId-my-pageId-10'
         );
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com/bla', 10),
-            'http://www.site.com/bla?token=my-conversation-token-my-senderId-my-pageId-10'
+            'http://www.site.com/bla?wbchtoken=my-conversation-token-my-senderId-my-pageId-10'
         );
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com/bla?param=foo', 10),
-            'http://www.site.com/bla?param=foo&token=my-conversation-token-my-senderId-my-pageId-10'
+            'http://www.site.com/bla?param=foo&wbchtoken=my-conversation-token-my-senderId-my-pageId-10'
         );
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com/bla?param1=foo&param2=bar', 10),
-            'http://www.site.com/bla?param1=foo&param2=bar&token=my-conversation-token-my-senderId-my-pageId-10'
+            'http://www.site.com/bla?param1=foo&param2=bar&wbchtoken=my-conversation-token-my-senderId-my-pageId-10'
         );
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com/bla?param1=foo&param2=bar#x=123&y=789', 10),
-            'http://www.site.com/bla?param1=foo&param2=bar&token=my-conversation-token-my-senderId-my-pageId-10#x=123&y=789'
+            'http://www.site.com/bla?param1=foo&param2=bar&wbchtoken=my-conversation-token-my-senderId-my-pageId-10#x=123&y=789'
         );
     });
 

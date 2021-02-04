@@ -124,6 +124,38 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
+        it('should match two same entities', () => {
+            const rule = ai.preprocessRule(['@foo', '@foo']);
+
+            const foo = entity('foo');
+            const foo2 = entity('foo');
+
+            const goodReq = fakeReq([], [foo, foo2]);
+            const badReq = fakeReq([], [foo]);
+
+            const winningIntent = intent(null, [foo, foo2], MULTI_SCORE);
+
+            assert.deepEqual(ai.match(goodReq, rule), winningIntent);
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+        });
+
+        it('somehow works with order of entities', () => {
+            const rule = ai.preprocessRule(['@foo=1', '@foo=2']);
+
+            const foo1 = entity('foo', '1');
+            const foo2 = entity('foo', '2');
+
+            const goodReq = fakeReq([], [foo1, foo2]);
+            const badReq = fakeReq([], [foo2, foo1]);
+
+            const winningIntent = intent(null, [foo1, foo2], MULTI_SCORE);
+
+            const win = ai.match(goodReq, rule);
+            assert.deepEqual(win, winningIntent);
+            const lost = ai.match(badReq, rule);
+            assert.deepEqual(lost, winningIntent);
+        });
+
         it('should handicap redundant entities', () => {
             const rule = ai.preprocessRule(['@foo']);
 

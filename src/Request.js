@@ -1097,12 +1097,13 @@ class Request {
 
     get orchestratorClient () {
 
-        const missingProps = ['apiUrl', 'secret', 'appId', 'fetch']
+        const missingProps = ['apiUrl', 'secret', 'appId']
             .filter((p) => this._orchestratorClientOptions[p] === null
             || this._orchestratorClientOptions[p] === undefined);
+
         if (missingProps.length > 0) {
             throw new Error(
-                `Missing mandatory properties: ${missingProps.join(',')} which are need to connect to orchestrator! 
+                `Missing mandatory properties: ${missingProps.join(',')} which are need to connect to orchestrator!
 It looks like the bot isn't connected to class BotApp or the Processor is used without a BotApp`
             );
         }

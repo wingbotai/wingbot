@@ -51,13 +51,18 @@ class BotAppSender extends ReturnSender {
     }
 
     static async signBody (body, secret, appId) {
-        const goodSecret = await secret;
+        const goodSecret = await Promise.resolve(secret);
 
         const sha1 = crypto.createHash('sha1')
             .update(body)
             .digest('hex');
 
-        return sign({ appId, sha1 }, goodSecret);
+        return sign({
+            appId,
+            sha1,
+            iss: 'apiapp',
+            t: 'at'
+        }, goodSecret);
     }
 
     async _send (payload) {

@@ -145,7 +145,7 @@ const plugins = require('../../bot/plugins');
 describe('exampleBlock plugin', function () {
 
     it('should work', async function () {
-        const t = new Tester(plugins.getPluginFactory('exampleBlock'));
+        const t = new Tester(plugins.getWrappedPlugin('exampleBlock'));
 
         await t.postBack('/'); // run the initial action
 
@@ -154,6 +154,46 @@ describe('exampleBlock plugin', function () {
         // asserts
         t.respondedWithBlock('responseBlockName');
         t.passedAction('after-timeout');
+    });
+
+});
+```
+
+There is a complex example.
+
+- it passes params to plugins
+- implements some conversation items, which can be trigged with `res.run()` method
+- allows to test behavior of plugin in attached in a bot
+
+```javascript
+const { Tester, Router } = require('wingbot');
+const plugins = require('../../bot/plugins');
+
+describe('complex plugin', function () {
+
+    it('should work', async function () {
+        const bot = new Router();
+
+        const items = new Map([
+            ['responseBlockName', [(req, res) => { res.text('done'); }]]
+        ]);
+
+        bot.use('there-is-plugin', plugins
+            .getWrappedPlugin('exampleBlock', { text: 'the text' }, items));
+
+        bot.use((req, res) => {
+            res.text('fallback');
+        });
+
+        const t = new Tester(bot);
+
+        await t.postBack('there-is-plugin'); // run the initial action
+
+        t.any().contains('the text');
+
+        await new Promise(r => setTimeout(r, 1500));
+
+        t.any().contains('after-timeout');
     });
 
 });

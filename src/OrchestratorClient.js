@@ -5,9 +5,7 @@
 
 const { withParams } = require('webalize');
 const { default: fetch, Headers } = require('node-fetch');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-const { promisify } = require('util');
+const BotAppSender = require('./BotAppSender');
 
 /**
  * @typedef OrchestratorClientOptions
@@ -18,8 +16,6 @@ const { promisify } = require('util');
  * @property {string} [appId]
  * @property {Function} [fetch]
  */
-
-const sign = promisify(jwt.sign);
 
 class OrchestratorClient {
 
@@ -79,7 +75,7 @@ class OrchestratorClient {
      * @param {number} expirationInSeconds
      * @param {string} tokenName - Query parameter name to store token
      */
-    async addConversationTokenToUrl (url, expirationInSeconds, tokenName = 'token') {
+    async addConversationTokenToUrl (url, expirationInSeconds, tokenName = 'wbchtoken') {
         const { conversationToken } = await this.getConversationToken(expirationInSeconds);
         return withParams(
             url, {
@@ -94,11 +90,10 @@ class OrchestratorClient {
     async _send (payload) {
         const body = JSON.stringify(payload);
 
-        const token = await OrchestratorClient.signBody(
+        const token = await BotAppSender.signBody(
             body,
             this._secret,
-            this._appId,
-            this._pageId
+            this._appId
         );
 
         const headers = new Headers();
@@ -118,22 +113,6 @@ class OrchestratorClient {
         }
 
         return responseJson;
-    }
-
-    static async signBody (body, secret, appId, pageId) {
-        const goodSecret = await secret;
-
-        const sha1 = crypto.createHash('sha1')
-            .update(body)
-            .digest('hex');
-
-        return sign({
-            appId,
-            sha1,
-            pageId,
-            iss: 'apiapp',
-            t: 'at'
-        }, goodSecret);
     }
 
 }
