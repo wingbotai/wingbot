@@ -372,7 +372,7 @@ class AiMatching {
                 return {
                     intent: null,
                     entities: [],
-                    score: 1 - noIntentHandicap - handicap
+                    score: regexpScore - handicap
                 };
             }
             const { score, handicap, matched } = this
@@ -395,7 +395,7 @@ class AiMatching {
             return {
                 intent: null,
                 entities: matched,
-                score: (score - noIntentHandicap - handicap)
+                score: (score - (1 - regexpScore) - handicap)
                     * (this.multiMatchGain ** countOfAdditionalItems)
             };
         }
