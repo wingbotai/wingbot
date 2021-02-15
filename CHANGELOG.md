@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.10.0] 2021-01-13
 ### Added
+
 -  support for controlling quick reply and button source (`req.actionData()._ca`);
 -  support for modification of senderIds when subscribing them
 -  [WIN-367] Added `orchestratorClient` with calling `getConversationToken` to orchestrator inside the Request
+- support for "delayed" notifications
+- support for "§" orchestrator variables
 
 ### Fixed
 
 - `res.currentPath()` method now returns correct path at root routes
+- AI `#tags` now scores with 1.0 score, when matched fully
 ## [3.9.0] 2021-01-13
 
 ### Added
