@@ -69,11 +69,14 @@ class ButtonTemplate extends BaseTemplate {
      * @param {string} title - Button title
      * @param {string} action - Button action (can be absolute or relative)
      * @param {object} [data={}] - Action data
+     * @param {object} [setState] - SetState data
      * @returns {this}
      *
      * @memberOf ButtonTemplate
      */
-    postBackButton (title, action, data = {}) {
+    postBackButton (title, action, data = {}, setState = null) {
+        const hasSetState = setState && Object.keys(setState).length !== 0;
+
         this.buttons.push({
             type: 'postback',
             title: this._t(title),
@@ -82,7 +85,8 @@ class ButtonTemplate extends BaseTemplate {
                 data: {
                     _ca: this.context.currentAction,
                     ...data
-                }
+                },
+                ...(hasSetState ? { setState } : {})
             })
         });
         return this;

@@ -57,6 +57,7 @@ const COMPARE = {
  * @typedef {object} RegexpComparator
  * @prop {RegExp} r - regular expression
  * @prop {boolean} t - use normalized text
+ * @prop {boolean} f - is full match
  */
 
 /**
@@ -312,6 +313,7 @@ class AiMatching {
                 if (fullEmoji) {
                     return {
                         r: new RegExp(`^[${fullEmoji[1]}]+$`),
+                        f: true,
                         t: false
                     };
                 }
@@ -340,7 +342,7 @@ class AiMatching {
                     r = new RegExp(regexText);
                 }
 
-                return { r, t: true };
+                return { r, t: true, f: !withClosingHash };
             });
 
         return { regexps, intents, entities };
@@ -357,13 +359,13 @@ class AiMatching {
     match (req, rule, stateless = false) {
         const { regexps, intents, entities } = rule;
 
-        const regexpMatching = this._matchRegexp(req, regexps);
+        const noIntentHandicap = req.intents.length === 0 ? 0 : this.redundantIntentHandicap;
+        const regexpScore = this._matchRegexp(req, regexps, noIntentHandicap);
 
-        if (regexpMatching || (intents.length === 0 && regexps.length === 0)) {
-            const noIntentHandicap = req.intents.length === 0 ? 0 : this.redundantIntentHandicap;
+        if (regexpScore !== 0 || (intents.length === 0 && regexps.length === 0)) {
 
             if (entities.length === 0) {
-                if (!regexpMatching) {
+                if (regexpScore === 0) {
                     return null;
                 }
                 const handicap = req.entities.length * this.redundantEntityHandicap;
@@ -386,7 +388,10 @@ class AiMatching {
             if (score === 0 && !allOptional) {
                 return null;
             }
-            const countOfAdditionalItems = Math.max(matched.length - (regexpMatching ? 0 : 1), 0);
+            const countOfAdditionalItems = Math.max(
+                matched.length - (regexpScore !== 0 ? 0 : 1),
+                0
+            );
             return {
                 intent: null,
                 entities: matched,
@@ -624,22 +629,25 @@ class AiMatching {
      *
      * @param {AIRequest} req
      * @param {RegexpComparator[]} regexps
-     * @returns {boolean}
+     * @param {number} noIntentHandicap
+     * @returns {number}
      */
-    _matchRegexp (req, regexps) {
-        if (regexps.length !== 0) {
-            const match = regexps.some(({ r, t }) => {
-                if (t) {
-                    return req.text(true).match(r);
-                }
-                return req.text().match(r);
-            });
-
-            if (match) {
-                return true;
-            }
+    _matchRegexp (req, regexps, noIntentHandicap) {
+        if (regexps.length === 0) {
+            return 0;
         }
-        return false;
+
+        const scores = regexps.map(({ r, t, f }) => {
+            const m = req.text(t).match(r);
+
+            if (!m) {
+                return 0;
+            }
+
+            return f ? 1 : 1 - noIntentHandicap;
+        });
+
+        return Math.max(0, ...scores);
     }
 
 }

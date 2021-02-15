@@ -52,7 +52,17 @@ class Tester {
 
         // replace logger (throw instead of log)
         const log = {
-            error: (e) => { throw e; },
+            error: (e, f) => {
+                let t;
+
+                if (e instanceof Error) t = e;
+                else if (typeof e === 'string' && f instanceof Error) t = new Error(`${e}: ${f.message}`);
+                else if (f instanceof Error) t = f;
+                else if (typeof e === 'string') t = new Error(e);
+                else t = e;
+
+                throw t;
+            },
             warn: e => console.warn(e), // eslint-disable-line
             log: e => console.log(e), // eslint-disable-line
             info: e => console.info(e) // eslint-disable-line

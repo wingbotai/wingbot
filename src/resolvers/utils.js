@@ -4,6 +4,7 @@
 'use strict';
 
 const hbs = require('./hbs');
+const customFn = require('../utils/customFn');
 
 const ASPECT_SQUARE = 'square';
 const ASPECT_HORISONTAL = 'horisontal';
@@ -134,12 +135,27 @@ function processButtons (
     linksMap,
     senderId,
     // eslint-disable-next-line no-unused-vars
-    linksTranslator = (sndr, defaultText, urlText, isExtUrl, reqState) => urlText
+    linksTranslator = (sndr, defaultText, urlText, isExtUrl, reqState) => urlText,
+    allowForbiddenSnippetWords,
+    req,
+    res
 ) {
+
     buttons.forEach(({
         title: btnTitle,
-        action: btnAction
+        action: btnAction,
+        hasCondition,
+        conditionFn,
+        setState
     }) => {
+        if (hasCondition) {
+            const condition = customFn(conditionFn, 'Quick reply condition', allowForbiddenSnippetWords);
+
+            if (!condition(req, res)) {
+                return;
+            }
+        }
+
         const btnTitleText = getText(btnTitle, state);
         const defaultText = getText(btnTitle, { lang: null });
         const {
@@ -169,7 +185,7 @@ function processButtons (
                     return;
                 }
 
-                elem.postBackButton(btnTitleText, postbackAction);
+                elem.postBackButton(btnTitleText, postbackAction, {}, setState);
                 break;
             }
             case TYPE_SHARE:

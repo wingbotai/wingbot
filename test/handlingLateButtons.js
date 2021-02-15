@@ -39,7 +39,7 @@ describe('handling late buttons', () => {
     beforeEach(() => {
         const bot = new Router();
 
-        bot.use((req, res) => {
+        bot.use((req, res, postback) => {
             const { _ca: currentAction } = req.actionData();
 
             if (!currentAction) {
@@ -54,6 +54,13 @@ describe('handling late buttons', () => {
                 res.text(req.state.lastAction).text(currentAction);
                 res.keepPreviousContext(req, false, true);
                 res.trackAs(false);
+
+                const expected = req.expected();
+
+                if (expected) {
+                    postback(expected.action);
+                }
+
                 return Router.END;
             }
 
@@ -81,6 +88,26 @@ describe('handling late buttons', () => {
             ]);
         });
 
+        bot.use('redirextest', (req, res) => {
+            res.text('here').expected('redirex');
+        });
+
+        bot.use('redirex', (req, res, postback) => {
+            if (req.isPostBack()) {
+                // @ts-ignore
+                res.keepPreviousContext(req, false, true);
+                postback('redirex-fallback');
+            } else {
+                res.text(`got ${req.text()}`);
+            }
+        });
+
+        bot.use('redirex-fallback', (req, res) => {
+            // @ts-ignore
+            res.keepPreviousContext(req, false, true);
+            res.text('again');
+        });
+
         bot.use((req, res) => {
             res.text('fallback', [
                 { action: 'start', title: 'start' }
@@ -88,6 +115,22 @@ describe('handling late buttons', () => {
         });
 
         t = new Tester(bot);
+    });
+
+    it('shoudl be able to keep previous context at prompt interaction', async () => {
+        await t.postBack('start');
+
+        await t.postBack('redirextest');
+
+        t.any().contains('here');
+
+        await t.quickReply('next', { _ca: '/start' });
+
+        t.any().contains('again');
+
+        await t.text('sasalele');
+
+        t.any().contains('got sasalele');
     });
 
     it('should work in nested plugins', async () => {
@@ -114,7 +157,7 @@ describe('handling late buttons', () => {
 
         t.any().contains('ignoring');
 
-        await t.text('any');
+        // await t.text('any');
 
         t.any().contains('la:/next');
         assert.strictEqual(t.getState().state.lastAction, '/ex');

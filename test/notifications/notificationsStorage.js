@@ -40,6 +40,11 @@ describe('<NotificationsStorage>', () => {
             assert.ok(Array.isArray(res2));
             assert.equal(typeof res2[0].id, 'string');
             assert.notEqual(res[0].id, res2[0].id);
+
+            const task = await storage.getTaskById(res2[0].id);
+
+            assert.ok(task);
+            assert.equal(task.id, res2[0].id, 'string');
         });
 
         it('should not usert same task again, but it should update it', async () => {

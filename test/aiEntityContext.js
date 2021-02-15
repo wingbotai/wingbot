@@ -8,6 +8,7 @@ const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const Ai = require('../src/Ai');
 const CustomEntityDetectionModel = require('../src/wingbot/CustomEntityDetectionModel');
+const Request = require('../src/Request');
 
 const { ai } = Ai;
 
@@ -159,6 +160,17 @@ describe('<Ai> entity context', () => {
             res.text('Welcome');
         });
 
+        bot.use('same-entities', (req, res) => {
+            res.text('test', [
+                { action: 'a', match: ['@en=1'] },
+                { action: 'b', match: ['@en', '@en'] }
+            ]);
+        });
+
+        bot.use('a', (req, res) => { res.text('a'); });
+
+        bot.use('b', (req, res) => { res.text('b'); });
+
         bot.use(ai.global('fakin', ['@entity']), (req, res) => {
             res.text('Fakin');
         });
@@ -174,6 +186,40 @@ describe('<Ai> entity context', () => {
         });
 
         t = new Tester(bot);
+    });
+
+    it('prefers the two entities instead of one', async () => {
+        await t.postBack('same-entities');
+
+        const e = Request.text(t.senderId, 'txt');
+
+        Request.addIntentToRequest(e, 'intentttt', [
+            { entity: 'en', value: '2', score: 1 },
+            { entity: 'en', value: '1', score: 1 }
+        ], 1);
+
+        await t.processMessage(e);
+
+        t.any().contains('b');
+    });
+
+    it('prefers the one entity in exact match', async () => {
+
+        t.setState({
+            '@en': '2'
+        });
+
+        await t.postBack('same-entities');
+
+        const e = Request.text(t.senderId, 'txt');
+
+        Request.addIntentToRequest(e, 'intentttt', [
+            { entity: 'en', value: '1', score: 1 }
+        ], 1);
+
+        await t.processMessage(e);
+
+        t.any().contains('a');
     });
 
     it('is able to set state from the entity condition in quick reply', async () => {

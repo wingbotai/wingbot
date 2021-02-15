@@ -31,6 +31,7 @@ const DEFAULT_CAMPAIGN_DATA = {
     negative: 0,
     startAt: null,
     sliding: false,
+    delay: 0,
     slide: null,
     slideRound: null,
     allowRepeat: false,
@@ -92,6 +93,7 @@ const DEFAULT_CAMPAIGN_DATA = {
  * Setup
  *
  * @prop {boolean} sliding
+ * @prop {number} delay
  * @prop {number} slide
  * @prop {boolean} active
  * @prop {boolean} in24hourWindow
@@ -270,7 +272,7 @@ class Notifications extends EventEmitter {
             // re-evalutate campaigns
             await Promise.all([
                 this._storage.subscribe(`${senderId}`, pageId, tag),
-                this._postponeTasksOnInteraction(cmps, req)
+                this._postponeTasksOnInteraction(cmps, req, res)
             ]);
 
             if (tag !== this._allAudienceTag) {
@@ -303,7 +305,7 @@ class Notifications extends EventEmitter {
             // re-evalutate campaigns
             [unsubscibtions] = await Promise.all([
                 this._storage.unsubscribe(senderId, pageId, tag),
-                this._postponeTasksOnInteraction(cmps, req)
+                this._postponeTasksOnInteraction(cmps, req, res)
             ]);
         } else {
             unsubscibtions = await this._storage
@@ -370,11 +372,13 @@ class Notifications extends EventEmitter {
         return this._storage.getSenderSubscribtions(senderId, pageId);
     }
 
-    async _preloadSubscribtions (senderId, pageId, req, res) {
+    async _preloadSubscribtions (req, res) {
         if (res.data._requestSubscribtions) {
             req.subscribtions = res.data._requestSubscribtions;
             return;
         }
+
+        const { senderId, pageId } = req;
 
         req.subscribtions = await this._storage.getSenderSubscribtions(senderId, pageId);
         this._updateResDataWithSubscribtions(req, res);
@@ -407,7 +411,7 @@ class Notifications extends EventEmitter {
             this._storage.getCampaigns({
                 sliding: true, active: true
             }),
-            this._preloadSubscribtions(req.senderId, req.pageId, req, res)
+            this._preloadSubscribtions(req, res)
         ]);
 
         Object.assign(res, {
@@ -603,8 +607,10 @@ class Notifications extends EventEmitter {
         });
     }
 
-    _calculateSlide (timestamp, { slide, slideRound = null, in24hourWindow = false }) {
-        const time = timestamp + slide;
+    _calculateSlide (timestamp, {
+        slide, delay, slideRound = null, in24hourWindow = false
+    }) {
+        const time = timestamp + (slide || 0) + (delay || 0);
 
         if (typeof slideRound !== 'number') {
             return time;
@@ -632,17 +638,38 @@ class Notifications extends EventEmitter {
 
         let { _ntfSlidingCampTasks: cache = [] } = req.state;
 
-        // remove the old tasks or tasks without campaigns
-        cache = cache.filter((t) => t.enqueue >= req.timestamp
+        const oldTasksToRemove = cache.filter((t) => t.enqueue < req.timestamp
             && slidingCampaigns.some((c) => c.id === t.campaignId));
+
+        // check the old tasks, because they're maybe waiting for send
+        const oldTasks = await Promise.all(
+            oldTasksToRemove
+                .map(({ id }) => this._storage.getTaskById(id))
+        );
+
+        const taskIdsWaitingToBeSent = oldTasks
+            .filter((t) => t && !t.sent && !t.leaved && !t.failed && !t.notSent)
+            .map((t) => t.id);
+
+        // remove the old tasks or tasks without campaigns
+        cache = cache.filter((t) => slidingCampaigns.some((c) => c.id === t.campaignId)
+            && (t.enqueue >= req.timestamp || taskIdsWaitingToBeSent.includes(t.id)));
 
         // postpone existing
         cache = cache.map((t) => {
             const campaign = slidingCampaigns.find((c) => c.id === t.campaignId);
+            if (!campaign.slide) {
+                return t;
+            }
             const enqueue = this._calculateSlide(req.timestamp, campaign);
             return { ...t, enqueue };
         });
         await Promise.all(cache
+            // update only sliding campaigns
+            .filter(({ campaignId }) => {
+                const campaign = slidingCampaigns.find((c) => c.id === campaignId);
+                return !!campaign.slide;
+            })
             .map(({ id, enqueue }) => this._storage.updateTask(id, { enqueue })));
 
         // missing tasks in cache
@@ -670,18 +697,22 @@ class Notifications extends EventEmitter {
         // insert tasks for sliding campaigns
         const insertedTasks = await this.pushTasksToQueue(insertTasks);
 
-        if (res) {
-            cache.push(...insertedTasks.map((t) => ({
-                id: t.id,
-                campaignId: t.campaignId,
-                enqueue: t.enqueue
-            })));
+        cache.push(...insertedTasks.map((t) => ({
+            id: t.id,
+            campaignId: t.campaignId,
+            enqueue: t.enqueue
+        })));
 
-            res.setState({
-                _ntfLastInteraction: req.timestamp,
-                _ntfOverMessageSent: false,
-                _ntfSlidingCampTasks: cache
-            });
+        const set = {
+            _ntfLastInteraction: req.timestamp,
+            _ntfOverMessageSent: false,
+            _ntfSlidingCampTasks: cache
+        };
+
+        Object.assign(req.state, set);
+
+        if (res) {
+            res.setState(set);
         }
     }
 

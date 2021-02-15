@@ -17,7 +17,12 @@ const {
     TYPE_URL_WITH_EXT
 } = require('./utils');
 
-function carousel (params, { isLastIndex, linksMap, linksTranslator = (a, b, c) => c }) {
+function carousel (params, {
+    isLastIndex,
+    linksMap,
+    linksTranslator = (a, b, c) => c,
+    allowForbiddenSnippetWords
+}) {
     const {
         items = [],
         shareable = false,
@@ -90,7 +95,17 @@ function carousel (params, { isLastIndex, linksMap, linksTranslator = (a, b, c) 
                 }
             }
 
-            processButtons(buttons, state, elem, linksMap, senderId, linksTranslator);
+            processButtons(
+                buttons,
+                state,
+                elem,
+                linksMap,
+                senderId,
+                linksTranslator,
+                allowForbiddenSnippetWords,
+                req,
+                res
+            );
         });
 
         tpl.send();

@@ -46,7 +46,17 @@ function button (params, {
         const state = stateData(req, res);
         const tpl = res.button(compiledText(state));
 
-        processButtons(buttons, state, tpl, linksMap, req.senderId, linksTranslator);
+        processButtons(
+            buttons,
+            state,
+            tpl,
+            linksMap,
+            req.senderId,
+            linksTranslator,
+            allowForbiddenSnippetWords,
+            req,
+            res
+        );
 
         tpl.send();
 

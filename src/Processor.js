@@ -270,9 +270,11 @@ class Processor extends EventEmitter {
                 || typeof message.intent === 'string'
                 || (Array.isArray(message.entities) && message.entities.length !== 0)
                 || message.pass_thread_control || message.postback
+                || message.set_context
+                || message.context
                 || message.take_thread_control)) {
 
-            this.options.log.warn('message should be an object', message);
+            this.options.log.warn('message should be a valid messaging object', message);
             await preloadPromise;
             return { status: 400 };
         }

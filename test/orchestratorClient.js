@@ -44,7 +44,7 @@ describe('OrchestratorClient', () => {
 
         const server = mockServer(schema, {
             ChatQuery: () => ({
-                conversationToken: ({ senderId, pageId, expirationInSeconds: expirationInSecondsInput }) => `my-conversation-token-${senderId}-${pageId}-${expirationInSecondsInput}`
+                conversationToken: () => 'my-conversation-token'
             })
         });
 
@@ -70,7 +70,7 @@ describe('OrchestratorClient', () => {
         Object.assign(t.testData, { appId });
         await t.postBack('/token');
         t.any()
-            .contains(`my-conversation-token-${senderId}-${pageId}-${expirationInSeconds}`);
+            .contains('my-conversation-token'); // -${senderId}-${pageId}-${expirationInSeconds}`);
     });
 
     it('should throw error due to missing properties for connection to orchestrator', async () => {
@@ -120,7 +120,7 @@ describe('OrchestratorClient', () => {
         assert.deepStrictEqual(
             await client.getConversationToken(10),
             {
-                conversationToken: 'my-conversation-token-my-senderId-my-pageId-10',
+                conversationToken: 'my-conversation-token', // -my-senderId-my-pageId-10',
                 expirationInSeconds: 10
             }
         );
@@ -139,23 +139,23 @@ describe('OrchestratorClient', () => {
 
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com', 10),
-            'http://www.site.com/?wbchtoken=my-conversation-token-my-senderId-my-pageId-10'
+            'http://www.site.com/?wbchtoken=my-conversation-token' // -my-senderId-my-pageId-10'
         );
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com/bla', 10),
-            'http://www.site.com/bla?wbchtoken=my-conversation-token-my-senderId-my-pageId-10'
+            'http://www.site.com/bla?wbchtoken=my-conversation-token' // -my-senderId-my-pageId-10'
         );
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com/bla?param=foo', 10),
-            'http://www.site.com/bla?param=foo&wbchtoken=my-conversation-token-my-senderId-my-pageId-10'
+            'http://www.site.com/bla?param=foo&wbchtoken=my-conversation-token' // -my-senderId-my-pageId-10'
         );
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com/bla?param1=foo&param2=bar', 10),
-            'http://www.site.com/bla?param1=foo&param2=bar&wbchtoken=my-conversation-token-my-senderId-my-pageId-10'
+            'http://www.site.com/bla?param1=foo&param2=bar&wbchtoken=my-conversation-token' // -my-senderId-my-pageId-10'
         );
         assert.strictEqual(
             await client.addConversationTokenToUrl('http://www.site.com/bla?param1=foo&param2=bar#x=123&y=789', 10),
-            'http://www.site.com/bla?param1=foo&param2=bar&wbchtoken=my-conversation-token-my-senderId-my-pageId-10#x=123&y=789'
+            'http://www.site.com/bla?param1=foo&param2=bar&wbchtoken=my-conversation-token#x=123&y=789' // -my-senderId-my-pageId-10#x=123&y=789'
         );
     });
 

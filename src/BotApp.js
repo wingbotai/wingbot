@@ -16,6 +16,9 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 /** @typedef {import('./Router')} Router */
 /** @typedef {import('./Processor').ProcessorOptions} ProcessorOptions */
 /** @typedef {import('./ReturnSender').ChatLogStorage} ChatLogStorage */
+/** @typedef {import('./Request')} Request */
+/** @typedef {import('./Responder')} Responder */
+/** @typedef {import('./Processor').Plugin} Plugin */
 
 /**
  * @typedef {object} BotAppOptions
@@ -82,6 +85,38 @@ class BotApp {
             }
         );
 
+        this._processor.plugin(BotApp.plugin());
+    }
+
+    /**
+     * Returns processor plugin, which updates thread context automatically
+     *
+     * @returns {Plugin}
+     */
+    static plugin () {
+        return {
+            /**
+             *
+             * @param {Request} req
+             * @param {Responder} res
+             */
+            afterProcessMessage (req, res) {
+                const wasSet = req.getSetContext(true);
+                const updatedVariables = Object.keys(res.newState)
+                    .filter((key) => key.match(/^§/) && wasSet[key] !== res.newState[key]);
+
+                if (updatedVariables.length !== 0) {
+                    const setContext = updatedVariables
+                        .reduce((o, key) => Object.assign(o, {
+                            [key.replace(/^§/, '')]: res.newState[key]
+                        }), {});
+
+                    res.send({
+                        set_context: setContext
+                    });
+                }
+            }
+        };
     }
 
     /**

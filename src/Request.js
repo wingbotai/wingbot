@@ -200,6 +200,8 @@ class Request {
             pageId: this.pageId,
             senderId: this.senderId
         };
+
+        this._orchestrator = null;
     }
 
     get data () {
@@ -353,6 +355,56 @@ class Request {
      */
     isAttachment () {
         return this.attachments.length > 0;
+    }
+
+    /**
+     * Orchestrator: check, if the request updates only $context variables
+     *
+     * - when no variables to check provided,
+     *   returns false when `set_context` is bundled within another conversational event
+     *
+     *
+     * @param {string[]} varsToCheck - list of variables to check
+     */
+    isSetContext (varsToCheck = []) {
+        if (this.event.set_context === null
+            || typeof this.event.set_context !== 'object') {
+
+            return false;
+        }
+
+        if (varsToCheck.length === 0
+            && (this.isMessage()
+                || this.isPostBack()
+                || this.isAttachment())) {
+            return false;
+        }
+
+        const keys = Object.keys(this.event.set_context);
+
+        return varsToCheck
+            .every((v) => keys.includes(v.replace(/^§/, '')));
+    }
+
+    /**
+     * Orchestrator: get current thread context update
+     *
+     * @param {boolean} [includeContextSync]
+     * @returns {object} - with `§` prefixed keys
+     */
+    getSetContext (includeContextSync = false) {
+        const read = includeContextSync && typeof this.event.context === 'object'
+            ? { ...this.event.context, ...this.event.set_context }
+            : this.event.set_context;
+
+        if (!read) {
+            return {};
+        }
+
+        return Object.keys(read)
+            .reduce((o, key) => Object.assign(o, {
+                [`§${key}`]: read[key]
+            }), {});
     }
 
     _checkAttachmentType (type, attachmentIndex = 0) {
@@ -775,10 +827,6 @@ class Request {
         return this._action ? this._action.data : {};
     }
 
-    getAiSetState () {
-
-    }
-
     // eslint-disable-next-line jsdoc/require-param
     /**
      * Gets incomming setState action variable
@@ -794,8 +842,18 @@ class Request {
             this._action = this._resolveAction();
         }
 
-        const setState = (this._action && this._action.setState)
+        let setState = (this._action && this._action.setState)
             || this._event.setState;
+
+        // orchestrators context updates
+        if (this.event.set_context || this.event.context) {
+            const updatedProps = this.getSetContext(true);
+
+            setState = {
+                ...setState,
+                ...updatedProps
+            };
+        }
 
         if (!setState || typeof setState !== 'object') {
             return {};
@@ -1098,6 +1156,15 @@ class Request {
     }
 
     get orchestratorClient () {
+        // eslint-disable-next-line no-console
+        console.log('req.orchestratorClient is deprecated, use req.orchestrator instead');
+        return this.orchestrator;
+    }
+
+    get orchestrator () {
+        if (this._orchestrator) {
+            return this._orchestrator;
+        }
 
         const missingProps = ['apiUrl', 'secret', 'appId']
             .filter((p) => this._orchestratorClientOptions[p] === null
@@ -1116,7 +1183,9 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
             );
         }
 
-        return new OrchestratorClient(this._orchestratorClientOptions);
+        this._orchestrator = new OrchestratorClient(this._orchestratorClientOptions);
+
+        return this._orchestrator;
     }
 
     static timestamp () {

@@ -30,6 +30,20 @@ describe('BotApp', () => {
             return Router.CONTINUE;
         });
 
+        bot.use((req, res) => {
+            if (req.isSetContext()) {
+                res.text('state set');
+                res.setState({ '§foo': 'bar' });
+                return Router.END;
+            }
+            return Router.CONTINUE;
+        });
+
+        bot.use('from-handover', (req, res) => {
+            res.text('state set');
+            res.setState({ '§foo': 'bar' });
+        });
+
         bot.use(/hello/, (req, res) => {
             res.text('hi');
         });
@@ -171,6 +185,109 @@ describe('BotApp', () => {
         });
 
     });
+
+    ['set_context', 'context']
+        .forEach((key) => {
+
+            it(`should retain thread context sent in ${key}`, async () => {
+
+                const body = JSON.stringify({
+                    entry: [
+                        {
+                            id: PAGE_ID,
+                            requires_response: true,
+                            messaging: [
+                                key === 'context'
+                                    ? {
+                                        sender: { id: 's' },
+                                        recipient: { id: PAGE_ID },
+                                        mid: '2',
+                                        context: { sasa: 'lele' },
+                                        pass_thread_control: {
+                                            new_owner_app_id: 'abc'
+                                        },
+                                        postback: { payload: 'from-handover' }
+                                    }
+                                    : {
+                                        sender: { id: 's' },
+                                        recipient: { id: PAGE_ID },
+                                        mid: '2',
+                                        set_context: { sasa: 'lele' }
+                                    }
+                            ]
+                        }
+                    ]
+                });
+                const authorization = await BotAppSender.signBody(body, SECRET, APP_ID);
+
+                const response = await app.request(body, { authorization });
+
+                // @ts-ignore
+                assert.deepStrictEqual(JSON.parse(response.body), {
+                    entry: [
+                        {
+                            id: PAGE_ID,
+                            responses: [
+                                {
+                                    status: 200,
+                                    response_to_mid: '2',
+                                    messaging: [
+                                        {
+                                            sender_action: 'typing_on',
+                                            recipient: {
+                                                id: 's'
+                                            },
+                                            messaging_type: 'RESPONSE',
+                                            sender: {
+                                                id: PAGE_ID
+                                            },
+                                            response_to_mid: '2'
+                                        },
+                                        {
+                                            messaging_type: 'RESPONSE',
+                                            recipient: {
+                                                id: 's'
+                                            },
+                                            response_to_mid: '2',
+                                            sender: {
+                                                id: PAGE_ID
+                                            },
+                                            wait: 550
+                                        },
+                                        {
+                                            message: {
+                                                text: 'state set'
+                                            },
+                                            recipient: {
+                                                id: 's'
+                                            },
+                                            messaging_type: 'RESPONSE',
+                                            sender: {
+                                                id: PAGE_ID
+                                            },
+                                            response_to_mid: '2'
+                                        },
+                                        {
+                                            recipient: {
+                                                id: 's'
+                                            },
+                                            messaging_type: 'RESPONSE',
+                                            response_to_mid: '2',
+                                            sender: {
+                                                id: PAGE_ID
+                                            },
+                                            set_context: { foo: 'bar' }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                });
+
+            });
+
+        });
 
     it('should provide a symc API interface to bot', async () => {
 

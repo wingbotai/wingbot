@@ -534,6 +534,8 @@ describe('Notifications', function () {
             await notifications.processQueue(t);
             assert.equal(t.actions.length, 0);
 
+            await wait(30);
+
             // lets make another interaction
             await t.postBack('onceAction');
             t.passedAction('onceAction');
@@ -541,6 +543,50 @@ describe('Notifications', function () {
             await wait(60);
 
             await notifications.processQueue(t);
+
+            t.passedAction('testAction');
+
+            slidingCampaign = await notifications._storage.getCampaignById(slidingCampaign.id);
+            assert.equal(slidingCampaign.sent, 1);
+            assert.equal(slidingCampaign.queued, 1);
+        });
+
+        it('makes able to send delayed campaigns', async () => {
+            const t = new Tester(bot);
+            t.processor.plugin(notifications);
+
+            let slidingCampaign = await notifications.createCampaign('sliding one', 'testAction', {}, {
+                sliding: true,
+                delay: 50
+            });
+
+            assert.equal(slidingCampaign.sent, 0);
+            assert.equal(slidingCampaign.queued, 0);
+
+            // subscribe
+            await t.postBack('start');
+
+            await wait(26);
+
+            slidingCampaign = await notifications._storage.getCampaignById(slidingCampaign.id);
+            assert.equal(slidingCampaign.sent, 0);
+            assert.equal(slidingCampaign.queued, 1);
+
+            // nothing should be sent now
+            t.cleanup();
+            await notifications.processQueue(t);
+            assert.equal(t.actions.length, 0);
+
+            // lets make an interaction
+            await t.postBack('onceAction');
+            t.passedAction('onceAction');
+
+            await wait(26);
+
+            // it should be sent now
+            t.cleanup();
+            await notifications.processQueue(t);
+            assert.equal(t.actions.length, 1);
 
             t.passedAction('testAction');
 
@@ -624,8 +670,8 @@ describe('Notifications', function () {
                 const ts3 = notifications._uniqueTs(`${k}`);
                 assert.notEqual(ts1, ts2);
                 assert.notEqual(ts2, ts3);
-                assert.equal(ts1, ts2 - 1);
-                assert.equal(ts2, ts3 - 1);
+                assert.ok(ts1 < ts2);
+                assert.ok(ts2 < ts3);
                 ts = ts3;
             }
 

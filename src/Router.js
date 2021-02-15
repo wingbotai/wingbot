@@ -176,7 +176,8 @@ class Router extends ReducerWrapper {
         const { globalIntents = new Map(), path, globalIntentsMeta = {} } = reducer;
 
         if (typeof reducer === 'string' || path) {
-            resolverPath = this._normalizePath(path || reducer);
+            const usePath = path || reducer;
+            resolverPath = this._normalizePath(usePath);
             resolverPath = resolverPath.replace(/\*/g, '(.*)');
             const pathMatch = pathToRegexp(resolverPath, [], { end: resolverPath === '' });
 

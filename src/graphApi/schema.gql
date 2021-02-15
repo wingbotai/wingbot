@@ -33,6 +33,7 @@ type Campaign {
     pageId: String
 
     sliding: Boolean
+    delay: Int
     slide: Int
     slideRound: Int
     active: Boolean!
@@ -175,6 +176,7 @@ input CreateCampaignInput {
     pageId: String
 
     sliding: Boolean = false
+    delay: Int
     slide: Int
     slideRound: Int
     active: Boolean! = false
@@ -197,6 +199,7 @@ input UpdateCampaignInput {
     pageId: String
 
     sliding: Boolean
+    delay: Int
     slide: Int
     slideRound: Int
     active: Boolean

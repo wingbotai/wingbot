@@ -53,6 +53,7 @@ const uuid = require('uuid');
  * Setup
  *
  * @prop {boolean} sliding
+ * @prop {number} delay
  * @prop {number} slide
  * @prop {boolean} active
  * @prop {boolean} in24hourWindow
@@ -196,6 +197,19 @@ class NotificationsStorage {
             && t.pageId === pageId
             && t.senderId === senderId
             && t.campaignId === campaignId);
+
+        return Promise.resolve(task);
+    }
+
+    /**
+     * Return Task By Id
+     *
+     * @param {string} taskId
+     * @returns {Promise<Task|null>}
+     */
+    async getTaskById (taskId) {
+        const task = this._tasks
+            .find((t) => t.id === taskId);
 
         return Promise.resolve(task);
     }

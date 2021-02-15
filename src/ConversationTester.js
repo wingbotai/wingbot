@@ -114,7 +114,7 @@ class ConversationTester {
         this._botFactory = botFactory;
         this._options = {
             stepCasesPerStep: 20,
-            textCasesPerStep: 80,
+            textCasesPerStep: 60,
             textCaseParallel: 20,
             ...options
         };

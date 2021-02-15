@@ -52,9 +52,9 @@ class OrchestratorClient {
         });
 
         const conversationToken = res.data
-        && res.data
-        && res.data.chat
-        && res.data.chat.conversationToken;
+            && res.data
+            && res.data.chat
+            && res.data.chat.conversationToken;
 
         return {
             expirationInSeconds,
