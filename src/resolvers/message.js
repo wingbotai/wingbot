@@ -130,7 +130,7 @@ function message (params, {
             okQuickReplies
                 .filter((reply) => !reply.title && reply.match)
                 .forEach((reply) => {
-                    res.expectedIntent(reply.match, reply.action, reply.data);
+                    res.expectedIntent(reply.match, reply.action, reply.data, reply.setState);
                 });
         } else {
             // replies on last index will be present, so the addQuickReply will be working

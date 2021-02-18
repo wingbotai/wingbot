@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `res.currentPath()` method now returns correct path at root routes
 - AI `#tags` now scores with 1.0 score, when matched fully
+- non-empty not equal condition at entity now requires it's presence (`@entity!=1`)
+- setState now works within entity handlers
+
 ## [3.9.0] 2021-01-13
 
 ### Added

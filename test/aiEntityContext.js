@@ -167,6 +167,16 @@ describe('<Ai> entity context', () => {
             ]);
         });
 
+        bot.use('negative-entity', (req, res) => {
+            res.text('test', [
+                {
+                    action: 'a',
+                    match: ['@en!=1'],
+                    setState: { A: { _$entity: 'en' } }
+                }
+            ]);
+        });
+
         bot.use('a', (req, res) => { res.text('a'); });
 
         bot.use('b', (req, res) => { res.text('b'); });
@@ -186,6 +196,32 @@ describe('<Ai> entity context', () => {
         });
 
         t = new Tester(bot);
+    });
+
+    it('negative entity with value not be matched with empty utterance', async () => {
+        await t.postBack('negative-entity');
+
+        await t.text('random without entity');
+
+        t.any().contains('fallback');
+    });
+
+    it('negative entity with value not be matched with empty utterance with entity in state', async () => {
+        await t.postBack('negative-entity');
+
+        await t.intentWithEntity('i', 'en', '2', 'sasalele');
+
+        t.any().contains('a');
+
+        await t.postBack('negative-entity');
+
+        const s = t.getState().state;
+
+        assert.strictEqual(s['@en'], '2');
+
+        await t.text('random without entity');
+
+        t.any().contains('fallback');
     });
 
     it('prefers the two entities instead of one', async () => {

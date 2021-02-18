@@ -392,10 +392,15 @@ class AiMatching {
                 matched.length - (regexpScore !== 0 ? 0 : 1),
                 0
             );
+
+            const baseScore = regexps.length === 0
+                ? score - noIntentHandicap
+                : (regexpScore + score) / 2;
+
             return {
                 intent: null,
                 entities: matched,
-                score: (score - (1 - regexpScore) - handicap)
+                score: (baseScore - handicap)
                     * (this.multiMatchGain ** countOfAdditionalItems)
             };
         }
@@ -577,8 +582,9 @@ class AiMatching {
         const operation = op || (typeof compare !== 'undefined' ? COMPARE.EQUAL : null);
 
         if (typeof value === 'undefined') {
-            // eslint-disable-next-line no-unneeded-ternary
-            return operation === COMPARE.NOT_EQUAL ? true : false;
+            return operation === COMPARE.NOT_EQUAL
+                ? compare.length === 0
+                : false;
         }
 
         switch (operation) {
