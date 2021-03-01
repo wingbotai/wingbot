@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AI `#tags` now scores with 1.0 score, when matched fully
 - non-empty not equal condition at entity now requires it's presence (`@entity!=1`)
 - setState now works within entity handlers
+- `BotApp` has now more straightforward configuration of the `apiUrl`
 
 ## [3.9.0] 2021-01-13
 

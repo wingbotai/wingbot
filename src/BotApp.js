@@ -64,12 +64,8 @@ class BotApp {
 
         if (!apiUrl) apiUrl = DEFAULT_API_URL;
 
-        let gqlApiUrl = apiUrl;
-
-        if (`${apiUrl}`.match(/^https?:\/\/[0-9.:a-zA-Z\-_]+\/?$/)) {
-            gqlApiUrl = `${apiUrl}`.replace(/\/?$/, '/api');
-            apiUrl = `${apiUrl}`.replace(/\/?$/, '/webhook/api');
-        }
+        const gqlApiUrl = `${apiUrl}`.replace(/\/?$/, '/api');
+        apiUrl = `${apiUrl}`.replace(/\/?$/, '/webhook/api');
 
         this._apiUrl = apiUrl;
 
