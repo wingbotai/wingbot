@@ -116,7 +116,8 @@ function getSetState (setState = {}, req, res = null, useState = null) {
                 }
 
                 set = incremet + previousValue;
-            } else if (k.match(/^(@|_~)/)) {
+            } else if (k.match(/^(@|_~)/)
+                || !Object.keys(val).some((l) => l.match(/^_\$/))) {
                 set = val;
             }
         } else if (val === null

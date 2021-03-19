@@ -31,10 +31,13 @@ function wrapPluginFunction (
         // attach block runner
         Object.assign(res, {
             run (codeBlockName) {
+                // injected by test
+                if (Array.isArray(res._pluginBlocksCollector)) {
+                    res._pluginBlocksCollector.push(codeBlockName);
+                }
                 if (!preprocessedItems.has(codeBlockName)) {
                     return true;
                 }
-
                 const reducers = preprocessedItems.get(codeBlockName);
                 return router.processReducers(reducers, req, res, postBack, path, action, true);
             }

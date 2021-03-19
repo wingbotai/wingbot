@@ -807,7 +807,7 @@ class Request {
 
         if (getData) {
             // eslint-disable-next-line no-console
-            console.info('wingbot: deprecated using req.actionData(), use req.actionData() instead');
+            console.info('wingbot: deprecated using req.action(true), use req.actionData() instead');
 
             return this._action ? this._action.data : {};
         }

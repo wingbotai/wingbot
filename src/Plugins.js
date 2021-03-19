@@ -43,12 +43,13 @@ class Plugins {
         return plugin;
     }
 
+    /* eslint jsdoc/check-types: 0 */
     /**
      * Get plugin for the router
      *
      * @param {string} name
      * @param {object} [paramsData]
-     * @param {Map<string,Function[]>} [items]
+     * @param {Map<string,Function[]>|Object<string,Function>} [items]
      * @param {object} [context]
      * @param {boolean} [context.isLastIndex]
      * @param {Router} [context.router]
@@ -66,9 +67,9 @@ class Plugins {
      *  .getWrappedPlugin(
      *     'fancyPLugin',
      *     { param: 123 },
-     *     new Map([
-     *       ['onSuccess', [(req, res) => { res.text('yes, success'); }]]
-     *     ])
+     *     {
+     *          onSuccess: (req, res) => { res.text('yes, success'); }
+     *     }
      * ));
      */
     getWrappedPlugin (
@@ -77,16 +78,28 @@ class Plugins {
         items = new Map(),
         context = { isLastIndex: true }
     ) {
+        let useItems = items;
+
+        if (!(items instanceof Map)) {
+            useItems = new Map(
+                Object.keys(items)
+                    .map((key) => [
+                        key,
+                        [items[key]]
+                    ])
+            );
+        }
+
         const customFn = this.getPluginFactory(name, paramsData);
         if (typeof customFn === 'object') {
             // this is an attached router
 
-            return new RouterWrap(customFn, items, paramsData);
+            return new RouterWrap(customFn, useItems, paramsData);
         }
 
         const { router = new Router() } = context;
 
-        return wrapPluginFunction(customFn, paramsData, items, context, router);
+        return wrapPluginFunction(customFn, paramsData, useItems, context, router);
     }
 
     code (name, factoryFn = null) {

@@ -202,7 +202,7 @@ describe('BotApp', () => {
                                         sender: { id: 's' },
                                         recipient: { id: PAGE_ID },
                                         mid: '2',
-                                        context: { sasa: 'lele' },
+                                        context: { sasa: 'lele', obj: { a: 1, b: 2 } },
                                         pass_thread_control: {
                                             new_owner_app_id: 'abc'
                                         },
@@ -212,7 +212,7 @@ describe('BotApp', () => {
                                         sender: { id: 's' },
                                         recipient: { id: PAGE_ID },
                                         mid: '2',
-                                        set_context: { sasa: 'lele' }
+                                        set_context: { sasa: 'lele', obj: { a: 1, b: 2 } }
                                     }
                             ]
                         }
@@ -221,6 +221,13 @@ describe('BotApp', () => {
                 const authorization = await BotAppSender.signBody(body, SECRET, APP_ID);
 
                 const response = await app.request(body, { authorization });
+
+                const state = await app._processor.stateStorage.getState('s', PAGE_ID);
+
+                assert.deepStrictEqual(state.state, {
+                    ...state.state,
+                    '§obj': { a: 1, b: 2 }
+                });
 
                 // @ts-ignore
                 assert.deepStrictEqual(JSON.parse(response.body), {

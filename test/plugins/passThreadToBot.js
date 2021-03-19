@@ -95,11 +95,11 @@ describe('Plugins<ai.wingbot.passThreadToBot>', () => {
             res.text('ent text');
         });
 
-        const pluginItems = new Map();
-
-        pluginItems.set('diambiguations', [(req, res) => {
-            res.text('Disamb', []);
-        }]);
+        const pluginItems = {
+            diambiguations: (req, res) => {
+                res.text('Disamb', []);
+            }
+        };
 
         bot.use(
             plugins.getWrappedPlugin('ai.wingbot.disambiguation', {}, pluginItems),
@@ -109,6 +109,7 @@ describe('Plugins<ai.wingbot.passThreadToBot>', () => {
         await t.intent(['foo', 'bar'], 'random', 0.5);
 
         t.any().contains('Disamb');
+        t.respondedWithBlock('diambiguations');
 
         await t.quickReply('has-path');
 

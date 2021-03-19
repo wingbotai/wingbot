@@ -94,6 +94,7 @@ class Tester {
             beforeProcessMessage: (req, res) => {
                 req.params = {};
                 Object.assign(res, {
+                    _pluginBlocksCollector: this._pluginBlocksCollector,
                     run: (blockName) => {
                         this._pluginBlocksCollector.push(blockName);
                         return Promise.resolve();
@@ -254,7 +255,10 @@ class Tester {
      */
     respondedWithBlock (blockName) {
         const ok = this.pluginBlocks.includes(blockName);
-        assert.ok(ok, `Block ${blockName} was not used as response`);
+        const actual = this.pluginBlocks.length === 0
+            ? 'None'
+            : this.pluginBlocks.map((b) => `"${b}"`).join(', ');
+        assert.ok(ok, `Expected "${blockName}" to be used as a response. ${actual} blocks was tiggered.`);
         return this;
     }
 

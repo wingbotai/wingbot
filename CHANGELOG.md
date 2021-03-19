@@ -5,14 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.10.0] 2021-01-13
+## [3.10.0] 2021-03-19
 ### Added
 
--  support for controlling quick reply and button source (`req.actionData()._ca`);
--  support for modification of senderIds when subscribing them
--  [WIN-367] Added `orchestratorClient` with calling `getConversationToken` to orchestrator inside the Request
+- support for controlling quick reply and button source (`req.actionData()._ca`);
+- support for modification of senderIds when subscribing them
+- [WIN-367] Added `orchestratorClient` with calling `getConversationToken` to orchestrator inside the Request
 - support for "delayed" notifications
 - support for "§" orchestrator variables
+- `Plugins.getWrappedPlugin()` now accepts items as an object (`{ itemName: (req, res) => { res.text('ok'); }}`)
 
 ### Fixed
 
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - non-empty not equal condition at entity now requires it's presence (`@entity!=1`)
 - setState now works within entity handlers
 - `BotApp` has now more straightforward configuration of the `apiUrl`
+- `Plugins.getWrappedPlugin()` compatible with `Tester.espondedWithBlock()`
 
 ## [3.9.0] 2021-01-13
 

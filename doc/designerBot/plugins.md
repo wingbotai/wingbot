@@ -174,9 +174,9 @@ describe('complex plugin', function () {
     it('should work', async function () {
         const bot = new Router();
 
-        const items = new Map([
-            ['responseBlockName', [(req, res) => { res.text('done'); }]]
-        ]);
+        const items = {
+            responseBlockName: (req, res) => { res.text('done'); }
+        };
 
         bot.use('there-is-plugin', plugins
             .getWrappedPlugin('exampleBlock', { text: 'the text' }, items));
