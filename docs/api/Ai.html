@@ -2001,7 +2001,7 @@ bot.use(ai.match(<span class="hljs-string">&apos;intent1&apos;</span>), (req, re
 <li><a href="#AiMatching__parseEntitiesFromIntentRule">._parseEntitiesFromIntentRule(intentRules)</a> &#x21D2; <a href="#EntityExpression"><code>Array.&lt;EntityExpression&gt;</code></a></li>
 <li><a href="#AiMatching_preprocessRule">.preprocessRule(intentRule)</a> &#x21D2; <a href="#PreprocessorOutput"><code>PreprocessorOutput</code></a></li>
 <li><a href="#AiMatching_match">.match(req, rule, stateless)</a> &#x21D2; <a href="#Intent"><code>Intent</code></a> | <code>null</code></li>
-<li><a href="#AiMatching__matchRegexp">._matchRegexp(req, regexps)</a> &#x21D2; <code>boolean</code></li>
+<li><a href="#AiMatching__matchRegexp">._matchRegexp(req, regexps, noIntentHandicap)</a> &#x21D2; <code>number</code></li>
 </ul>
 </li>
 </ul>
@@ -2147,7 +2147,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 </table>
 <div id="AiMatching__matchRegexp">&#xA0;</div>
 
-<h3 id="aimatchingmatchregexpreq-regexps-&#x21D2;-boolean"><a name="aimatchingmatchregexpreq-regexps-&#x21D2;-boolean" class="plugin-anchor" href="#aimatchingmatchregexpreq-regexps-&#x21D2;-boolean"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching._matchRegexp(req, regexps) &#x21D2; <code>boolean</code></h3>
+<h3 id="aimatchingmatchregexpreq-regexps-nointenthandicap-&#x21D2;-number"><a name="aimatchingmatchregexpreq-regexps-nointenthandicap-&#x21D2;-number" class="plugin-anchor" href="#aimatchingmatchregexpreq-regexps-nointenthandicap-&#x21D2;-number"><i class="fa fa-link" aria-hidden="true"></i></a>aiMatching._matchRegexp(req, regexps, noIntentHandicap) &#x21D2; <code>number</code></h3>
 <p><strong>Kind</strong>: instance method of <a href="#AiMatching"><code>AiMatching</code></a>  </p>
 <table>
 <thead>
@@ -2164,6 +2164,10 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 <tr>
 <td>regexps</td>
 <td><a href="#RegexpComparator"><code>Array.&lt;RegexpComparator&gt;</code></a></td>
+</tr>
+<tr>
+<td>noIntentHandicap</td>
+<td><code>number</code></td>
 </tr>
 </tbody>
 </table>
@@ -2733,6 +2737,11 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 <td><code>boolean</code></td>
 <td>use normalized text</td>
 </tr>
+<tr>
+<td>f</td>
+<td><code>boolean</code></td>
+<td>is full match</td>
+</tr>
 </tbody>
 </table>
 <div id="PreprocessorOutput">&#xA0;</div>
@@ -2835,7 +2844,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.9","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.10","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"vars tools","level":"3.8","depth":1,"path":"api/stateVariables.md","ref":"api/stateVariables.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2021-02-04T09:35:26.862Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-04T09:35:38.382Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ai","level":"3.9","depth":1,"next":{"title":"Wingbot.ai (BuildRouter)","level":"3.10","depth":1,"path":"api/BuildRouter.md","ref":"api/BuildRouter.md","articles":[]},"previous":{"title":"vars tools","level":"3.8","depth":1,"path":"api/stateVariables.md","ref":"api/stateVariables.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Ai.md","mtime":"2021-03-19T13:11:37.289Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-03-19T13:11:46.086Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -1128,7 +1128,7 @@ Instance of button template is returned by {Responder}</p>
 <ul>
 <li><a href="#ButtonTemplate">ButtonTemplate</a> &#x21D0; <code>BaseTemplate</code><ul>
 <li><a href="#ButtonTemplate_urlButton">.urlButton(title, linkUrl, hasExtension, [webviewHeight])</a> &#x21D2; <code>this</code></li>
-<li><a href="#ButtonTemplate_postBackButton">.postBackButton(title, action, [data])</a> &#x21D2; <code>this</code></li>
+<li><a href="#ButtonTemplate_postBackButton">.postBackButton(title, action, [data], [setState])</a> &#x21D2; <code>this</code></li>
 <li><a href="#ButtonTemplate_shareButton">.shareButton()</a> &#x21D2; <code>this</code></li>
 </ul>
 </li>
@@ -1179,7 +1179,7 @@ Instance of button template is returned by {Responder}</p>
 </table>
 <div id="ButtonTemplate_postBackButton">&#xA0;</div>
 
-<h3 id="buttontemplatepostbackbuttontitle-action-data-&#x21D2;-this"><a name="buttontemplatepostbackbuttontitle-action-data-&#x21D2;-this" class="plugin-anchor" href="#buttontemplatepostbackbuttontitle-action-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>buttonTemplate.postBackButton(title, action, [data]) &#x21D2; <code>this</code></h3>
+<h3 id="buttontemplatepostbackbuttontitle-action-data-setstate-&#x21D2;-this"><a name="buttontemplatepostbackbuttontitle-action-data-setstate-&#x21D2;-this" class="plugin-anchor" href="#buttontemplatepostbackbuttontitle-action-data-setstate-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>buttonTemplate.postBackButton(title, action, [data], [setState]) &#x21D2; <code>this</code></h3>
 <p>Adds button, which makes another action</p>
 <p><strong>Kind</strong>: instance method of <a href="#ButtonTemplate"><code>ButtonTemplate</code></a>  </p>
 <table>
@@ -1210,6 +1210,12 @@ Instance of button template is returned by {Responder}</p>
 <td><code>{}</code></td>
 <td>Action data</td>
 </tr>
+<tr>
+<td>[setState]</td>
+<td><code>object</code></td>
+<td><code></code></td>
+<td>SetState data</td>
+</tr>
 </tbody>
 </table>
 <div id="ButtonTemplate_shareButton">&#xA0;</div>
@@ -1229,7 +1235,7 @@ Instance of button template is returned by {Responder}</p>
 <li><a href="#GenericTemplate_setElementImage">.setElementImage(image)</a> &#x21D2; <code>this</code></li>
 <li><a href="#GenericTemplate_setElementAction">.setElementAction(url, hasExtension, [webviewHeight])</a></li>
 <li><a href="#ButtonTemplate_urlButton">.urlButton(title, linkUrl, hasExtension, [webviewHeight])</a> &#x21D2; <code>this</code></li>
-<li><a href="#ButtonTemplate_postBackButton">.postBackButton(title, action, [data])</a> &#x21D2; <code>this</code></li>
+<li><a href="#ButtonTemplate_postBackButton">.postBackButton(title, action, [data], [setState])</a> &#x21D2; <code>this</code></li>
 <li><a href="#ButtonTemplate_shareButton">.shareButton()</a> &#x21D2; <code>this</code></li>
 </ul>
 </li>
@@ -1401,7 +1407,7 @@ Instance of button template is returned by {Responder}</p>
 </table>
 <div id="ButtonTemplate_postBackButton">&#xA0;</div>
 
-<h3 id="generictemplatepostbackbuttontitle-action-data-&#x21D2;-this"><a name="generictemplatepostbackbuttontitle-action-data-&#x21D2;-this" class="plugin-anchor" href="#generictemplatepostbackbuttontitle-action-data-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.postBackButton(title, action, [data]) &#x21D2; <code>this</code></h3>
+<h3 id="generictemplatepostbackbuttontitle-action-data-setstate-&#x21D2;-this"><a name="generictemplatepostbackbuttontitle-action-data-setstate-&#x21D2;-this" class="plugin-anchor" href="#generictemplatepostbackbuttontitle-action-data-setstate-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>genericTemplate.postBackButton(title, action, [data], [setState]) &#x21D2; <code>this</code></h3>
 <p>Adds button, which makes another action</p>
 <p><strong>Kind</strong>: instance method of <a href="#GenericTemplate"><code>GenericTemplate</code></a><br><strong>Overrides</strong>: <a href="#ButtonTemplate_postBackButton"><code>postBackButton</code></a>  </p>
 <table>
@@ -1431,6 +1437,12 @@ Instance of button template is returned by {Responder}</p>
 <td><code>object</code></td>
 <td><code>{}</code></td>
 <td>Action data</td>
+</tr>
+<tr>
+<td>[setState]</td>
+<td><code>object</code></td>
+<td><code></code></td>
+<td>SetState data</td>
 </tr>
 </tbody>
 </table>
@@ -1534,7 +1546,7 @@ Instance of button template is returned by {Responder}</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Template Builders","level":"3.6","depth":1,"next":{"title":"ButtonTemplate","level":"3.6.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},"previous":{"title":"BotApp","level":"3.5","depth":1,"path":"api/BotApp.md","ref":"api/BotApp.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/ButtonTemplate.md","mtime":"2021-02-04T09:35:23.596Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-02-04T09:35:38.382Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Template Builders","level":"3.6","depth":1,"next":{"title":"ButtonTemplate","level":"3.6.1","depth":2,"anchor":"#ButtonTemplate","path":"api/ButtonTemplate.md","ref":"api/ButtonTemplate.md#ButtonTemplate","articles":[]},"previous":{"title":"BotApp","level":"3.5","depth":1,"path":"api/BotApp.md","ref":"api/BotApp.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/ButtonTemplate.md","mtime":"2021-03-19T13:11:33.588Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-03-19T13:11:46.086Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

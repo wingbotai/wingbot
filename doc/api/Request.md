@@ -53,6 +53,8 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.intent(getDataOrScore)](#Request_intent) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
     * [.entity(name, [sequence])](#Request_entity) ⇒ <code>number</code> \| <code>string</code> \| <code>null</code>
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
+    * [.isSetContext(varsToCheck)](#Request_isSetContext)
+    * [.getSetContext([includeContextSync])](#Request_getSetContext) ⇒ <code>object</code>
     * [.isImage([attachmentIndex], [includingStickers])](#Request_isImage) ⇒ <code>boolean</code>
     * [.isFile([attachmentIndex])](#Request_isFile) ⇒ <code>boolean</code>
     * [.hasLocation()](#Request_hasLocation) ⇒ <code>boolean</code>
@@ -272,6 +274,32 @@ Get matched entity value
 Checks, when message contains an attachment (file, image or location)
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+{% raw %}<div id="Request_isSetContext">&nbsp;</div>{% endraw %}
+
+### request.isSetContext(varsToCheck)
+Orchestrator: check, if the request updates only $context variables
+
+- when no variables to check provided,
+  returns false when `set_context` is bundled within another conversational event
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| varsToCheck | <code>Array.&lt;string&gt;</code> | list of variables to check |
+
+{% raw %}<div id="Request_getSetContext">&nbsp;</div>{% endraw %}
+
+### request.getSetContext([includeContextSync]) ⇒ <code>object</code>
+Orchestrator: get current thread context update
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+**Returns**: <code>object</code> - - with `§` prefixed keys  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [includeContextSync] | <code>boolean</code> | <code>false</code> | 
+
 {% raw %}<div id="Request_isImage">&nbsp;</div>{% endraw %}
 
 ### request.isImage([attachmentIndex], [includingStickers]) ⇒ <code>boolean</code>

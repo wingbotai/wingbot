@@ -25,7 +25,7 @@ Instance of button template is returned by {Responder}
 
 * [ButtonTemplate](#ButtonTemplate) ⇐ <code>BaseTemplate</code>
     * [.urlButton(title, linkUrl, hasExtension, [webviewHeight])](#ButtonTemplate_urlButton) ⇒ <code>this</code>
-    * [.postBackButton(title, action, [data])](#ButtonTemplate_postBackButton) ⇒ <code>this</code>
+    * [.postBackButton(title, action, [data], [setState])](#ButtonTemplate_postBackButton) ⇒ <code>this</code>
     * [.shareButton()](#ButtonTemplate_shareButton) ⇒ <code>this</code>
 
 {% raw %}<div id="ButtonTemplate_urlButton">&nbsp;</div>{% endraw %}
@@ -45,7 +45,7 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 
 {% raw %}<div id="ButtonTemplate_postBackButton">&nbsp;</div>{% endraw %}
 
-### buttonTemplate.postBackButton(title, action, [data]) ⇒ <code>this</code>
+### buttonTemplate.postBackButton(title, action, [data], [setState]) ⇒ <code>this</code>
 Adds button, which makes another action
 
 **Kind**: instance method of [<code>ButtonTemplate</code>](#ButtonTemplate)  
@@ -55,6 +55,7 @@ Adds button, which makes another action
 | title | <code>string</code> |  | Button title |
 | action | <code>string</code> |  | Button action (can be absolute or relative) |
 | [data] | <code>object</code> | <code>{}</code> | Action data |
+| [setState] | <code>object</code> | <code></code> | SetState data |
 
 {% raw %}<div id="ButtonTemplate_shareButton">&nbsp;</div>{% endraw %}
 
@@ -75,7 +76,7 @@ Generic template utility
     * [.setElementImage(image)](#GenericTemplate_setElementImage) ⇒ <code>this</code>
     * [.setElementAction(url, hasExtension, [webviewHeight])](#GenericTemplate_setElementAction)
     * [.urlButton(title, linkUrl, hasExtension, [webviewHeight])](#ButtonTemplate_urlButton) ⇒ <code>this</code>
-    * [.postBackButton(title, action, [data])](#ButtonTemplate_postBackButton) ⇒ <code>this</code>
+    * [.postBackButton(title, action, [data], [setState])](#ButtonTemplate_postBackButton) ⇒ <code>this</code>
     * [.shareButton()](#ButtonTemplate_shareButton) ⇒ <code>this</code>
 
 {% raw %}<div id="GenericTemplate_addElement">&nbsp;</div>{% endraw %}
@@ -151,7 +152,7 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 
 {% raw %}<div id="ButtonTemplate_postBackButton">&nbsp;</div>{% endraw %}
 
-### genericTemplate.postBackButton(title, action, [data]) ⇒ <code>this</code>
+### genericTemplate.postBackButton(title, action, [data], [setState]) ⇒ <code>this</code>
 Adds button, which makes another action
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
@@ -162,6 +163,7 @@ Adds button, which makes another action
 | title | <code>string</code> |  | Button title |
 | action | <code>string</code> |  | Button action (can be absolute or relative) |
 | [data] | <code>object</code> | <code>{}</code> | Action data |
+| [setState] | <code>object</code> | <code></code> | SetState data |
 
 {% raw %}<div id="ButtonTemplate_shareButton">&nbsp;</div>{% endraw %}
 

@@ -252,6 +252,7 @@ Creates a new instance on notification service
 | action | <code>string</code> |  |
 | [data] | <code>object</code> | Setup |
 | sliding | <code>boolean</code> |  |
+| delay | <code>number</code> |  |
 | slide | <code>number</code> |  |
 | active | <code>boolean</code> |  |
 | in24hourWindow | <code>boolean</code> |  |
@@ -316,6 +317,7 @@ Creates a new instance on notification service
 | action | <code>string</code> |  |
 | [data] | <code>object</code> | Setup |
 | sliding | <code>boolean</code> |  |
+| delay | <code>number</code> |  |
 | slide | <code>number</code> |  |
 | active | <code>boolean</code> |  |
 | in24hourWindow | <code>boolean</code> |  |

@@ -6,6 +6,13 @@
 </dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#afterProcessMessage">afterProcessMessage(req, res)</a></dt>
+<dd></dd>
+</dl>
+
 ## Typedefs
 
 <dl>
@@ -32,8 +39,11 @@ Adapter for Wingbot flight director
 
 * [BotApp](#BotApp)
     * [new BotApp(bot, options)](#new_BotApp_new)
-    * [.processor](#BotApp_processor) ⇒ <code>Processor</code>
-    * [.request(rawBody, rawHeaders)](#BotApp_request) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
+    * _instance_
+        * [.processor](#BotApp_processor) ⇒ <code>Processor</code>
+        * [.request(rawBody, rawHeaders)](#BotApp_request) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
+    * _static_
+        * [.plugin()](#BotApp_plugin) ⇒ [<code>Plugin</code>](#Plugin)
 
 {% raw %}<div id="new_BotApp_new">&nbsp;</div>{% endraw %}
 
@@ -90,6 +100,22 @@ app.get('/bot', express.text(), (req, res) => {
        })
 });
 ```
+{% raw %}<div id="BotApp_plugin">&nbsp;</div>{% endraw %}
+
+### BotApp.plugin() ⇒ [<code>Plugin</code>](#Plugin)
+Returns processor plugin, which updates thread context automatically
+
+**Kind**: static method of [<code>BotApp</code>](#BotApp)  
+{% raw %}<div id="afterProcessMessage">&nbsp;</div>{% endraw %}
+
+## afterProcessMessage(req, res)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+| res | <code>Responder</code> | 
+
 {% raw %}<div id="Options">&nbsp;</div>{% endraw %}
 
 ## Options : <code>object</code>

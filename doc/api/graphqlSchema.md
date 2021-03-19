@@ -542,6 +542,11 @@ subscribe users
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>delay</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>slide</strong></td>
 <td valign="top"><a href="#int">Int</a></td>
 <td></td>
@@ -1231,6 +1236,11 @@ subscribe users
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>delay</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>slide</strong></td>
 <td valign="top"><a href="#int">Int</a></td>
 <td></td>
@@ -1322,6 +1332,11 @@ subscribe users
 <tr>
 <td colspan="2" valign="top"><strong>sliding</strong></td>
 <td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>delay</strong></td>
+<td valign="top"><a href="#int">Int</a></td>
 <td></td>
 </tr>
 <tr>

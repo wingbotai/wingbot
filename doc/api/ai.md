@@ -520,7 +520,7 @@ Class responsible for NLP Routing by score
     * [._parseEntitiesFromIntentRule(intentRules)](#AiMatching__parseEntitiesFromIntentRule) ⇒ [<code>Array.&lt;EntityExpression&gt;</code>](#EntityExpression)
     * [.preprocessRule(intentRule)](#AiMatching_preprocessRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
     * [.match(req, rule, stateless)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
-    * [._matchRegexp(req, regexps)](#AiMatching__matchRegexp) ⇒ <code>boolean</code>
+    * [._matchRegexp(req, regexps, noIntentHandicap)](#AiMatching__matchRegexp) ⇒ <code>number</code>
 
 {% raw %}<div id="AiMatching_optionalHandicap">&nbsp;</div>{% endraw %}
 
@@ -608,13 +608,14 @@ Calculate a matching score of preprocessed rule against the request
 
 {% raw %}<div id="AiMatching__matchRegexp">&nbsp;</div>{% endraw %}
 
-### aiMatching.\_matchRegexp(req, regexps) ⇒ <code>boolean</code>
+### aiMatching.\_matchRegexp(req, regexps, noIntentHandicap) ⇒ <code>number</code>
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
 
 | Param | Type |
 | --- | --- |
 | req | [<code>AIRequest</code>](#AIRequest) | 
 | regexps | [<code>Array.&lt;RegexpComparator&gt;</code>](#RegexpComparator) | 
+| noIntentHandicap | <code>number</code> | 
 
 {% raw %}<div id="COMPARE">&nbsp;</div>{% endraw %}
 
@@ -856,6 +857,7 @@ Text filter function
 | --- | --- | --- |
 | r | <code>RegExp</code> | regular expression |
 | t | <code>boolean</code> | use normalized text |
+| f | <code>boolean</code> | is full match |
 
 {% raw %}<div id="PreprocessorOutput">&nbsp;</div>{% endraw %}
 

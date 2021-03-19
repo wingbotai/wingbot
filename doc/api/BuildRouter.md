@@ -222,7 +222,7 @@ Get plugin for the router
 | --- | --- |
 | name | <code>string</code> | 
 | [paramsData] | <code>object</code> | 
-| [items] | <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code> | 
+| [items] | <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code> \| <code>Object.&lt;string, function()&gt;</code> | 
 | [context] | <code>object</code> | 
 | [context.isLastIndex] | <code>boolean</code> | 
 | [context.router] | <code>Router</code> | 
@@ -241,9 +241,9 @@ bot.use('full-plugin-route', plugins
  .getWrappedPlugin(
     'fancyPLugin',
     { param: 123 },
-    new Map([
-      ['onSuccess', [(req, res) => { res.text('yes, success'); }]]
-    ])
+    {
+         onSuccess: (req, res) => { res.text('yes, success'); }
+    }
 ));
 ```
 {% raw %}<div id="Plugins_register">&nbsp;</div>{% endraw %}
