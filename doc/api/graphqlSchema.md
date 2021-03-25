@@ -244,6 +244,11 @@ run conversation test
 </td>
 </tr>
 <tr>
+<td colspan="2" align="right" valign="top">lang</td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" align="right" valign="top">bot</td>
 <td valign="top"><a href="#any">Any</a></td>
 <td></td>

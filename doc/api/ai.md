@@ -79,7 +79,7 @@
     * [.threshold](#Ai_threshold) : <code>number</code>
     * [.logger](#Ai_logger) : <code>object</code>
     * [.matcher](#Ai_matcher) : [<code>AiMatching</code>](#AiMatching)
-    * [.getPrefix(prefix, req)](#Ai_getPrefix)
+    * [.getPrefix(defaultModel, req)](#Ai_getPrefix)
     * [.textFilter(text)](#Ai_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.mockIntent([intent], [score])](#Ai_mockIntent) ⇒ <code>this</code>
     * [.register(model, prefix)](#Ai_register) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
@@ -116,14 +116,14 @@ AI Score provider
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
 {% raw %}<div id="Ai_getPrefix">&nbsp;</div>{% endraw %}
 
-### ai.getPrefix(prefix, req)
+### ai.getPrefix(defaultModel, req)
 The prefix translator - for request-specific prefixes
 
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 
 | Param | Type |
 | --- | --- |
-| prefix | <code>string</code> | 
+| defaultModel | <code>string</code> | 
 | req | <code>Request</code> | 
 
 {% raw %}<div id="Ai_textFilter">&nbsp;</div>{% endraw %}

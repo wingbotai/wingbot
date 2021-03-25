@@ -1983,15 +1983,16 @@ It joins them into a single sting</p>
 <ul>
 <li><a href="#ConversationTester">ConversationTester</a><ul>
 <li><a href="#new_ConversationTester_new">new ConversationTester(testsSource, botFactory, [options])</a></li>
-<li><a href="#ConversationTester_test">.test(validationRequestBody, step)</a> &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></li>
+<li><a href="#ConversationTester__getTestCases">._getTestCases(lang)</a> &#x21D2; <a href="#TestsDefinition"><code>Promise.&lt;TestsDefinition&gt;</code></a></li>
+<li><a href="#ConversationTester_test">.test(validationRequestBody, [step], [lang])</a> &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></li>
 <li><a href="#ConversationTester__getLists">._getLists(testCases)</a> &#x21D2; <a href="#List"><code>Array.&lt;List&gt;</code></a></li>
 <li><a href="#ConversationTester__getListCases">._getListCases(testCases)</a> &#x21D2; <code>Map.&lt;string, (Array.&lt;TestCase&gt;|Array.&lt;TextCase&gt;)&gt;</code></li>
 <li><a href="#ConversationTester__getGroups">._getGroups(testCases)</a> &#x21D2; <a href="#TestsGroup"><code>Array.&lt;TestsGroup&gt;</code></a></li>
 <li><a href="#ConversationTester__getTestsGroups">._getTestsGroups(testsGroups, step)</a></li>
-<li><a href="#ConversationTester__createTester">._createTester(testsGroup, [botconfig])</a> &#x21D2; <a href="#Tester"><code>Tester</code></a></li>
-<li><a href="#ConversationTester__runTextCaseTests">._runTextCaseTests(testsGroup, botconfig)</a></li>
-<li><a href="#ConversationTester__runStepCaseTests">._runStepCaseTests(testsGroup, botconfig)</a></li>
-<li><a href="#ConversationTester_executeTextCase">.executeTextCase(testsGroup, t, textCase, botconfig, longestText)</a></li>
+<li><a href="#ConversationTester__createTester">._createTester(testsGroup, [botconfig], [lang])</a> &#x21D2; <a href="#Tester"><code>Tester</code></a></li>
+<li><a href="#ConversationTester__runTextCaseTests">._runTextCaseTests(testsGroup, botconfig, [lang])</a></li>
+<li><a href="#ConversationTester__runStepCaseTests">._runStepCaseTests(testsGroup, botconfig, [lang])</a></li>
+<li><a href="#ConversationTester_executeTextCase">.executeTextCase(testsGroup, t, textCase, botconfig, longestText, [lang])</a></li>
 <li><a href="#ConversationTester_executeStep">.executeStep(t, step)</a></li>
 </ul>
 </li>
@@ -2004,52 +2005,65 @@ It joins them into a single sting</p>
 <tr>
 <th>Param</th>
 <th>Type</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>testsSource</td>
-<td><a href="#TestSource"><code>TestSource</code></a></td>
+<td><a href="#TestSource"><code>TestSource</code></a> \</td>
+<td><code>Object.&lt;string, TestSource&gt;</code></td>
+<td>single source or localized list</td>
 </tr>
 <tr>
 <td>botFactory</td>
 <td><code>function</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options]</td>
 <td><code>object</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.disableAssertActions]</td>
 <td><code>boolean</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.disableAssertTexts]</td>
 <td><code>boolean</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.disableAssertQuickReplies]</td>
 <td><code>boolean</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.useConversationForTextTestCases]</td>
 <td><code>boolean</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.textThreshold]</td>
 <td><code>boolean</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.stepCasesPerStep]</td>
 <td><code>number</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.textCasesPerStep]</td>
 <td><code>number</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.textCaseParallel]</td>
 <td><code>number</code></td>
+<td></td>
 </tr>
 <tr>
 <td>[options.testerFactory]</td>
@@ -2057,9 +2071,27 @@ It joins them into a single sting</p>
 </tr>
 </tbody>
 </table>
+<div id="ConversationTester__getTestCases">&#xA0;</div>
+
+<h3 id="conversationtestergettestcaseslang-&#x21D2;-promisetestsdefinition"><a name="conversationtestergettestcaseslang-&#x21D2;-promisetestsdefinition" class="plugin-anchor" href="#conversationtestergettestcaseslang-&#x21D2;-promisetestsdefinition"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._getTestCases(lang) &#x21D2; <a href="#TestsDefinition"><code>Promise.&lt;TestsDefinition&gt;</code></a></h3>
+<p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lang</td>
+<td><code>string</code></td>
+</tr>
+</tbody>
+</table>
 <div id="ConversationTester_test">&#xA0;</div>
 
-<h3 id="conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput"><a name="conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput" class="plugin-anchor" href="#conversationtestertestvalidationrequestbody-step-&#x21D2;-promisetestsoutput"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.test(validationRequestBody, step) &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></h3>
+<h3 id="conversationtestertestvalidationrequestbody-step-lang-&#x21D2;-promisetestsoutput"><a name="conversationtestertestvalidationrequestbody-step-lang-&#x21D2;-promisetestsoutput" class="plugin-anchor" href="#conversationtestertestvalidationrequestbody-step-lang-&#x21D2;-promisetestsoutput"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.test(validationRequestBody, [step], [lang]) &#x21D2; <a href="#TestsOutput"><code>Promise.&lt;TestsOutput&gt;</code></a></h3>
 <p>Runs the conversation test</p>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
 <table>
@@ -2077,9 +2109,14 @@ It joins them into a single sting</p>
 <td><code></code></td>
 </tr>
 <tr>
-<td>step</td>
+<td>[step]</td>
 <td><code>number</code></td>
 <td><code></code></td>
+</tr>
+<tr>
+<td>[lang]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
 </tr>
 </tbody>
 </table>
@@ -2163,7 +2200,7 @@ It joins them into a single sting</p>
 </table>
 <div id="ConversationTester__createTester">&#xA0;</div>
 
-<h3 id="conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester"><a name="conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester" class="plugin-anchor" href="#conversationtestercreatetestertestsgroup-botconfig-&#x21D2;-tester"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._createTester(testsGroup, [botconfig]) &#x21D2; <a href="#Tester"><code>Tester</code></a></h3>
+<h3 id="conversationtestercreatetestertestsgroup-botconfig-lang-&#x21D2;-tester"><a name="conversationtestercreatetestertestsgroup-botconfig-lang-&#x21D2;-tester" class="plugin-anchor" href="#conversationtestercreatetestertestsgroup-botconfig-lang-&#x21D2;-tester"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._createTester(testsGroup, [botconfig], [lang]) &#x21D2; <a href="#Tester"><code>Tester</code></a></h3>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
 <table>
 <thead>
@@ -2184,11 +2221,16 @@ It joins them into a single sting</p>
 <td><code>object</code></td>
 <td><code></code></td>
 </tr>
+<tr>
+<td>[lang]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+</tr>
 </tbody>
 </table>
 <div id="ConversationTester__runTextCaseTests">&#xA0;</div>
 
-<h3 id="conversationtesterruntextcaseteststestsgroup-botconfig"><a name="conversationtesterruntextcaseteststestsgroup-botconfig" class="plugin-anchor" href="#conversationtesterruntextcaseteststestsgroup-botconfig"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._runTextCaseTests(testsGroup, botconfig)</h3>
+<h3 id="conversationtesterruntextcaseteststestsgroup-botconfig-lang"><a name="conversationtesterruntextcaseteststestsgroup-botconfig-lang" class="plugin-anchor" href="#conversationtesterruntextcaseteststestsgroup-botconfig-lang"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._runTextCaseTests(testsGroup, botconfig, [lang])</h3>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
 <table>
 <thead>
@@ -2208,12 +2250,17 @@ It joins them into a single sting</p>
 <td>botconfig</td>
 <td><code>object</code></td>
 <td><code></code></td>
+</tr>
+<tr>
+<td>[lang]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
 </tr>
 </tbody>
 </table>
 <div id="ConversationTester__runStepCaseTests">&#xA0;</div>
 
-<h3 id="conversationtesterrunstepcaseteststestsgroup-botconfig"><a name="conversationtesterrunstepcaseteststestsgroup-botconfig" class="plugin-anchor" href="#conversationtesterrunstepcaseteststestsgroup-botconfig"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._runStepCaseTests(testsGroup, botconfig)</h3>
+<h3 id="conversationtesterrunstepcaseteststestsgroup-botconfig-lang"><a name="conversationtesterrunstepcaseteststestsgroup-botconfig-lang" class="plugin-anchor" href="#conversationtesterrunstepcaseteststestsgroup-botconfig-lang"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester._runStepCaseTests(testsGroup, botconfig, [lang])</h3>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
 <table>
 <thead>
@@ -2234,39 +2281,55 @@ It joins them into a single sting</p>
 <td><code>object</code></td>
 <td><code></code></td>
 </tr>
+<tr>
+<td>[lang]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+</tr>
 </tbody>
 </table>
 <div id="ConversationTester_executeTextCase">&#xA0;</div>
 
-<h3 id="conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext"><a name="conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext" class="plugin-anchor" href="#conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText)</h3>
+<h3 id="conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext-lang"><a name="conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext-lang" class="plugin-anchor" href="#conversationtesterexecutetextcasetestsgroup-t-textcase-botconfig-longesttext-lang"><i class="fa fa-link" aria-hidden="true"></i></a>conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText, [lang])</h3>
 <p><strong>Kind</strong>: instance method of <a href="#ConversationTester"><code>ConversationTester</code></a>  </p>
 <table>
 <thead>
 <tr>
 <th>Param</th>
 <th>Type</th>
+<th>Default</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>testsGroup</td>
 <td><a href="#TestsGroup"><code>TestsGroup</code></a></td>
+<td></td>
 </tr>
 <tr>
 <td>t</td>
 <td><a href="#Tester"><code>Tester</code></a></td>
+<td></td>
 </tr>
 <tr>
 <td>textCase</td>
 <td><a href="#TextTest"><code>TextTest</code></a></td>
+<td></td>
 </tr>
 <tr>
 <td>botconfig</td>
 <td><code>*</code></td>
+<td></td>
 </tr>
 <tr>
 <td>longestText</td>
 <td><code>number</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[lang]</td>
+<td><code>string</code></td>
+<td><code>null</code></td>
 </tr>
 </tbody>
 </table>
@@ -2630,7 +2693,7 @@ It joins them into a single sting</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"BotApp","level":"3.5","depth":1,"path":"api/BotApp.md","ref":"api/BotApp.md","articles":[]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2021-03-19T13:11:35.003Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-03-19T13:11:46.086Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Tester","level":"3.4","depth":1,"next":{"title":"BotApp","level":"3.5","depth":1,"path":"api/BotApp.md","ref":"api/BotApp.md","articles":[]},"previous":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Tester.md","mtime":"2021-03-25T13:20:30.848Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-03-25T13:20:44.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

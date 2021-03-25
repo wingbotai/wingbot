@@ -502,39 +502,49 @@ Automated Conversation tests runner
 
 * [ConversationTester](#ConversationTester)
     * [new ConversationTester(testsSource, botFactory, [options])](#new_ConversationTester_new)
-    * [.test(validationRequestBody, step)](#ConversationTester_test) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
+    * [._getTestCases(lang)](#ConversationTester__getTestCases) ⇒ [<code>Promise.&lt;TestsDefinition&gt;</code>](#TestsDefinition)
+    * [.test(validationRequestBody, [step], [lang])](#ConversationTester_test) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
     * [._getLists(testCases)](#ConversationTester__getLists) ⇒ [<code>Array.&lt;List&gt;</code>](#List)
     * [._getListCases(testCases)](#ConversationTester__getListCases) ⇒ <code>Map.&lt;string, (Array.&lt;TestCase&gt;\|Array.&lt;TextCase&gt;)&gt;</code>
     * [._getGroups(testCases)](#ConversationTester__getGroups) ⇒ [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup)
     * [._getTestsGroups(testsGroups, step)](#ConversationTester__getTestsGroups)
-    * [._createTester(testsGroup, [botconfig])](#ConversationTester__createTester) ⇒ [<code>Tester</code>](#Tester)
-    * [._runTextCaseTests(testsGroup, botconfig)](#ConversationTester__runTextCaseTests)
-    * [._runStepCaseTests(testsGroup, botconfig)](#ConversationTester__runStepCaseTests)
-    * [.executeTextCase(testsGroup, t, textCase, botconfig, longestText)](#ConversationTester_executeTextCase)
+    * [._createTester(testsGroup, [botconfig], [lang])](#ConversationTester__createTester) ⇒ [<code>Tester</code>](#Tester)
+    * [._runTextCaseTests(testsGroup, botconfig, [lang])](#ConversationTester__runTextCaseTests)
+    * [._runStepCaseTests(testsGroup, botconfig, [lang])](#ConversationTester__runStepCaseTests)
+    * [.executeTextCase(testsGroup, t, textCase, botconfig, longestText, [lang])](#ConversationTester_executeTextCase)
     * [.executeStep(t, step)](#ConversationTester_executeStep)
 
 {% raw %}<div id="new_ConversationTester_new">&nbsp;</div>{% endraw %}
 
 ### new ConversationTester(testsSource, botFactory, [options])
 
+| Param | Type | Description |
+| --- | --- | --- |
+| testsSource | [<code>TestSource</code>](#TestSource) \| <code>Object.&lt;string, TestSource&gt;</code> | single source or localized list |
+| botFactory | <code>function</code> |  |
+| [options] | <code>object</code> |  |
+| [options.disableAssertActions] | <code>boolean</code> |  |
+| [options.disableAssertTexts] | <code>boolean</code> |  |
+| [options.disableAssertQuickReplies] | <code>boolean</code> |  |
+| [options.useConversationForTextTestCases] | <code>boolean</code> |  |
+| [options.textThreshold] | <code>boolean</code> |  |
+| [options.stepCasesPerStep] | <code>number</code> |  |
+| [options.textCasesPerStep] | <code>number</code> |  |
+| [options.textCaseParallel] | <code>number</code> |  |
+| [options.testerFactory] | [<code>testerFactory</code>](#testerFactory) |  |
+
+{% raw %}<div id="ConversationTester__getTestCases">&nbsp;</div>{% endraw %}
+
+### conversationTester.\_getTestCases(lang) ⇒ [<code>Promise.&lt;TestsDefinition&gt;</code>](#TestsDefinition)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+
 | Param | Type |
 | --- | --- |
-| testsSource | [<code>TestSource</code>](#TestSource) | 
-| botFactory | <code>function</code> | 
-| [options] | <code>object</code> | 
-| [options.disableAssertActions] | <code>boolean</code> | 
-| [options.disableAssertTexts] | <code>boolean</code> | 
-| [options.disableAssertQuickReplies] | <code>boolean</code> | 
-| [options.useConversationForTextTestCases] | <code>boolean</code> | 
-| [options.textThreshold] | <code>boolean</code> | 
-| [options.stepCasesPerStep] | <code>number</code> | 
-| [options.textCasesPerStep] | <code>number</code> | 
-| [options.textCaseParallel] | <code>number</code> | 
-| [options.testerFactory] | [<code>testerFactory</code>](#testerFactory) | 
+| lang | <code>string</code> | 
 
 {% raw %}<div id="ConversationTester_test">&nbsp;</div>{% endraw %}
 
-### conversationTester.test(validationRequestBody, step) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
+### conversationTester.test(validationRequestBody, [step], [lang]) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
 Runs the conversation test
 
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -542,7 +552,8 @@ Runs the conversation test
 | Param | Type | Default |
 | --- | --- | --- |
 | validationRequestBody | <code>object</code> | <code></code> | 
-| step | <code>number</code> | <code></code> | 
+| [step] | <code>number</code> | <code></code> | 
+| [lang] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="ConversationTester__getLists">&nbsp;</div>{% endraw %}
 
@@ -583,46 +594,50 @@ Runs the conversation test
 
 {% raw %}<div id="ConversationTester__createTester">&nbsp;</div>{% endraw %}
 
-### conversationTester.\_createTester(testsGroup, [botconfig]) ⇒ [<code>Tester</code>](#Tester)
+### conversationTester.\_createTester(testsGroup, [botconfig], [lang]) ⇒ [<code>Tester</code>](#Tester)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
 
 | Param | Type | Default |
 | --- | --- | --- |
 | testsGroup | [<code>TestsGroup</code>](#TestsGroup) |  | 
 | [botconfig] | <code>object</code> | <code></code> | 
+| [lang] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="ConversationTester__runTextCaseTests">&nbsp;</div>{% endraw %}
 
-### conversationTester.\_runTextCaseTests(testsGroup, botconfig)
+### conversationTester.\_runTextCaseTests(testsGroup, botconfig, [lang])
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
 
 | Param | Type | Default |
 | --- | --- | --- |
 | testsGroup | [<code>TestsGroup</code>](#TestsGroup) |  | 
 | botconfig | <code>object</code> | <code></code> | 
+| [lang] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="ConversationTester__runStepCaseTests">&nbsp;</div>{% endraw %}
 
-### conversationTester.\_runStepCaseTests(testsGroup, botconfig)
+### conversationTester.\_runStepCaseTests(testsGroup, botconfig, [lang])
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
 
 | Param | Type | Default |
 | --- | --- | --- |
 | testsGroup | [<code>TestsGroup</code>](#TestsGroup) |  | 
 | botconfig | <code>object</code> | <code></code> | 
+| [lang] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="ConversationTester_executeTextCase">&nbsp;</div>{% endraw %}
 
-### conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText)
+### conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText, [lang])
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
 
-| Param | Type |
-| --- | --- |
-| testsGroup | [<code>TestsGroup</code>](#TestsGroup) | 
-| t | [<code>Tester</code>](#Tester) | 
-| textCase | [<code>TextTest</code>](#TextTest) | 
-| botconfig | <code>\*</code> | 
-| longestText | <code>number</code> | 
+| Param | Type | Default |
+| --- | --- | --- |
+| testsGroup | [<code>TestsGroup</code>](#TestsGroup) |  | 
+| t | [<code>Tester</code>](#Tester) |  | 
+| textCase | [<code>TextTest</code>](#TextTest) |  | 
+| botconfig | <code>\*</code> |  | 
+| longestText | <code>number</code> |  | 
+| [lang] | <code>string</code> | <code>null</code> | 
 
 {% raw %}<div id="ConversationTester_executeStep">&nbsp;</div>{% endraw %}
 
