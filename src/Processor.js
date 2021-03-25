@@ -404,6 +404,8 @@ class Processor extends EventEmitter {
         let req;
         let res;
 
+        let emitPromise = Promise.resolve();
+
         try {
             // ensure the request was not processed
             if (stateObject.lastTimestamps && message.timestamp
@@ -528,7 +530,7 @@ class Processor extends EventEmitter {
                 }
 
                 if (fromEvent) {
-                    this._emitEvent(req, res);
+                    emitPromise = this._emitEvent(req, res);
                 }
             }
 
@@ -574,6 +576,7 @@ class Processor extends EventEmitter {
 
         } catch (e) {
             await this.stateStorage.saveState(originalState);
+            await emitPromise;
             throw e;
         }
 
@@ -587,6 +590,8 @@ class Processor extends EventEmitter {
             messageSender,
             responderData
         );
+
+        await emitPromise; // probably has been resolved this time
 
         return { req, res };
     }
@@ -605,7 +610,7 @@ class Processor extends EventEmitter {
         const shouldNotTrack = res.data._initialEventShouldNotBeTracked === true;
 
         if (shouldNotTrack) {
-            return;
+            return Promise.resolve();
         }
 
         const trackingSkill = typeof res.newState._trackAsSkill === 'undefined'
@@ -623,12 +628,15 @@ class Processor extends EventEmitter {
             res
         ];
 
-        process.nextTick(() => {
-            try {
-                this.emit('event', ...params);
-            } catch (e) {
-                this.options.log.error('Firing Processor event failed', e);
-            }
+        return new Promise((resolve) => {
+            process.nextTick(() => {
+                try {
+                    this.emit('event', ...params);
+                } catch (e) {
+                    this.options.log.error('Firing Processor event failed', e);
+                }
+                resolve();
+            });
         });
     }
 
