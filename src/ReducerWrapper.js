@@ -108,11 +108,14 @@ class ReducerWrapper extends EventEmitter {
         res._trackAsAction = null;
 
         if (res.data) {
-            if (shouldNotTrack && res.data._fromInitialEvent) {
-                res.setData({ _initialEventShouldNotBeTracked: true });
+            const {
+                _isFromEmitActionUserEvent: inCustomTrackingMode = false
+            } = res.data;
+
+            if (res.data._fromInitialEvent && (!inCustomTrackingMode || isUserCall)) {
+                res.setData({ _initialEventShouldNotBeTracked: shouldNotTrack });
             }
 
-            const { _isFromEmitActionUserEvent: inCustomTrackingMode = false } = res.data;
             if (isUserCall) {
                 res.setData({ _isFromEmitActionUserEvent: true });
             } else if (inCustomTrackingMode) {

@@ -269,6 +269,7 @@ type Query {
 
     "run conversation test"
     conversationTest(
+        lang: String
         bot: Any
         step: Int
     ): TestResult

@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [3.10.0] 2021-03-19
+
+### Fixed
+
+- event emmiting at processor
+## [3.10.0] 2021-03-19
 ### Added
 
 - support for controlling quick reply and button source (`req.actionData()._ca`);
