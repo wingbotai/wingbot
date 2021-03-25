@@ -39,5 +39,17 @@
         "jsdoc/require-returns-description": 0,
         "jsdoc/require-returns-type": 2,
         "no-await-in-loop": 0
+    },
+    "settings": {
+        "jsdoc": {
+            "mode": "jsdoc",
+            "tagNamePreference": {
+                "property": "prop"
+            },
+            "preferredTypes": {
+                "object": "Object",
+                "Object": "object"
+            }
+        }
     }
 }

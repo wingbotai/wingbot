@@ -14,7 +14,7 @@ const ConversationTester = require('../ConversationTester');
 /**
  * Returns API for conversations testing
  *
- * @param {TestSource} testsSource
+ * @param {TestSource|Object<string,TestSource>} testsSource
  * @param {Function} botFactory
  * @param {object} [options]
  * @param {boolean} [options.disableAssertActions]
@@ -33,11 +33,11 @@ function conversationTestApi (testsSource, botFactory, options, acl) {
                 return null;
             }
 
-            const { bot: validationRequestBody, step = null } = args;
+            const { bot: validationRequestBody, step = null, lang = null } = args;
 
             const test = new ConversationTester(testsSource, botFactory, options);
 
-            return test.test(validationRequestBody, step);
+            return test.test(validationRequestBody, step, lang);
         }
     };
 }

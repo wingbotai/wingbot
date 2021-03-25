@@ -72,10 +72,10 @@ class Ai {
         /**
          * The prefix translator - for request-specific prefixes
          *
-         * @param {string} prefix
+         * @param {string} defaultModel
          * @param {Request} req
          */
-        this.getPrefix = (prefix, req) => prefix; // eslint-disable-line
+        this.getPrefix = (defaultModel, req) => req.state.lang || defaultModel; // eslint-disable-line
 
         this._mockIntent = null;
 
@@ -407,13 +407,18 @@ class Ai {
         };
     }
 
-    _getModelForRequest (req, prefix = DEFAULT_PREFIX) {
+    _getModelForRequest (req, defaultModel = DEFAULT_PREFIX) {
         if (req.isConfidentInput()) {
             return null;
         }
 
-        const prefixForRequest = this.getPrefix(prefix, req);
-        return this._keyworders.get(prefixForRequest);
+        const prefixForRequest = this.getPrefix(defaultModel, req);
+
+        if (this._keyworders.has(prefixForRequest)) {
+            return this._keyworders.get(prefixForRequest);
+        }
+
+        return this._keyworders.get(defaultModel);
     }
 
     _getMockIntent (req) {

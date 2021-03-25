@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const assert = require('assert');
 const Tester = require('./Tester');
 const { tokenize } = require('./utils/tokenizer');
 const { actionMatches } = require('./utils/pathUtils');
@@ -96,7 +97,7 @@ class ConversationTester {
 
     /**
      *
-     * @param {TestSource} testsSource
+     * @param {TestSource|Object<string,TestSource>} testsSource - single source or localized list
      * @param {Function} botFactory
      * @param {object} [options]
      * @param {boolean} [options.disableAssertActions]
@@ -122,15 +123,38 @@ class ConversationTester {
     }
 
     /**
+     *
+     * @param {string} lang
+     * @returns {Promise<TestsDefinition>}
+     */
+    async _getTestCases (lang) {
+        let source;
+        if (typeof this._testsSource.getTestCases === 'function') {
+            source = this._testsSource;
+        } else if (this._testsSource[lang]) {
+            source = this._testsSource[lang];
+        } else {
+            const [firstKey = null] = Object.keys(this._testsSource);
+            source = this._testsSource[firstKey];
+        }
+
+        assert.ok(!!source, `Configuration error: no test case source found for lang: ${lang}`);
+        assert.ok(typeof source.getTestCases === 'function', 'Configuration error: invalid test case source setup');
+
+        return source.getTestCases();
+    }
+
+    /**
      * Runs the conversation test
      *
      * @param {object} validationRequestBody
-     * @param {number} step
+     * @param {number} [step]
+     * @param {string} [lang]
      * @returns {Promise<TestsOutput>}
      */
-    async test (validationRequestBody = null, step = null) {
+    async test (validationRequestBody = null, step = null, lang = null) {
         this._output = '';
-        const testCases = await this._testsSource.getTestCases();
+        const testCases = await this._getTestCases(lang);
         const groups = this._getGroups(testCases);
         const testsGroups = this._getTestsGroups(groups, step);
         const stepCount = Number.isInteger(step) ? groups.length : 1;
@@ -146,10 +170,10 @@ class ConversationTester {
             for (const testsGroup of testsGroups) {
                 let stepResult;
                 if (testsGroup.type === 'texts') {
-                    stepResult = await this._runTextCaseTests(testsGroup, botconfig);
+                    stepResult = await this._runTextCaseTests(testsGroup, botconfig, lang);
                 }
                 if (testsGroup.type === 'steps') {
-                    stepResult = await this._runStepCaseTests(testsGroup, botconfig);
+                    stepResult = await this._runStepCaseTests(testsGroup, botconfig, lang);
                 }
                 results.push(stepResult);
             }
@@ -325,9 +349,10 @@ class ConversationTester {
      *
      * @param {TestsGroup} testsGroup
      * @param {object} [botconfig]
+     * @param {string} [lang]
      * @returns {Tester}
      */
-    _createTester (testsGroup, botconfig = null) {
+    _createTester (testsGroup, botconfig = null, lang = null) {
         const bot = this._botFactory(true);
 
         if (botconfig) {
@@ -342,6 +367,9 @@ class ConversationTester {
             t = new Tester(bot);
         }
 
+        if (lang) {
+            t.setState({ lang });
+        }
         t.setExpandRandomTexts();
 
         return t;
@@ -351,9 +379,10 @@ class ConversationTester {
      *
      * @param {TestsGroup} testsGroup
      * @param {object} botconfig
+     * @param {string} [lang]
      */
-    async _runTextCaseTests (testsGroup, botconfig = null) {
-        const t = this._createTester(testsGroup, botconfig);
+    async _runTextCaseTests (testsGroup, botconfig = null, lang = null) {
+        const t = this._createTester(testsGroup, botconfig, lang);
         let out = '';
         let passing = 0;
         let longestText = 0;
@@ -368,7 +397,7 @@ class ConversationTester {
 
         const { textCaseParallel } = this._options;
         const runTestCase = (textCase) => this
-            .executeTextCase(testsGroup, t, textCase, botconfig, longestText);
+            .executeTextCase(testsGroup, t, textCase, botconfig, longestText, lang);
 
         while (iterate.length > 0) {
             const cases = iterate.splice(0, textCaseParallel);
@@ -409,9 +438,10 @@ class ConversationTester {
      *
      * @param {TestsGroup} testsGroup
      * @param {object} botconfig
+     * @param {string} [lang]
      */
-    async _runStepCaseTests (testsGroup, botconfig = null) {
-        const t = this._createTester(testsGroup, botconfig);
+    async _runStepCaseTests (testsGroup, botconfig = null, lang = null) {
+        const t = this._createTester(testsGroup, botconfig, lang);
         const out = [];
 
         for (const testCase of testsGroup.testCases) {
@@ -445,10 +475,11 @@ class ConversationTester {
      * @param {TextTest} textCase
      * @param {*} botconfig
      * @param {number} longestText
+     * @param {string} [lang]
      */
-    async executeTextCase (testsGroup, t, textCase, botconfig, longestText) {
+    async executeTextCase (testsGroup, t, textCase, botconfig, longestText, lang = null) {
         if (this._options.useConversationForTextTestCases) {
-            const tester = this._createTester(testsGroup, botconfig);
+            const tester = this._createTester(testsGroup, botconfig, lang);
 
             try {
                 await tester.text(textCase.text);
@@ -469,7 +500,7 @@ class ConversationTester {
             return { ok: true, o: null };
         }
 
-        const actions = await t.processor.aiActionsForText(textCase.text, undefined, true);
+        const actions = await t.processor.aiActionsForText(textCase.text, undefined, lang, true);
 
         const [winner = {
             score: 0, intent: { intent: '-', score: 0 }, aboveConfidence: false, meta: null, action: null

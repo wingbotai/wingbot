@@ -19,6 +19,7 @@ const CustomEntityDetectionModel = require('./src/wingbot/CustomEntityDetectionM
 const ConversationTester = require('./src/ConversationTester');
 const { asserts } = require('./src/testTools');
 const BuildRouter = require('./src/BuildRouter');
+const MockAiModel = require('./src/MockAiModel');
 const ReturnSender = require('./src/ReturnSender');
 const Plugins = require('./src/Plugins');
 const NotificationsStorage = require('./src/notifications/NotificationsStorage');
@@ -76,6 +77,7 @@ module.exports = {
     quickReplyAction,
     getSetState,
     bounce,
+    MockAiModel,
 
     // Wingbot
     ai: Ai.ai,

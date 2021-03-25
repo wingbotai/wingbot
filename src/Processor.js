@@ -325,10 +325,11 @@ class Processor extends EventEmitter {
      *
      * @param {string|object} text
      * @param {string} [pageId]
+     * @param {string} [lang]
      * @param {boolean} [allowEmptyAction]
      * @returns {Promise<IntentAction[]>}
      */
-    async aiActionsForText (text, pageId = 'none', allowEmptyAction = false) {
+    async aiActionsForText (text, pageId = 'none', lang = null, allowEmptyAction = false) {
         try {
             // @ts-ignore
             if (this.reducer && typeof this.reducer.preload === 'function') {
@@ -340,7 +341,7 @@ class Processor extends EventEmitter {
                 ? Request.text('none', text)
                 : text;
             // @ts-ignore
-            const req = new Request(request, {}, pageId, this.reducer.globalIntents);
+            const req = new Request(request, { lang }, pageId, this.reducer.globalIntents);
 
             await Ai.ai.preloadIntent(req);
 

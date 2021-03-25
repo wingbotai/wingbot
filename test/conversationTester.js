@@ -7,11 +7,15 @@ const assert = require('assert');
 const Router = require('../src/Router');
 const Ai = require('../src/Ai');
 const ConversationTester = require('../src/ConversationTester');
+const { BuildRouter } = require('..');
+const MockAiModel = require('../src/MockAiModel');
 
 describe('<ConversationTester>', () => {
 
     let storage;
     let textStorage;
+    let enStorage;
+    let csStorage;
     let botFactory;
 
     beforeEach(() => {
@@ -140,6 +144,70 @@ describe('<ConversationTester>', () => {
         };
 
         /** @type {import('../src/ConversationTester').TextCase[]} */
+        enStorage = {
+            async getTestCases () {
+                return [
+                    {
+                        list: 'Texts',
+                        name: 'Texts',
+                        texts: [
+                            {
+                                text: 'english',
+                                intent: 'start-intent'
+                            }
+                        ]
+                    },
+                    {
+                        list: 'Cat',
+                        name: 'foo2',
+                        steps: [
+                            {
+                                step: 1,
+                                rowNum: 1,
+                                action: '#start',
+                                passedAction: 'start',
+                                textContains: 'english',
+                                quickRepliesContains: ''
+                            }
+                        ]
+                    }
+                ];
+            }
+        };
+
+        /** @type {import('../src/ConversationTester').TextCase[]} */
+        csStorage = {
+            async getTestCases () {
+                return [
+                    {
+                        list: 'Texts',
+                        name: 'Texts',
+                        texts: [
+                            {
+                                text: 'cesky',
+                                intent: 'start-intent'
+                            }
+                        ]
+                    },
+                    {
+                        list: 'Cat',
+                        name: 'foo2',
+                        steps: [
+                            {
+                                step: 1,
+                                rowNum: 1,
+                                action: '#start',
+                                passedAction: 'start',
+                                textContains: 'cesky',
+                                quickRepliesContains: ''
+                            }
+                        ]
+                    }
+                ];
+            }
+        };
+
+        /** @type {import('../src/ConversationTester').TextCase[]} */
         textStorage = {
             async getTestCases () {
                 return [
@@ -219,6 +287,13 @@ describe('<ConversationTester>', () => {
 
     describe('#test()', () => {
 
+        afterEach(() => {
+            Ai.ai.deregister('cs');
+            Ai.ai.deregister('en');
+            Ai.ai.deregister('xx');
+            Ai.ai.deregister('default');
+        });
+
         it('should work with text replies', async () => {
             let t = new ConversationTester(textStorage, botFactory);
 
@@ -253,6 +328,74 @@ describe('<ConversationTester>', () => {
             assert.strictEqual(out.total, 6);
             assert.strictEqual(out.passed, 2);
             assert.strictEqual(out.failed, 4);
+        });
+
+        it('should work with language', async () => {
+            const enMock = [['english', { intent: 'start-intent' }]];
+            const csMock = [['cesky', [{ intent: 'start-intent' }]]];
+            const xxMock = [['cesky', { intents: [{ intent: 'none' }] }]];
+            const defaultMock = [['cesky', null]];
+
+            Ai.ai.register(new MockAiModel({}, console, new Map(enMock)), 'en');
+            Ai.ai.register(new MockAiModel({}, console, new Map(csMock)), 'cs');
+            Ai.ai.register(new MockAiModel({}, console, new Map(xxMock)), 'xx');
+            Ai.ai.register(new MockAiModel({}, console, new Map(defaultMock)));
+
+            const t = new ConversationTester({
+                cs: csStorage,
+                en: enStorage
+            }, () => BuildRouter.fromData([{
+                isRoot: true,
+                routes: [
+                    {
+                        id: '71f23dd0-e147-11ea-b4f2-ef90cb7950de',
+                        path: 'start',
+                        isEntryPoint: true,
+                        isFallback: false,
+                        replies: [],
+                        aiTags: [
+                            'start-intent'
+                        ],
+                        aiGlobal: true,
+                        resolvers: [
+                            {
+                                type: 'botbuild.message',
+                                params: {
+                                    text: [
+                                        { t: 'cesky', l: 'cs' },
+                                        { t: 'english', l: 'en' }
+                                    ],
+                                    replies: []
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }]));
+
+            let out = await t.test(null, null, 'cs');
+
+            assert.strictEqual(out.total, 2);
+            assert.strictEqual(out.passed, 2);
+            assert.strictEqual(out.failed, 0);
+
+            out = await t.test(null, null, 'en');
+
+            assert.strictEqual(out.total, 2);
+            assert.strictEqual(out.passed, 2);
+            assert.strictEqual(out.failed, 0);
+
+            out = await t.test(null, null, 'xx');
+
+            assert.strictEqual(out.total, 2);
+            assert.strictEqual(out.passed, 1);
+            assert.strictEqual(out.failed, 1);
+
+            out = await t.test();
+
+            assert.strictEqual(out.total, 2);
+            assert.strictEqual(out.passed, 1);
+            assert.strictEqual(out.failed, 1);
         });
 
         it('disableAssertActions', async () => {
