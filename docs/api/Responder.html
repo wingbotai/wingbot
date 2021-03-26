@@ -1135,6 +1135,7 @@
 <li><a href="#Responder_run">.run(blockName)</a> &#x21D2; <code>Promise</code></li>
 <li><a href="#Responder_setNotificationRecipient">.setNotificationRecipient(recipient)</a></li>
 <li><a href="#Responder_doNotLogTheEvent">.doNotLogTheEvent()</a> &#x21D2; <code>this</code></li>
+<li><a href="#Responder_trackEvent">.trackEvent(type, category, [action], [label], [value])</a> &#x21D2; <code>this</code></li>
 <li><a href="#Responder_send">.send(data)</a> &#x21D2; <code>this</code></li>
 <li><del><a href="#Responder_setBookmark">.setBookmark([action], [winningIntent])</a> &#x21D2; <code>this</code></del></li>
 <li><del><a href="#Responder_bookmark">.bookmark()</a> &#x21D2; <code>string</code> | <code>null</code></del></li>
@@ -1296,6 +1297,49 @@ Usefull for sending a one-time notification</p>
 <h3 id="responderdonotlogtheevent-&#x21D2;-this"><a name="responderdonotlogtheevent-&#x21D2;-this" class="plugin-anchor" href="#responderdonotlogtheevent-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.doNotLogTheEvent() &#x21D2; <code>this</code></h3>
 <p>Disables logging the event to history</p>
 <p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<div id="Responder_trackEvent">&#xA0;</div>
+
+<h3 id="respondertrackeventtype-category-action-label-value-&#x21D2;-this"><a name="respondertrackeventtype-category-action-label-value-&#x21D2;-this" class="plugin-anchor" href="#respondertrackeventtype-category-action-label-value-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.trackEvent(type, category, [action], [label], [value]) &#x21D2; <code>this</code></h3>
+<p>Fire tracking event
+Events are aggregated within ReturnSender and can be caught
+within Processor&apos;s <code>interaction</code> event (event.tracking.events)</p>
+<p><strong>Kind</strong>: instance method of <a href="#Responder"><code>Responder</code></a>  </p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>category</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[action]</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[label]</td>
+<td><code>string</code></td>
+<td></td>
+</tr>
+<tr>
+<td>[value]</td>
+<td><code>number</code></td>
+<td><code>0</code></td>
+</tr>
+</tbody>
+</table>
 <div id="Responder_send">&#xA0;</div>
 
 <h3 id="respondersenddata-&#x21D2;-this"><a name="respondersenddata-&#x21D2;-this" class="plugin-anchor" href="#respondersenddata-&#x21D2;-this"><i class="fa fa-link" aria-hidden="true"></i></a>responder.send(data) &#x21D2; <code>this</code></h3>
@@ -2351,7 +2395,7 @@ res.file(<span class="hljs-string">&apos;https://google.com/img/foo.pdf&apos;</s
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2021-03-26T08:51:18.034Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-03-26T08:51:20.711Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Responder","level":"3.2","depth":1,"next":{"title":"Router","level":"3.3","depth":1,"path":"api/Router.md","ref":"api/Router.md","articles":[]},"previous":{"title":"Request","level":"3.1","depth":1,"path":"api/Request.md","ref":"api/Request.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-default","collapsible-menu","anchors"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"theme-api":{"theme":"dark","languages":[{"lang":"js","name":"JavaScript","default":true}]},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"anchors":{}},"theme":"default","author":"wingbot.ai","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"twitter":"https://twitter.com/wingbotai"},"title":"Wingbot","gitbook":"*","description":"Facebook Messenger framework for Node.js"},"file":{"path":"api/Responder.md","mtime":"2021-03-26T13:01:19.432Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-03-26T13:01:28.569Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

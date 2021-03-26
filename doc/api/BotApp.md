@@ -27,6 +27,10 @@
 <dd></dd>
 <dt><a href="#Plugin">Plugin</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#TrackingEvent">TrackingEvent</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TrackingObject">TrackingObject</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#InteractionEvent">InteractionEvent</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#ProcessorOptions">ProcessorOptions</a> : <code>object</code></dt>
@@ -172,6 +176,30 @@ Returns processor plugin, which updates thread context automatically
 | [beforeProcessMessage] | <code>function</code> | 
 | [afterProcessMessage] | <code>function</code> | 
 
+<div id="TrackingEvent">&nbsp;</div>
+
+## TrackingEvent : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| type | <code>string</code> | 
+| category | <code>string</code> | 
+| action | <code>string</code> | 
+| label | <code>string</code> | 
+| value | <code>number</code> | 
+
+<div id="TrackingObject">&nbsp;</div>
+
+## TrackingObject : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| events | [<code>Array.&lt;TrackingEvent&gt;</code>](#TrackingEvent) | 
+
 <div id="InteractionEvent">&nbsp;</div>
 
 ## InteractionEvent : <code>object</code>
@@ -186,6 +214,7 @@ Returns processor plugin, which updates thread context automatically
 | state | <code>object</code> | 
 | data | <code>object</code> | 
 | skill | <code>string</code> \| <code>null</code> | 
+| tracking | [<code>TrackingObject</code>](#TrackingObject) | 
 
 <div id="ProcessorOptions">&nbsp;</div>
 

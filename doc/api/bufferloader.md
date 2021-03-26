@@ -32,6 +32,9 @@
 <dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> ⇒ <code>Promise.&lt;Buffer&gt;</code></dt>
 <dd><p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
 </dd>
+<dt><a href="#compileWithState">compileWithState(req, res, template)</a></dt>
+<dd><p>Utility, which helps to render handlebars syntax with all variables within conversations state</p>
+</dd>
 <dt><a href="#disambiguationQuickReply">disambiguationQuickReply(title, likelyIntent, disambText, action, data)</a></dt>
 <dd><p>Create a disambiguation quick reply</p>
 </dd>
@@ -354,6 +357,31 @@ router.use('*', (req, res, postBack) => {
             .catch(err => postBack('donwloaded', { err }))
     }
 });
+```
+<div id="compileWithState">&nbsp;</div>
+
+## compileWithState(req, res, template)
+Utility, which helps to render handlebars syntax with all variables within conversations state
+
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+| res | <code>Responder</code> | 
+| template | <code>string</code> | 
+
+**Example**  
+```js
+const { compileWithState } = require('wingbot');
+
+function myPluginFactory (params) {
+
+    return (req, res) => {
+        const text = compileWithState(req, res, params.text);
+        res.text(text);
+    };
+}
 ```
 <div id="disambiguationQuickReply">&nbsp;</div>
 

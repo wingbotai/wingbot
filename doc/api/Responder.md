@@ -32,6 +32,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.run(blockName)](#Responder_run) ⇒ <code>Promise</code>
     * [.setNotificationRecipient(recipient)](#Responder_setNotificationRecipient)
     * [.doNotLogTheEvent()](#Responder_doNotLogTheEvent) ⇒ <code>this</code>
+    * [.trackEvent(type, category, [action], [label], [value])](#Responder_trackEvent) ⇒ <code>this</code>
     * [.send(data)](#Responder_send) ⇒ <code>this</code>
     * ~~[.setBookmark([action], [winningIntent])](#Responder_setBookmark) ⇒ <code>this</code>~~
     * ~~[.bookmark()](#Responder_bookmark) ⇒ <code>string</code> \| <code>null</code>~~
@@ -156,6 +157,23 @@ Usefull for sending a one-time notification
 Disables logging the event to history
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+<div id="Responder_trackEvent">&nbsp;</div>
+
+### responder.trackEvent(type, category, [action], [label], [value]) ⇒ <code>this</code>
+Fire tracking event
+Events are aggregated within ReturnSender and can be caught
+within Processor's `interaction` event (event.tracking.events)
+
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| type | <code>string</code> |  | 
+| category | <code>string</code> |  | 
+| [action] | <code>string</code> |  | 
+| [label] | <code>string</code> |  | 
+| [value] | <code>number</code> | <code>0</code> | 
+
 <div id="Responder_send">&nbsp;</div>
 
 ### responder.send(data) ⇒ <code>this</code>
