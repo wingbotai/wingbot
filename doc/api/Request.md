@@ -25,7 +25,7 @@
 <dd></dd>
 </dl>
 
-{% raw %}<div id="Request">&nbsp;</div>{% endraw %}
+<div id="Request">&nbsp;</div>
 
 ## Request
 Instance of {Request} class is passed as first parameter of handler (req)
@@ -83,7 +83,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.postBack([getData])](#Request_postBack) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
     * [.expectedEntities()](#Request_expectedEntities) ⇒ <code>Array.&lt;string&gt;</code>
 
-{% raw %}<div id="new_Request_new">&nbsp;</div>{% endraw %}
+<div id="new_Request_new">&nbsp;</div>
 
 ### new Request(data, state, pageId, globalIntents, [orchestratorOptions])
 
@@ -95,7 +95,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | globalIntents | <code>Map</code> | 
 | [orchestratorOptions] | [<code>RequestOrchestratorOptions</code>](#RequestOrchestratorOptions) | 
 
-{% raw %}<div id="Request_params">&nbsp;</div>{% endraw %}
+<div id="Request_params">&nbsp;</div>
 
 ### request.params
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -105,7 +105,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | params | <code>object</code> | plugin configuration |
 
-{% raw %}<div id="Request_timestamp">&nbsp;</div>{% endraw %}
+<div id="Request_timestamp">&nbsp;</div>
 
 ### request.timestamp
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -115,7 +115,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- |
 | timestamp | <code>number</code> \| <code>null</code> | 
 
-{% raw %}<div id="Request_senderId">&nbsp;</div>{% endraw %}
+<div id="Request_senderId">&nbsp;</div>
 
 ### request.senderId
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -125,7 +125,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | senderId | <code>string</code> | sender.id from the event |
 
-{% raw %}<div id="Request_recipientId">&nbsp;</div>{% endraw %}
+<div id="Request_recipientId">&nbsp;</div>
 
 ### request.recipientId
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -135,7 +135,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | recipientId | <code>string</code> | recipient.id from the event |
 
-{% raw %}<div id="Request_pageId">&nbsp;</div>{% endraw %}
+<div id="Request_pageId">&nbsp;</div>
 
 ### request.pageId
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -145,7 +145,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | pageId | <code>string</code> | page identifier from the event |
 
-{% raw %}<div id="Request_state">&nbsp;</div>{% endraw %}
+<div id="Request_state">&nbsp;</div>
 
 ### request.state
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -155,7 +155,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | state | <code>object</code> | current state of the conversation |
 
-{% raw %}<div id="Request_subscribtions">&nbsp;</div>{% endraw %}
+<div id="Request_subscribtions">&nbsp;</div>
 
 ### request.subscribtions
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -165,7 +165,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | state | <code>Array.&lt;string&gt;</code> | list of subscribed tags |
 
-{% raw %}<div id="Request_entities">&nbsp;</div>{% endraw %}
+<div id="Request_entities">&nbsp;</div>
 
 ### request.entities
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -175,7 +175,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | list of entities |
 
-{% raw %}<div id="Request_intents">&nbsp;</div>{% endraw %}
+<div id="Request_intents">&nbsp;</div>
 
 ### request.intents
 **Kind**: instance property of [<code>Request</code>](#Request)  
@@ -185,17 +185,17 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | list of resolved intents |
 
-{% raw %}<div id="Request__orchestratorClientOptions">&nbsp;</div>{% endraw %}
+<div id="Request__orchestratorClientOptions">&nbsp;</div>
 
 ### request.\_orchestratorClientOptions : <code>OrchestratorClientOptions</code>
 **Kind**: instance property of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_event">&nbsp;</div>{% endraw %}
+<div id="Request_event">&nbsp;</div>
 
 ### request.event : <code>object</code>
 The original messaging event
 
 **Kind**: instance property of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_AI_SETSTATE">&nbsp;</div>{% endraw %}
+<div id="Request_AI_SETSTATE">&nbsp;</div>
 
 ### request.AI\_SETSTATE : <code>enum</code>
 **Kind**: instance enum of [<code>Request</code>](#Request)  
@@ -209,19 +209,19 @@ The original messaging event
 | EXCLUDE_WITH_SET_ENTITIES | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>-2</code> | 
 | EXCLUDE_WITHOUT_SET_ENTITIES | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>-3</code> | 
 
-{% raw %}<div id="Request_isStandby">&nbsp;</div>{% endraw %}
+<div id="Request_isStandby">&nbsp;</div>
 
 ### request.isStandby() ⇒ <code>boolean</code>
 Returns true, if the incomming event is standby
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_aiActions">&nbsp;</div>{% endraw %}
+<div id="Request_aiActions">&nbsp;</div>
 
 ### request.aiActions() ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
 Get all matched actions from NLP intents
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_aiActionsForQuickReplies">&nbsp;</div>{% endraw %}
+<div id="Request_aiActionsForQuickReplies">&nbsp;</div>
 
 ### request.aiActionsForQuickReplies([limit], [aiActions], [overrideAction]) ⇒ [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply)
 Covert all matched actions for disambiguation purposes
@@ -234,7 +234,7 @@ Covert all matched actions for disambiguation purposes
 | [aiActions] | [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction) | <code></code> | 
 | [overrideAction] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="Request_hasAiActionsForDisambiguation">&nbsp;</div>{% endraw %}
+<div id="Request_hasAiActionsForDisambiguation">&nbsp;</div>
 
 ### request.hasAiActionsForDisambiguation(minimum) ⇒ <code>boolean</code>
 Returns true, if there is an action for disambiguation
@@ -245,7 +245,7 @@ Returns true, if there is an action for disambiguation
 | --- | --- | --- |
 | minimum | <code>number</code> | <code>1</code> | 
 
-{% raw %}<div id="Request_intent">&nbsp;</div>{% endraw %}
+<div id="Request_intent">&nbsp;</div>
 
 ### request.intent(getDataOrScore) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
 Returns intent, when using AI
@@ -256,7 +256,7 @@ Returns intent, when using AI
 | --- | --- | --- | --- |
 | getDataOrScore | <code>boolean</code> \| <code>number</code> | <code>false</code> | score limit or true for getting intent data |
 
-{% raw %}<div id="Request_entity">&nbsp;</div>{% endraw %}
+<div id="Request_entity">&nbsp;</div>
 
 ### request.entity(name, [sequence]) ⇒ <code>number</code> \| <code>string</code> \| <code>null</code>
 Get matched entity value
@@ -268,13 +268,13 @@ Get matched entity value
 | name | <code>string</code> |  | name of requested entity |
 | [sequence] | <code>number</code> | <code>0</code> | when there are more then one entity |
 
-{% raw %}<div id="Request_isAttachment">&nbsp;</div>{% endraw %}
+<div id="Request_isAttachment">&nbsp;</div>
 
 ### request.isAttachment() ⇒ <code>boolean</code>
 Checks, when message contains an attachment (file, image or location)
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_isSetContext">&nbsp;</div>{% endraw %}
+<div id="Request_isSetContext">&nbsp;</div>
 
 ### request.isSetContext(varsToCheck)
 Orchestrator: check, if the request updates only $context variables
@@ -288,7 +288,7 @@ Orchestrator: check, if the request updates only $context variables
 | --- | --- | --- |
 | varsToCheck | <code>Array.&lt;string&gt;</code> | list of variables to check |
 
-{% raw %}<div id="Request_getSetContext">&nbsp;</div>{% endraw %}
+<div id="Request_getSetContext">&nbsp;</div>
 
 ### request.getSetContext([includeContextSync]) ⇒ <code>object</code>
 Orchestrator: get current thread context update
@@ -300,7 +300,7 @@ Orchestrator: get current thread context update
 | --- | --- | --- |
 | [includeContextSync] | <code>boolean</code> | <code>false</code> | 
 
-{% raw %}<div id="Request_isImage">&nbsp;</div>{% endraw %}
+<div id="Request_isImage">&nbsp;</div>
 
 ### request.isImage([attachmentIndex], [includingStickers]) ⇒ <code>boolean</code>
 Checks, when the attachment is an image, but not a sticker
@@ -312,7 +312,7 @@ Checks, when the attachment is an image, but not a sticker
 | [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
 | [includingStickers] | <code>boolean</code> | <code>false</code> | return true, when the image is also a sticker |
 
-{% raw %}<div id="Request_isFile">&nbsp;</div>{% endraw %}
+<div id="Request_isFile">&nbsp;</div>
 
 ### request.isFile([attachmentIndex]) ⇒ <code>boolean</code>
 Checks, when the attachment is a file
@@ -323,13 +323,13 @@ Checks, when the attachment is a file
 | --- | --- | --- | --- |
 | [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
 
-{% raw %}<div id="Request_hasLocation">&nbsp;</div>{% endraw %}
+<div id="Request_hasLocation">&nbsp;</div>
 
 ### request.hasLocation() ⇒ <code>boolean</code>
 Checks for location in attachments
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_getLocation">&nbsp;</div>{% endraw %}
+<div id="Request_getLocation">&nbsp;</div>
 
 ### request.getLocation() ⇒ <code>null</code> \| <code>Object</code>
 Gets location coordinates from attachment, when exists
@@ -357,7 +357,7 @@ bot.use('locAction', (req, res) => {
     }
 });
 ```
-{% raw %}<div id="Request_attachment">&nbsp;</div>{% endraw %}
+<div id="Request_attachment">&nbsp;</div>
 
 ### request.attachment([attachmentIndex]) ⇒ <code>object</code> \| <code>null</code>
 Returns whole attachment or null
@@ -368,7 +368,7 @@ Returns whole attachment or null
 | --- | --- | --- | --- |
 | [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
 
-{% raw %}<div id="Request_attachmentUrl">&nbsp;</div>{% endraw %}
+<div id="Request_attachmentUrl">&nbsp;</div>
 
 ### request.attachmentUrl([attachmentIndex]) ⇒ <code>string</code> \| <code>null</code>
 Returns attachment URL
@@ -379,25 +379,25 @@ Returns attachment URL
 | --- | --- | --- | --- |
 | [attachmentIndex] | <code>number</code> | <code>0</code> | use, when user sends more then one attachment |
 
-{% raw %}<div id="Request_isMessage">&nbsp;</div>{% endraw %}
+<div id="Request_isMessage">&nbsp;</div>
 
 ### request.isMessage() ⇒ <code>boolean</code>
 Returns true, when the request is text message, quick reply or attachment
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_isQuickReply">&nbsp;</div>{% endraw %}
+<div id="Request_isQuickReply">&nbsp;</div>
 
 ### request.isQuickReply() ⇒ <code>boolean</code>
 Check, that message is a quick reply
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_isText">&nbsp;</div>{% endraw %}
+<div id="Request_isText">&nbsp;</div>
 
 ### request.isText() ⇒ <code>boolean</code>
 Check, that message is PURE text
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_isSticker">&nbsp;</div>{% endraw %}
+<div id="Request_isSticker">&nbsp;</div>
 
 ### request.isSticker([includeToTextStickers]) ⇒ <code>boolean</code>
 Returns true, when the attachment is a sticker
@@ -408,7 +408,7 @@ Returns true, when the attachment is a sticker
 | --- | --- | --- | --- |
 | [includeToTextStickers] | <code>boolean</code> | <code>false</code> | including strickers transformed into a text |
 
-{% raw %}<div id="Request_text">&nbsp;</div>{% endraw %}
+<div id="Request_text">&nbsp;</div>
 
 ### request.text([tokenized]) ⇒ <code>string</code>
 Returns text of the message
@@ -423,13 +423,13 @@ Returns text of the message
 ```js
 console.log(req.text(true)) // "can-you-help-me"
 ```
-{% raw %}<div id="Request_expected">&nbsp;</div>{% endraw %}
+<div id="Request_expected">&nbsp;</div>
 
 ### request.expected() ⇒ [<code>Action</code>](#Action) \| <code>null</code>
 Returns the request expected handler in case have been set last response
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_expectedKeywords">&nbsp;</div>{% endraw %}
+<div id="Request_expectedKeywords">&nbsp;</div>
 
 ### request.expectedKeywords([justOnce])
 Returns all expected keywords for the next request (just expected keywords)
@@ -446,7 +446,7 @@ bot.use('my-route', (req, res) => {
     res.setState(req.expectedKeywords());
 });
 ```
-{% raw %}<div id="Request_expectedContext">&nbsp;</div>{% endraw %}
+<div id="Request_expectedContext">&nbsp;</div>
 
 ### request.expectedContext([justOnce], [includeKeywords]) ⇒ <code>object</code>
 Returns current turn-around context (expected and expected keywords)
@@ -464,7 +464,7 @@ bot.use('my-route', (req, res) => {
     res.setState(req.expectedContext());
 });
 ```
-{% raw %}<div id="Request_quickReply">&nbsp;</div>{% endraw %}
+<div id="Request_quickReply">&nbsp;</div>
 
 ### request.quickReply([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
 Returns action or data of quick reply
@@ -481,25 +481,25 @@ When `getData` is `true`, object will be returned. Otherwise string or null.
 typeof res.quickReply() === 'string' || res.quickReply() === null;
 typeof res.quickReply(true) === 'object';
 ```
-{% raw %}<div id="Request_isPostBack">&nbsp;</div>{% endraw %}
+<div id="Request_isPostBack">&nbsp;</div>
 
 ### request.isPostBack() ⇒ <code>boolean</code>
 Returns true, if request is the postback
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_isReferral">&nbsp;</div>{% endraw %}
+<div id="Request_isReferral">&nbsp;</div>
 
 ### request.isReferral() ⇒ <code>boolean</code>
 Returns true, if request is the referral
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_isOptin">&nbsp;</div>{% endraw %}
+<div id="Request_isOptin">&nbsp;</div>
 
 ### request.isOptin() ⇒ <code>boolean</code>
 Returns true, if request is the optin
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_setAction">&nbsp;</div>{% endraw %}
+<div id="Request_setAction">&nbsp;</div>
 
 ### request.setAction(action, [data]) ⇒ [<code>Action</code>](#Action) \| <code>null</code> \| <code>undefined</code>
 Sets the action and returns previous action
@@ -512,7 +512,7 @@ Sets the action and returns previous action
 | action | <code>string</code> \| [<code>Action</code>](#Action) \| <code>null</code> | 
 | [data] | <code>object</code> | 
 
-{% raw %}<div id="Request_action">&nbsp;</div>{% endraw %}
+<div id="Request_action">&nbsp;</div>
 
 ### request.action([getData]) ⇒ <code>null</code> \| <code>string</code>
 Returns action of the postback or quickreply
@@ -538,13 +538,13 @@ the order, where from the action is resolved
 typeof res.action() === 'string' || res.action() === null;
 typeof res.actionData() === 'object';
 ```
-{% raw %}<div id="Request_actionData">&nbsp;</div>{% endraw %}
+<div id="Request_actionData">&nbsp;</div>
 
 ### request.actionData() ⇒ <code>object</code>
 Returns action data of postback or quick reply
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_getSetState">&nbsp;</div>{% endraw %}
+<div id="Request_getSetState">&nbsp;</div>
 
 ### request.getSetState(keysFromAi) ⇒ <code>object</code>
 Gets incomming setState action variable
@@ -559,7 +559,7 @@ Gets incomming setState action variable
 ```js
 res.setState(req.getSetState());
 ```
-{% raw %}<div id="Request_isConfidentInput">&nbsp;</div>{% endraw %}
+<div id="Request_isConfidentInput">&nbsp;</div>
 
 ### request.isConfidentInput() ⇒ <code>boolean</code>
 Returns true, if previous request has been
@@ -568,7 +568,7 @@ marked as confident using `res.expectedConfidentInput()`
 It's good to consider this state in "analytics" integrations.
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_actionByAi">&nbsp;</div>{% endraw %}
+<div id="Request_actionByAi">&nbsp;</div>
 
 ### request.actionByAi() ⇒ <code>string</code> \| <code>null</code>
 Returs action string, if there is an action detected by NLP
@@ -596,13 +596,13 @@ bot.use('email', async (req, res, postBack) => {
     res.setState({ email: req.text() });
 });
 ```
-{% raw %}<div id="Request_aiActionsWinner">&nbsp;</div>{% endraw %}
+<div id="Request_aiActionsWinner">&nbsp;</div>
 
 ### request.aiActionsWinner() ⇒ [<code>IntentAction</code>](#IntentAction) \| <code>null</code>
 Returns full detected AI action
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Request_postBack">&nbsp;</div>{% endraw %}
+<div id="Request_postBack">&nbsp;</div>
 
 ### request.postBack([getData]) ⇒ <code>null</code> \| <code>string</code> \| <code>object</code>
 Returns action or data of postback
@@ -619,11 +619,11 @@ When `getData` is `true`, object will be returned. Otherwise string or null.
 typeof res.postBack() === 'string' || res.postBack() === null;
 typeof res.postBack(true) === 'object';
 ```
-{% raw %}<div id="Request_expectedEntities">&nbsp;</div>{% endraw %}
+<div id="Request_expectedEntities">&nbsp;</div>
 
 ### request.expectedEntities() ⇒ <code>Array.&lt;string&gt;</code>
 **Kind**: instance method of [<code>Request</code>](#Request)  
-{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+<div id="Entity">&nbsp;</div>
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
@@ -635,7 +635,7 @@ typeof res.postBack(true) === 'object';
 | value | <code>string</code> | 
 | score | <code>number</code> | 
 
-{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+<div id="Intent">&nbsp;</div>
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
@@ -647,7 +647,7 @@ typeof res.postBack(true) === 'object';
 | score | <code>number</code> | 
 | [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
-{% raw %}<div id="Action">&nbsp;</div>{% endraw %}
+<div id="Action">&nbsp;</div>
 
 ## Action : <code>object</code>
 **Kind**: global typedef  
@@ -659,7 +659,7 @@ typeof res.postBack(true) === 'object';
 | data | <code>object</code> | 
 | [setState] | <code>object</code> \| <code>null</code> | 
 
-{% raw %}<div id="IntentAction">&nbsp;</div>{% endraw %}
+<div id="IntentAction">&nbsp;</div>
 
 ## IntentAction : <code>object</code>
 **Kind**: global typedef  
@@ -680,7 +680,7 @@ typeof res.postBack(true) === 'object';
 | [meta.targetAction] | <code>string</code> \| <code>null</code> | 
 | [meta.resolverTag] | <code>string</code> | 
 
-{% raw %}<div id="QuickReply">&nbsp;</div>{% endraw %}
+<div id="QuickReply">&nbsp;</div>
 
 ## QuickReply : <code>object</code>
 **Kind**: global typedef  
@@ -691,7 +691,7 @@ typeof res.postBack(true) === 'object';
 | action | <code>string</code> | 
 | title | <code>\*</code> | 
 
-{% raw %}<div id="RequestOrchestratorOptions">&nbsp;</div>{% endraw %}
+<div id="RequestOrchestratorOptions">&nbsp;</div>
 
 ## RequestOrchestratorOptions : <code>object</code>
 **Kind**: global typedef  
@@ -704,7 +704,7 @@ typeof res.postBack(true) === 'object';
 | [fetch] | <code>function</code> | 
 | [appId] | <code>string</code> | 
 
-{% raw %}<div id="AiSetStateOption">&nbsp;</div>{% endraw %}
+<div id="AiSetStateOption">&nbsp;</div>
 
 ## AiSetStateOption : <code>number</code>
 **Kind**: global typedef  

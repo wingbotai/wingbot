@@ -21,7 +21,7 @@
 </dd>
 </dl>
 
-{% raw %}<div id="Router">&nbsp;</div>{% endraw %}
+<div id="Router">&nbsp;</div>
 
 ## Router ⇐ [<code>ReducerWrapper</code>](#ReducerWrapper)
 **Kind**: global class  
@@ -39,12 +39,12 @@
         * [.END](#Router_END)
         * [.NEXT](#Router_NEXT)
 
-{% raw %}<div id="new_Router_new">&nbsp;</div>{% endraw %}
+<div id="new_Router_new">&nbsp;</div>
 
 ### new Router()
 Cascading router
 
-{% raw %}<div id="Router_use">&nbsp;</div>{% endraw %}
+<div id="Router_use">&nbsp;</div>
 
 ### router.use(...resolvers) ⇒ <code>this</code>
 Appends middleware, action handler or another router
@@ -74,7 +74,7 @@ router.use('action', req => req.text() === 'a', (req, res) => {
 // use multiple reducers
 router.use('/path', reducer1, reducer2);
 ```
-{% raw %}<div id="ReducerWrapper_reduce">&nbsp;</div>{% endraw %}
+<div id="ReducerWrapper_reduce">&nbsp;</div>
 
 ### router.reduce(req, res, postBack)
 Reducer function
@@ -88,7 +88,7 @@ Reducer function
 | res | <code>Responder</code> | 
 | postBack | <code>function</code> | 
 
-{% raw %}<div id="ReducerWrapper_emitAction">&nbsp;</div>{% endraw %}
+<div id="ReducerWrapper_emitAction">&nbsp;</div>
 
 ### router.emitAction(req, res, action)
 Low level tracking method,
@@ -129,7 +129,7 @@ router.use('disables-firing-processor-event', (req, res) => {
     res.trackAs(false);
 });
 ```
-{% raw %}<div id="Router_CONTINUE">&nbsp;</div>{% endraw %}
+<div id="Router_CONTINUE">&nbsp;</div>
 
 ### Router.CONTINUE
 Return `Router.CONTINUE` when action matches your route
@@ -142,7 +142,7 @@ Its same as returning `true`
 | --- |
 | <code>boolean</code> | 
 
-{% raw %}<div id="Router_BREAK">&nbsp;</div>{% endraw %}
+<div id="Router_BREAK">&nbsp;</div>
 
 ### Router.BREAK
 Return `Router.BREAK` when action does not match your route
@@ -155,7 +155,7 @@ Its same as returning `false`
 | --- |
 | <code>boolean</code> | 
 
-{% raw %}<div id="Router_END">&nbsp;</div>{% endraw %}
+<div id="Router_END">&nbsp;</div>
 
 ### Router.END
 Returning `Router.END` constant stops dispatching request
@@ -168,7 +168,7 @@ Its same as returning `undefined`, but not in plugin. Returning undefined in plu
 | --- |
 | <code>null</code> | 
 
-{% raw %}<div id="Router_NEXT">&nbsp;</div>{% endraw %}
+<div id="Router_NEXT">&nbsp;</div>
 
 ### Router.NEXT
 Let the plugin wrapper to decide, when end or not
@@ -181,7 +181,7 @@ Its same as returning `undefined`
 | --- |
 | <code>undefined</code> | 
 
-{% raw %}<div id="ReducerWrapper">&nbsp;</div>{% endraw %}
+<div id="ReducerWrapper">&nbsp;</div>
 
 ## ReducerWrapper ⇐ <code>EventEmitter</code>
 **Kind**: global class  
@@ -197,7 +197,7 @@ Its same as returning `undefined`
         * [.ReducerWrapper](#ReducerWrapper_ReducerWrapper)
             * [new ReducerWrapper([reduce])](#new_ReducerWrapper_ReducerWrapper_new)
 
-{% raw %}<div id="new_ReducerWrapper_new">&nbsp;</div>{% endraw %}
+<div id="new_ReducerWrapper_new">&nbsp;</div>
 
 ### new ReducerWrapper()
 Solution for catching events. This is useful for analytics.
@@ -212,7 +212,7 @@ reducer.on('action', (senderId, processedAction, text, req, lastAction, skill, r
     // log action
 });
 ```
-{% raw %}<div id="ReducerWrapper_reduce">&nbsp;</div>{% endraw %}
+<div id="ReducerWrapper_reduce">&nbsp;</div>
 
 ### reducerWrapper.reduce(req, res, postBack)
 Reducer function
@@ -225,7 +225,7 @@ Reducer function
 | res | <code>Responder</code> | 
 | postBack | <code>function</code> | 
 
-{% raw %}<div id="ReducerWrapper_emitAction">&nbsp;</div>{% endraw %}
+<div id="ReducerWrapper_emitAction">&nbsp;</div>
 
 ### reducerWrapper.emitAction(req, res, action)
 Low level tracking method,
@@ -266,11 +266,11 @@ router.use('disables-firing-processor-event', (req, res) => {
     res.trackAs(false);
 });
 ```
-{% raw %}<div id="ReducerWrapper_ReducerWrapper">&nbsp;</div>{% endraw %}
+<div id="ReducerWrapper_ReducerWrapper">&nbsp;</div>
 
 ### ReducerWrapper.ReducerWrapper
 **Kind**: static class of [<code>ReducerWrapper</code>](#ReducerWrapper)  
-{% raw %}<div id="new_ReducerWrapper_ReducerWrapper_new">&nbsp;</div>{% endraw %}
+<div id="new_ReducerWrapper_ReducerWrapper_new">&nbsp;</div>
 
 #### new ReducerWrapper([reduce])
 Creates an instance of ReducerWrapper.
@@ -280,7 +280,7 @@ Creates an instance of ReducerWrapper.
 | --- | --- | --- |
 | [reduce] | <code>function</code> | the handler function |
 
-{% raw %}<div id="Resolver">&nbsp;</div>{% endraw %}
+<div id="Resolver">&nbsp;</div>
 
 ## Resolver : <code>function</code>
 **Kind**: global typedef  
@@ -291,7 +291,7 @@ Creates an instance of ReducerWrapper.
 | [res] | <code>Responder</code> | 
 | [postBack] | <code>function</code> | 
 
-{% raw %}<div id="IRouter">&nbsp;</div>{% endraw %}
+<div id="IRouter">&nbsp;</div>
 
 ## IRouter : <code>object</code>
 **Kind**: global typedef  
@@ -301,7 +301,7 @@ Creates an instance of ReducerWrapper.
 | --- | --- |
 | reduce | <code>function</code> | 
 
-{% raw %}<div id="BotPath">&nbsp;</div>{% endraw %}
+<div id="BotPath">&nbsp;</div>
 
 ## BotPath : <code>object</code>
 **Kind**: global typedef  
@@ -311,7 +311,7 @@ Creates an instance of ReducerWrapper.
 | --- | --- |
 | path | <code>string</code> | 
 
-{% raw %}<div id="Middleware">&nbsp;</div>{% endraw %}
+<div id="Middleware">&nbsp;</div>
 
 ## Middleware : [<code>Resolver</code>](#Resolver) \| <code>string</code> \| <code>RegExp</code> \| [<code>IRouter</code>](#IRouter) \| [<code>BotPath</code>](#BotPath)
 flow control statement or function

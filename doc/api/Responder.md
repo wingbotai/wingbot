@@ -15,7 +15,7 @@
 <dd></dd>
 </dl>
 
-{% raw %}<div id="Responder">&nbsp;</div>{% endraw %}
+<div id="Responder">&nbsp;</div>
 
 ## Responder
 Instance of responder is passed as second parameter of handler (res)
@@ -67,7 +67,7 @@ Instance of responder is passed as second parameter of handler (res)
     * [.trackAs(action)](#Responder_trackAs) ⇒ <code>this</code>
     * [.trackAsSkill(skill)](#Responder_trackAsSkill) ⇒ <code>this</code>
 
-{% raw %}<div id="Responder_newState">&nbsp;</div>{% endraw %}
+<div id="Responder_newState">&nbsp;</div>
 
 ### responder.newState
 The empty object, which is filled with res.setState() method
@@ -81,7 +81,7 @@ into the conversation state.
 | --- |
 | <code>object</code> | 
 
-{% raw %}<div id="Responder_finalMessageSent">&nbsp;</div>{% endraw %}
+<div id="Responder_finalMessageSent">&nbsp;</div>
 
 ### responder.finalMessageSent
 Is true, when a final message (the quick replies by default) has been sent
@@ -93,7 +93,7 @@ Is true, when a final message (the quick replies by default) has been sent
 | --- |
 | <code>boolean</code> | 
 
-{% raw %}<div id="Responder_startedOutput">&nbsp;</div>{% endraw %}
+<div id="Responder_startedOutput">&nbsp;</div>
 
 ### responder.startedOutput
 Is true, when a an output started during the event dispatch
@@ -105,23 +105,23 @@ Is true, when a an output started during the event dispatch
 | --- |
 | <code>boolean</code> | 
 
-{% raw %}<div id="Responder_senderMeta">&nbsp;</div>{% endraw %}
+<div id="Responder_senderMeta">&nbsp;</div>
 
 ### responder.senderMeta ⇒ [<code>SenderMeta</code>](#SenderMeta)
 Response has been marked with a flag
 
 **Kind**: instance property of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_data">&nbsp;</div>{% endraw %}
+<div id="Responder_data">&nbsp;</div>
 
 ### responder.data : <code>object</code>
 **Kind**: instance property of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_textResponses">&nbsp;</div>{% endraw %}
+<div id="Responder_textResponses">&nbsp;</div>
 
 ### responder.textResponses ⇒ <code>Array.&lt;string&gt;</code>
 Return array of text responses
 
 **Kind**: instance property of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_run">&nbsp;</div>{% endraw %}
+<div id="Responder_run">&nbsp;</div>
 
 ### responder.run(blockName) ⇒ <code>Promise</code>
 Run a code block defined by a plugin
@@ -138,7 +138,7 @@ Run a code block defined by a plugin
 | --- |
 | <code>function</code> | 
 
-{% raw %}<div id="Responder_setNotificationRecipient">&nbsp;</div>{% endraw %}
+<div id="Responder_setNotificationRecipient">&nbsp;</div>
 
 ### responder.setNotificationRecipient(recipient)
 Replaces recipient and disables autotyping
@@ -150,13 +150,13 @@ Usefull for sending a one-time notification
 | --- | --- |
 | recipient | <code>object</code> | 
 
-{% raw %}<div id="Responder_doNotLogTheEvent">&nbsp;</div>{% endraw %}
+<div id="Responder_doNotLogTheEvent">&nbsp;</div>
 
 ### responder.doNotLogTheEvent() ⇒ <code>this</code>
 Disables logging the event to history
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_send">&nbsp;</div>{% endraw %}
+<div id="Responder_send">&nbsp;</div>
 
 ### responder.send(data) ⇒ <code>this</code>
 Send a raw messaging event.
@@ -172,7 +172,7 @@ If no recipient is provided, a default (senderId) will be added.
 ```js
 res.send({ message: { text: 'Hello!' } });
 ```
-{% raw %}<div id="Responder_setBookmark">&nbsp;</div>{% endraw %}
+<div id="Responder_setBookmark">&nbsp;</div>
 
 ### ~~responder.setBookmark([action], [winningIntent]) ⇒ <code>this</code>~~
 ***Deprecated***
@@ -199,7 +199,7 @@ bot.use(['action-name', /keyword/], (req, res) => {
 
 // check out the res.runBookmark() method
 ```
-{% raw %}<div id="Responder_bookmark">&nbsp;</div>{% endraw %}
+<div id="Responder_bookmark">&nbsp;</div>
 
 ### ~~responder.bookmark() ⇒ <code>string</code> \| <code>null</code>~~
 ***Deprecated***
@@ -207,7 +207,7 @@ bot.use(['action-name', /keyword/], (req, res) => {
 Returns the action of bookmark
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_runBookmark">&nbsp;</div>{% endraw %}
+<div id="Responder_runBookmark">&nbsp;</div>
 
 ### ~~responder.runBookmark(postBack, [data]) ⇒ <code>Promise.&lt;(null\|boolean)&gt;</code>~~
 ***Deprecated***
@@ -240,7 +240,7 @@ bot.use('onName', (req, res, postBack) => {
     res.text(`Your name is: ${res.text()}`);
 })
 ```
-{% raw %}<div id="Responder_setMessagingType">&nbsp;</div>{% endraw %}
+<div id="Responder_setMessagingType">&nbsp;</div>
 
 ### responder.setMessagingType(messagingType, [tag]) ⇒ <code>this</code>
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
@@ -250,7 +250,7 @@ bot.use('onName', (req, res, postBack) => {
 | messagingType | <code>string</code> |  | 
 | [tag] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="Responder_setPersona">&nbsp;</div>{% endraw %}
+<div id="Responder_setPersona">&nbsp;</div>
 
 ### responder.setPersona(personaId) ⇒ <code>this</code>
 Tets the persona for following requests
@@ -261,13 +261,13 @@ Tets the persona for following requests
 | --- | --- | --- |
 | personaId | <code>object</code> \| <code>string</code> \| <code>null</code> | <code></code> | 
 
-{% raw %}<div id="Responder_isResponseType">&nbsp;</div>{% endraw %}
+<div id="Responder_isResponseType">&nbsp;</div>
 
 ### responder.isResponseType() ⇒ <code>boolean</code>
 Returns true, when responder is not sending an update (notification) message
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_setData">&nbsp;</div>{% endraw %}
+<div id="Responder_setData">&nbsp;</div>
 
 ### responder.setData(data) ⇒ <code>this</code>
 Set temporary data to responder, which are persisted through single event
@@ -289,7 +289,7 @@ bot.use('bar', (req, res) => {
     res.data.a; // === 1 from postback
 });
 ```
-{% raw %}<div id="Responder_text">&nbsp;</div>{% endraw %}
+<div id="Responder_text">&nbsp;</div>
 
 ### responder.text(text, [replies]) ⇒ <code>this</code>
 Send text as a response
@@ -321,7 +321,7 @@ res.text('Hello', [
     }
 ]);
 ```
-{% raw %}<div id="Responder_setState">&nbsp;</div>{% endraw %}
+<div id="Responder_setState">&nbsp;</div>
 
 ### responder.setState(object) ⇒ <code>this</code>
 Sets new attributes to state (with Object.assign())
@@ -336,7 +336,7 @@ Sets new attributes to state (with Object.assign())
 ```js
 res.setState({ visited: true });
 ```
-{% raw %}<div id="Responder_addQuickReply">&nbsp;</div>{% endraw %}
+<div id="Responder_addQuickReply">&nbsp;</div>
 
 ### responder.addQuickReply(action, [title], [data], [prepend], [justToExisting])
 Appends quick reply, to be sent with following text method
@@ -363,7 +363,7 @@ bot.use((req, res) => {
     }); // will be merged and sent with previously added quick replies
 });
 ```
-{% raw %}<div id="Responder_keepPreviousContext">&nbsp;</div>{% endraw %}
+<div id="Responder_keepPreviousContext">&nbsp;</div>
 
 ### responder.keepPreviousContext(req, [justOnce], [includeKeywords]) ⇒ <code>this</code>
 To be able to keep context of previous interaction (expected action and intents)
@@ -392,7 +392,7 @@ bot.use('need-color', (req, res) => {
     res.text('Sorry, only red or blue.');
 });
 ```
-{% raw %}<div id="Responder_expectedIntent">&nbsp;</div>{% endraw %}
+<div id="Responder_expectedIntent">&nbsp;</div>
 
 ### responder.expectedIntent(intents, action, data, setState)
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
@@ -404,7 +404,7 @@ bot.use('need-color', (req, res) => {
 | data | <code>object</code> |  | 
 | setState | <code>object</code> | <code></code> | 
 
-{% raw %}<div id="Responder_expected">&nbsp;</div>{% endraw %}
+<div id="Responder_expected">&nbsp;</div>
 
 ### responder.expected(action, data) ⇒ <code>this</code>
 When user writes some text as reply, it will be processed as action
@@ -416,7 +416,7 @@ When user writes some text as reply, it will be processed as action
 | action | <code>string</code> | desired action |
 | data | <code>object</code> | desired action data |
 
-{% raw %}<div id="Responder_expectedConfidentInput">&nbsp;</div>{% endraw %}
+<div id="Responder_expectedConfidentInput">&nbsp;</div>
 
 ### responder.expectedConfidentInput() ⇒ <code>this</code>
 Makes a following user input anonymized
@@ -453,7 +453,7 @@ bot.use('received-card-number', (req, res) => {
         .setState({ cardNumber });
 });
 ```
-{% raw %}<div id="Responder_toAbsoluteAction">&nbsp;</div>{% endraw %}
+<div id="Responder_toAbsoluteAction">&nbsp;</div>
 
 ### responder.toAbsoluteAction(action) ⇒ <code>string</code>
 Converts relative action to absolute action path
@@ -465,13 +465,13 @@ Converts relative action to absolute action path
 | --- | --- | --- |
 | action | <code>string</code> | relative action to covert to absolute |
 
-{% raw %}<div id="Responder_currentAction">&nbsp;</div>{% endraw %}
+<div id="Responder_currentAction">&nbsp;</div>
 
 ### responder.currentAction() ⇒ <code>string</code>
 Returns current action path
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_image">&nbsp;</div>{% endraw %}
+<div id="Responder_image">&nbsp;</div>
 
 ### responder.image(imageUrl, [reusable]) ⇒ <code>this</code>
 Sends image as response. Requires appUrl option to send images from server
@@ -491,7 +491,7 @@ res.image('/img/foo.png');
 // image at url
 res.image('https://google.com/img/foo.png');
 ```
-{% raw %}<div id="Responder_video">&nbsp;</div>{% endraw %}
+<div id="Responder_video">&nbsp;</div>
 
 ### responder.video(videoUrl, [reusable]) ⇒ <code>this</code>
 Sends video as response. Requires appUrl option to send videos from server
@@ -511,7 +511,7 @@ res.video('/img/foo.mp4');
 // file at url
 res.video('https://google.com/img/foo.mp4');
 ```
-{% raw %}<div id="Responder_file">&nbsp;</div>{% endraw %}
+<div id="Responder_file">&nbsp;</div>
 
 ### responder.file(fileUrl, [reusable]) ⇒ <code>this</code>
 Sends file as response. Requires appUrl option to send files from server
@@ -531,7 +531,7 @@ res.file('/img/foo.pdf');
 // file at url
 res.file('https://google.com/img/foo.pdf');
 ```
-{% raw %}<div id="Responder_oneTimeNotificationRequest">&nbsp;</div>{% endraw %}
+<div id="Responder_oneTimeNotificationRequest">&nbsp;</div>
 
 ### responder.oneTimeNotificationRequest(title, action, [tag], [data]) ⇒ <code>this</code>
 One-time Notification request
@@ -547,7 +547,7 @@ use tag to be able to use the specific token with a specific campaign
 | [tag] | <code>string</code> | <code>null</code> | subscribtion tag, which will be matched against a campaign |
 | [data] | <code>object</code> |  |  |
 
-{% raw %}<div id="Responder_wait">&nbsp;</div>{% endraw %}
+<div id="Responder_wait">&nbsp;</div>
 
 ### responder.wait([ms]) ⇒ <code>this</code>
 Sets delay between two responses
@@ -558,25 +558,25 @@ Sets delay between two responses
 | --- | --- | --- |
 | [ms] | <code>number</code> | <code>600</code> | 
 
-{% raw %}<div id="Responder_typingOn">&nbsp;</div>{% endraw %}
+<div id="Responder_typingOn">&nbsp;</div>
 
 ### responder.typingOn() ⇒ <code>this</code>
 Sends "typing..." information
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_typingOff">&nbsp;</div>{% endraw %}
+<div id="Responder_typingOff">&nbsp;</div>
 
 ### responder.typingOff() ⇒ <code>this</code>
 Stops "typing..." information
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_seen">&nbsp;</div>{% endraw %}
+<div id="Responder_seen">&nbsp;</div>
 
 ### responder.seen() ⇒ <code>this</code>
 Reports last message from user as seen
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
-{% raw %}<div id="Responder_passThread">&nbsp;</div>{% endraw %}
+<div id="Responder_passThread">&nbsp;</div>
 
 ### responder.passThread(targetAppId, [data]) ⇒ <code>this</code>
 Pass thread to another app
@@ -588,7 +588,7 @@ Pass thread to another app
 | targetAppId | <code>string</code> |  | 
 | [data] | <code>string</code> \| <code>object</code> | <code>null</code> | 
 
-{% raw %}<div id="Responder_requestThread">&nbsp;</div>{% endraw %}
+<div id="Responder_requestThread">&nbsp;</div>
 
 ### responder.requestThread([data]) ⇒ <code>this</code>
 Request thread from Primary Receiver app
@@ -599,7 +599,7 @@ Request thread from Primary Receiver app
 | --- | --- | --- |
 | [data] | <code>string</code> \| <code>object</code> | <code>null</code> | 
 
-{% raw %}<div id="Responder_takeThead">&nbsp;</div>{% endraw %}
+<div id="Responder_takeThead">&nbsp;</div>
 
 ### responder.takeThead([data]) ⇒ <code>this</code>
 Take thread from another app
@@ -610,7 +610,7 @@ Take thread from another app
 | --- | --- | --- |
 | [data] | <code>string</code> \| <code>object</code> | <code>null</code> | 
 
-{% raw %}<div id="Responder_receipt">&nbsp;</div>{% endraw %}
+<div id="Responder_receipt">&nbsp;</div>
 
 ### responder.receipt(recipientName, [paymentMethod], [currency], [uniqueCode]) ⇒ <code>ReceiptTemplate</code>
 Sends Receipt template
@@ -630,7 +630,7 @@ res.receipt('Name', 'Cash', 'CZK', '1')
     .addElement('Element name', 1, 2, '/inside.png', 'text')
     .send();
 ```
-{% raw %}<div id="Responder_button">&nbsp;</div>{% endraw %}
+<div id="Responder_button">&nbsp;</div>
 
 ### responder.button(text) ⇒ <code>ButtonTemplate</code>
 Sends nice button template. It can redirect user to server with token in url
@@ -649,7 +649,7 @@ res.button('Hello')
     .urlButton('Other button', 'https://goo.gl') // opens in internal browser
     .send();
 ```
-{% raw %}<div id="Responder_genericTemplate">&nbsp;</div>{% endraw %}
+<div id="Responder_genericTemplate">&nbsp;</div>
 
 ### responder.genericTemplate([shareable], [isSquare]) ⇒ <code>GenericTemplate</code>
 Creates a generic template
@@ -674,7 +674,7 @@ res.genericTemplate()
         .urlButton('Local link with extension', '/local/path', true, 'compact')
     .send();
 ```
-{% raw %}<div id="Responder_list">&nbsp;</div>{% endraw %}
+<div id="Responder_list">&nbsp;</div>
 
 ### responder.list([topElementStyle]) ⇒ <code>ListTemplate</code>
 Creates a generic template
@@ -699,7 +699,7 @@ res.list('compact')
         .urlButton('Local link with extension', '/local/path', true, 'compact')
     .send();
 ```
-{% raw %}<div id="Responder_trackAs">&nbsp;</div>{% endraw %}
+<div id="Responder_trackAs">&nbsp;</div>
 
 ### responder.trackAs(action) ⇒ <code>this</code>
 Override action tracking
@@ -710,7 +710,7 @@ Override action tracking
 | --- | --- | --- |
 | action | <code>string</code> \| <code>boolean</code> | use false to not emit analytics events |
 
-{% raw %}<div id="Responder_trackAsSkill">&nbsp;</div>{% endraw %}
+<div id="Responder_trackAsSkill">&nbsp;</div>
 
 ### responder.trackAsSkill(skill) ⇒ <code>this</code>
 Set skill for tracking (will used untill it will be changed)
@@ -721,7 +721,7 @@ Set skill for tracking (will used untill it will be changed)
 | --- | --- |
 | skill | <code>string</code> \| <code>null</code> | 
 
-{% raw %}<div id="QuickReply">&nbsp;</div>{% endraw %}
+<div id="QuickReply">&nbsp;</div>
 
 ## QuickReply : <code>object</code>
 **Kind**: global typedef  
@@ -735,7 +735,7 @@ Set skill for tracking (will used untill it will be changed)
 | [setState] | <code>object</code> | 
 | [match] | <code>RegExp</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code> | 
 
-{% raw %}<div id="SenderMeta">&nbsp;</div>{% endraw %}
+<div id="SenderMeta">&nbsp;</div>
 
 ## SenderMeta : <code>object</code>
 **Kind**: global typedef  

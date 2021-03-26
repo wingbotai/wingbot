@@ -69,7 +69,7 @@
 <dd></dd>
 </dl>
 
-{% raw %}<div id="Ai">&nbsp;</div>{% endraw %}
+<div id="Ai">&nbsp;</div>
 
 ## Ai
 **Kind**: global class  
@@ -90,31 +90,31 @@
     * [.match(intent)](#Ai_match) ⇒ <code>function</code>
     * [.shouldDisambiguate(aiActions)](#Ai_shouldDisambiguate) ⇒ <code>boolean</code>
 
-{% raw %}<div id="Ai_confidence">&nbsp;</div>{% endraw %}
+<div id="Ai_confidence">&nbsp;</div>
 
 ### ai.confidence : <code>number</code>
 Upper threshold - for match method and for navigate method
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
-{% raw %}<div id="Ai_threshold">&nbsp;</div>{% endraw %}
+<div id="Ai_threshold">&nbsp;</div>
 
 ### ai.threshold : <code>number</code>
 Lower threshold - for disambiguation
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
-{% raw %}<div id="Ai_logger">&nbsp;</div>{% endraw %}
+<div id="Ai_logger">&nbsp;</div>
 
 ### ai.logger : <code>object</code>
 The logger (console by default)
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
-{% raw %}<div id="Ai_matcher">&nbsp;</div>{% endraw %}
+<div id="Ai_matcher">&nbsp;</div>
 
 ### ai.matcher : [<code>AiMatching</code>](#AiMatching)
 AI Score provider
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
-{% raw %}<div id="Ai_getPrefix">&nbsp;</div>{% endraw %}
+<div id="Ai_getPrefix">&nbsp;</div>
 
 ### ai.getPrefix(defaultModel, req)
 The prefix translator - for request-specific prefixes
@@ -126,7 +126,7 @@ The prefix translator - for request-specific prefixes
 | defaultModel | <code>string</code> | 
 | req | <code>Request</code> | 
 
-{% raw %}<div id="Ai_textFilter">&nbsp;</div>{% endraw %}
+<div id="Ai_textFilter">&nbsp;</div>
 
 ### ai.textFilter(text) : [<code>textFilter</code>](#textFilter)
 Preprocess text for NLP
@@ -138,7 +138,7 @@ For example to remove any confidential data
 | --- | --- |
 | text | <code>string</code> | 
 
-{% raw %}<div id="Ai_mockIntent">&nbsp;</div>{% endraw %}
+<div id="Ai_mockIntent">&nbsp;</div>
 
 ### ai.mockIntent([intent], [score]) ⇒ <code>this</code>
 Usefull method for testing AI routes
@@ -176,7 +176,7 @@ describe('bot', function () {
     });
 });
 ```
-{% raw %}<div id="Ai_register">&nbsp;</div>{% endraw %}
+<div id="Ai_register">&nbsp;</div>
 
 ### ai.register(model, prefix) ⇒ [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code>
 Registers Wingbot AI model
@@ -188,7 +188,7 @@ Registers Wingbot AI model
 | model | <code>string</code> \| [<code>WingbotModel</code>](#WingbotModel) \| <code>T</code> |  | wingbot model name or AI plugin |
 | prefix | <code>string</code> | <code>&quot;default&quot;</code> | model prefix |
 
-{% raw %}<div id="Ai_deregister">&nbsp;</div>{% endraw %}
+<div id="Ai_deregister">&nbsp;</div>
 
 ### ai.deregister([prefix])
 Remove registered model
@@ -199,7 +199,7 @@ Remove registered model
 | --- | --- | --- |
 | [prefix] | <code>string</code> | <code>&quot;default&quot;</code> | 
 
-{% raw %}<div id="Ai_getModel">&nbsp;</div>{% endraw %}
+<div id="Ai_getModel">&nbsp;</div>
 
 ### ai.getModel(prefix) ⇒ [<code>WingbotModel</code>](#WingbotModel)
 Returns registered AI model
@@ -210,7 +210,7 @@ Returns registered AI model
 | --- | --- | --- | --- |
 | prefix | <code>string</code> | <code>&quot;default&quot;</code> | model prefix |
 
-{% raw %}<div id="Ai_global">&nbsp;</div>{% endraw %}
+<div id="Ai_global">&nbsp;</div>
 
 ### ai.global(path, intents, [title], [meta]) ⇒ <code>object</code>
 Returns matching middleware, that will export the intent to the root router
@@ -240,7 +240,7 @@ bot.use(ai.global('route-path', 'intent1'), (req, res) => {
     res.text('Oh, intent 1 :)');
 });
 ```
-{% raw %}<div id="Ai_local">&nbsp;</div>{% endraw %}
+<div id="Ai_local">&nbsp;</div>
 
 ### ai.local(path, intents, [title]) ⇒ <code>object</code>
 Returns matching middleware, that will export the intent to the root router
@@ -267,7 +267,7 @@ bot.use(ai.global('route-path', 'intent1'), (req, res) => {
     res.text('Oh, intent 1 :)');
 });
 ```
-{% raw %}<div id="Ai_match">&nbsp;</div>{% endraw %}
+<div id="Ai_match">&nbsp;</div>
 
 ### ai.match(intent) ⇒ <code>function</code>
 Returns matching middleware
@@ -303,7 +303,7 @@ bot.use(ai.match('intent1'), (req, res) => {
     res.text('Oh, intent 1 :)');
 });
 ```
-{% raw %}<div id="Ai_shouldDisambiguate">&nbsp;</div>{% endraw %}
+<div id="Ai_shouldDisambiguate">&nbsp;</div>
 
 ### ai.shouldDisambiguate(aiActions) ⇒ <code>boolean</code>
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
@@ -312,7 +312,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | --- | --- |
 | aiActions | <code>Array.&lt;IntentAction&gt;</code> | 
 
-{% raw %}<div id="CustomEntityDetectionModel">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel">&nbsp;</div>
 
 ## CustomEntityDetectionModel
 **Kind**: global class  
@@ -328,7 +328,7 @@ bot.use(ai.match('intent1'), (req, res) => {
     * [._regexpToDetector(regexp, dependencies, extractValue)](#CustomEntityDetectionModel__regexpToDetector)
     * [.setEntityDetector(name, detector, [options])](#CustomEntityDetectionModel_setEntityDetector) ⇒ <code>this</code>
 
-{% raw %}<div id="new_CustomEntityDetectionModel_new">&nbsp;</div>{% endraw %}
+<div id="new_CustomEntityDetectionModel_new">&nbsp;</div>
 
 ### new CustomEntityDetectionModel(options, [log])
 
@@ -337,7 +337,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | options | <code>object</code> | 
 | [log] | <code>Object</code> | 
 
-{% raw %}<div id="CustomEntityDetectionModel__normalizeResult">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel__normalizeResult">&nbsp;</div>
 
 ### customEntityDetectionModel.\_normalizeResult(entities, entity, text, offset, originalText)
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
@@ -350,7 +350,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | offset | <code>number</code> | 
 | originalText | <code>string</code> | 
 
-{% raw %}<div id="CustomEntityDetectionModel__detectEntities">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel__detectEntities">&nbsp;</div>
 
 ### customEntityDetectionModel.\_detectEntities(entity, text, entities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
@@ -361,7 +361,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | text | <code>string</code> | 
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
 
-{% raw %}<div id="CustomEntityDetectionModel__nonOverlapping">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel__nonOverlapping">&nbsp;</div>
 
 ### customEntityDetectionModel.\_nonOverlapping(entities, expectedEntities)
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
@@ -371,7 +371,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
 | expectedEntities | <code>Array.&lt;string&gt;</code> | 
 
-{% raw %}<div id="CustomEntityDetectionModel_resolve">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel_resolve">&nbsp;</div>
 
 ### customEntityDetectionModel.resolve(text, [req]) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
@@ -381,7 +381,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | text | <code>string</code> | the user input |
 | [req] | <code>Request</code> |  |
 
-{% raw %}<div id="CustomEntityDetectionModel__extractRegExpDependencies">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel__extractRegExpDependencies">&nbsp;</div>
 
 ### customEntityDetectionModel.\_extractRegExpDependencies(regexp)
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
@@ -390,7 +390,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | --- | --- |
 | regexp | <code>RegExp</code> | 
 
-{% raw %}<div id="CustomEntityDetectionModel__entityByDependency">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel__entityByDependency">&nbsp;</div>
 
 ### customEntityDetectionModel.\_entityByDependency(entities, dependency) ⇒ [<code>DetectedEntity</code>](#DetectedEntity) \| <code>null</code>
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
@@ -400,7 +400,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
 | dependency | <code>string</code> | 
 
-{% raw %}<div id="CustomEntityDetectionModel__regexpToDetector">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel__regexpToDetector">&nbsp;</div>
 
 ### customEntityDetectionModel.\_regexpToDetector(regexp, dependencies, extractValue)
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
@@ -411,7 +411,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | dependencies | <code>Array.&lt;string&gt;</code> |  | 
 | extractValue | <code>string</code> \| <code>function</code> | <code>null</code> | 
 
-{% raw %}<div id="CustomEntityDetectionModel_setEntityDetector">&nbsp;</div>{% endraw %}
+<div id="CustomEntityDetectionModel_setEntityDetector">&nbsp;</div>
 
 ### customEntityDetectionModel.setEntityDetector(name, detector, [options]) ⇒ <code>this</code>
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
@@ -425,7 +425,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | [options.extractValue] | <code>function</code> \| <code>string</code> | entity extractor |
 | [options.dependencies] | <code>Array.&lt;string&gt;</code> | array of dependent entities |
 
-{% raw %}<div id="WingbotModel">&nbsp;</div>{% endraw %}
+<div id="WingbotModel">&nbsp;</div>
 
 ## WingbotModel
 **Kind**: global class  
@@ -435,7 +435,7 @@ bot.use(ai.match('intent1'), (req, res) => {
     * [._fetch](#WingbotModel__fetch) : <code>fetch</code>
     * [._queryModel(text)](#WingbotModel__queryModel) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 
-{% raw %}<div id="new_WingbotModel_new">&nbsp;</div>{% endraw %}
+<div id="new_WingbotModel_new">&nbsp;</div>
 
 ### new WingbotModel(options, [log])
 
@@ -449,11 +449,11 @@ bot.use(ai.match('intent1'), (req, res) => {
 | [options.fetch] | <code>function</code> | 
 | [log] | <code>Object</code> | 
 
-{% raw %}<div id="WingbotModel__fetch">&nbsp;</div>{% endraw %}
+<div id="WingbotModel__fetch">&nbsp;</div>
 
 ### wingbotModel.\_fetch : <code>fetch</code>
 **Kind**: instance property of [<code>WingbotModel</code>](#WingbotModel)  
-{% raw %}<div id="WingbotModel__queryModel">&nbsp;</div>{% endraw %}
+<div id="WingbotModel__queryModel">&nbsp;</div>
 
 ### wingbotModel.\_queryModel(text) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>WingbotModel</code>](#WingbotModel)  
@@ -462,7 +462,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | --- | --- |
 | text | <code>string</code> | 
 
-{% raw %}<div id="CachedModel">&nbsp;</div>{% endraw %}
+<div id="CachedModel">&nbsp;</div>
 
 ## CachedModel
 **Kind**: global class  
@@ -472,7 +472,7 @@ bot.use(ai.match('intent1'), (req, res) => {
     * [.resolve(text, [req])](#CachedModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
     * [._queryModel(text)](#CachedModel__queryModel) ⇒ <code>Promise.&lt;(Array.&lt;Intent&gt;\|Result)&gt;</code>
 
-{% raw %}<div id="new_CachedModel_new">&nbsp;</div>{% endraw %}
+<div id="new_CachedModel_new">&nbsp;</div>
 
 ### new CachedModel(options, [log])
 
@@ -482,7 +482,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | [options.cacheSize] | <code>number</code> | 
 | [log] | <code>Object</code> | 
 
-{% raw %}<div id="CachedModel_resolve">&nbsp;</div>{% endraw %}
+<div id="CachedModel_resolve">&nbsp;</div>
 
 ### cachedModel.resolve(text, [req]) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
@@ -492,7 +492,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | text | <code>string</code> |  | the user input |
 | [req] | <code>Request</code> | <code></code> | the user input |
 
-{% raw %}<div id="CachedModel__queryModel">&nbsp;</div>{% endraw %}
+<div id="CachedModel__queryModel">&nbsp;</div>
 
 ### cachedModel.\_queryModel(text) ⇒ <code>Promise.&lt;(Array.&lt;Intent&gt;\|Result)&gt;</code>
 **Kind**: instance method of [<code>CachedModel</code>](#CachedModel)  
@@ -501,7 +501,7 @@ bot.use(ai.match('intent1'), (req, res) => {
 | --- | --- |
 | text | <code>string</code> | 
 
-{% raw %}<div id="AiMatching">&nbsp;</div>{% endraw %}
+<div id="AiMatching">&nbsp;</div>
 
 ## AiMatching
 {AiMatching}
@@ -522,14 +522,14 @@ Class responsible for NLP Routing by score
     * [.match(req, rule, stateless)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
     * [._matchRegexp(req, regexps, noIntentHandicap)](#AiMatching__matchRegexp) ⇒ <code>number</code>
 
-{% raw %}<div id="AiMatching_optionalHandicap">&nbsp;</div>{% endraw %}
+<div id="AiMatching_optionalHandicap">&nbsp;</div>
 
 ### aiMatching.optionalHandicap : <code>number</code>
 When the entity is optional, the final score should be little bit lower
 (0.001 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
-{% raw %}<div id="AiMatching_redundantEntityHandicap">&nbsp;</div>{% endraw %}
+<div id="AiMatching_redundantEntityHandicap">&nbsp;</div>
 
 ### aiMatching.redundantEntityHandicap : <code>number</code>
 When there are additional entities then required add a handicap for each unmatched entity
@@ -537,14 +537,14 @@ Also works, when an optional entity was not matched
 (0.03 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
-{% raw %}<div id="AiMatching_redundantIntentHandicap">&nbsp;</div>{% endraw %}
+<div id="AiMatching_redundantIntentHandicap">&nbsp;</div>
 
 ### aiMatching.redundantIntentHandicap : <code>number</code>
 When there is additional intent, the final score will be lowered by this value
 (0.06 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
-{% raw %}<div id="AiMatching_multiMatchGain">&nbsp;</div>{% endraw %}
+<div id="AiMatching_multiMatchGain">&nbsp;</div>
 
 ### aiMatching.multiMatchGain : <code>number</code>
 When more than one AI features (Intent, Entity, Regex) are matching,
@@ -552,7 +552,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 (1.2 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
-{% raw %}<div id="AiMatching_getSetStateForEntityRules">&nbsp;</div>{% endraw %}
+<div id="AiMatching_getSetStateForEntityRules">&nbsp;</div>
 
 ### aiMatching.getSetStateForEntityRules(rule) ⇒ <code>object</code>
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
@@ -561,7 +561,7 @@ enrich the score using the {multiMatchGain} ^ {additionalFeaturesCount}
 | --- | --- |
 | rule | [<code>PreprocessorOutput</code>](#PreprocessorOutput) | 
 
-{% raw %}<div id="AiMatching_parseEntitiesFromIntentRule">&nbsp;</div>{% endraw %}
+<div id="AiMatching_parseEntitiesFromIntentRule">&nbsp;</div>
 
 ### aiMatching.parseEntitiesFromIntentRule(intentRule, onlyExpected) ⇒ <code>Array.&lt;string&gt;</code>
 Create a rule to be cached inside a routing structure
@@ -573,7 +573,7 @@ Create a rule to be cached inside a routing structure
 | intentRule | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) |  | 
 | onlyExpected | <code>boolean</code> | <code>false</code> | 
 
-{% raw %}<div id="AiMatching__parseEntitiesFromIntentRule">&nbsp;</div>{% endraw %}
+<div id="AiMatching__parseEntitiesFromIntentRule">&nbsp;</div>
 
 ### aiMatching.\_parseEntitiesFromIntentRule(intentRules) ⇒ [<code>Array.&lt;EntityExpression&gt;</code>](#EntityExpression)
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
@@ -582,7 +582,7 @@ Create a rule to be cached inside a routing structure
 | --- | --- |
 | intentRules | [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) | 
 
-{% raw %}<div id="AiMatching_preprocessRule">&nbsp;</div>{% endraw %}
+<div id="AiMatching_preprocessRule">&nbsp;</div>
 
 ### aiMatching.preprocessRule(intentRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
 Create a rule to be cached inside a routing structure
@@ -593,7 +593,7 @@ Create a rule to be cached inside a routing structure
 | --- | --- |
 | intentRule | [<code>IntentRule</code>](#IntentRule) \| [<code>Array.&lt;IntentRule&gt;</code>](#IntentRule) | 
 
-{% raw %}<div id="AiMatching_match">&nbsp;</div>{% endraw %}
+<div id="AiMatching_match">&nbsp;</div>
 
 ### aiMatching.match(req, rule, stateless) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
 Calculate a matching score of preprocessed rule against the request
@@ -606,7 +606,7 @@ Calculate a matching score of preprocessed rule against the request
 | rule | [<code>PreprocessorOutput</code>](#PreprocessorOutput) |  | 
 | stateless | <code>boolean</code> | <code>false</code> | 
 
-{% raw %}<div id="AiMatching__matchRegexp">&nbsp;</div>{% endraw %}
+<div id="AiMatching__matchRegexp">&nbsp;</div>
 
 ### aiMatching.\_matchRegexp(req, regexps, noIntentHandicap) ⇒ <code>number</code>
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
@@ -617,7 +617,7 @@ Calculate a matching score of preprocessed rule against the request
 | regexps | [<code>Array.&lt;RegexpComparator&gt;</code>](#RegexpComparator) | 
 | noIntentHandicap | <code>number</code> | 
 
-{% raw %}<div id="COMPARE">&nbsp;</div>{% endraw %}
+<div id="COMPARE">&nbsp;</div>
 
 ## COMPARE : <code>enum</code>
 **Kind**: global enum  
@@ -633,7 +633,7 @@ Calculate a matching score of preprocessed rule against the request
 | LT | [<code>Compare</code>](#Compare) | <code>lt</code> | 
 | LTE | [<code>Compare</code>](#Compare) | <code>lte</code> | 
 
-{% raw %}<div id="EntityExpression">&nbsp;</div>{% endraw %}
+<div id="EntityExpression">&nbsp;</div>
 
 ## EntityExpression : <code>object</code>
 **Kind**: global typedef  
@@ -646,7 +646,7 @@ Calculate a matching score of preprocessed rule against the request
 | [op] | [<code>Compare</code>](#Compare) | comparison operation (eq|ne|range) |
 | [compare] | <code>Array.&lt;string&gt;</code> \| <code>Array.&lt;number&gt;</code> | value to compare with |
 
-{% raw %}<div id="textFilter">&nbsp;</div>{% endraw %}
+<div id="textFilter">&nbsp;</div>
 
 ## textFilter ⇒ <code>string</code>
 Text filter function
@@ -658,11 +658,11 @@ Text filter function
 | --- | --- | --- |
 | text | <code>string</code> | input text |
 
-{% raw %}<div id="IntentRule">&nbsp;</div>{% endraw %}
+<div id="IntentRule">&nbsp;</div>
 
 ## IntentRule : <code>string</code> \| [<code>EntityExpression</code>](#EntityExpression)
 **Kind**: global typedef  
-{% raw %}<div id="BotPath">&nbsp;</div>{% endraw %}
+<div id="BotPath">&nbsp;</div>
 
 ## BotPath : <code>object</code>
 **Kind**: global typedef  
@@ -672,7 +672,7 @@ Text filter function
 | --- | --- |
 | path | <code>string</code> | 
 
-{% raw %}<div id="DetectedEntity">&nbsp;</div>{% endraw %}
+<div id="DetectedEntity">&nbsp;</div>
 
 ## DetectedEntity : <code>object</code>
 **Kind**: global typedef  
@@ -687,7 +687,7 @@ Text filter function
 | [value] | <code>string</code> \| <code>number</code> \| <code>boolean</code> | 
 | [text] | <code>string</code> | 
 
-{% raw %}<div id="EntityDetector">&nbsp;</div>{% endraw %}
+<div id="EntityDetector">&nbsp;</div>
 
 ## EntityDetector ⇒ [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) \| [<code>DetectedEntity</code>](#DetectedEntity) \| [<code>Promise.&lt;DetectedEntity&gt;</code>](#DetectedEntity) \| <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
 **Kind**: global typedef  
@@ -697,7 +697,7 @@ Text filter function
 | text | <code>string</code> | part of text |
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | dependent entities |
 
-{% raw %}<div id="ValueExtractor">&nbsp;</div>{% endraw %}
+<div id="ValueExtractor">&nbsp;</div>
 
 ## ValueExtractor ⇒ <code>\*</code>
 **Kind**: global typedef  
@@ -707,7 +707,7 @@ Text filter function
 | match | <code>Array.&lt;string&gt;</code> | regexp result |
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | dependent entities |
 
-{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+<div id="Entity">&nbsp;</div>
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
@@ -718,7 +718,7 @@ Text filter function
 | value | <code>string</code> | 
 | score | <code>number</code> | 
 
-{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+<div id="Intent">&nbsp;</div>
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
@@ -729,7 +729,7 @@ Text filter function
 | score | <code>number</code> | 
 | [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
-{% raw %}<div id="Result">&nbsp;</div>{% endraw %}
+<div id="Result">&nbsp;</div>
 
 ## Result : <code>object</code>
 **Kind**: global typedef  
@@ -740,7 +740,7 @@ Text filter function
 | entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 | intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | 
 
-{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+<div id="Entity">&nbsp;</div>
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
@@ -751,7 +751,7 @@ Text filter function
 | value | <code>string</code> | 
 | score | <code>number</code> | 
 
-{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+<div id="Intent">&nbsp;</div>
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
@@ -762,7 +762,7 @@ Text filter function
 | score | <code>number</code> | 
 | [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
-{% raw %}<div id="Result">&nbsp;</div>{% endraw %}
+<div id="Result">&nbsp;</div>
 
 ## Result : <code>object</code>
 **Kind**: global typedef  
@@ -772,7 +772,7 @@ Text filter function
 | entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 | intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | 
 
-{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+<div id="Entity">&nbsp;</div>
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
@@ -783,7 +783,7 @@ Text filter function
 | value | <code>string</code> | 
 | score | <code>number</code> | 
 
-{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+<div id="Intent">&nbsp;</div>
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
@@ -794,7 +794,7 @@ Text filter function
 | score | <code>number</code> | 
 | [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
-{% raw %}<div id="Result">&nbsp;</div>{% endraw %}
+<div id="Result">&nbsp;</div>
 
 ## Result : <code>object</code>
 **Kind**: global typedef  
@@ -804,11 +804,11 @@ Text filter function
 | entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 | intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | 
 
-{% raw %}<div id="Compare">&nbsp;</div>{% endraw %}
+<div id="Compare">&nbsp;</div>
 
 ## Compare : <code>string</code>
 **Kind**: global typedef  
-{% raw %}<div id="Entity">&nbsp;</div>{% endraw %}
+<div id="Entity">&nbsp;</div>
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
@@ -819,7 +819,7 @@ Text filter function
 | value | <code>string</code> | 
 | score | <code>number</code> | 
 
-{% raw %}<div id="Intent">&nbsp;</div>{% endraw %}
+<div id="Intent">&nbsp;</div>
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
@@ -830,7 +830,7 @@ Text filter function
 | score | <code>number</code> | 
 | [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
-{% raw %}<div id="EntityExpression">&nbsp;</div>{% endraw %}
+<div id="EntityExpression">&nbsp;</div>
 
 ## EntityExpression : <code>object</code>
 **Kind**: global typedef  
@@ -843,11 +843,11 @@ Text filter function
 | [op] | [<code>Compare</code>](#Compare) | comparison operation |
 | [compare] | <code>Array.&lt;string&gt;</code> \| <code>Array.&lt;number&gt;</code> | value to compare with |
 
-{% raw %}<div id="IntentRule">&nbsp;</div>{% endraw %}
+<div id="IntentRule">&nbsp;</div>
 
 ## IntentRule : <code>string</code> \| [<code>EntityExpression</code>](#EntityExpression)
 **Kind**: global typedef  
-{% raw %}<div id="RegexpComparator">&nbsp;</div>{% endraw %}
+<div id="RegexpComparator">&nbsp;</div>
 
 ## RegexpComparator : <code>object</code>
 **Kind**: global typedef  
@@ -859,7 +859,7 @@ Text filter function
 | t | <code>boolean</code> | use normalized text |
 | f | <code>boolean</code> | is full match |
 
-{% raw %}<div id="PreprocessorOutput">&nbsp;</div>{% endraw %}
+<div id="PreprocessorOutput">&nbsp;</div>
 
 ## PreprocessorOutput : <code>object</code>
 **Kind**: global typedef  
@@ -871,7 +871,7 @@ Text filter function
 | intents | <code>Array.&lt;string&gt;</code> | 
 | entities | [<code>Array.&lt;EntityExpression&gt;</code>](#EntityExpression) | 
 
-{% raw %}<div id="AIRequest">&nbsp;</div>{% endraw %}
+<div id="AIRequest">&nbsp;</div>
 
 ## AIRequest : <code>object</code>
 **Kind**: global typedef  

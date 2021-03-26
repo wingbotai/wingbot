@@ -4,6 +4,9 @@
 <dt><a href="#BotApp">BotApp</a></dt>
 <dd><p>Adapter for Wingbot flight director</p>
 </dd>
+<dt><a href="#Processor">Processor</a></dt>
+<dd><p>Messaging event processor</p>
+</dd>
 </dl>
 
 ## Functions
@@ -24,13 +27,15 @@
 <dd></dd>
 <dt><a href="#Plugin">Plugin</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#InteractionEvent">InteractionEvent</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#ProcessorOptions">ProcessorOptions</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#IntentAction">IntentAction</a> : <code>object</code></dt>
 <dd></dd>
 </dl>
 
-{% raw %}<div id="BotApp">&nbsp;</div>{% endraw %}
+<div id="BotApp">&nbsp;</div>
 
 ## BotApp
 Adapter for Wingbot flight director
@@ -40,12 +45,12 @@ Adapter for Wingbot flight director
 * [BotApp](#BotApp)
     * [new BotApp(bot, options)](#new_BotApp_new)
     * _instance_
-        * [.processor](#BotApp_processor) ⇒ <code>Processor</code>
+        * [.processor](#BotApp_processor) ⇒ [<code>Processor</code>](#Processor)
         * [.request(rawBody, rawHeaders)](#BotApp_request) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
     * _static_
         * [.plugin()](#BotApp_plugin) ⇒ [<code>Plugin</code>](#Plugin)
 
-{% raw %}<div id="new_BotApp_new">&nbsp;</div>{% endraw %}
+<div id="new_BotApp_new">&nbsp;</div>
 
 ### new BotApp(bot, options)
 
@@ -54,13 +59,13 @@ Adapter for Wingbot flight director
 | bot | <code>ReducerWrapper</code> \| <code>Router</code> | 
 | options | [<code>Options</code>](#Options) | 
 
-{% raw %}<div id="BotApp_processor">&nbsp;</div>{% endraw %}
+<div id="BotApp_processor">&nbsp;</div>
 
-### botApp.processor ⇒ <code>Processor</code>
+### botApp.processor ⇒ [<code>Processor</code>](#Processor)
 Get the processor instance
 
 **Kind**: instance property of [<code>BotApp</code>](#BotApp)  
-{% raw %}<div id="BotApp_request">&nbsp;</div>{% endraw %}
+<div id="BotApp_request">&nbsp;</div>
 
 ### botApp.request(rawBody, rawHeaders) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
 Process incomming API request from the orchestrator.
@@ -100,13 +105,13 @@ app.get('/bot', express.text(), (req, res) => {
        })
 });
 ```
-{% raw %}<div id="BotApp_plugin">&nbsp;</div>{% endraw %}
+<div id="BotApp_plugin">&nbsp;</div>
 
 ### BotApp.plugin() ⇒ [<code>Plugin</code>](#Plugin)
 Returns processor plugin, which updates thread context automatically
 
 **Kind**: static method of [<code>BotApp</code>](#BotApp)  
-{% raw %}<div id="afterProcessMessage">&nbsp;</div>{% endraw %}
+<div id="afterProcessMessage">&nbsp;</div>
 
 ## afterProcessMessage(req, res)
 **Kind**: global function  
@@ -116,7 +121,7 @@ Returns processor plugin, which updates thread context automatically
 | req | <code>Request</code> | 
 | res | <code>Responder</code> | 
 
-{% raw %}<div id="Options">&nbsp;</div>{% endraw %}
+<div id="Options">&nbsp;</div>
 
 ## Options : <code>object</code>
 **Kind**: global typedef  
@@ -129,7 +134,7 @@ Returns processor plugin, which updates thread context automatically
 | [fetch] | <code>function</code> | 
 | [chatLogStorage] | <code>ChatLogStorage</code> | 
 
-{% raw %}<div id="ApiResponse">&nbsp;</div>{% endraw %}
+<div id="ApiResponse">&nbsp;</div>
 
 ## ApiResponse : <code>object</code>
 **Kind**: global typedef  
@@ -141,7 +146,7 @@ Returns processor plugin, which updates thread context automatically
 | body | <code>string</code> | 
 | headers | <code>object</code> | 
 
-{% raw %}<div id="AutoTypingConfig">&nbsp;</div>{% endraw %}
+<div id="AutoTypingConfig">&nbsp;</div>
 
 ## AutoTypingConfig : <code>object</code>
 **Kind**: global typedef  
@@ -154,7 +159,7 @@ Returns processor plugin, which updates thread context automatically
 | minTime | <code>number</code> | minimum writing time |
 | maxTime | <code>number</code> | maximum writing time |
 
-{% raw %}<div id="Plugin">&nbsp;</div>{% endraw %}
+<div id="Plugin">&nbsp;</div>
 
 ## Plugin : <code>object</code>
 **Kind**: global typedef  
@@ -167,7 +172,22 @@ Returns processor plugin, which updates thread context automatically
 | [beforeProcessMessage] | <code>function</code> | 
 | [afterProcessMessage] | <code>function</code> | 
 
-{% raw %}<div id="ProcessorOptions">&nbsp;</div>{% endraw %}
+<div id="InteractionEvent">&nbsp;</div>
+
+## InteractionEvent : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+| actions | <code>Array.&lt;string&gt;</code> | 
+| lastAction | <code>string</code> \| <code>null</code> | 
+| state | <code>object</code> | 
+| data | <code>object</code> | 
+| skill | <code>string</code> \| <code>null</code> | 
+
+<div id="ProcessorOptions">&nbsp;</div>
 
 ## ProcessorOptions : <code>object</code>
 **Kind**: global typedef  
@@ -194,7 +214,7 @@ Returns processor plugin, which updates thread context automatically
 | [apiUrl] | <code>string</code> | Url for calling orchestrator API |
 | [fetch] | <code>function</code> | Fetch function for calling orchestrator API |
 
-{% raw %}<div id="IntentAction">&nbsp;</div>{% endraw %}
+<div id="IntentAction">&nbsp;</div>
 
 ## IntentAction : <code>object</code>
 **Kind**: global typedef  

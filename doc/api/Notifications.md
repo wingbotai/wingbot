@@ -26,7 +26,7 @@
 <dd></dd>
 </dl>
 
-{% raw %}<div id="Notifications">&nbsp;</div>{% endraw %}
+<div id="Notifications">&nbsp;</div>
 
 ## Notifications
 **Kind**: global class  
@@ -47,12 +47,12 @@
         * [.Notifications](#Notifications_Notifications)
             * [new Notifications(notificationStorage, options)](#new_Notifications_Notifications_new)
 
-{% raw %}<div id="new_Notifications_new">&nbsp;</div>{% endraw %}
+<div id="new_Notifications_new">&nbsp;</div>
 
 ### new Notifications()
 Experimental notifications service
 
-{% raw %}<div id="Notifications_api">&nbsp;</div>{% endraw %}
+<div id="Notifications_api">&nbsp;</div>
 
 ### notifications.api([acl]) ⇒ <code>object</code>
 API Factory
@@ -64,7 +64,7 @@ API Factory
 | --- | --- | --- | --- |
 | [acl] | <code>Array.&lt;string&gt;</code> \| <code>function</code> | <code></code> | limit api to array of groups or use auth function |
 
-{% raw %}<div id="Notifications_createCampaign">&nbsp;</div>{% endraw %}
+<div id="Notifications_createCampaign">&nbsp;</div>
 
 ### notifications.createCampaign(name, action, [data], options) ⇒ [<code>Promise.&lt;Campaign&gt;</code>](#Campaign)
 Upsert the campaign
@@ -79,7 +79,7 @@ If the campaing does not exists add new. Otherwise, update it.
 | [data] | <code>object</code> |  |
 | options | <code>object</code> | use { id: '...' } to make campaign accessible from code |
 
-{% raw %}<div id="Notifications_pushTasksToQueue">&nbsp;</div>{% endraw %}
+<div id="Notifications_pushTasksToQueue">&nbsp;</div>
 
 ### notifications.pushTasksToQueue(campaignTargets) ⇒ <code>Promise.&lt;Array.&lt;Task&gt;&gt;</code>
 Add tasks to process by queue
@@ -90,7 +90,7 @@ Add tasks to process by queue
 | --- | --- |
 | campaignTargets | [<code>Array.&lt;CampaignTarget&gt;</code>](#CampaignTarget) | 
 
-{% raw %}<div id="Notifications_subscribe">&nbsp;</div>{% endraw %}
+<div id="Notifications_subscribe">&nbsp;</div>
 
 ### notifications.subscribe(senderId, pageId, tag)
 Subscribe user under certain tag
@@ -103,7 +103,7 @@ Subscribe user under certain tag
 | pageId | <code>string</code> | 
 | tag | <code>string</code> | 
 
-{% raw %}<div id="Notifications_unsubscribe">&nbsp;</div>{% endraw %}
+<div id="Notifications_unsubscribe">&nbsp;</div>
 
 ### notifications.unsubscribe(senderId, pageId, [tag], [req], [res])
 Unsubscribe user from certain tag or from all tags
@@ -118,7 +118,7 @@ Unsubscribe user from certain tag or from all tags
 | [req] | <code>object</code> | <code></code> | 
 | [res] | <code>object</code> | <code></code> | 
 
-{% raw %}<div id="Notifications_processMessage">&nbsp;</div>{% endraw %}
+<div id="Notifications_processMessage">&nbsp;</div>
 
 ### notifications.processMessage(event, pageId) ⇒ <code>Promise.&lt;{status:number}&gt;</code>
 Preprocess message - for read and delivery
@@ -130,7 +130,7 @@ Preprocess message - for read and delivery
 | event | <code>object</code> | 
 | pageId | <code>string</code> | 
 
-{% raw %}<div id="Notifications_getSubscribtions">&nbsp;</div>{% endraw %}
+<div id="Notifications_getSubscribtions">&nbsp;</div>
 
 ### notifications.getSubscribtions(senderId, pageId) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
 Get user subscribtions
@@ -142,7 +142,7 @@ Get user subscribtions
 | senderId | <code>string</code> | 
 | pageId | <code>string</code> | 
 
-{% raw %}<div id="Notifications_runCampaign">&nbsp;</div>{% endraw %}
+<div id="Notifications_runCampaign">&nbsp;</div>
 
 ### notifications.runCampaign(campaign) ⇒ <code>Promise.&lt;{queued:number}&gt;</code>
 Run the campaign now (push tasks into the queue)
@@ -153,7 +153,7 @@ Run the campaign now (push tasks into the queue)
 | --- | --- |
 | campaign | <code>object</code> | 
 
-{% raw %}<div id="Notifications_sendCampaignMessage">&nbsp;</div>{% endraw %}
+<div id="Notifications_sendCampaignMessage">&nbsp;</div>
 
 ### notifications.sendCampaignMessage(campaign, processor, pageId, senderId, [data]) ⇒ <code>Promise.&lt;{status: number}&gt;</code>
 Sends the message directly (without queue)
@@ -176,11 +176,11 @@ const campaign = await notifications
 
 await notifications.sendCampaignMessage(campaign, channel, pageId, senderId);
 ```
-{% raw %}<div id="Notifications_Notifications">&nbsp;</div>{% endraw %}
+<div id="Notifications_Notifications">&nbsp;</div>
 
 ### Notifications.Notifications
 **Kind**: static class of [<code>Notifications</code>](#Notifications)  
-{% raw %}<div id="new_Notifications_Notifications_new">&nbsp;</div>{% endraw %}
+<div id="new_Notifications_Notifications_new">&nbsp;</div>
 
 #### new Notifications(notificationStorage, options)
 Creates a new instance on notification service
@@ -195,7 +195,7 @@ Creates a new instance on notification service
 | [options.allAudienceTag] | <code>string</code> | tag to mark all users |
 | [options.preprocessSubscribers] | <code>function</code> | to preprocess GQL api given senderIds |
 
-{% raw %}<div id="CampaignTarget">&nbsp;</div>{% endraw %}
+<div id="CampaignTarget">&nbsp;</div>
 
 ## CampaignTarget : <code>object</code>
 **Kind**: global typedef  
@@ -209,7 +209,7 @@ Creates a new instance on notification service
 | [data] | <code>object</code> | custom action data for specific target |
 | [enqueue] | <code>number</code> | custom enqueue time, now will be used by default |
 
-{% raw %}<div id="Task">&nbsp;</div>{% endraw %}
+<div id="Task">&nbsp;</div>
 
 ## Task : <code>object</code>
 **Kind**: global typedef  
@@ -229,7 +229,7 @@ Creates a new instance on notification service
 | [reaction] | <code>boolean</code> | user reacted |
 | [leaved] | <code>number</code> | time the event was not sent because user left |
 
-{% raw %}<div id="Campaign">&nbsp;</div>{% endraw %}
+<div id="Campaign">&nbsp;</div>
 
 ## Campaign : <code>object</code>
 **Kind**: global typedef  
@@ -260,7 +260,7 @@ Creates a new instance on notification service
 | startAt | <code>number</code> |  |
 | slideRound | <code>number</code> |  |
 
-{% raw %}<div id="Tag">&nbsp;</div>{% endraw %}
+<div id="Tag">&nbsp;</div>
 
 ## Tag : <code>Object</code>
 **Kind**: global typedef  
@@ -271,7 +271,7 @@ Creates a new instance on notification service
 | tag | <code>string</code> | 
 | subscribtions | <code>number</code> | 
 
-{% raw %}<div id="Target">&nbsp;</div>{% endraw %}
+<div id="Target">&nbsp;</div>
 
 ## Target : <code>Object</code>
 **Kind**: global typedef  
@@ -282,7 +282,7 @@ Creates a new instance on notification service
 | senderId | <code>string</code> | 
 | pageId | <code>string</code> | 
 
-{% raw %}<div id="Subscribtion">&nbsp;</div>{% endraw %}
+<div id="Subscribtion">&nbsp;</div>
 
 ## Subscribtion : <code>Object</code>
 **Kind**: global typedef  
@@ -294,7 +294,7 @@ Creates a new instance on notification service
 | pageId | <code>string</code> | 
 | subs | <code>Array.&lt;string&gt;</code> | 
 
-{% raw %}<div id="Campaign">&nbsp;</div>{% endraw %}
+<div id="Campaign">&nbsp;</div>
 
 ## Campaign : <code>object</code>
 **Kind**: global typedef  
@@ -325,7 +325,7 @@ Creates a new instance on notification service
 | startAt | <code>number</code> |  |
 | slideRound | <code>number</code> |  |
 
-{% raw %}<div id="Task">&nbsp;</div>{% endraw %}
+<div id="Task">&nbsp;</div>
 
 ## Task : <code>Object</code>
 **Kind**: global typedef  

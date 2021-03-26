@@ -38,7 +38,7 @@
 <dd></dd>
 </dl>
 
-{% raw %}<div id="Tester">&nbsp;</div>{% endraw %}
+<div id="Tester">&nbsp;</div>
 
 ## Tester
 **Kind**: global class  
@@ -46,6 +46,7 @@
 * [Tester](#Tester)
     * [new Tester()](#new_Tester_new)
     * _instance_
+        * [.processor](#Tester_processor) : <code>Processor</code>
         * [.testData](#Tester_testData)
         * [.allowEmptyResponse](#Tester_allowEmptyResponse)
         * [.senderLogger](#Tester_senderLogger)
@@ -70,12 +71,16 @@
         * [.Tester](#Tester_Tester)
             * [new Tester(reducer, [senderId], [pageId], [processorOptions], [storage])](#new_Tester_Tester_new)
 
-{% raw %}<div id="new_Tester_new">&nbsp;</div>{% endraw %}
+<div id="new_Tester_new">&nbsp;</div>
 
 ### new Tester()
 Utility for testing requests
 
-{% raw %}<div id="Tester_testData">&nbsp;</div>{% endraw %}
+<div id="Tester_processor">&nbsp;</div>
+
+### tester.processor : <code>Processor</code>
+**Kind**: instance property of [<code>Tester</code>](#Tester)  
+<div id="Tester_testData">&nbsp;</div>
 
 ### tester.testData
 **Kind**: instance property of [<code>Tester</code>](#Tester)  
@@ -85,7 +90,7 @@ Utility for testing requests
 | --- | --- | --- |
 | predefined | <code>object</code> | test data to use |
 
-{% raw %}<div id="Tester_allowEmptyResponse">&nbsp;</div>{% endraw %}
+<div id="Tester_allowEmptyResponse">&nbsp;</div>
 
 ### tester.allowEmptyResponse
 **Kind**: instance property of [<code>Tester</code>](#Tester)  
@@ -95,7 +100,7 @@ Utility for testing requests
 | --- | --- | --- |
 | allow | <code>boolean</code> | tester to process empty responses |
 
-{% raw %}<div id="Tester_senderLogger">&nbsp;</div>{% endraw %}
+<div id="Tester_senderLogger">&nbsp;</div>
 
 ### tester.senderLogger
 **Kind**: instance property of [<code>Tester</code>](#Tester)  
@@ -105,20 +110,20 @@ Utility for testing requests
 | --- | --- | --- |
 | use | <code>console</code> | own loggger |
 
-{% raw %}<div id="Tester_setExpandRandomTexts">&nbsp;</div>{% endraw %}
+<div id="Tester_setExpandRandomTexts">&nbsp;</div>
 
 ### tester.setExpandRandomTexts()
 Enable tester to expand random texts
 It joins them into a single sting
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-{% raw %}<div id="Tester_cleanup">&nbsp;</div>{% endraw %}
+<div id="Tester_cleanup">&nbsp;</div>
 
 ### tester.cleanup()
 Clear acquired responses and data
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-{% raw %}<div id="Tester_processMessage">&nbsp;</div>{% endraw %}
+<div id="Tester_processMessage">&nbsp;</div>
 
 ### tester.processMessage(message, senderId, pageId) ⇒ <code>Promise.&lt;any&gt;</code>
 Use tester as a connector :)
@@ -131,7 +136,7 @@ Use tester as a connector :)
 | senderId | <code>string</code> | chat event sender identifier |
 | pageId | <code>string</code> | channel/page identifier |
 
-{% raw %}<div id="Tester_res">&nbsp;</div>{% endraw %}
+<div id="Tester_res">&nbsp;</div>
 
 ### tester.res([index]) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
 Returns single response asserter
@@ -142,19 +147,19 @@ Returns single response asserter
 | --- | --- | --- | --- |
 | [index] | <code>number</code> | <code>0</code> | response index |
 
-{% raw %}<div id="Tester_any">&nbsp;</div>{% endraw %}
+<div id="Tester_any">&nbsp;</div>
 
 ### tester.any() ⇒ [<code>AnyResponseAssert</code>](#AnyResponseAssert)
 Returns any response asserter
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-{% raw %}<div id="Tester_lastRes">&nbsp;</div>{% endraw %}
+<div id="Tester_lastRes">&nbsp;</div>
 
 ### tester.lastRes() ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
 Returns last response asserter
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-{% raw %}<div id="Tester_passedAction">&nbsp;</div>{% endraw %}
+<div id="Tester_passedAction">&nbsp;</div>
 
 ### tester.passedAction(path) ⇒ <code>this</code>
 Checks, that app past the action
@@ -165,7 +170,7 @@ Checks, that app past the action
 | --- | --- |
 | path | <code>string</code> | 
 
-{% raw %}<div id="Tester_respondedWithBlock">&nbsp;</div>{% endraw %}
+<div id="Tester_respondedWithBlock">&nbsp;</div>
 
 ### tester.respondedWithBlock(blockName) ⇒ <code>this</code>
 Checks, that a plugin used a block as a responde
@@ -176,13 +181,13 @@ Checks, that a plugin used a block as a responde
 | --- | --- |
 | blockName | <code>string</code> | 
 
-{% raw %}<div id="Tester_getState">&nbsp;</div>{% endraw %}
+<div id="Tester_getState">&nbsp;</div>
 
 ### tester.getState() ⇒ <code>object</code>
 Returns state
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
-{% raw %}<div id="Tester_setState">&nbsp;</div>{% endraw %}
+<div id="Tester_setState">&nbsp;</div>
 
 ### tester.setState([state])
 Sets state with `Object.assign()`
@@ -193,7 +198,7 @@ Sets state with `Object.assign()`
 | --- | --- | --- |
 | [state] | <code>object</code> | <code>{}</code> | 
 
-{% raw %}<div id="Tester_text">&nbsp;</div>{% endraw %}
+<div id="Tester_text">&nbsp;</div>
 
 ### tester.text(text) ⇒ <code>Promise</code>
 Makes text request
@@ -204,7 +209,7 @@ Makes text request
 | --- | --- |
 | text | <code>string</code> | 
 
-{% raw %}<div id="Tester_intent">&nbsp;</div>{% endraw %}
+<div id="Tester_intent">&nbsp;</div>
 
 ### tester.intent(intent, [text], [score]) ⇒ <code>Promise</code>
 Makes recognised AI intent request
@@ -217,7 +222,7 @@ Makes recognised AI intent request
 | [text] | <code>string</code> | <code>null</code> | 
 | [score] | <code>number</code> |  | 
 
-{% raw %}<div id="Tester_intentWithEntity">&nbsp;</div>{% endraw %}
+<div id="Tester_intentWithEntity">&nbsp;</div>
 
 ### tester.intentWithEntity(intent, entity, [value], [text], [score]) ⇒ <code>Promise</code>
 Makes recognised AI intent request with entity
@@ -232,7 +237,7 @@ Makes recognised AI intent request with entity
 | [text] | <code>string</code> |  | 
 | [score] | <code>number</code> | <code>1</code> | 
 
-{% raw %}<div id="Tester_optin">&nbsp;</div>{% endraw %}
+<div id="Tester_optin">&nbsp;</div>
 
 ### tester.optin(action, [data], [userRef]) ⇒ <code>Promise</code>
 Make optin call
@@ -245,7 +250,7 @@ Make optin call
 | [data] | <code>object</code> | <code>{}</code> |  |
 | [userRef] | <code>string</code> | <code>null</code> | specific ref string |
 
-{% raw %}<div id="Tester_quickReply">&nbsp;</div>{% endraw %}
+<div id="Tester_quickReply">&nbsp;</div>
 
 ### tester.quickReply(action, [data]) ⇒ <code>Promise</code>
 Send quick reply
@@ -257,7 +262,7 @@ Send quick reply
 | action | <code>string</code> |  | 
 | [data] | <code>object</code> | <code>{}</code> | 
 
-{% raw %}<div id="Tester_quickReplyText">&nbsp;</div>{% endraw %}
+<div id="Tester_quickReplyText">&nbsp;</div>
 
 ### tester.quickReplyText(text) ⇒ <code>Promise.&lt;boolean&gt;</code>
 Send quick reply if text exactly matches, otherwise returns false
@@ -268,7 +273,7 @@ Send quick reply if text exactly matches, otherwise returns false
 | --- | --- |
 | text | <code>string</code> | 
 
-{% raw %}<div id="Tester_postBack">&nbsp;</div>{% endraw %}
+<div id="Tester_postBack">&nbsp;</div>
 
 ### tester.postBack(action, [data], [refAction], [refData]) ⇒ <code>Promise</code>
 Sends postback, optionally with referrer action
@@ -282,11 +287,11 @@ Sends postback, optionally with referrer action
 | [refAction] | <code>string</code> | <code>null</code> | referred action |
 | [refData] | <code>object</code> | <code>{}</code> | referred action data |
 
-{% raw %}<div id="Tester_Tester">&nbsp;</div>{% endraw %}
+<div id="Tester_Tester">&nbsp;</div>
 
 ### Tester.Tester
 **Kind**: static class of [<code>Tester</code>](#Tester)  
-{% raw %}<div id="new_Tester_Tester_new">&nbsp;</div>{% endraw %}
+<div id="new_Tester_Tester_new">&nbsp;</div>
 
 #### new Tester(reducer, [senderId], [pageId], [processorOptions], [storage])
 Creates an instance of Tester.
@@ -300,7 +305,7 @@ Creates an instance of Tester.
 | [processorOptions] | <code>object</code> | <code>{}</code> | options for Processor |
 | [storage] | <code>MemoryStateStorage</code> |  | place to override the storage |
 
-{% raw %}<div id="ResponseAssert">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert">&nbsp;</div>
 
 ## ResponseAssert
 **Kind**: global class  
@@ -324,12 +329,12 @@ Creates an instance of Tester.
         * [.AnyResponseAssert#passThread([appId])](#ResponseAssert_AnyResponseAssert_passThread) ⇒ <code>this</code>
         * [.AnyResponseAssert#attachmentType(type)](#ResponseAssert_AnyResponseAssert_attachmentType) ⇒ <code>this</code>
 
-{% raw %}<div id="new_ResponseAssert_new">&nbsp;</div>{% endraw %}
+<div id="new_ResponseAssert_new">&nbsp;</div>
 
 ### new ResponseAssert()
 Utility for asserting single response
 
-{% raw %}<div id="ResponseAssert_contains">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_contains">&nbsp;</div>
 
 ### responseAssert.contains(search) ⇒ <code>this</code>
 Checks, that response contains text
@@ -340,7 +345,7 @@ Checks, that response contains text
 | --- | --- |
 | search | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_quickReplyAction">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_quickReplyAction">&nbsp;</div>
 
 ### responseAssert.quickReplyAction(action) ⇒ <code>this</code>
 Checks quick response action
@@ -351,7 +356,7 @@ Checks quick response action
 | --- | --- |
 | action | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_templateType">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_templateType">&nbsp;</div>
 
 ### responseAssert.templateType(type) ⇒ <code>this</code>
 Checks template type
@@ -362,7 +367,7 @@ Checks template type
 | --- | --- |
 | type | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_passThread">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_passThread">&nbsp;</div>
 
 ### responseAssert.passThread([appId]) ⇒ <code>this</code>
 Checks pass thread control
@@ -373,7 +378,7 @@ Checks pass thread control
 | --- | --- | --- |
 | [appId] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="ResponseAssert_attachmentType">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_attachmentType">&nbsp;</div>
 
 ### responseAssert.attachmentType(type) ⇒ <code>this</code>
 Checks attachment type
@@ -384,7 +389,7 @@ Checks attachment type
 | --- | --- |
 | type | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_contains">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_contains">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#contains(search) ⇒ <code>this</code>
 Checks, that response contains a text
@@ -395,7 +400,7 @@ Checks, that response contains a text
 | --- | --- |
 | search | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_notContains">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_notContains">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#notContains(search) ⇒ <code>this</code>
 Checks, that response does NOT contain a text
@@ -406,7 +411,7 @@ Checks, that response does NOT contain a text
 | --- | --- |
 | search | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_quickReplyAction">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_quickReplyAction">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#quickReplyAction(action) ⇒ <code>this</code>
 Checks quick response action
@@ -417,7 +422,7 @@ Checks quick response action
 | --- | --- |
 | action | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_quickReplyTextContains">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_quickReplyTextContains">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#quickReplyTextContains(search) ⇒ <code>this</code>
 Checks quick response text
@@ -428,7 +433,7 @@ Checks quick response text
 | --- | --- |
 | search | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_templateType">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_templateType">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#templateType(type) ⇒ <code>this</code>
 Checks template type
@@ -439,7 +444,7 @@ Checks template type
 | --- | --- |
 | type | <code>string</code> | 
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_genericTemplate">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_genericTemplate">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#genericTemplate(itemCount)
 Checks for generic template
@@ -450,7 +455,7 @@ Checks for generic template
 | --- | --- | --- | --- |
 | itemCount | <code>number</code> | <code></code> | specified item count |
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_buttonTemplate">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_buttonTemplate">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#buttonTemplate(search, buttonCount)
 Checks for button template
@@ -462,7 +467,7 @@ Checks for button template
 | search | <code>string</code> |  |  |
 | buttonCount | <code>number</code> | <code></code> | specified button count |
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_passThread">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_passThread">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#passThread([appId]) ⇒ <code>this</code>
 Checks pass thread control
@@ -473,7 +478,7 @@ Checks pass thread control
 | --- | --- | --- |
 | [appId] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="ResponseAssert_AnyResponseAssert_attachmentType">&nbsp;</div>{% endraw %}
+<div id="ResponseAssert_AnyResponseAssert_attachmentType">&nbsp;</div>
 
 ### ResponseAssert.AnyResponseAssert#attachmentType(type) ⇒ <code>this</code>
 Checks attachment type
@@ -484,16 +489,16 @@ Checks attachment type
 | --- | --- |
 | type | <code>string</code> | 
 
-{% raw %}<div id="AnyResponseAssert">&nbsp;</div>{% endraw %}
+<div id="AnyResponseAssert">&nbsp;</div>
 
 ## AnyResponseAssert
 **Kind**: global class  
-{% raw %}<div id="new_AnyResponseAssert_new">&nbsp;</div>{% endraw %}
+<div id="new_AnyResponseAssert_new">&nbsp;</div>
 
 ### new AnyResponseAssert()
 Utility for searching among responses
 
-{% raw %}<div id="ConversationTester">&nbsp;</div>{% endraw %}
+<div id="ConversationTester">&nbsp;</div>
 
 ## ConversationTester
 Automated Conversation tests runner
@@ -514,7 +519,7 @@ Automated Conversation tests runner
     * [.executeTextCase(testsGroup, t, textCase, botconfig, longestText, [lang])](#ConversationTester_executeTextCase)
     * [.executeStep(t, step)](#ConversationTester_executeStep)
 
-{% raw %}<div id="new_ConversationTester_new">&nbsp;</div>{% endraw %}
+<div id="new_ConversationTester_new">&nbsp;</div>
 
 ### new ConversationTester(testsSource, botFactory, [options])
 
@@ -533,7 +538,7 @@ Automated Conversation tests runner
 | [options.textCaseParallel] | <code>number</code> |  |
 | [options.testerFactory] | [<code>testerFactory</code>](#testerFactory) |  |
 
-{% raw %}<div id="ConversationTester__getTestCases">&nbsp;</div>{% endraw %}
+<div id="ConversationTester__getTestCases">&nbsp;</div>
 
 ### conversationTester.\_getTestCases(lang) ⇒ [<code>Promise.&lt;TestsDefinition&gt;</code>](#TestsDefinition)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -542,7 +547,7 @@ Automated Conversation tests runner
 | --- | --- |
 | lang | <code>string</code> | 
 
-{% raw %}<div id="ConversationTester_test">&nbsp;</div>{% endraw %}
+<div id="ConversationTester_test">&nbsp;</div>
 
 ### conversationTester.test(validationRequestBody, [step], [lang]) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
 Runs the conversation test
@@ -555,7 +560,7 @@ Runs the conversation test
 | [step] | <code>number</code> | <code></code> | 
 | [lang] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="ConversationTester__getLists">&nbsp;</div>{% endraw %}
+<div id="ConversationTester__getLists">&nbsp;</div>
 
 ### conversationTester.\_getLists(testCases) ⇒ [<code>Array.&lt;List&gt;</code>](#List)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -564,7 +569,7 @@ Runs the conversation test
 | --- | --- |
 | testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextCase&gt;</code>](#TextCase) | 
 
-{% raw %}<div id="ConversationTester__getListCases">&nbsp;</div>{% endraw %}
+<div id="ConversationTester__getListCases">&nbsp;</div>
 
 ### conversationTester.\_getListCases(testCases) ⇒ <code>Map.&lt;string, (Array.&lt;TestCase&gt;\|Array.&lt;TextCase&gt;)&gt;</code>
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -573,7 +578,7 @@ Runs the conversation test
 | --- | --- |
 | testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextCase&gt;</code>](#TextCase) | 
 
-{% raw %}<div id="ConversationTester__getGroups">&nbsp;</div>{% endraw %}
+<div id="ConversationTester__getGroups">&nbsp;</div>
 
 ### conversationTester.\_getGroups(testCases) ⇒ [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -582,7 +587,7 @@ Runs the conversation test
 | --- | --- |
 | testCases | <code>\*</code> | 
 
-{% raw %}<div id="ConversationTester__getTestsGroups">&nbsp;</div>{% endraw %}
+<div id="ConversationTester__getTestsGroups">&nbsp;</div>
 
 ### conversationTester.\_getTestsGroups(testsGroups, step)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -592,7 +597,7 @@ Runs the conversation test
 | testsGroups | [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup) | 
 | step | <code>number</code> | 
 
-{% raw %}<div id="ConversationTester__createTester">&nbsp;</div>{% endraw %}
+<div id="ConversationTester__createTester">&nbsp;</div>
 
 ### conversationTester.\_createTester(testsGroup, [botconfig], [lang]) ⇒ [<code>Tester</code>](#Tester)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -603,7 +608,7 @@ Runs the conversation test
 | [botconfig] | <code>object</code> | <code></code> | 
 | [lang] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="ConversationTester__runTextCaseTests">&nbsp;</div>{% endraw %}
+<div id="ConversationTester__runTextCaseTests">&nbsp;</div>
 
 ### conversationTester.\_runTextCaseTests(testsGroup, botconfig, [lang])
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -614,7 +619,7 @@ Runs the conversation test
 | botconfig | <code>object</code> | <code></code> | 
 | [lang] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="ConversationTester__runStepCaseTests">&nbsp;</div>{% endraw %}
+<div id="ConversationTester__runStepCaseTests">&nbsp;</div>
 
 ### conversationTester.\_runStepCaseTests(testsGroup, botconfig, [lang])
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -625,7 +630,7 @@ Runs the conversation test
 | botconfig | <code>object</code> | <code></code> | 
 | [lang] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="ConversationTester_executeTextCase">&nbsp;</div>{% endraw %}
+<div id="ConversationTester_executeTextCase">&nbsp;</div>
 
 ### conversationTester.executeTextCase(testsGroup, t, textCase, botconfig, longestText, [lang])
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -639,7 +644,7 @@ Runs the conversation test
 | longestText | <code>number</code> |  | 
 | [lang] | <code>string</code> | <code>null</code> | 
 
-{% raw %}<div id="ConversationTester_executeStep">&nbsp;</div>{% endraw %}
+<div id="ConversationTester_executeStep">&nbsp;</div>
 
 ### conversationTester.executeStep(t, step)
 **Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
@@ -649,7 +654,7 @@ Runs the conversation test
 | t | [<code>Tester</code>](#Tester) | 
 | step | [<code>TestCaseStep</code>](#TestCaseStep) | 
 
-{% raw %}<div id="TestSource">&nbsp;</div>{% endraw %}
+<div id="TestSource">&nbsp;</div>
 
 ## TestSource : <code>object</code>
 **Kind**: global typedef  
@@ -659,7 +664,7 @@ Runs the conversation test
 | --- | --- |
 | getTestCases | <code>function</code> | 
 
-{% raw %}<div id="TestCase">&nbsp;</div>{% endraw %}
+<div id="TestCase">&nbsp;</div>
 
 ## TestCase : <code>object</code>
 **Kind**: global typedef  
@@ -671,7 +676,7 @@ Runs the conversation test
 | name | <code>string</code> | 
 | steps | [<code>Array.&lt;TestCaseStep&gt;</code>](#TestCaseStep) | 
 
-{% raw %}<div id="TextCase">&nbsp;</div>{% endraw %}
+<div id="TextCase">&nbsp;</div>
 
 ## TextCase : <code>object</code>
 **Kind**: global typedef  
@@ -683,7 +688,7 @@ Runs the conversation test
 | name | <code>string</code> | 
 | texts | [<code>Array.&lt;TextTest&gt;</code>](#TextTest) | 
 
-{% raw %}<div id="TextTest">&nbsp;</div>{% endraw %}
+<div id="TextTest">&nbsp;</div>
 
 ## TextTest : <code>object</code>
 **Kind**: global typedef  
@@ -696,7 +701,7 @@ Runs the conversation test
 | action | <code>string</code> | 
 | intent | <code>string</code> | 
 
-{% raw %}<div id="TestCaseStep">&nbsp;</div>{% endraw %}
+<div id="TestCaseStep">&nbsp;</div>
 
 ## TestCaseStep : <code>object</code>
 **Kind**: global typedef  
@@ -712,7 +717,7 @@ Runs the conversation test
 | quickRepliesContains | <code>string</code> | 
 | stepDescription | <code>string</code> | 
 
-{% raw %}<div id="TestsGroup">&nbsp;</div>{% endraw %}
+<div id="TestsGroup">&nbsp;</div>
 
 ## TestsGroup : <code>object</code>
 **Kind**: global typedef  
@@ -725,7 +730,7 @@ Runs the conversation test
 | type | <code>string</code> | 
 | testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextTest&gt;</code>](#TextTest) | 
 
-{% raw %}<div id="List">&nbsp;</div>{% endraw %}
+<div id="List">&nbsp;</div>
 
 ## List : <code>object</code>
 **Kind**: global typedef  
@@ -738,7 +743,7 @@ Runs the conversation test
 | type | <code>string</code> | 
 | testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextTest&gt;</code>](#TextTest) | 
 
-{% raw %}<div id="TestsDefinition">&nbsp;</div>{% endraw %}
+<div id="TestsDefinition">&nbsp;</div>
 
 ## TestsDefinition : <code>object</code>
 **Kind**: global typedef  
@@ -748,7 +753,7 @@ Runs the conversation test
 | --- | --- |
 | lists | [<code>Array.&lt;List&gt;</code>](#List) | 
 
-{% raw %}<div id="testerFactory">&nbsp;</div>{% endraw %}
+<div id="testerFactory">&nbsp;</div>
 
 ## testerFactory ⇒ [<code>Tester</code>](#Tester)
 Callback for getting a tester
@@ -760,7 +765,7 @@ Callback for getting a tester
 | bot | <code>Router</code> \| <code>ReducerWrapper</code> | the chatbot itself |
 | test | [<code>TestsGroup</code>](#TestsGroup) | the chatbot itself |
 
-{% raw %}<div id="TestsOutput">&nbsp;</div>{% endraw %}
+<div id="TestsOutput">&nbsp;</div>
 
 ## TestsOutput : <code>object</code>
 **Kind**: global typedef  

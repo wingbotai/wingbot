@@ -1,4 +1,4 @@
-{% raw %}<div id="vars">&nbsp;</div>{% endraw %}
+<div id="vars">&nbsp;</div>
 
 ## vars : <code>object</code>
 Helpers for `res.setState()` method
@@ -10,7 +10,7 @@ Helpers for `res.setState()` method
     * [.expiresAfter(key, value, turnovers)](#vars_expiresAfter) ⇒ <code>object</code>
     * [.preserveMeta(key, value, state)](#vars_preserveMeta) ⇒ <code>object</code>
 
-{% raw %}<div id="vars_dialogContext">&nbsp;</div>{% endraw %}
+<div id="vars_dialogContext">&nbsp;</div>
 
 ### vars.dialogContext(key, value) ⇒ <code>object</code>
 Sets variable, which will be removed, when user leaves the dialogue.
@@ -29,7 +29,7 @@ Then it will be removed.
 const { vars } = require('wingbot');
 res.setState(vars.dialogContext('myKey', 'foovalue'))
 ```
-{% raw %}<div id="vars_expiresAfter">&nbsp;</div>{% endraw %}
+<div id="vars_expiresAfter">&nbsp;</div>
 
 ### vars.expiresAfter(key, value, turnovers) ⇒ <code>object</code>
 Sets variable, which will be removed after specified number of conversation turonovers
@@ -47,7 +47,7 @@ Sets variable, which will be removed after specified number of conversation turo
 const { vars } = require('wingbot');
 res.setState(vars.expiresAfter('myKey', 'foovalue', 4))
 ```
-{% raw %}<div id="vars_preserveMeta">&nbsp;</div>{% endraw %}
+<div id="vars_preserveMeta">&nbsp;</div>
 
 ### vars.preserveMeta(key, value, state) ⇒ <code>object</code>
 Sets variable while preserving its metadata

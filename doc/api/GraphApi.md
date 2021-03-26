@@ -48,7 +48,7 @@ for retrieving conversations and it&#39;s history</p>
 </dd>
 </dl>
 
-{% raw %}<div id="GraphApi">&nbsp;</div>{% endraw %}
+<div id="GraphApi">&nbsp;</div>
 
 ## GraphApi
 Experimental chatbot API
@@ -59,7 +59,7 @@ Experimental chatbot API
     * [new GraphApi(apis, options)](#new_GraphApi_new)
     * [.request(body, headers, [wingbotToken])](#GraphApi_request) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
 
-{% raw %}<div id="new_GraphApi_new">&nbsp;</div>{% endraw %}
+<div id="new_GraphApi_new">&nbsp;</div>
 
 ### new GraphApi(apis, options)
 
@@ -72,7 +72,7 @@ Experimental chatbot API
 | [options.groups] | <code>Array.&lt;string&gt;</code> | list of allowed bot groups |
 | [options.useBundledGql] | <code>boolean</code> | uses library bundled graphql definition |
 
-{% raw %}<div id="GraphApi_request">&nbsp;</div>{% endraw %}
+<div id="GraphApi_request">&nbsp;</div>
 
 ### graphApi.request(body, headers, [wingbotToken]) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
 **Kind**: instance method of [<code>GraphApi</code>](#GraphApi)  
@@ -88,7 +88,7 @@ Experimental chatbot API
 | [headers.authorization] | <code>string</code> | 
 | [wingbotToken] | <code>string</code> | 
 
-{% raw %}<div id="postBackApi">&nbsp;</div>{% endraw %}
+<div id="postBackApi">&nbsp;</div>
 
 ## postBackApi(processor, [acl]) ⇒ [<code>PostBackAPI</code>](#PostBackAPI)
 Create a postback API
@@ -110,7 +110,7 @@ const api = new GraphApi([
     appToken: 'API-will-be-accessible-with-this-token-in-Authorization-header'
 })
 ```
-{% raw %}<div id="validate">&nbsp;</div>{% endraw %}
+<div id="validate">&nbsp;</div>
 
 ## validate(bot, validationRequestBody, postBackTest, textTest)
 **Kind**: global function  
@@ -122,7 +122,7 @@ const api = new GraphApi([
 | postBackTest | <code>string</code> \| <code>function</code> | <code>null</code> | 
 | textTest | <code>string</code> \| <code>function</code> | <code>null</code> | 
 
-{% raw %}<div id="validateBotApi">&nbsp;</div>{% endraw %}
+<div id="validateBotApi">&nbsp;</div>
 
 ## validateBotApi(botFactory, [postBackTest], [textTest], [acl]) ⇒ [<code>ValidateBotAPI</code>](#ValidateBotAPI)
 Test the bot configuration
@@ -158,7 +158,7 @@ const api = new GraphApi([
     token: 'wingbot-token'
 })
 ```
-{% raw %}<div id="conversationsApi">&nbsp;</div>{% endraw %}
+<div id="conversationsApi">&nbsp;</div>
 
 ## conversationsApi(stateStorage, chatLogStorage, notifications, [acl], options) ⇒ <code>ConversationsAPI</code>
 Create a conversations API
@@ -196,7 +196,7 @@ const api = new GraphApi([
     token: 'my-secret-token'
 });
 ```
-{% raw %}<div id="apiAuthorizer">&nbsp;</div>{% endraw %}
+<div id="apiAuthorizer">&nbsp;</div>
 
 ## apiAuthorizer(args, ctx, acl) ⇒ <code>boolean</code>
 If API call is authorized - use for own implementations of API endpoints
@@ -223,7 +223,7 @@ function createApi (acl = null) {
     }
 }
 ```
-{% raw %}<div id="GraphQlResponse">&nbsp;</div>{% endraw %}
+<div id="GraphQlResponse">&nbsp;</div>
 
 ## GraphQlResponse : <code>object</code>
 **Kind**: global typedef  
@@ -233,7 +233,7 @@ function createApi (acl = null) {
 | [data] | <code>\*</code> | 
 | [errors] | <code>Array.&lt;object&gt;</code> | 
 
-{% raw %}<div id="PostBackAPI">&nbsp;</div>{% endraw %}
+<div id="PostBackAPI">&nbsp;</div>
 
 ## PostBackAPI : <code>object</code>
 **Kind**: global typedef  
@@ -243,7 +243,7 @@ function createApi (acl = null) {
 | --- | --- |
 | postBack | <code>function</code> | 
 
-{% raw %}<div id="ValidateBotAPI">&nbsp;</div>{% endraw %}
+<div id="ValidateBotAPI">&nbsp;</div>
 
 ## ValidateBotAPI : <code>object</code>
 **Kind**: global typedef  
@@ -253,11 +253,11 @@ function createApi (acl = null) {
 | --- | --- |
 | validateBot | <code>function</code> | 
 
-{% raw %}<div id="conversation">&nbsp;</div>{% endraw %}
+<div id="conversation">&nbsp;</div>
 
 ## conversation : <code>object</code>
 **Kind**: global typedef  
-{% raw %}<div id="StateStorage">&nbsp;</div>{% endraw %}
+<div id="StateStorage">&nbsp;</div>
 
 ## StateStorage : <code>object</code>
 **Kind**: global typedef  
@@ -268,7 +268,7 @@ function createApi (acl = null) {
 | getStates | <code>function</code> | 
 | getState | <code>function</code> | 
 
-{% raw %}<div id="Notifications">&nbsp;</div>{% endraw %}
+<div id="Notifications">&nbsp;</div>
 
 ## Notifications : <code>object</code>
 **Kind**: global typedef  
@@ -278,7 +278,7 @@ function createApi (acl = null) {
 | --- | --- |
 | getSubscribtions | <code>function</code> | 
 
-{% raw %}<div id="ChatLogStorage">&nbsp;</div>{% endraw %}
+<div id="ChatLogStorage">&nbsp;</div>
 
 ## ChatLogStorage : <code>object</code>
 **Kind**: global typedef  
@@ -288,7 +288,7 @@ function createApi (acl = null) {
 | --- | --- |
 | getInteractions | <code>function</code> | 
 
-{% raw %}<div id="textFilter">&nbsp;</div>{% endraw %}
+<div id="textFilter">&nbsp;</div>
 
 ## textFilter ⇒ <code>any</code>
 Function for filtration of string output

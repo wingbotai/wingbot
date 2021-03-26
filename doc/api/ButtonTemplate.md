@@ -14,7 +14,7 @@ Instance of button template is returned by {Responder}</p>
 </dd>
 </dl>
 
-{% raw %}<div id="ButtonTemplate">&nbsp;</div>{% endraw %}
+<div id="ButtonTemplate">&nbsp;</div>
 
 ## ButtonTemplate ⇐ <code>BaseTemplate</code>
 Helps with creating of button template
@@ -28,7 +28,7 @@ Instance of button template is returned by {Responder}
     * [.postBackButton(title, action, [data], [setState])](#ButtonTemplate_postBackButton) ⇒ <code>this</code>
     * [.shareButton()](#ButtonTemplate_shareButton) ⇒ <code>this</code>
 
-{% raw %}<div id="ButtonTemplate_urlButton">&nbsp;</div>{% endraw %}
+<div id="ButtonTemplate_urlButton">&nbsp;</div>
 
 ### buttonTemplate.urlButton(title, linkUrl, hasExtension, [webviewHeight]) ⇒ <code>this</code>
 Adds button. When `hasExtension` is set to `true`, url will contain hash like:
@@ -43,7 +43,7 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 | hasExtension | <code>boolean</code> | <code>false</code> | includes token in url |
 | [webviewHeight] | <code>string</code> | <code>null</code> | compact|tall|full |
 
-{% raw %}<div id="ButtonTemplate_postBackButton">&nbsp;</div>{% endraw %}
+<div id="ButtonTemplate_postBackButton">&nbsp;</div>
 
 ### buttonTemplate.postBackButton(title, action, [data], [setState]) ⇒ <code>this</code>
 Adds button, which makes another action
@@ -57,11 +57,11 @@ Adds button, which makes another action
 | [data] | <code>object</code> | <code>{}</code> | Action data |
 | [setState] | <code>object</code> | <code></code> | SetState data |
 
-{% raw %}<div id="ButtonTemplate_shareButton">&nbsp;</div>{% endraw %}
+<div id="ButtonTemplate_shareButton">&nbsp;</div>
 
 ### buttonTemplate.shareButton() ⇒ <code>this</code>
 **Kind**: instance method of [<code>ButtonTemplate</code>](#ButtonTemplate)  
-{% raw %}<div id="GenericTemplate">&nbsp;</div>{% endraw %}
+<div id="GenericTemplate">&nbsp;</div>
 
 ## GenericTemplate ⇐ [<code>ButtonTemplate</code>](#ButtonTemplate)
 Generic template utility
@@ -79,7 +79,7 @@ Generic template utility
     * [.postBackButton(title, action, [data], [setState])](#ButtonTemplate_postBackButton) ⇒ <code>this</code>
     * [.shareButton()](#ButtonTemplate_shareButton) ⇒ <code>this</code>
 
-{% raw %}<div id="GenericTemplate_addElement">&nbsp;</div>{% endraw %}
+<div id="GenericTemplate_addElement">&nbsp;</div>
 
 ### genericTemplate.addElement(title, [subtitle], [dontTranslate]) ⇒ <code>this</code>
 Adds element to generic template
@@ -92,13 +92,13 @@ Adds element to generic template
 | [subtitle] | <code>string</code> | <code>null</code> | 
 | [dontTranslate] | <code>boolean</code> | <code>false</code> | 
 
-{% raw %}<div id="GenericTemplate_setElementActionShare">&nbsp;</div>{% endraw %}
+<div id="GenericTemplate_setElementActionShare">&nbsp;</div>
 
 ### genericTemplate.setElementActionShare() ⇒ <code>this</code>
 Sets url of recently added element
 
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
-{% raw %}<div id="GenericTemplate_setElementActionPostback">&nbsp;</div>{% endraw %}
+<div id="GenericTemplate_setElementActionPostback">&nbsp;</div>
 
 ### genericTemplate.setElementActionPostback(action, [data]) ⇒ <code>this</code>
 Sets url of recently added element
@@ -110,7 +110,7 @@ Sets url of recently added element
 | action | <code>string</code> |  | Button action (can be absolute or relative) |
 | [data] | <code>object</code> | <code>{}</code> | Action data |
 
-{% raw %}<div id="GenericTemplate_setElementImage">&nbsp;</div>{% endraw %}
+<div id="GenericTemplate_setElementImage">&nbsp;</div>
 
 ### genericTemplate.setElementImage(image) ⇒ <code>this</code>
 Sets image of recently added element
@@ -121,7 +121,7 @@ Sets image of recently added element
 | --- | --- |
 | image | <code>string</code> | 
 
-{% raw %}<div id="GenericTemplate_setElementAction">&nbsp;</div>{% endraw %}
+<div id="GenericTemplate_setElementAction">&nbsp;</div>
 
 ### genericTemplate.setElementAction(url, hasExtension, [webviewHeight])
 Sets default action of recently added element
@@ -134,7 +134,7 @@ Sets default action of recently added element
 | hasExtension | <code>boolean</code> | <code>false</code> | includes token in url |
 | [webviewHeight] | <code>string</code> | <code>null</code> | compact|tall|full |
 
-{% raw %}<div id="ButtonTemplate_urlButton">&nbsp;</div>{% endraw %}
+<div id="ButtonTemplate_urlButton">&nbsp;</div>
 
 ### genericTemplate.urlButton(title, linkUrl, hasExtension, [webviewHeight]) ⇒ <code>this</code>
 Adds button. When `hasExtension` is set to `true`, url will contain hash like:
@@ -150,7 +150,7 @@ Adds button. When `hasExtension` is set to `true`, url will contain hash like:
 | hasExtension | <code>boolean</code> | <code>false</code> | includes token in url |
 | [webviewHeight] | <code>string</code> | <code>null</code> | compact|tall|full |
 
-{% raw %}<div id="ButtonTemplate_postBackButton">&nbsp;</div>{% endraw %}
+<div id="ButtonTemplate_postBackButton">&nbsp;</div>
 
 ### genericTemplate.postBackButton(title, action, [data], [setState]) ⇒ <code>this</code>
 Adds button, which makes another action
@@ -165,12 +165,12 @@ Adds button, which makes another action
 | [data] | <code>object</code> | <code>{}</code> | Action data |
 | [setState] | <code>object</code> | <code></code> | SetState data |
 
-{% raw %}<div id="ButtonTemplate_shareButton">&nbsp;</div>{% endraw %}
+<div id="ButtonTemplate_shareButton">&nbsp;</div>
 
 ### genericTemplate.shareButton() ⇒ <code>this</code>
 **Kind**: instance method of [<code>GenericTemplate</code>](#GenericTemplate)  
 **Overrides**: [<code>shareButton</code>](#ButtonTemplate_shareButton)  
-{% raw %}<div id="ReceiptTemplate">&nbsp;</div>{% endraw %}
+<div id="ReceiptTemplate">&nbsp;</div>
 
 ## ReceiptTemplate ⇐ <code>BaseTemplate</code>
 Provides fluent interface to make nice Receipts
@@ -178,7 +178,7 @@ Instance of button template is returned by {Responder}
 
 **Kind**: global class  
 **Extends**: <code>BaseTemplate</code>  
-{% raw %}<div id="ReceiptTemplate_addElement">&nbsp;</div>{% endraw %}
+<div id="ReceiptTemplate_addElement">&nbsp;</div>
 
 ### receiptTemplate.addElement(title, [price], [quantity], [image], [subtitle]) ⇒ <code>this</code>
 Adds item to receipt

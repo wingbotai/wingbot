@@ -80,7 +80,7 @@ docs.forEach((doc) => {
         paramListFormat: 'list',
         files
     })
-        .replace(/<a\sname="([^"]+)"><\/a>/g, (a, r) => `{% raw %}<div id="${r.replace(/[+.]/g, '_')}">&nbsp;</div>{% endraw %}`)
+        .replace(/<a\sname="([^"]+)"><\/a>/g, (a, r) => `<div id="${r.replace(/[+.]/g, '_')}">&nbsp;</div>`)
         .replace(/<a\shref="#([^"]+)">/g, (a, r) => `<a href="#${r.replace(/[+.]/g, '_')}">`)
         .replace(/]\(#([a-z+0-9_.]+)\)/ig, (a, r) => `](#${r.replace(/[+.]/g, '_')})`);
 
