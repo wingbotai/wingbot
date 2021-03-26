@@ -22,6 +22,7 @@ describe('Tracking', () => {
     let events = [];
     let interactions = [];
     let sequence = [];
+    let trackings = [];
 
     function assertActions (expectedActions) {
         const actions = t.actions
@@ -34,11 +35,13 @@ describe('Tracking', () => {
         events = [];
         interactions = [];
         sequence = [];
+        trackings = [];
 
         plugins = new Plugins();
 
         plugins.register('justfn', (req, res) => {
             res.text('justfn');
+            res.trackEvent('abc', 'cat', 'act');
         });
 
         plugins.register('redir', (req, res, postback) => {
@@ -86,9 +89,10 @@ describe('Tracking', () => {
             sequence.push('processor-event');
         });
 
-        t.processor.on('interaction', ({ actions, lastAction }) => {
+        t.processor.on('interaction', ({ actions, lastAction, tracking }) => {
             interactions.push({ actions, lastAction });
             sequence.push('processor-interaction');
+            trackings.push(tracking);
         });
     });
 
@@ -106,6 +110,18 @@ describe('Tracking', () => {
             assert.deepStrictEqual(events, [
                 '/go'
             ]);
+
+            assert.deepStrictEqual(trackings, [{
+                events: [
+                    {
+                        type: 'abc',
+                        category: 'cat',
+                        action: 'act',
+                        label: '',
+                        value: 0
+                    }
+                ]
+            }]);
         });
 
         it('should emit right processor events in right order', async () => {

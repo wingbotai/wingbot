@@ -41,6 +41,7 @@ const { parseActionPayload } = require('./src/utils/pathUtils');
 const { disambiguationQuickReply, quickReplyAction } = require('./src/utils/quickReplies');
 const { getUpdate, getValue, getSetState } = require('./src/utils/getUpdate');
 const { vars } = require('./src/utils/stateVariables');
+const compileWithState = require('./src/utils/compileWithState');
 const plugins = require('./plugins/plugins.json');
 const {
     bufferloader,
@@ -78,6 +79,7 @@ module.exports = {
     getSetState,
     bounce,
     MockAiModel,
+    compileWithState,
 
     // Wingbot
     ai: Ai.ai,

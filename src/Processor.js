@@ -32,6 +32,20 @@ const { mergeState } = require('./utils/stateVariables');
  */
 
 /**
+ * @typedef {object} TrackingEvent
+ * @prop {string} type
+ * @prop {string} category
+ * @prop {string} action
+ * @prop {string} label
+ * @prop {number} value
+ */
+
+/**
+ * @typedef {object} TrackingObject
+ * @prop {TrackingEvent[]} events
+ */
+
+/**
  * @typedef {object} InteractionEvent
  * @prop {Request} req
  * @prop {string[]} actions
@@ -39,6 +53,7 @@ const { mergeState } = require('./utils/stateVariables');
  * @prop {object} state
  * @prop {object} data
  * @prop {string|null} skill
+ * @prop {TrackingObject} tracking
  */
 
 /**
@@ -353,7 +368,7 @@ class Processor extends EventEmitter {
 
         const { _lastAction: lastAction = null } = req.state;
         const actions = messageSender.visitedInteractions;
-        const trackingSkill = state._trackAsSkill || null;
+        const skill = state._trackAsSkill || null;
 
         const event = {
             req,
@@ -361,7 +376,8 @@ class Processor extends EventEmitter {
             lastAction,
             state,
             data,
-            trackingSkill
+            skill,
+            tracking: messageSender.tracking
         };
 
         return new Promise((resolve) => {

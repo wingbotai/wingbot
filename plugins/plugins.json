@@ -130,6 +130,49 @@
             ]
         },
         {
+            "id": "ai.wingbot.trackingEvent",
+            "name": "Report tracking event",
+            "description": "You can use handlebars templates here",
+            "availableSince": 3.13,
+            "editable": false,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": [
+                {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Event type",
+                    "options": [
+                        { "value": "report", "label": "report" },
+                        { "value": "conversation", "label": "conversation" },
+                        { "value": "audit", "label": "audit" },
+                        { "value": "log", "label": "log" }
+                    ]
+                },
+                {
+                    "name": "category",
+                    "type": "text",
+                    "label": "Event category"
+                },
+                {
+                    "name": "action",
+                    "type": "text",
+                    "label": "Event action"
+                },
+                {
+                    "name": "label",
+                    "type": "text",
+                    "label": "Event label"
+                },
+                {
+                    "name": "value",
+                    "type": "text",
+                    "label": "Event value (number)"
+                }
+            ]
+        },
+        {
             "id": "ai.wingbot.waitASecond",
             "name": "Wait a second",
             "description": "Make a short delay between bots messages",

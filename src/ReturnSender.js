@@ -95,6 +95,14 @@ class ReturnSender {
         this._lastWait = 0;
 
         this._visitedInteractions = [];
+
+        this._tracking = {
+            events: []
+        };
+    }
+
+    get tracking () {
+        return this._tracking;
     }
 
     get visitedInteractions () {
@@ -206,6 +214,14 @@ class ReturnSender {
         if (this._finished) {
             throw new Error('Cannot send message after sender is finished');
         }
+        if (payload.tracking) {
+            // collect events
+            if (Array.isArray(payload.tracking.events)) {
+                this._tracking.events.push(...payload.tracking.events);
+            }
+            return;
+        }
+
         this._queue.push(payload);
 
         if (this._catchedBeforeFinish) {

@@ -152,6 +152,31 @@ class Responder {
         return this;
     }
 
+    /**
+     * Fire tracking event
+     * Events are aggregated within ReturnSender and can be caught
+     * within Processor's `interaction` event (event.tracking.events)
+     *
+     * @param {string} type
+     * @param {string} category
+     * @param {string} [action]
+     * @param {string} [label]
+     * @param {number} [value]
+     * @returns {this}
+     */
+    trackEvent (type, category, action = '', label = '', value = 0) {
+        this.send({
+            tracking: {
+                events: [
+                    {
+                        type, category, action, label, value
+                    }
+                ]
+            }
+        });
+        return this;
+    }
+
     // PROTECTED METHOD (called from ReducerWrapper)
     _visitedInteraction (action) {
         this._messageSender.visitedInteraction(action);
