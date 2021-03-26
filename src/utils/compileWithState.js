@@ -10,7 +10,7 @@ try {
 } catch (er) {
     handlebars = { compile: (text) => () => text };
 }
-const { stateData } = require('../resolvers/utils');
+const stateData = require('./stateData');
 
 /** @typedef {import('../Request')} Request */
 /** @typedef {import('../Responder')} Responder */

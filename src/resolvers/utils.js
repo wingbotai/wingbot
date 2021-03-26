@@ -5,6 +5,7 @@
 
 const hbs = require('./hbs');
 const customFn = require('../utils/customFn');
+const stateData = require('../utils/stateData');
 
 const ASPECT_SQUARE = 'square';
 const ASPECT_HORISONTAL = 'horisontal';
@@ -96,16 +97,6 @@ function randomizedCompiler (text, lang) {
             texts[index] = hbs.compile(texts[index]);
         }
         return texts[index](...args);
-    };
-}
-
-function stateData (req, res = null) {
-    return {
-
-        ...req.state,
-        ...(res ? res.newState : {}),
-        ...req.actionData(),
-        ...(res ? res.data : {})
     };
 }
 
