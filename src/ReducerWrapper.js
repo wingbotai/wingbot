@@ -150,7 +150,7 @@ class ReducerWrapper extends EventEmitter {
             ({ beforeLastInteraction } = res.newState);
         }
 
-        if (act && !shouldNotTrack && !isExpectedAction && typeof res._visitedInteraction === 'function') {
+        if (act && !shouldNotTrack && typeof res._visitedInteraction === 'function') {
             res._visitedInteraction(act);
         }
 

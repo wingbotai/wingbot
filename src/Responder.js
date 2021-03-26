@@ -152,7 +152,7 @@ class Responder {
         return this;
     }
 
-    // PROTECTED METHOD (called from ReturnSender)
+    // PROTECTED METHOD (called from ReducerWrapper)
     _visitedInteraction (action) {
         this._messageSender.visitedInteraction(action);
     }

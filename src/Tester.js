@@ -81,6 +81,7 @@ class Tester {
             });
         });
 
+        /** @type {Processor} */
         this.processor = new Processor(wrappedReducer, ({
             stateStorage: this.storage,
             log,

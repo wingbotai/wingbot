@@ -97,6 +97,10 @@ class ReturnSender {
         this._visitedInteractions = [];
     }
 
+    get visitedInteractions () {
+        return this._visitedInteractions.slice();
+    }
+
     _send (payload) { // eslint-disable-line no-unused-vars
         const res = {
             message_id: `${Date.now()}${Math.random()}.${this._sequence++}`

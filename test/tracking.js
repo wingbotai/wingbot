@@ -20,6 +20,8 @@ describe('Tracking', () => {
     let t;
 
     let events = [];
+    let interactions = [];
+    let sequence = [];
 
     function assertActions (expectedActions) {
         const actions = t.actions
@@ -30,11 +32,17 @@ describe('Tracking', () => {
 
     beforeEach(() => {
         events = [];
+        interactions = [];
+        sequence = [];
 
         plugins = new Plugins();
 
         plugins.register('justfn', (req, res) => {
             res.text('justfn');
+        });
+
+        plugins.register('redir', (req, res, postback) => {
+            postback('goto');
         });
 
         plugins.register('fnWithItem', async (req, res) => {
@@ -63,10 +71,24 @@ describe('Tracking', () => {
 
         bot = new Router();
 
+        bot.on('action', () => {
+            sequence.push('router-action');
+        });
+
+        bot.use('goto', (req, res) => {
+            res.text('goto');
+        });
+
         t = new Tester(bot);
 
         t.processor.on('event', (senderId, action) => {
             events.push(action);
+            sequence.push('processor-event');
+        });
+
+        t.processor.on('interaction', ({ actions, lastAction }) => {
+            interactions.push({ actions, lastAction });
+            sequence.push('processor-interaction');
         });
     });
 
@@ -83,6 +105,40 @@ describe('Tracking', () => {
 
             assert.deepStrictEqual(events, [
                 '/go'
+            ]);
+        });
+
+        it('should emit right processor events in right order', async () => {
+            bot.use('go', plugins.getWrappedPlugin('redir'));
+
+            await t.postBack('go');
+
+            assertActions([
+                '/go',
+                '/goto'
+            ]);
+
+            assert.deepStrictEqual(events, [
+                '/go'
+            ]);
+
+            assert.deepStrictEqual(interactions, [
+                { actions: ['/go', '/goto'], lastAction: null }
+            ]);
+
+            assert.deepStrictEqual(sequence, [
+                'router-action',
+                'processor-event',
+                'router-action',
+                'processor-interaction'
+            ]);
+
+            interactions = [];
+
+            await t.postBack('goto');
+
+            assert.deepStrictEqual(interactions, [
+                { actions: ['/goto'], lastAction: '/goto' }
             ]);
         });
 

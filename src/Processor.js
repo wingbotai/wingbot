@@ -32,6 +32,23 @@ const { mergeState } = require('./utils/stateVariables');
  */
 
 /**
+ * @typedef {object} InteractionEvent
+ * @prop {Request} req
+ * @prop {string[]} actions
+ * @prop {string|null} lastAction
+ * @prop {object} state
+ * @prop {object} data
+ * @prop {string|null} skill
+ */
+
+/**
+ * Interaction event fired after every interaction
+ *
+ * @event Processor#interaction
+ * @type {InteractionEvent}
+ */
+
+/**
  *
  * @typedef {object} ProcessorOptions
  * @prop {string} [appUrl] - url basepath for relative links
@@ -80,6 +97,12 @@ const NAME_FROM_STATE = (state) => {
     return null;
 };
 
+/**
+ * Messaging event processor
+ *
+ * @class
+ * @fires Processor#interaction
+ */
 class Processor extends EventEmitter {
 
     /**
@@ -289,7 +312,9 @@ class Processor extends EventEmitter {
 
         let result;
         try {
-            const { req, res } = await this
+            const {
+                req, res, data, state
+            } = await this
                 ._processMessage(message, pageId, messageSender, responderData, true);
 
             if (this.options.waitsForSender) {
@@ -299,6 +324,9 @@ class Processor extends EventEmitter {
                     .catch((e) => this.reportSendError(e, message, pageId));
                 result = { status: 200 };
             }
+
+            await this._emitInteractionEvent(req, messageSender, state, data);
+
         } catch (e) {
             const { code = 500 } = e;
             this.reportSendError(e, message, pageId);
@@ -306,6 +334,46 @@ class Processor extends EventEmitter {
         }
         await preloadPromise;
         return result;
+    }
+
+    /**
+     *
+     * @param {Request} req
+     * @param {ReturnSender} messageSender
+     * @param {object} state
+     * @param {object} data
+     * @returns {Promise}
+     */
+    _emitInteractionEvent (req, messageSender, state, data) {
+        const shouldNotTrack = data._initialEventShouldNotBeTracked === true;
+
+        if (shouldNotTrack) {
+            return Promise.resolve();
+        }
+
+        const { _lastAction: lastAction = null } = req.state;
+        const actions = messageSender.visitedInteractions;
+        const trackingSkill = state._trackAsSkill || null;
+
+        const event = {
+            req,
+            actions,
+            lastAction,
+            state,
+            data,
+            trackingSkill
+        };
+
+        return new Promise((resolve) => {
+            process.nextTick(() => {
+                try {
+                    this.emit('interaction', event);
+                } catch (e) {
+                    this.options.log.error('Firing Processor interaction event failed', e);
+                }
+                resolve();
+            });
+        });
     }
 
     async _finishSender (message, pageId, messageSender, req, res) {
@@ -584,7 +652,10 @@ class Processor extends EventEmitter {
         await this.stateStorage.saveState(stateObject);
 
         // process postbacks
-        await this._processPostbacks(
+        const {
+            state = stateObject.state,
+            data = res.data
+        } = await this._processPostbacks(
             postbackAcumulator,
             senderId,
             pageId,
@@ -594,7 +665,9 @@ class Processor extends EventEmitter {
 
         await emitPromise; // probably has been resolved this time
 
-        return { req, res };
+        return {
+            req, res, data, state
+        };
     }
 
     /**
@@ -652,7 +725,7 @@ class Processor extends EventEmitter {
                     request = Request.postBack(senderId, action, data);
                 }
                 return this._processMessage(request, pageId, messageSender, responderData);
-            }), Promise.resolve());
+            }), Promise.resolve({}));
     }
 
     _getOrCreateToken (senderId, pageId) {
