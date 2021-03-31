@@ -799,6 +799,34 @@ describe('Responder', function () {
 
         });
 
+        it('collects quick replies', () => {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.addQuickReply('act', 'sasa');
+
+            res.text('sasa');
+
+            assert(sendFn.calledOnce);
+            const object = sendFn.firstCall.args[0];
+            assert.deepStrictEqual(object, {
+                messaging_type: 'RESPONSE',
+                recipient: {
+                    id: SENDER_ID
+                },
+                message: {
+                    text: '-sasa',
+                    quick_replies: [
+                        {
+                            content_type: 'text',
+                            payload: '{"action":"act","data":{"_ca":"/"}}',
+                            title: '-sasa'
+                        }
+                    ]
+                }
+            });
+        });
+
     });
 
 });

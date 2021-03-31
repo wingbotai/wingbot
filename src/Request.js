@@ -527,7 +527,7 @@ class Request {
      * @returns {boolean}
      */
     isQuickReply () {
-        return this.message !== null && this.message.quick_reply;
+        return this.message !== null && !!this.message.quick_reply;
     }
 
     /**

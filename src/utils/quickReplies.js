@@ -60,7 +60,9 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
         return { quickReplies: [], expectedKeywords, disambiguationIntents };
     }
 
-    if (!Array.isArray(iterate)) {
+    if (!iterate) {
+        iterate = [];
+    } else if (!Array.isArray(iterate)) {
         iterate = Object.keys(replies)
             .map((action) => {
                 const value = replies[action];
