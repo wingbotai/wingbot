@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - processor now waits for firing it's eventnpm
-## [3.10.0] 2021-03-19
+## [3.10.1] 2021-03-19
 
 ### Fixed
 
