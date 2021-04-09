@@ -9,10 +9,40 @@ const fetch = require('node-fetch'); // eslint-disable-line
 let request;
 try {
     // @ts-ignore
-    request = module.request('request-promise-native');
+    request = module.require('request-promise-native');
 } catch (e) {
     // eslint-disable-next-line no-unused-vars
     request = () => { throw new Error('To use request, you have to manually install request-promise-native into your bot.'); };
+}
+let axios;
+try {
+    // @ts-ignore
+    axios = module.require('axios');
+} catch (e) {
+    // eslint-disable-next-line no-unused-vars
+    const errfn = () => { throw new Error('To use axios, you have to manually install it into your bot.'); };
+    axios = errfn;
+
+    // @ts-ignore
+    axios.get = errfn;
+    // @ts-ignore
+    axios.request = errfn;
+    // @ts-ignore
+    axios.post = errfn;
+    // @ts-ignore
+    axios.put = errfn;
+    // @ts-ignore
+    axios.delete = errfn;
+    // @ts-ignore
+    axios.head = errfn;
+    // @ts-ignore
+    axios.options = errfn;
+    // @ts-ignore
+    axios.patch = errfn;
+    // @ts-ignore
+    axios.getUri = errfn;
+    // @ts-ignore
+    axios.create = errfn;
 }
 
 const FORBIDDEN = /([^a-zA-Z0-9]|^)(this|process|require|module|console|global|eval)([^a-zA-Z0-9]|$)/;
