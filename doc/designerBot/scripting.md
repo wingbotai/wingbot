@@ -74,9 +74,34 @@ const templateData = Object.assign({}, req.state, res.newState, res.data, {
 
 ## Loading data from APIs
 
-In the snippet (**not in the condition**) is possible to make async actions. And its possible to use `request` npm library with `request-promise-native` wrapper, which makes `request()` calls simplier. How to fetch data in snippet?
+In the snippet (**not in the condition**) is possible to make async actions. And its possible to use `request` npm library with `request-promise-native` wrapper, which makes `request()` calls simplier, or you can use `axios`. How to fetch data in snippet?
 
-**Non-blocking way (RECOMMENDED)**
+**Simple way**
+
+The easiest way to fetch some data from an API is an asynchronus function.
+
+```javascript
+async (req, res) => {
+    try {
+        res.typingOn();
+        const data = await request({
+            url: 'https://random-data-api.com/api/stripe/random_stripe',
+            json: true
+        });
+        res.setData({ data });
+    } catch (err) {
+        res.setData({ error: err.message });
+    }
+}
+```
+
+And then retrieve the data in a text message using the following handlebars template:
+
+```
+{{#if error}}{{error}}{{else}}Found random card number: {{data.valid_card}}{{/if}}
+```
+
+**Non-blocking way for unusually long requests (>1s)**
 
 Not blocking async actions are made through **two snippets in two interactions**.
 
