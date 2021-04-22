@@ -94,7 +94,7 @@ class WingbotModel extends CachedModel {
             const response = await res.json();
 
             if (res.status >= 300) {
-                this._log.warn(response.message || res.statusText);
+                this._log.warn(`AI query failed: ${response.message || res.statusText}`);
                 return { intents: [], entities: [] };
             }
 

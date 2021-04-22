@@ -315,6 +315,15 @@ class BuildRouter extends Router {
     }
 
     _buildBot (block, setConfigTimestamp = Number.MAX_SAFE_INTEGER) {
+        try {
+            const snapDate = setConfigTimestamp === Number.MAX_SAFE_INTEGER
+                ? 'unknown date'
+                : (new Date(setConfigTimestamp).toUTCString());
+            // eslint-disable-next-line no-console
+            console.log(`[wingbot.ai BuildRouter] reloaded snapshot from ${snapDate} (${setConfigTimestamp})`);
+        } catch (e) {
+            // noop
+        }
         if (this._prebuiltGlobalIntents === null) {
             this._prebuiltGlobalIntents = Array.from(this.globalIntents.entries());
         } else {
