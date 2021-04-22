@@ -36,6 +36,7 @@ const ResponseAssert = require('./src/testTools/ResponseAssert');
 const ButtonTemplate = require('./src/templates/ButtonTemplate');
 const GenericTemplate = require('./src/templates/GenericTemplate');
 const BaseTemplate = require('./src/templates/BaseTemplate');
+const OrchestratorClient = require('./src/OrchestratorClient');
 const bounce = require('./src/resolvers/bounce');
 const { parseActionPayload } = require('./src/utils/pathUtils');
 const { disambiguationQuickReply, quickReplyAction } = require('./src/utils/quickReplies');
@@ -51,8 +52,10 @@ const {
 const flags = require('./src/flags');
 
 module.exports = {
+
     // orchestrator
     BotApp,
+    OrchestratorClient,
 
     // basic functionality
     ReturnSender,

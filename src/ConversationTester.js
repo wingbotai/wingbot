@@ -582,7 +582,7 @@ class ConversationTester {
 
             if (!this._options.disableAssertActions) {
                 passedAction.split('\n')
-                    .map((a) => (a.trim().match(/^[a-z\-0-9/]+$/) ? a : tokenize(a)))
+                    .map((a) => (a.trim().match(/^[a-z\-0-9/_]+$/) ? a : tokenize(a)))
                     .forEach((a) => a && t.passedAction(a));
             }
 

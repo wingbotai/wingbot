@@ -10,7 +10,7 @@ const BotAppSender = require('./BotAppSender');
 /**
  * @typedef OrchestratorClientOptions
  * @property {string} [apiUrl]
- * @property {Promise<string>} [secret]
+ * @property {Promise<string>|string} [secret]
  * @property {string} [senderId]
  * @property {string} [pageId]
  * @property {string} [appId]
