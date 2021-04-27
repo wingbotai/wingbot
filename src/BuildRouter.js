@@ -230,7 +230,7 @@ class BuildRouter extends Router {
             // wait for running request
             await Promise.all(this._runningReqs);
 
-            this.buildWithSnapshot(snapshot.blocks, snapshot.timestamp);
+            this.buildWithSnapshot(snapshot.blocks, snapshot.timestamp, snapshot.lastmod);
         } catch (e) {
             await this._configStorage.invalidateConfig();
             throw e;
@@ -290,7 +290,7 @@ class BuildRouter extends Router {
         blocks.forEach((b) => this._validateBlock(b, action));
     }
 
-    buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER) {
+    buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER, lastmod = '-') {
         this._validateBlocks(blocks);
 
         Object.assign(this._context, { blocks });
@@ -301,7 +301,7 @@ class BuildRouter extends Router {
             throw new Error('Root block (block.isRoot = true) not found - probably invalid bot snapshot used');
         }
 
-        this._buildBot(rootBlock, setConfigTimestamp);
+        this._buildBot(rootBlock, setConfigTimestamp, lastmod);
     }
 
     resetRouter () {
@@ -314,13 +314,12 @@ class BuildRouter extends Router {
         }
     }
 
-    _buildBot (block, setConfigTimestamp = Number.MAX_SAFE_INTEGER) {
+    _buildBot (block, setConfigTimestamp = Number.MAX_SAFE_INTEGER, lastmod = '-') {
         try {
-            const snapDate = setConfigTimestamp === Number.MAX_SAFE_INTEGER
-                ? 'unknown date'
-                : (new Date(setConfigTimestamp).toUTCString());
-            // eslint-disable-next-line no-console
-            console.log(`[wingbot.ai BuildRouter] reloaded snapshot from ${snapDate} (${setConfigTimestamp})`);
+            if (setConfigTimestamp !== Number.MAX_SAFE_INTEGER) {
+                // eslint-disable-next-line no-console
+                console.log(`[wingbot.ai BuildRouter] reloaded snapshot from ${new Date(setConfigTimestamp).toUTCString()} (${lastmod})`);
+            }
         } catch (e) {
             // noop
         }
@@ -574,7 +573,7 @@ class BuildRouter extends Router {
         }
 
         const retFn = (req, ...rest) => {
-            if (!shouldExecuteResolver(req, resolver.tag)) {
+            if (!shouldExecuteResolver(req, resolver.tag, context.isFallback)) {
                 return context.isLastIndex ? Router.END : Router.CONTINUE;
             }
             return typeof fn === 'function'

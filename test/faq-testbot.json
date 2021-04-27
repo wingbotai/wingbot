@@ -6,6 +6,22 @@
             "staticBlockId" : "5444e110-dd6f-11ea-a35d-19546190d6d5",
             "routes" : [
                 {
+                    "id" : "54450821-dd6f-11ea-a35d-19546190d6d5",
+                    "path" : "middleware",
+                    "name" : "Random middleware",
+                    "isEntryPoint" : false,
+                    "isFallback" : true,
+                    "replies" : [],
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.customCode",
+                            "params" : {
+                                "code" : "(req, res) => { res.setState({ a: (req.state.a || 0) + 1 }); return true; }"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id" : "5444e111-dd6f-11ea-a35d-19546190d6d5",
                     "path" : "start",
                     "name" : "Start",
