@@ -332,9 +332,12 @@ class CustomEntityDetectionModel {
      * @returns {Promise<Result>}
      */
     async resolve (text, req) {
+        let cleanText = text
+            .replace(/[\r\n]+/g, ' ')
+            .trim();
         const expectedEntities = req ? req.expectedEntities() : [];
-        const entities = await this._resolveEntities(text, null, expectedEntities);
-        let cleanText = text.toLocaleLowerCase();
+        const entities = await this._resolveEntities(cleanText, null, expectedEntities);
+        cleanText = cleanText.toLocaleLowerCase();
 
         // filter the text
         for (let i = entities.length - 1; i >= 0; i--) {
