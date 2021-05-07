@@ -811,7 +811,7 @@ class Processor extends EventEmitter {
         };
 
         return this.stateStorage
-            .getOrCreateAndLock(senderId, pageId, defaultState, timeout)
+            .getOrCreateAndLock(senderId, pageId, { ...defaultState }, timeout)
             .then(warnIfItTookTooLong)
             .catch((err) => {
                 warnIfItTookTooLong();

@@ -274,7 +274,7 @@ class Tester {
         return this.storage.getOrCreateStateSync(
             this.senderId,
             this.pageId,
-            this.processor.options.defaultState
+            { ...this.processor.options.defaultState }
         );
     }
 

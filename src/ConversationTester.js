@@ -441,10 +441,10 @@ class ConversationTester {
      * @param {string} [lang]
      */
     async _runStepCaseTests (testsGroup, botconfig = null, lang = null) {
-        const t = this._createTester(testsGroup, botconfig, lang);
         const out = [];
 
         for (const testCase of testsGroup.testCases) {
+            const t = this._createTester(testsGroup, botconfig, lang);
             let o = '';
             let fail = null;
             // @ts-ignore
