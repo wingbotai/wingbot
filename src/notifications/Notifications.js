@@ -459,7 +459,7 @@ class Notifications extends EventEmitter {
         }
 
         // is action
-        const { campaign } = req;
+        const { _ntfCampaign: campaign = req.campaign } = res.data;
 
         if (!campaign) {
             // track campaign success
@@ -629,6 +629,7 @@ class Notifications extends EventEmitter {
     }
 
     async _postponeTasksOnInteraction (data, req, res = null) {
+
         if (!data) {
             return;
         }
@@ -655,15 +656,18 @@ class Notifications extends EventEmitter {
         cache = cache.filter((t) => slidingCampaigns.some((c) => c.id === t.campaignId)
             && (t.enqueue >= req.timestamp || taskIdsWaitingToBeSent.includes(t.id)));
 
-        // postpone existing
-        cache = cache.map((t) => {
-            const campaign = slidingCampaigns.find((c) => c.id === t.campaignId);
-            if (!campaign.slide) {
-                return t;
-            }
-            const enqueue = this._calculateSlide(req.timestamp, campaign);
-            return { ...t, enqueue };
-        });
+        // postpone existing if it's not an action
+        if (!res || !res.data._ntfCampaign) {
+            cache = cache.map((t) => {
+                const campaign = slidingCampaigns.find((c) => c.id === t.campaignId);
+                if (!campaign.slide) {
+                    return t;
+                }
+                const enqueue = this._calculateSlide(req.timestamp, campaign);
+                return { ...t, enqueue };
+            });
+        }
+
         await Promise.all(cache
             // update only sliding campaigns
             .filter(({ campaignId }) => {
@@ -862,7 +866,8 @@ class Notifications extends EventEmitter {
 
         let result;
         try {
-            result = await connector.processMessage(message, task.senderId, task.pageId);
+            result = await connector
+                .processMessage(message, task.senderId, task.pageId, { _ntfCampaign: campaign });
             status = result.status; // eslint-disable-line prefer-destructuring
             mid = result.results && result.results.length
                 && result.results[result.results.length - 1].message_id;

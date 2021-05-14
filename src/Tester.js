@@ -153,14 +153,15 @@ class Tester {
      * @param {object} message - wingbot chat event
      * @param {string} senderId - chat event sender identifier
      * @param {string} pageId - channel/page identifier
+     * @param {object} [data] - additional data
      * @returns {Promise<any>}
      */
-    async processMessage (message, senderId = this.senderId, pageId = this.pageId) {
+    async processMessage (message, senderId = this.senderId, pageId = this.pageId, data = {}) {
         const messageSender = new ReturnSender({}, senderId, message, this.senderLogger);
         messageSender.simulatesOptIn = true;
 
         const res = await this.processor
-            .processMessage(message, pageId, messageSender, { ...this.testData });
+            .processMessage(message, pageId, messageSender, { ...data, ...this.testData });
         this._acquireResponseActions(res, messageSender);
 
         return res;

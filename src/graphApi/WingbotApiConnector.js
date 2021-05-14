@@ -93,8 +93,13 @@ class WingbotApiConnector {
             await this._keys;
         }
         if (this._keysLoaded < (Date.now() - this._cacheFor)) {
-            this._keys = this._loadKeys();
-            await this._keys;
+            try {
+                this._keys = this._loadKeys();
+                await this._keys;
+            } catch (e) {
+                this._keys = null;
+                throw e;
+            }
         }
         return this._keys;
     }

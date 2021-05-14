@@ -23,6 +23,7 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 /**
  * @typedef {object} BotAppOptions
  * @prop {string|Promise<string>} secret
+ * @prop {string} [appId] - for notifications
  * @prop {string} [apiUrl]
  * @prop {Function} [fetch]
  * @prop {ChatLogStorage} [chatLogStorage]
@@ -54,11 +55,13 @@ class BotApp {
             secret,
             chatLogStorage = null,
             fetch = null,
+            appId = null,
             ...processorOptions
         } = options;
 
         this._secret = Promise.resolve(secret);
         this._fetch = fetch; // mock
+        this._appId = appId;
 
         let { apiUrl } = options;
 
@@ -179,6 +182,36 @@ class BotApp {
             response_to_mid: message.mid,
             messaging: []
         };
+    }
+
+    /**
+     * Compatibility method for Notification engine
+     *
+     * @deprecated
+     * @param {object} message - wingbot chat event
+     * @param {string} senderId - chat event sender identifier
+     * @param {string} pageId - channel/page identifier
+     * @param {object} data - contextual data (will be available in res.data)
+     * @param {string} [data.appId] - possibility to override appId
+     * @returns {Promise<{status:number}>}
+     */
+    async processMessage (message, senderId, pageId, data = {}) {
+        const appId = data.appId || this._appId;
+        const secret = await this._secret;
+
+        const options = {
+            apiUrl: this._apiUrl,
+            pageId,
+            appId,
+            secret,
+            fetch: this._fetch
+        };
+
+        const sender = new BotAppSender(options, senderId, message, this._senderLogger);
+        const res = await this._processor
+            .processMessage(message, pageId, sender, { ...data, appId });
+
+        return res;
     }
 
     /**

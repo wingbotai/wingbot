@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.13.10",
+  "version": "3.14.0",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
