@@ -308,6 +308,25 @@ class ConversationTester {
     }
 
     /**
+     * @param {TestCase[]} testCases
+     * @param {number} lim
+     */
+    _getPagingForStepCases (testCases, lim) {
+        const someLongTestIndex = testCases
+            .findIndex((c, i) => c.steps.length > lim && i < lim);
+
+        if (someLongTestIndex === -1) {
+            return lim;
+        }
+
+        if (someLongTestIndex < (lim / 2)) {
+            return someLongTestIndex + 1;
+        }
+
+        return someLongTestIndex;
+    }
+
+    /**
      *
      * @param {*} testCases
      * @returns {TestsGroup[]}
@@ -319,8 +338,16 @@ class ConversationTester {
         const steps = [];
         for (const list of lists) {
             while (list.testCases.length > 0) {
+                let slice;
+                if (list.type === 'steps') {
+                    // @ts-ignore
+                    slice = this._getPagingForStepCases(list.testCases, stepCasesPerStep);
+                } else {
+                    slice = textCasesPerStep;
+                }
+
                 const tests = list.testCases
-                    .splice(0, list.type === 'texts' ? textCasesPerStep : stepCasesPerStep);
+                    .splice(0, slice);
 
                 steps.push({
                     listId: list.id,

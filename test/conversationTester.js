@@ -447,7 +447,7 @@ describe('<ConversationTester>', () => {
         it('should work in steps (paging)', async () => {
             const cases = [
                 // [stepCasesPerStep, expectedStepCount]
-                [1, 6], [2, 3], [3, 3], [4, 2], [5, 2], [6, 2]
+                [1, 6], [2, 4], [3, 3], [4, 2], [5, 2], [6, 2]
             ];
             for (const [stepCasesPerStep, expectedStepCount] of cases) {
                 const t = new ConversationTester(storage, botFactory, {
