@@ -34,8 +34,10 @@ const stateData = require('./stateData');
  * }
  */
 function compileWithState (req, res, template) {
+    if (!template) {
+        return '';
+    }
     const data = stateData(req, res);
-
     return handlebars.compile(`${template}`)(data);
 }
 
