@@ -114,12 +114,13 @@ class ConversationTester {
         this._testsSource = testsSource;
         this._botFactory = botFactory;
         this._options = {
-            stepCasesPerStep: 20,
-            textCasesPerStep: 60,
-            textCaseParallel: 20,
+            stepCasesPerStep: 15,
+            textCasesPerStep: 45,
+            textCaseParallel: 15,
             ...options
         };
         this._output = '';
+        this._cachedBot = null;
     }
 
     /**
@@ -153,6 +154,9 @@ class ConversationTester {
      * @returns {Promise<TestsOutput>}
      */
     async test (validationRequestBody = null, step = null, lang = null) {
+        if (step <= 1) {
+            this._cachedBot = null;
+        }
         this._output = '';
         const testCases = await this._getTestCases(lang);
         const groups = this._getGroups(testCases);
@@ -340,8 +344,13 @@ class ConversationTester {
             while (list.testCases.length > 0) {
                 let slice;
                 if (list.type === 'steps') {
+                    const lim = steps.length === 0
+                        ? Math.ceil(stepCasesPerStep / 2)
+                        : stepCasesPerStep;
                     // @ts-ignore
-                    slice = this._getPagingForStepCases(list.testCases, stepCasesPerStep);
+                    slice = this._getPagingForStepCases(list.testCases, lim);
+                } else if (steps.length === 0) {
+                    slice = Math.ceil(textCasesPerStep / 2);
                 } else {
                     slice = textCasesPerStep;
                 }
@@ -380,18 +389,18 @@ class ConversationTester {
      * @returns {Tester}
      */
     _createTester (testsGroup, botconfig = null, lang = null) {
-        const bot = this._botFactory(true);
-
-        if (botconfig) {
-            bot.buildWithSnapshot(botconfig.blocks, Number.MAX_SAFE_INTEGER);
+        if (!this._cachedBot) {
+            this._cachedBot = this._botFactory(true);
+            if (botconfig) {
+                this._cachedBot.buildWithSnapshot(botconfig.blocks, Number.MAX_SAFE_INTEGER);
+            }
         }
 
         let t;
-
         if (typeof this._options.testerFactory === 'function') {
-            t = this._options.testerFactory(bot, testsGroup);
+            t = this._options.testerFactory(this._cachedBot, testsGroup);
         } else {
-            t = new Tester(bot);
+            t = new Tester(this._cachedBot);
         }
 
         if (lang) {
@@ -458,6 +467,7 @@ class ConversationTester {
 
         out += `${before}     ${mark} ${testsGroup.list} ${passing}/${testsGroup.testCases.length} (${(passingPerc * 100).toFixed(0)}%)\n`;
 
+        t.dealloc();
         return [{ o: out, ok }];
     }
 
@@ -490,6 +500,7 @@ class ConversationTester {
                 o += `     ✓ ${testCase.name}\n`;
                 out.push({ o, ok: true });
             }
+            t.dealloc();
         }
 
         return out;
@@ -520,10 +531,11 @@ class ConversationTester {
                 }
             } catch (e) {
                 const { message } = e;
-
+                tester.dealloc();
                 return { ok: false, o: `${textCase.text.padEnd(longestText, ' ')} - ${message}` };
             }
 
+            tester.dealloc();
             return { ok: true, o: null };
         }
 

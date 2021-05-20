@@ -7,7 +7,6 @@ const assert = require('assert');
 const Processor = require('./Processor');
 const Request = require('./Request');
 const { MemoryStateStorage } = require('./tools');
-const ReducerWrapper = require('./ReducerWrapper');
 const ReturnSender = require('./ReturnSender');
 const { actionMatches, parseActionPayload, tokenize } = require('./utils');
 const { asserts } = require('./testTools');
@@ -26,7 +25,7 @@ class Tester {
     /**
      * Creates an instance of Tester.
      *
-     * @param {Router|ReducerWrapper|Function} reducer
+     * @param {Router|ReducerWrapper} reducer
      * @param {string} [senderId=null]
      * @param {string} [pageId=null]
      * @param {object} [processorOptions={}] - options for Processor
@@ -68,21 +67,17 @@ class Tester {
             info: e => console.info(e) // eslint-disable-line
         };
 
-        let wrappedReducer = reducer;
-
-        if (typeof reducer === 'function') {
-            wrappedReducer = new ReducerWrapper(reducer);
-        }
-
-        // @ts-ignore
-        wrappedReducer.on('_action', (senderIdentifier, action, text, req, prevAction, doNotTrack) => {
+        this._listener = (senderIdentifier, action, text, req, prevAction, doNotTrack) => {
             this._actionsCollector.push({
                 action, text, prevAction, doNotTrack
             });
-        });
+        };
+
+        // @ts-ignore
+        reducer.on('_action', this._listener);
 
         /** @type {Processor} */
-        this.processor = new Processor(wrappedReducer, ({
+        this.processor = new Processor(reducer, ({
             stateStorage: this.storage,
             log,
             loadUsers: false,
@@ -123,6 +118,12 @@ class Tester {
          * @prop {console} use own loggger
          */
         this.senderLogger = undefined;
+    }
+
+    dealloc () {
+        this.processor.reducer
+            .removeListener('_action', this._listener);
+        this.processor.reducer = null;
     }
 
     /**

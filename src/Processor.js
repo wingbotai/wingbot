@@ -123,7 +123,7 @@ class Processor extends EventEmitter {
     /**
      * Creates an instance of Processor
      *
-     * @param {ReducerWrapper|Function|Router} reducer
+     * @param {ReducerWrapper|Router} reducer
      * @param {ProcessorOptions} [options] - processor options
      *
      * @memberOf Processor
@@ -604,12 +604,8 @@ class Processor extends EventEmitter {
                     res.seen();
                 }
                 // process the event
-                let reduceResult;
-                if (typeof this.reducer === 'function') {
-                    reduceResult = this.reducer(req, res, postBack);
-                } else {
-                    reduceResult = this.reducer.reduce(req, res, postBack);
-                }
+                const reduceResult = this.reducer.reduce(req, res, postBack);
+
                 if (reduceResult instanceof Promise) { // note the result can be undefined
                     await reduceResult;
                 }

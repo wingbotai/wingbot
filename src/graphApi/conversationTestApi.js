@@ -27,6 +27,8 @@ const ConversationTester = require('../ConversationTester');
  */
 function conversationTestApi (testsSource, botFactory, options, acl) {
 
+    const test = new ConversationTester(testsSource, botFactory, options);
+
     return {
         async conversationTest (args, ctx) {
             if (!apiAuthorizer(args, ctx, acl)) {
@@ -34,8 +36,6 @@ function conversationTestApi (testsSource, botFactory, options, acl) {
             }
 
             const { bot: validationRequestBody, step = null, lang = null } = args;
-
-            const test = new ConversationTester(testsSource, botFactory, options);
 
             return test.test(validationRequestBody, step, lang);
         }

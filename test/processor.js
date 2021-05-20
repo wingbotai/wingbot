@@ -65,7 +65,7 @@ describe('Processor', function () {
 
             const stateStorage = createStateStorage();
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
 
             return proc.processMessage({
                 sender: {
@@ -89,7 +89,7 @@ describe('Processor', function () {
             const opts = makeOptions(stateStorage);
             const options = Object.assign(opts, { autoSeen: true, log: console });
             // @ts-ignore
-            const proc = new Processor(reducer, options);
+            const proc = new Processor(new ReducerWrapper(reducer), options);
 
             const res = await proc.processMessage({
                 sender: {
@@ -114,7 +114,9 @@ describe('Processor', function () {
 
             const stateStorage = createStateStorage();
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, Object.assign(opts, { autoSeen: true }));
+            const proc = new Processor(
+                new ReducerWrapper(reducer), Object.assign(opts, { autoSeen: true })
+            );
 
             return proc.processMessage({
                 sender: {
@@ -155,7 +157,7 @@ describe('Processor', function () {
             });
 
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
 
             return proc.processMessage({
                 sender: {
@@ -172,7 +174,11 @@ describe('Processor', function () {
                 assert.deepEqual(stateStorage.model.state, {
                     user: {},
                     _expected: null,
-                    _expectedKeywords: null
+                    _expectedKeywords: null,
+                    _lastAction: 'action',
+                    beforeLastInteraction: null,
+                    lastAction: 'action',
+                    lastInteraction: 'action'
                 });
             });
         });
@@ -194,7 +200,7 @@ describe('Processor', function () {
             });
 
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
 
             return proc.processMessage({
                 sender: {
@@ -212,7 +218,11 @@ describe('Processor', function () {
                     user: {},
                     calledAction: 'hello',
                     _expected: null,
-                    _expectedKeywords: null
+                    _expectedKeywords: null,
+                    _lastAction: 'hello',
+                    beforeLastInteraction: null,
+                    lastAction: 'hello',
+                    lastInteraction: 'action'
                 });
             });
         });
@@ -231,7 +241,7 @@ describe('Processor', function () {
             const opts = makeOptions(stateStorage);
             opts.senderFnFactory = undefined;
             opts.log = createLogger(() => {});
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
 
             const message = {
                 timestamp: 1,
@@ -261,7 +271,7 @@ describe('Processor', function () {
 
             const stateStorage = createStateStorage();
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
 
             const message = {
                 timestamp: 1,
@@ -293,7 +303,7 @@ describe('Processor', function () {
 
             const stateStorage = createStateStorage();
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
 
             const readMessage = Request.readEvent(1, 2);
             const deliveryMessage = Request.deliveryEvent(1, 2);
@@ -418,7 +428,7 @@ describe('Processor', function () {
 
             const stateStorage = createStateStorage();
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
 
             return proc.processMessage({})
                 .then(() => {
@@ -446,7 +456,7 @@ describe('Processor', function () {
 
             const stateStorage = createStateStorage(EMPTY_STATE, false);
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(reducer, opts);
+            const proc = new Processor(new ReducerWrapper(reducer), opts);
 
             return proc.processMessage({
                 sender: {
@@ -592,7 +602,7 @@ describe('Processor', function () {
                 res.text('1');
             });
 
-            p = new Processor(mockReducer);
+            p = new Processor(new ReducerWrapper(mockReducer));
 
             p.plugin(mockPlugin);
             // empty plugin to ensure the optional methods are working

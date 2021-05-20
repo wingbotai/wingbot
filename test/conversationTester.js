@@ -447,7 +447,7 @@ describe('<ConversationTester>', () => {
         it('should work in steps (paging)', async () => {
             const cases = [
                 // [stepCasesPerStep, expectedStepCount]
-                [1, 6], [2, 4], [3, 3], [4, 2], [5, 2], [6, 2]
+                [1, 6], [2, 4], [3, 4], [4, 3], [5, 2], [6, 2]
             ];
             for (const [stepCasesPerStep, expectedStepCount] of cases) {
                 const t = new ConversationTester(storage, botFactory, {
@@ -460,7 +460,7 @@ describe('<ConversationTester>', () => {
 
                     assert.ok(out.total <= stepCasesPerStep, 'unexpected total');
                     assert.equal(out.step, step, 'unexpected step');
-                    assert.equal(out.stepCount, expectedStepCount, 'unexpected step count');
+                    assert.equal(out.stepCount, expectedStepCount, `unexpected step count ${stepCasesPerStep}`);
 
                     step++;
                 }
@@ -470,7 +470,7 @@ describe('<ConversationTester>', () => {
         it('should work in steps (even for texts)', async () => {
             const cases = [
                 // [textCasesPerStep, expectedStepCount]
-                [1, 9], [2, 5], [3, 3], [4, 3], [5, 2], [6, 2], [7, 2], [8, 2], [9, 1]
+                [1, 9], [2, 5], [3, 4], [4, 3], [5, 3], [6, 2], [7, 2], [8, 2], [9, 2]
             ];
             for (const [textCasesPerStep, expectedStepCount] of cases) {
                 const t = new ConversationTester(textStorage, botFactory, {
@@ -483,7 +483,7 @@ describe('<ConversationTester>', () => {
 
                     assert.ok(out.total <= textCasesPerStep, 'unexpected total');
                     assert.equal(out.step, step, 'unexpected step');
-                    assert.equal(out.stepCount, expectedStepCount, 'unexpected step count');
+                    assert.equal(out.stepCount, expectedStepCount, `unexpected step count ${textCasesPerStep}`);
 
                     step++;
                 }
