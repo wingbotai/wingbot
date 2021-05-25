@@ -90,16 +90,21 @@ class Plugins {
             );
         }
 
-        const customFn = this.getPluginFactory(name, paramsData);
+        const cleanParams = Object.entries(paramsData)
+            .filter(([, e]) => e !== null && e !== undefined)
+            .map(([k, e]) => ({ [k]: e }))
+            .reduce(Object.assign, {});
+
+        const customFn = this.getPluginFactory(name, cleanParams);
         if (typeof customFn === 'object') {
             // this is an attached router
 
-            return new RouterWrap(customFn, useItems, paramsData);
+            return new RouterWrap(customFn, useItems, cleanParams);
         }
 
         const { router = new Router() } = context;
 
-        return wrapPluginFunction(customFn, paramsData, useItems, context, router);
+        return wrapPluginFunction(customFn, cleanParams, useItems, context, router);
     }
 
     code (name, factoryFn = null) {
