@@ -173,7 +173,7 @@ class Tester {
             && !(res.status === 204 && this._pluginBlocksCollector.length > 0)
             && !(res.status === 204 && this.allowEmptyResponse)) {
 
-            throw new Error(`Processor failed with status ${res.status}`);
+            throw Object.assign(new Error(`Processor failed with status ${res.status}`), { code: res.status });
         }
         this.responses = messageSender.responses;
         this.pluginBlocks = this._pluginBlocksCollector;

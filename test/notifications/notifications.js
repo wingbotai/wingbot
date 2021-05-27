@@ -99,7 +99,7 @@ describe('Notifications', function () {
 
     });
 
-    function wait (ms) {
+    function wait (ms = 100) {
         return new Promise((res) => setTimeout(res, ms));
     }
 
@@ -119,8 +119,17 @@ describe('Notifications', function () {
                     id: 'identifiedCampaign', exclude: ['left']
                 });
 
-            bot.use('testAction', (req, res) => {
+            bot.use('testAction', (req, res, postback) => {
+                if (req.state.doTheUnsubscribe) {
+                    // @ts-ignore
+                    res.unsubscribe('anyTag');
+                }
                 res.text('Hello');
+                postback('followup');
+            });
+
+            bot.use('followup', (req, res) => {
+                res.text('followup');
             });
 
             bot.use('onceAction', (req, res) => {
@@ -173,7 +182,7 @@ describe('Notifications', function () {
 
             assert.throws(() => t.passedAction('testAction'));
 
-            await wait(100);
+            await wait();
 
             await t.postBack('check');
 
@@ -190,11 +199,11 @@ describe('Notifications', function () {
 
             assert.throws(() => t.passedAction('testAction'));
 
-            await wait(100);
+            await wait();
 
             await t.intent('intent');
 
-            await wait(100);
+            await wait();
 
             t.any()
                 .contains('"another"')
@@ -211,27 +220,27 @@ describe('Notifications', function () {
 
             await notifications.runCampaign(campaign);
 
-            await wait(50);
+            await wait();
 
             await notifications.processQueue(t);
 
-            await wait(200);
+            await wait();
 
             t.passedAction('testAction');
 
-            await wait(300);
+            await wait();
 
             t.cleanup();
 
-            await wait(50);
+            await wait();
 
             await notifications.processQueue(t);
 
-            await wait(50);
+            await wait();
 
             assert.throws(() => t.passedAction('testAction'));
 
-            await wait(10);
+            await wait();
 
             const deliveryWaterMark = Date.now();
 
@@ -243,7 +252,7 @@ describe('Notifications', function () {
                 }
             }, t.pageId);
 
-            await wait(10);
+            await wait();
 
             const readWaterMark = Date.now();
 
@@ -272,7 +281,7 @@ describe('Notifications', function () {
             // the message has been queued, so lets unsubscribe the user with responder method
             await t.postBack('unsubscribe');
 
-            await wait(10);
+            await wait();
 
             t.passedAction('unsubscribe');
 
@@ -326,14 +335,14 @@ describe('Notifications', function () {
 
             t.cleanup();
 
-            await wait(50);
+            await wait();
 
             await notifications.processQueue(t);
 
-            await wait(50);
+            await wait();
 
             t.passedAction('testAction');
-            assert.equal(t.responses.length, 1);
+            assert.equal(t.responses.length, 2);
             assert.deepEqual(t.responses[0].recipient, { one_time_notif_token: 'my-token' });
         });
 
@@ -343,7 +352,7 @@ describe('Notifications', function () {
 
             await t.postBack('start');
 
-            await wait(10);
+            await wait();
 
             await notifications._storage.updateCampaign(campaign.id, {
                 hasCondition: true,
@@ -365,7 +374,7 @@ describe('Notifications', function () {
 
             await t.postBack('start');
 
-            await wait(10);
+            await wait();
 
             t.setState({ _ntfLastInteraction: Date.now() - 24 * 3600000 });
 
@@ -408,9 +417,52 @@ describe('Notifications', function () {
 
             t.cleanup();
 
+            await wait(10);
+
             await notifications.processQueue(t);
 
             t.passedAction('testAction');
+
+            await notifications.runCampaign(campaign);
+
+            t.cleanup();
+
+            await notifications.processQueue(t);
+
+            assert.throws(() => t.passedAction('testAction'));
+        });
+
+        it('should not send a campaign twice to single user also with unsubscribe', async () => {
+            const t = new Tester(bot);
+            t.processor.plugin(notifications);
+            t.setState({ doTheUnsubscribe: true });
+
+            campaign = await notifications._storage.updateCampaign(campaign.id, {
+                hasCondition: true,
+                condition: '() => { return true; }',
+                allowRepeat: false,
+                include: ['anyTag']
+            });
+
+            await wait();
+
+            await t.postBack('start');
+
+            await wait();
+
+            await notifications.runCampaign(campaign);
+
+            await wait();
+
+            t.cleanup();
+
+            await notifications.processQueue(t);
+
+            await wait();
+
+            t.passedAction('testAction');
+
+            t.any().contains('followup');
 
             await notifications.runCampaign(campaign);
 
@@ -447,7 +499,7 @@ describe('Notifications', function () {
 
             await notifications.runCampaign(campaign);
 
-            await wait(10);
+            await wait();
 
             t.cleanup();
 
@@ -481,7 +533,7 @@ describe('Notifications', function () {
                 }
             }, t.pageId);
 
-            await wait(10);
+            await wait();
 
             const readWaterMark = Date.now();
 
@@ -566,7 +618,7 @@ describe('Notifications', function () {
             // subscribe
             await t.postBack('start');
 
-            await wait(26);
+            await wait(27);
 
             slidingCampaign = await notifications._storage.getCampaignById(slidingCampaign.id);
             assert.equal(slidingCampaign.sent, 0);
@@ -581,12 +633,12 @@ describe('Notifications', function () {
             await t.postBack('onceAction');
             t.passedAction('onceAction');
 
-            await wait(26);
+            await wait(27);
 
             // it should be sent now
             t.cleanup();
             await notifications.processQueue(t);
-            assert.equal(t.actions.length, 1);
+            assert.equal(t.actions.length, 2);
 
             t.passedAction('testAction');
 
@@ -649,7 +701,7 @@ describe('Notifications', function () {
                 .contains('fooo');
 
             // queue will not process this task again
-            await wait(10);
+            await wait();
 
             // nothing should be sent now
             t.cleanup();
@@ -774,7 +826,7 @@ describe('Notifications', function () {
                 .contains('yeeesss');
 
             // queue will not process this task again
-            await wait(10);
+            await wait();
 
             await t.quickReply('cont');
 

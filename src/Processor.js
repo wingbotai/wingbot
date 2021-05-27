@@ -231,7 +231,7 @@ class Processor extends EventEmitter {
 
     reportSendError (err, message, pageId) {
         if (err.code === 204) {
-            this.options.log.info('nothing sent', message);
+            this.options.log.info(`nothing sent: ${err.message}`, message);
             return;
         }
         if (err.code !== 403) {
@@ -493,7 +493,8 @@ class Processor extends EventEmitter {
 
         try {
             // ensure the request was not processed
-            if (stateObject.lastTimestamps && message.timestamp
+            if (fromEvent
+                    && stateObject.lastTimestamps && message.timestamp
                     && stateObject.lastTimestamps.indexOf(message.timestamp) !== -1) {
                 throw Object.assign(new Error('Message has been already processed'), { code: 204 });
             }

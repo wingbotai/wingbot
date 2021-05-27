@@ -491,11 +491,13 @@ class Notifications extends EventEmitter {
         }
 
         // ensure again the user has corresponding tags
-        if (!this._isTargetGroup(campaign, req.subscribtions, req.pageId)) {
+        if (res.data._fromInitialEvent
+                && !this._isTargetGroup(campaign, req.subscribtions, req.pageId)) {
             return false;
         }
 
-        if (!campaign.allowRepeat) {
+        if (res.data._fromInitialEvent
+            && !campaign.allowRepeat) {
             const task = await this._storage.getSentTask(req.pageId, req.senderId, campaign.id);
 
             if (task) {
@@ -503,7 +505,8 @@ class Notifications extends EventEmitter {
             }
         }
 
-        if (campaign.hasCondition) {
+        if (res.data._fromInitialEvent
+            && campaign.hasCondition) {
             const fn = customFn(campaign.condition, `Campaign "${campaign.name}" condition`);
 
             const fnRes = fn(req, res);
