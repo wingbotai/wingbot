@@ -493,6 +493,9 @@ class Notifications extends EventEmitter {
         // ensure again the user has corresponding tags
         if (res.data._fromInitialEvent
                 && !this._isTargetGroup(campaign, req.subscribtions, req.pageId)) {
+
+            res.trackAs(false);
+            res.keepPreviousContext(req, false, true);
             return false;
         }
 
@@ -501,6 +504,8 @@ class Notifications extends EventEmitter {
             const task = await this._storage.getSentTask(req.pageId, req.senderId, campaign.id);
 
             if (task) {
+                res.trackAs(false);
+                res.keepPreviousContext(req, false, true);
                 return false;
             }
         }
@@ -512,6 +517,8 @@ class Notifications extends EventEmitter {
             const fnRes = fn(req, res);
 
             if (!fnRes) {
+                res.trackAs(false);
+                res.keepPreviousContext(req, false, true);
                 return false;
             }
         }
