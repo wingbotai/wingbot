@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.14.9",
+  "version": "3.14.10",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -69,6 +69,8 @@
   "optionalDependencies": {
     "handlebars": "^4.0.0",
     "po2json": "^0.4.5",
-    "request-promise-native": "^1.0.7"
+    "request-promise-native": "^1.0.7",
+    "request": "^1.0.7",
+    "axios": "^0.21.1"
   }
 }
