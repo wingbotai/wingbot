@@ -146,17 +146,7 @@ describe('BotApp', () => {
                                     sender: {
                                         id: PAGE_ID
                                     },
-                                    response_to_mid: '2'
-                                },
-                                {
-                                    messaging_type: 'RESPONSE',
-                                    recipient: {
-                                        id: 's'
-                                    },
                                     response_to_mid: '2',
-                                    sender: {
-                                        id: PAGE_ID
-                                    },
                                     wait: 550
                                 },
                                 {
@@ -248,17 +238,7 @@ describe('BotApp', () => {
                                             sender: {
                                                 id: PAGE_ID
                                             },
-                                            response_to_mid: '2'
-                                        },
-                                        {
-                                            messaging_type: 'RESPONSE',
-                                            recipient: {
-                                                id: 's'
-                                            },
                                             response_to_mid: '2',
-                                            sender: {
-                                                id: PAGE_ID
-                                            },
                                             wait: 550
                                         },
                                         {

@@ -197,6 +197,13 @@ class ReturnSender {
 
             if (payload.wait && !this.propagatesWaitEvent) {
                 await this._wait(payload.wait);
+            } else if (payload.wait) {
+                const lastResponse = this.responses[this.responses.length - 1];
+                if (lastResponse && lastResponse.sender_action) {
+                    Object.assign(lastResponse, {
+                        wait: payload.wait
+                    });
+                }
             } else {
                 this.responses.push(payload);
                 previousResponse = await this._send(payload);
