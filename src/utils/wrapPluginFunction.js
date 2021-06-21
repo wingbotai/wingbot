@@ -28,6 +28,8 @@ function wrapPluginFunction (
             }
         }
 
+        const previousRun = res.run;
+
         // attach block runner
         Object.assign(res, {
             run (codeBlockName) {
@@ -54,9 +56,12 @@ function wrapPluginFunction (
         const ret = customFn(req, res, postBack, useContext, paramsData);
 
         if (ret instanceof Promise) {
-            return ret.then((resolvedRet) => returnFn(resolvedRet));
+            return ret.then((resolvedRet) => {
+                Object.assign(res, { run: previousRun });
+                return returnFn(resolvedRet);
+            });
         }
-
+        Object.assign(res, { run: previousRun });
         return returnFn(ret);
     };
 
