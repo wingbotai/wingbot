@@ -3,6 +3,16 @@
  */
 'use strict';
 
+const stateData = require('./stateData');
+
+let handlebars;
+try {
+    // @ts-ignore
+    handlebars = module.require('handlebars');
+} catch (er) {
+    handlebars = { compile: (text) => () => text };
+}
+
 const ATTR_REGEX = /^([^.+]*)\.?(.+)?$/;
 const SCALAR_TYPES = ['string', 'number', 'boolean'];
 const SUBSCRIBE = '_$subscribe';
@@ -120,6 +130,8 @@ function getSetState (setState = {}, req, res = null, useState = null) {
                 || !Object.keys(val).some((l) => l.match(/^_\$/))) {
                 set = val;
             }
+        } else if (typeof val === 'string') {
+            set = handlebars.compile(val)(stateData(req, res));
         } else if (val === null
             || SCALAR_TYPES.includes(typeof val)) {
             set = val;

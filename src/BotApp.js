@@ -27,6 +27,7 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
  * @prop {string} [apiUrl]
  * @prop {Function} [fetch]
  * @prop {ChatLogStorage} [chatLogStorage]
+ * @prop {boolean} [preferSynchronousResponse]
  *
  * @typedef {ProcessorOptions & BotAppOptions} Options
  */
@@ -56,6 +57,7 @@ class BotApp {
             chatLogStorage = null,
             fetch = null,
             appId = null,
+            preferSynchronousResponse = false,
             ...processorOptions
         } = options;
 
@@ -85,6 +87,7 @@ class BotApp {
         );
 
         this._processor.plugin(BotApp.plugin());
+        this._preferSynchronousResponse = preferSynchronousResponse;
     }
 
     /**
@@ -140,7 +143,7 @@ class BotApp {
     async _processIncommingMessage (message, senderId, pageId, appId, secret, sync = false) {
         const { mid = null } = message;
 
-        if (sync) {
+        if (sync || this._preferSynchronousResponse) {
             const sender = new ReturnSender({}, senderId, message, this._senderLogger);
             sender.propagatesWaitEvent = true;
             const res = await this._processor.processMessage(message, pageId, sender, { appId });

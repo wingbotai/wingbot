@@ -303,6 +303,69 @@
             "category": "detectors",
             "items": [],
             "inputs": []
+        },
+        {
+            "id": "ai.wingbot.jumpTo",
+            "name": "Jump to: set return point",
+            "description": "Use in combination with 'Jump back: go to return point'",
+            "availableSince": 3.16,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": [
+                {
+                    "name": "whereToJump",
+                    "type": "postback",
+                    "label": "Where to jump"
+                },
+                {
+                    "name": "whereToJumpBack",
+                    "type": "postback",
+                    "label": "Return point"
+                }
+            ]
+        },
+        {
+            "id": "ai.wingbot.jumpBack",
+            "name": "Jump back: go to return point",
+            "description": "Makes the bot able to proceed some shared conversation process and then get user back to 'Return point'. Returns user to previously defined return point from plugin 'Jump to: set return point'",
+            "availableSince": 3.16,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "items": [],
+            "inputs": []
+        },
+        {
+            "id": "ai.wingbot.regexp",
+            "name": "RegExp condition",
+            "description": "Text to test can be specified using Handlebars, but it's optional.\nRegExp expression is mandatory.\nDiacritics in the input is removed before evaluating.",
+            "availableSince": 3.16,
+            "editable": false,
+            "isFactory": true,
+            "category": "uberbot",
+            "items": [
+                {
+                    "id": "matches",
+                    "description": "if input matches an expression"
+                },
+                {
+                    "id": "not",
+                    "description": "if not"
+                }
+            ],
+            "inputs": [
+                {
+                    "name": "expression",
+                    "type": "text",
+                    "label": "RegExp expression"
+                }, {
+                    "name": "input",
+                    "type": "text",
+                    "label": "Text to test (keep empty to use user input)"
+                }
+            ]
         }
     ],
     "categories": [

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.16.0] 2021-06-21
+
+### Added
+
+- jumpTo/jumpBack system plugins
+- setState string now accepts handlebars templates
+- regexp system plugin
+
+## [3.15.0] 2021-06-18
+
+### Added
+
+- force the `BotApp` to send reponses synchronously
+
 ## [3.14.7] 2021-05-27
 ### Fixed
 
