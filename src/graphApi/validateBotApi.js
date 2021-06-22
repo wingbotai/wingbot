@@ -22,7 +22,10 @@ async function validate (bot, validationRequestBody, postBackTest = null, textTe
     try {
         bot.buildWithSnapshot(validationRequestBody.blocks, Number.MAX_SAFE_INTEGER);
     } catch (e) {
-        return { error: `Bot build failed: ${e.message}`, ok: false };
+        const error = `Bot build failed: ${e.message}`;
+        // eslint-disable-next-line no-console
+        console.warn(error, e);
+        return { error, ok: false };
     }
 
     const t = new Tester(bot);

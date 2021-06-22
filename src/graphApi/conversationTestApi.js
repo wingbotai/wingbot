@@ -20,14 +20,19 @@ const ConversationTester = require('../ConversationTester');
  * @param {boolean} [options.disableAssertActions]
  * @param {boolean} [options.disableAssertTexts]
  * @param {boolean} [options.disableAssertQuickReplies]
+ * @param {boolean} [options.useConversationForTextTestCases]
+ * @param {boolean} [options.textThreshold]
  * @param {number} [options.stepCasesPerStep]
  * @param {number} [options.textCasesPerStep]
  * @param {number} [options.textCaseParallel]
+ * @param {boolean} [options.allowEmptyResponse]
  * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
  */
 function conversationTestApi (testsSource, botFactory, options, acl) {
 
-    const test = new ConversationTester(testsSource, botFactory, options);
+    const test = new ConversationTester(testsSource, botFactory, {
+        ...options
+    });
 
     return {
         async conversationTest (args, ctx) {

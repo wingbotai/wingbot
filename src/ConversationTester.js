@@ -108,6 +108,7 @@ class ConversationTester {
      * @param {number} [options.stepCasesPerStep]
      * @param {number} [options.textCasesPerStep]
      * @param {number} [options.textCaseParallel]
+     * @param {boolean} [options.allowEmptyResponse]
      * @param {testerFactory} [options.testerFactory]
      */
     constructor (testsSource, botFactory, options = {}) {
@@ -401,6 +402,7 @@ class ConversationTester {
             t = this._options.testerFactory(this._cachedBot, testsGroup);
         } else {
             t = new Tester(this._cachedBot);
+            t.allowEmptyResponse = !!this._options.allowEmptyResponse;
         }
 
         if (lang) {
