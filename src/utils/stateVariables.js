@@ -52,7 +52,7 @@ const vars = {
     expiresAfter (key, value, turnovers) {
         return {
             [key]: value,
-            [`_~${key}`]: { t: EXPIRES_AFTER, c: turnovers + 1 }
+            [`_~${key}`]: { t: EXPIRES_AFTER, c: turnovers }
         };
     },
 

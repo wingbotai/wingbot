@@ -10,7 +10,7 @@ const { vars } = require('../../src/utils/stateVariables');
 // const assert = require('assert');
 
 async function tryXtimes (t, times, action = 'try') {
-    for (let i = 0; i <= times; i++) {
+    for (let i = 0; i < times; i++) {
         await t.postBack(action);
 
         t.any()
