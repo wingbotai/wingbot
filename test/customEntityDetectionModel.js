@@ -11,7 +11,7 @@ const Tester = require('../src/Tester');
 
 describe('customEntityDetectionModel', () => {
 
-    describe('#_resolveEntities()', () => {
+    describe('#resolveEntities()', () => {
 
         /** @type {CustomEntityDetectionModel} */
         let m;
@@ -36,7 +36,7 @@ describe('customEntityDetectionModel', () => {
         });
 
         it('should resolve entities somehow', async () => {
-            const entities = await m._resolveEntities('hello 123 456');
+            const entities = await m.resolveEntities('hello 123 456');
 
             assert.deepEqual(entities, [
                 {
@@ -56,6 +56,30 @@ describe('customEntityDetectionModel', () => {
                     end: 13
                 }
             ]);
+        });
+
+        it('should special regexp entities', async () => {
+            m.setEntityDetector('nodiacritics', /zlutoucky/, {
+                replaceDiacritics: true,
+                matchWholeWords: true
+            });
+
+            let entities = await m.resolveEntities('hojda:Žluťoučký.');
+
+            assert.deepEqual(entities, [
+                {
+                    entity: 'nodiacritics',
+                    value: 'zlutoucky',
+                    text: 'Žluťoučký',
+                    score: 1,
+                    start: 6,
+                    end: 15
+                }
+            ]);
+
+            entities = await m.resolveEntities('Žluťoučkýř');
+
+            assert.deepEqual(entities, []);
         });
 
         it('should resolve compound entities', async () => {
@@ -139,13 +163,13 @@ describe('customEntityDetectionModel', () => {
 
     });
 
-    describe('#_nonOverlapping()', () => {
+    describe('#nonOverlapping()', () => {
 
         it('keeps two duplicate entities', () => {
             const m = new CustomEntityDetectionModel({});
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 5 },
                 { entity: 'b', start: 2, end: 5 }
             ], []), [
@@ -154,7 +178,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 5 },
                 { entity: 'b', start: 2, end: 5 }
             ], ['a', 'b']), [
@@ -167,7 +191,7 @@ describe('customEntityDetectionModel', () => {
             const m = new CustomEntityDetectionModel({});
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 5 },
                 { entity: 'b', start: 2, end: 5 }
             ], ['a']), [
@@ -175,7 +199,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 5 },
                 { entity: 'b', start: 2, end: 5 }
             ], ['b']), [
@@ -187,7 +211,7 @@ describe('customEntityDetectionModel', () => {
             const m = new CustomEntityDetectionModel({});
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 6 },
                 { entity: 'b', start: 2, end: 5 }
             ], []), [
@@ -195,7 +219,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 5 },
                 { entity: 'b', start: 2, end: 6 }
             ], []), [
@@ -203,7 +227,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 1, end: 5 },
                 { entity: 'b', start: 2, end: 5 }
             ], []), [
@@ -211,7 +235,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 5 },
                 { entity: 'b', start: 1, end: 5 }
             ], []), [
@@ -223,7 +247,7 @@ describe('customEntityDetectionModel', () => {
             const m = new CustomEntityDetectionModel({});
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 6 },
                 { entity: 'b', start: 2, end: 5 }
             ], ['b']), [
@@ -231,7 +255,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 5 },
                 { entity: 'b', start: 2, end: 6 }
             ], ['a']), [
@@ -239,7 +263,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 1, end: 5 },
                 { entity: 'b', start: 2, end: 5 }
             ], ['b']), [
@@ -247,7 +271,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 5 },
                 { entity: 'b', start: 1, end: 5 }
             ], ['a']), [
@@ -259,7 +283,7 @@ describe('customEntityDetectionModel', () => {
             const m = new CustomEntityDetectionModel({});
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 4 },
                 { entity: 'b', start: 3, end: 6 },
                 { entity: 'c', start: 4, end: 8 }
@@ -269,7 +293,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 4 },
                 { entity: 'b', start: 3, end: 9 },
                 { entity: 'c', start: 8, end: 10 }
@@ -282,7 +306,7 @@ describe('customEntityDetectionModel', () => {
             const m = new CustomEntityDetectionModel({});
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 4 },
                 { entity: 'b', start: 3, end: 6 },
                 { entity: 'c', start: 4, end: 8 },
@@ -293,7 +317,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 2, end: 4 },
                 { entity: 'b', start: 3, end: 9 },
                 { entity: 'c', start: 8, end: 10 },
@@ -305,7 +329,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 1, end: 4 },
                 { entity: 'b', start: 3, end: 9 },
                 { entity: 'c', start: 8, end: 10 },
@@ -317,7 +341,7 @@ describe('customEntityDetectionModel', () => {
             ]);
 
             // @ts-ignore
-            assert.deepStrictEqual(m._nonOverlapping([
+            assert.deepStrictEqual(m.nonOverlapping([
                 { entity: 'a', start: 3, end: 4 },
                 { entity: 'b', start: 3, end: 9 },
                 { entity: 'c', start: 8, end: 11 },

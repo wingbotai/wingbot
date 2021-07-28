@@ -3,6 +3,8 @@
  */
 'use strict';
 
+const { replaceDiacritics } = require('../utils');
+
 /**
  * @typedef {object} DetectedEntity
  * @prop {number} [start]
@@ -187,11 +189,13 @@ class CustomEntityDetectionModel {
     }
 
     /**
+     * Return only entities without overlap
      *
      * @param {DetectedEntity[]} entities
-     * @param {string[]} expectedEntities
+     * @param {string[]} [expectedEntities]
+     * @returns {DetectedEntity[]}
      */
-    _nonOverlapping (entities, expectedEntities) {
+    nonOverlapping (entities, expectedEntities = []) {
         // longest first
         entities.sort(({ start: a, end: b }, { start: z, end: y }) => {
             const aLen = b - a;
@@ -265,7 +269,14 @@ class CustomEntityDetectionModel {
         return res;
     }
 
-    async _resolveEntities (text, singleEntity = null, expectedEntities = []) {
+    /**
+     *
+     * @param {string} text
+     * @param {string} [singleEntity]
+     * @param {string[]} expectedEntities
+     * @returns {Promise<DetectedEntity[]>}
+     */
+    async resolveEntities (text, singleEntity = null, expectedEntities = []) {
         const resolved = new Set();
         let missing = Array.from(this._entityDetectors.keys());
         const entities = [];
@@ -302,7 +313,7 @@ class CustomEntityDetectionModel {
             results.forEach((res) => entities.push(...res));
         }
 
-        const clean = this._nonOverlapping(entities, expectedEntities);
+        const clean = this.nonOverlapping(entities, expectedEntities);
 
         if (!singleEntity) {
             return clean;
@@ -321,7 +332,7 @@ class CustomEntityDetectionModel {
         if (!this._entityDetectors.has(entity)) {
             return text;
         }
-        const [res = null] = await this._resolveEntities(text, entity);
+        const [res = null] = await this.resolveEntities(text, entity);
         return res ? res.value : null;
     }
 
@@ -336,7 +347,7 @@ class CustomEntityDetectionModel {
             .replace(/[\r\n]+/g, ' ')
             .trim();
         const expectedEntities = req ? req.expectedEntities() : [];
-        const entities = await this._resolveEntities(cleanText, null, expectedEntities);
+        const entities = await this.resolveEntities(cleanText, null, expectedEntities);
         cleanText = cleanText.toLocaleLowerCase();
 
         // filter the text
@@ -381,10 +392,14 @@ class CustomEntityDetectionModel {
     /**
      *
      * @param {RegExp} regexp
-     * @param {string[]} dependencies
-     * @param {string|Function} extractValue
+     * @param {object} [options]
+     * @param {Function|string} [options.extractValue] - entity extractor
+     * @param {boolean} [options.matchWholeWords] - match whole words at regular expression
+     * @param {boolean} [options.replaceDiacritics] - replace diacritics when matching regexp
+     * @param {string[]} [options.dependencies] - array of dependent entities
      */
-    _regexpToDetector (regexp, dependencies, extractValue = null) {
+    _regexpToDetector (regexp, options) {
+        const { dependencies = [], extractValue = null } = options;
         const { source } = regexp;
 
         /**
@@ -398,7 +413,7 @@ class CustomEntityDetectionModel {
                 return null;
             }
 
-            const replaced = source.replace(/@[A-Z0-9-]+/g, (value) => {
+            let replaced = source.replace(/@[A-Z0-9-]+/g, (value) => {
                 const matchingEntities = entities
                     .filter((e) => `@${e.entity.toUpperCase()}` === value)
                     .map((e) => this._escapeRegex(e.text));
@@ -409,9 +424,17 @@ class CustomEntityDetectionModel {
                 return `(${matchingEntities.join('|')})`;
             });
 
+            if (options.matchWholeWords) {
+                replaced = `(?<=(^|[^a-z0-9\u00C0-\u017F]))${replaced}(?=([^a-z0-9\u00C0-\u017F]|$))`;
+            }
+
             const r = new RegExp(replaced, 'i');
             const lc = text.toLocaleLowerCase();
-            const match = lc.match(r);
+            let matchText = lc;
+            if (options.replaceDiacritics) {
+                matchText = replaceDiacritics(matchText);
+            }
+            const match = matchText.match(r);
 
             if (!match) {
                 return null;
@@ -420,6 +443,7 @@ class CustomEntityDetectionModel {
             // find the right entity
             const start = match.index;
             const end = start + match[0].length;
+            matchText = lc.substring(start, end);
 
             const useEntities = entities.filter((e) => e.start >= start && e.end <= end);
 
@@ -443,7 +467,7 @@ class CustomEntityDetectionModel {
             }
 
             return {
-                text: match[0],
+                text: matchText,
                 start,
                 end,
                 value
@@ -458,6 +482,8 @@ class CustomEntityDetectionModel {
      * @param {object} [options]
      * @param {boolean} [options.anonymize] - if true, value will not be sent to NLP
      * @param {Function|string} [options.extractValue] - entity extractor
+     * @param {boolean} [options.matchWholeWords] - match whole words at regular expression
+     * @param {boolean} [options.replaceDiacritics] - keep diacritics when matching regexp
      * @param {string[]} [options.dependencies] - array of dependent entities
      * @returns {this}
      */
@@ -471,7 +497,7 @@ class CustomEntityDetectionModel {
             if (typeof options.extractValue === 'string' && !dependencies.includes(options.extractValue)) {
                 throw new Error(`RegExp entity detector '${name}' uses ${options.extractValue} extractValue but it's missing in RegExp`);
             }
-            entityDetector = this._regexpToDetector(detector, dependencies, options.extractValue);
+            entityDetector = this._regexpToDetector(detector, { ...options, dependencies });
         } else if (options.dependencies) {
             dependencies = dependencies
                 .map((d) => (`${d}`.match(/^@/) ? `${d}`.toUpperCase() : `@${d.toUpperCase()}`));
