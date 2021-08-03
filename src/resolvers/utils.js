@@ -4,8 +4,8 @@
 'use strict';
 
 const hbs = require('./hbs');
-const customFn = require('../utils/customFn');
 const stateData = require('../utils/stateData');
+const getCondition = require('../utils/getCondition');
 
 const ASPECT_SQUARE = 'square';
 const ASPECT_HORISONTAL = 'horisontal';
@@ -137,10 +137,14 @@ function processButtons (
         action: btnAction,
         hasCondition,
         conditionFn,
+        hasEditableCondition,
+        editableCondition,
         setState
     }) => {
         if (hasCondition) {
-            const condition = customFn(conditionFn, 'Quick reply condition', allowForbiddenSnippetWords);
+            const condition = getCondition({
+                hasCondition, conditionFn, hasEditableCondition, editableCondition
+            }, 'Quick reply condition', allowForbiddenSnippetWords);
 
             if (!condition(req, res)) {
                 return;

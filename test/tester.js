@@ -358,7 +358,7 @@ describe('Tester', function () {
         assert.strictEqual(res2, false);
     });
 
-    it('thows nice exceptions', async () => {
+    it('throws nice exceptions', async () => {
         const r = new Router();
 
         r.use('/text', (req, res) => {
