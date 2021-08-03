@@ -2,7 +2,7 @@
 
 ## Resolving actions
 
-Text is always treated as action, so theese two routes are matched same, when the `/cat` action is issued.
+Text is always treated as action, so these two routes are matched same, when the `/cat` action is issued.
 
 ```javascript
 const { Router } = require('wingbot');
@@ -87,7 +87,7 @@ module.exports = bot;
 
 ## Redirecting flow with Post Back
 
-Sometimes there is need to redirect the conversation flow. For theese purposes,
+Sometimes there is need to redirect the conversation flow. For these purposes,
 there is a `postBack(action: string, data: object?)` function.
 
 ```javascript
