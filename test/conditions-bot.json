@@ -1,0 +1,214 @@
+{
+  "botId": "6c1ef519-1509-4359-8066-116c139c2c1a",
+  "name": "development",
+  "url": null,
+  "type": null,
+  "nlpModel": null,
+  "nlpAuth": null,
+  "locked": false,
+  "token": "HtzDV7nZzLTp9XksTCaG2Zv23pDQpdtrMvwSHKt2xWPstIUHhhEMp95yexbdKf3WjQ8OqE1rdKuXCmMvZRIuSYiQbdIosujslxGM04jXhM3T2boQOdwxY6wZ7bcjFpvm",
+  "blocks": [
+    {
+      "isRoot": true,
+      "blockName": "Root",
+      "staticBlockId": "79e04330-f455-11eb-ace0-d90da3d7285e",
+      "routes": [
+        {
+          "id": "79e06a40-f455-11eb-ace0-d90da3d7285e",
+          "path": "start",
+          "name": "Start",
+          "isEntryPoint": true,
+          "isFallback": false,
+          "replies": [],
+          "resolvers": [
+            {
+              "type": "botbuild.message",
+              "params": {
+                "text": [
+                  "Welcome, I'am a chatbot!"
+                ],
+                "hasCondition": false,
+                "replies": [
+                  {
+                    "targetRouteId": "9148d8c0-f455-11eb-b34e-dd7d7fc678e6",
+                    "title": "editable",
+                    "hasCondition": false,
+                    "setState": {
+                      "editable": {
+                        "_$inc": 1
+                      }
+                    }
+                  },
+                  {
+                    "targetRouteId": "944d8d40-f455-11eb-b34e-dd7d7fc678e6",
+                    "title": "snippet",
+                    "hasCondition": false,
+                    "setState": {
+                      "snippet": {
+                        "_$inc": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "path": "editable",
+          "id": "8a7ae740-f455-11eb-b34e-dd7d7fc678e6",
+          "resolvers": [
+            {
+              "id": "8a7ae740-f455-11eb-b34e-dd7d7fc678e6",
+              "type": "botbuild.include",
+              "params": {
+                "staticBlockId": "8a7ae740-f455-11eb-b34e-dd7d7fc678e6",
+                "items": {}
+              }
+            }
+          ]
+        },
+        {
+          "path": "snippet",
+          "id": "8c34cc40-f455-11eb-b34e-dd7d7fc678e6",
+          "resolvers": [
+            {
+              "id": "8c34cc40-f455-11eb-b34e-dd7d7fc678e6",
+              "type": "botbuild.include",
+              "params": {
+                "staticBlockId": "8c34cc40-f455-11eb-b34e-dd7d7fc678e6",
+                "items": {}
+              }
+            }
+          ]
+        },
+        {
+          "id": "79e06a42-f455-11eb-ace0-d90da3d7285e",
+          "path": "fallback",
+          "name": "Fallback",
+          "isEntryPoint": false,
+          "isFallback": true,
+          "replies": [],
+          "resolvers": [
+            {
+              "type": "botbuild.message",
+              "params": {
+                "text": [
+                  "Sorry, but i don't understand"
+                ],
+                "hasCondition": false,
+                "replies": [
+                  {
+                    "targetRouteId": "79e06a40-f455-11eb-ace0-d90da3d7285e",
+                    "title": "Back to Start"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "blockName": "editable",
+      "staticBlockId": "8a7ae740-f455-11eb-b34e-dd7d7fc678e6",
+      "routes": [
+        {
+          "id": "9148d8c0-f455-11eb-b34e-dd7d7fc678e6",
+          "path": "editable",
+          "name": "editable",
+          "isEntryPoint": true,
+          "isFallback": false,
+          "replies": [],
+          "resolvers": [
+            {
+              "type": "botbuild.message",
+              "params": {
+                "text": [
+                  "this is editable >= 3"
+                ],
+                "hasCondition": true,
+                "conditionFn": "(req, res) => {\n    return true;\n}",
+                "replies": [],
+                "hasEditableCondition": true,
+                "editableCondition": [
+                  [
+                    {
+                      "operator": "get",
+                      "variable": "editable",
+                      "value": "3",
+                      "id": 1627993584564
+                    }
+                  ]
+                ]
+              }
+            },
+            {
+              "type": "botbuild.message",
+              "params": {
+                "text": [
+                  "this is editable < 3"
+                ],
+                "hasCondition": true,
+                "conditionFn": "(req, res) => {\n    return true;\n}",
+                "replies": [],
+                "hasEditableCondition": true,
+                "editableCondition": [
+                  [
+                    {
+                      "operator": "st",
+                      "variable": "editable",
+                      "value": "3",
+                      "id": 1627993702012
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "blockName": "snippet",
+      "staticBlockId": "8c34cc40-f455-11eb-b34e-dd7d7fc678e6",
+      "routes": [
+        {
+          "id": "944d8d40-f455-11eb-b34e-dd7d7fc678e6",
+          "path": "snippet",
+          "name": "snippet",
+          "isEntryPoint": true,
+          "isFallback": false,
+          "replies": [],
+          "resolvers": [
+            {
+              "type": "botbuild.message",
+              "params": {
+                "text": [
+                  "this is snippet >= 3"
+                ],
+                "hasCondition": true,
+                "conditionFn": "(req, res) => {\n    return req.state.snippet>=3;\n}",
+                "replies": [],
+                "hasEditableCondition": false
+              }
+            },
+            {
+              "type": "botbuild.message",
+              "params": {
+                "text": [
+                  "this is snippet < 3"
+                ],
+                "hasCondition": true,
+                "conditionFn": "(req, res) => {\n    return req.state.snippet<3;\n}",
+                "replies": [],
+                "hasEditableCondition": false
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "lastmod": 1627993932439
+}

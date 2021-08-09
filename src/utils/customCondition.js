@@ -4,49 +4,6 @@
 'use strict';
 
 const { webalize } = require('webalize');
-const Router = require('../Router'); // eslint-disable-line
-const ai = require('../Ai'); // eslint-disable-line
-const fetch = require('node-fetch'); // eslint-disable-line
-const Request = require('../Request'); // eslint-disable-line
-
-let request;
-try {
-    // @ts-ignore
-    request = module.require('request-promise-native');
-} catch (e) {
-    // eslint-disable-next-line no-unused-vars
-    request = () => { throw new Error('To use request, you have to manually install request-promise-native into your bot.'); };
-}
-let axios;
-try {
-    // @ts-ignore
-    axios = module.require('axios');
-} catch (e) {
-    // eslint-disable-next-line no-unused-vars
-    const errfn = () => { throw new Error('To use axios, you have to manually install it into your bot.'); };
-    axios = errfn;
-
-    // @ts-ignore
-    axios.get = errfn;
-    // @ts-ignore
-    axios.request = errfn;
-    // @ts-ignore
-    axios.post = errfn;
-    // @ts-ignore
-    axios.put = errfn;
-    // @ts-ignore
-    axios.delete = errfn;
-    // @ts-ignore
-    axios.head = errfn;
-    // @ts-ignore
-    axios.options = errfn;
-    // @ts-ignore
-    axios.patch = errfn;
-    // @ts-ignore
-    axios.getUri = errfn;
-    // @ts-ignore
-    axios.create = errfn;
-}
 
 const ConditionOperators = {
     'is false': 'if',
@@ -68,18 +25,6 @@ const ConditionOperators = {
     '!=': 'neq'
 };
 
-/**
-  *
-  * @param {*} operator
-  * @returns {"number"|"boolean"|"text"} operator type
-  */
-// eslint-disable-next-line no-unused-vars
-const getConditionOperatorType = (operator) => {
-    if (['if', 'it'].includes(operator)) return 'boolean';
-    if (['st', 'gt', 'set', 'get'].includes(operator)) return 'number';
-    return 'text';
-};
-
 const isSimpleWord = (string) => {
     const word = string.replace(/\s+/g, ' ');
     return webalize(word).length === word.trim().length;
@@ -92,7 +37,12 @@ const isSimpleWord = (string) => {
  * @param {string} string - number
  * @returns {boolean}
  */
-const isStringNumber = (string) => !!new RegExp(/^[0-9,.]*$/).test((string || '').replace(/\s+/g, ''));
+const isStringNumber = (string) => {
+    if (typeof string !== 'string') return false;
+    if (string.length === 0) return false;
+    return !!new RegExp(/^([0-9]*[, ]{0,1})*[., ]{0,1}[0-9]*$/)
+        .test((string).replace(/\s+/g, ''));
+};
 
 /**
  *
@@ -101,15 +51,21 @@ const isStringNumber = (string) => !!new RegExp(/^[0-9,.]*$/).test((string || ''
  */
 // TODO čárka a tečka
 const stringToNumber = (string) => {
+    if (typeof string !== 'string') return string;
     if (!isStringNumber(string)) throw new Error('String not a number');
-    const trimmed = string.replace(/(\s|,)+/g, '');
-    return trimmed.includes(',') ? Number.parseFloat(trimmed) : Number.parseInt(trimmed, 10);
+    let trimmed;
+    if (new RegExp(/^[^,.]+,[^,.]+$/).test(string)) {
+        trimmed = string.replace(',', '.');
+    } else {
+        trimmed = string.replace(/(\s|,)+/g, '').replace(',', '.');
+    }
+    return trimmed.includes('.') ? Number.parseFloat(trimmed) : Number.parseInt(trimmed, 10);
 };
 
 const toNumber = (value) => {
     if (value === undefined) return 0;
     if (typeof value === 'number') return value;
-    return (isStringNumber(value) ? stringToNumber(value) : value);
+    return (isStringNumber(value) ? stringToNumber(value) : Number.parseFloat(value));
 };
 
 /**
@@ -120,36 +76,28 @@ const toNumber = (value) => {
  * @returns {boolean}
  */
 // eslint-disable-next-line import/prefer-default-export
-const compare = (variable, operator, value) => {
+const compare = (variable, operator, value = undefined) => {
     if (Array.isArray(variable)) {
         return variable.some((variableElement) => compare(variableElement, operator, value));
     }
 
+    if (typeof variable === 'object') {
+        return Object.values(variable)
+            .some((variableElement) => compare(variableElement, operator, value));
+    }
+
     switch (operator) {
         case ConditionOperators['is true']:
-            return typeof value === 'string' ? !!toNumber(variable) : !!variable;
+            return isStringNumber(variable) ? !!toNumber(variable) : !!variable;
         case ConditionOperators['is false']:
-            return typeof value === 'string' ? !toNumber(variable) : !variable;
+            return isStringNumber(variable) ? !toNumber(variable) : !variable;
         case ConditionOperators.contains:
             if (typeof variable === 'string') {
                 if (isSimpleWord(value)) return webalize(variable).includes(webalize(`${value}`));
                 return variable.toLocaleLowerCase().includes(value.toString().toLocaleLowerCase());
             }
-            if (typeof variable === 'object') {
-                if (Array.isArray(variable)) {
-                    return variable.includes(value.toString().toLocaleLowerCase());
-                }
-                let contains = false;
-                Object.keys(variable).forEach((key) => {
-                    if (contains) return;
-                    if (!['number', 'string'].includes(typeof key) && compare(key, operator, value)) { contains = true; }
-                    if (key.toLocaleLowerCase().includes(value.toString().toLocaleLowerCase())) {
-                        contains = true;
-                    }
-                });
-                return contains;
-            }
-            return false;
+
+            return variable.toString().includes(value.toString());
 
         case ConditionOperators['not contains']:
             return !compare(variable, ConditionOperators.contains, value);
@@ -182,15 +130,10 @@ const compare = (variable, operator, value) => {
             return toNumber(variable) <= toNumber(value);
 
         default:
-            throw new Error('Condition operator not fount.');
+            throw new Error('Invalid operator');
     }
 };
 
-/**
- *
- * @param {string} variable
- * @param {Request} req
- */
 function getVariableValue (variable, req) {
     // path to object props or array elements
     if (variable.includes('.')) {
@@ -219,6 +162,8 @@ function customCondition (condition, description = '') {
         throw new Error(`Invalid condition (${description}) type`);
     }
 
+    // @ts-ignore
+    // eslint-disable-next-line no-unused-vars
     const resolver = (req, res) => condition.some((condList) => condList.every((cond) => {
         const variableValue = getVariableValue(cond.variable, req);
         return compare(variableValue, cond.operator, cond.value);
@@ -228,3 +173,9 @@ function customCondition (condition, description = '') {
 }
 
 module.exports = customCondition;
+module.exports.ConditionOperators = ConditionOperators;
+module.exports.compare = compare;
+module.exports.isSimpleWord = isSimpleWord;
+module.exports.isStringNumber = isStringNumber;
+module.exports.toNumber = toNumber;
+module.exports.stringToNumber = stringToNumber;

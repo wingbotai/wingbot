@@ -174,7 +174,7 @@ class Tester {
             && !(res.status === 204 && this.allowEmptyResponse)) {
 
             if (res.status === 204) {
-                throw Object.assign(new Error(`Bot did not responded (status ${res.status})`), { code: res.status });
+                throw Object.assign(new Error(`Bot did not respond (status ${res.status})`), { code: res.status });
             }
 
             throw Object.assign(new Error(`Processor failed with status ${res.status}`), { code: res.status });

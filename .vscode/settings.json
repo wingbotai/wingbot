@@ -1,0 +1,5 @@
+ {
+    "mochaExplorer.logpanel": true,
+    "mochaExplorer.configFile": ".mocharc.js",
+    "mochaExplorer.launcherScript": ""
+}
