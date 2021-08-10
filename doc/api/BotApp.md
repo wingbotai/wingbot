@@ -50,6 +50,7 @@ Adapter for Wingbot flight director
     * [new BotApp(bot, options)](#new_BotApp_new)
     * _instance_
         * [.processor](#BotApp_processor) ⇒ [<code>Processor</code>](#Processor)
+        * ~~[.processMessage(message, senderId, pageId, data)](#BotApp_processMessage) ⇒ <code>Promise.&lt;{status:number}&gt;</code>~~
         * [.request(rawBody, rawHeaders)](#BotApp_request) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
     * _static_
         * [.plugin()](#BotApp_plugin) ⇒ [<code>Plugin</code>](#Plugin)
@@ -69,6 +70,23 @@ Adapter for Wingbot flight director
 Get the processor instance
 
 **Kind**: instance property of [<code>BotApp</code>](#BotApp)  
+<div id="BotApp_processMessage">&nbsp;</div>
+
+### ~~botApp.processMessage(message, senderId, pageId, data) ⇒ <code>Promise.&lt;{status:number}&gt;</code>~~
+***Deprecated***
+
+Compatibility method for Notification engine
+
+**Kind**: instance method of [<code>BotApp</code>](#BotApp)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| message | <code>object</code> | wingbot chat event |
+| senderId | <code>string</code> | chat event sender identifier |
+| pageId | <code>string</code> | channel/page identifier |
+| data | <code>object</code> | contextual data (will be available in res.data) |
+| [data.appId] | <code>string</code> | possibility to override appId |
+
 <div id="BotApp_request">&nbsp;</div>
 
 ### botApp.request(rawBody, rawHeaders) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
@@ -131,12 +149,14 @@ Returns processor plugin, which updates thread context automatically
 **Kind**: global typedef  
 **Properties**
 
-| Name | Type |
-| --- | --- |
-| secret | <code>string</code> \| <code>Promise.&lt;string&gt;</code> | 
-| [apiUrl] | <code>string</code> | 
-| [fetch] | <code>function</code> | 
-| [chatLogStorage] | <code>ChatLogStorage</code> | 
+| Name | Type | Description |
+| --- | --- | --- |
+| secret | <code>string</code> \| <code>Promise.&lt;string&gt;</code> |  |
+| [appId] | <code>string</code> | for notifications |
+| [apiUrl] | <code>string</code> |  |
+| [fetch] | <code>function</code> |  |
+| [chatLogStorage] | <code>ChatLogStorage</code> |  |
+| [preferSynchronousResponse] | <code>boolean</code> |  |
 
 <div id="ApiResponse">&nbsp;</div>
 

@@ -52,7 +52,7 @@
         * [.senderLogger](#Tester_senderLogger)
         * [.setExpandRandomTexts()](#Tester_setExpandRandomTexts)
         * [.cleanup()](#Tester_cleanup)
-        * [.processMessage(message, senderId, pageId)](#Tester_processMessage) ⇒ <code>Promise.&lt;any&gt;</code>
+        * [.processMessage(message, senderId, pageId, [data])](#Tester_processMessage) ⇒ <code>Promise.&lt;any&gt;</code>
         * [.res([index])](#Tester_res) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
         * [.any()](#Tester_any) ⇒ [<code>AnyResponseAssert</code>](#AnyResponseAssert)
         * [.lastRes()](#Tester_lastRes) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
@@ -125,7 +125,7 @@ Clear acquired responses and data
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
 <div id="Tester_processMessage">&nbsp;</div>
 
-### tester.processMessage(message, senderId, pageId) ⇒ <code>Promise.&lt;any&gt;</code>
+### tester.processMessage(message, senderId, pageId, [data]) ⇒ <code>Promise.&lt;any&gt;</code>
 Use tester as a connector :)
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
@@ -135,6 +135,7 @@ Use tester as a connector :)
 | message | <code>object</code> | wingbot chat event |
 | senderId | <code>string</code> | chat event sender identifier |
 | pageId | <code>string</code> | channel/page identifier |
+| [data] | <code>object</code> | additional data |
 
 <div id="Tester_res">&nbsp;</div>
 
@@ -299,7 +300,7 @@ Creates an instance of Tester.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| reducer | <code>Router</code> \| <code>ReducerWrapper</code> \| <code>function</code> |  |  |
+| reducer | <code>Router</code> \| <code>ReducerWrapper</code> |  |  |
 | [senderId] | <code>string</code> | <code>null</code> |  |
 | [pageId] | <code>string</code> | <code>null</code> |  |
 | [processorOptions] | <code>object</code> | <code>{}</code> | options for Processor |
@@ -511,6 +512,7 @@ Automated Conversation tests runner
     * [.test(validationRequestBody, [step], [lang])](#ConversationTester_test) ⇒ [<code>Promise.&lt;TestsOutput&gt;</code>](#TestsOutput)
     * [._getLists(testCases)](#ConversationTester__getLists) ⇒ [<code>Array.&lt;List&gt;</code>](#List)
     * [._getListCases(testCases)](#ConversationTester__getListCases) ⇒ <code>Map.&lt;string, (Array.&lt;TestCase&gt;\|Array.&lt;TextCase&gt;)&gt;</code>
+    * [._getPagingForStepCases(testCases, lim)](#ConversationTester__getPagingForStepCases)
     * [._getGroups(testCases)](#ConversationTester__getGroups) ⇒ [<code>Array.&lt;TestsGroup&gt;</code>](#TestsGroup)
     * [._getTestsGroups(testsGroups, step)](#ConversationTester__getTestsGroups)
     * [._createTester(testsGroup, [botconfig], [lang])](#ConversationTester__createTester) ⇒ [<code>Tester</code>](#Tester)
@@ -536,6 +538,7 @@ Automated Conversation tests runner
 | [options.stepCasesPerStep] | <code>number</code> |  |
 | [options.textCasesPerStep] | <code>number</code> |  |
 | [options.textCaseParallel] | <code>number</code> |  |
+| [options.allowEmptyResponse] | <code>boolean</code> |  |
 | [options.testerFactory] | [<code>testerFactory</code>](#testerFactory) |  |
 
 <div id="ConversationTester__getTestCases">&nbsp;</div>
@@ -577,6 +580,16 @@ Runs the conversation test
 | Param | Type |
 | --- | --- |
 | testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) \| [<code>Array.&lt;TextCase&gt;</code>](#TextCase) | 
+
+<div id="ConversationTester__getPagingForStepCases">&nbsp;</div>
+
+### conversationTester.\_getPagingForStepCases(testCases, lim)
+**Kind**: instance method of [<code>ConversationTester</code>](#ConversationTester)  
+
+| Param | Type |
+| --- | --- |
+| testCases | [<code>Array.&lt;TestCase&gt;</code>](#TestCase) | 
+| lim | <code>number</code> | 
 
 <div id="ConversationTester__getGroups">&nbsp;</div>
 

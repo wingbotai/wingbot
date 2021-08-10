@@ -321,11 +321,12 @@ bot.use(ai.match('intent1'), (req, res) => {
     * [new CustomEntityDetectionModel(options, [log])](#new_CustomEntityDetectionModel_new)
     * [._normalizeResult(entities, entity, text, offset, originalText)](#CustomEntityDetectionModel__normalizeResult)
     * [._detectEntities(entity, text, entities)](#CustomEntityDetectionModel__detectEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
-    * [._nonOverlapping(entities, expectedEntities)](#CustomEntityDetectionModel__nonOverlapping)
+    * [.nonOverlapping(entities, [expectedEntities])](#CustomEntityDetectionModel_nonOverlapping) ⇒ [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity)
+    * [.resolveEntities(text, [singleEntity], expectedEntities)](#CustomEntityDetectionModel_resolveEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
     * [.resolve(text, [req])](#CustomEntityDetectionModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
     * [._extractRegExpDependencies(regexp)](#CustomEntityDetectionModel__extractRegExpDependencies)
     * [._entityByDependency(entities, dependency)](#CustomEntityDetectionModel__entityByDependency) ⇒ [<code>DetectedEntity</code>](#DetectedEntity) \| <code>null</code>
-    * [._regexpToDetector(regexp, dependencies, extractValue)](#CustomEntityDetectionModel__regexpToDetector)
+    * [._regexpToDetector(regexp, [options])](#CustomEntityDetectionModel__regexpToDetector)
     * [.setEntityDetector(name, detector, [options])](#CustomEntityDetectionModel_setEntityDetector) ⇒ <code>this</code>
 
 <div id="new_CustomEntityDetectionModel_new">&nbsp;</div>
@@ -361,15 +362,28 @@ bot.use(ai.match('intent1'), (req, res) => {
 | text | <code>string</code> | 
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
 
-<div id="CustomEntityDetectionModel__nonOverlapping">&nbsp;</div>
+<div id="CustomEntityDetectionModel_nonOverlapping">&nbsp;</div>
 
-### customEntityDetectionModel.\_nonOverlapping(entities, expectedEntities)
+### customEntityDetectionModel.nonOverlapping(entities, [expectedEntities]) ⇒ [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity)
+Return only entities without overlap
+
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
 
 | Param | Type |
 | --- | --- |
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
-| expectedEntities | <code>Array.&lt;string&gt;</code> | 
+| [expectedEntities] | <code>Array.&lt;string&gt;</code> | 
+
+<div id="CustomEntityDetectionModel_resolveEntities">&nbsp;</div>
+
+### customEntityDetectionModel.resolveEntities(text, [singleEntity], expectedEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| text | <code>string</code> |  | 
+| [singleEntity] | <code>string</code> | <code>null</code> | 
+| expectedEntities | <code>Array.&lt;string&gt;</code> |  | 
 
 <div id="CustomEntityDetectionModel_resolve">&nbsp;</div>
 
@@ -402,14 +416,17 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 <div id="CustomEntityDetectionModel__regexpToDetector">&nbsp;</div>
 
-### customEntityDetectionModel.\_regexpToDetector(regexp, dependencies, extractValue)
+### customEntityDetectionModel.\_regexpToDetector(regexp, [options])
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
 
-| Param | Type | Default |
+| Param | Type | Description |
 | --- | --- | --- |
-| regexp | <code>RegExp</code> |  | 
-| dependencies | <code>Array.&lt;string&gt;</code> |  | 
-| extractValue | <code>string</code> \| <code>function</code> | <code>null</code> | 
+| regexp | <code>RegExp</code> |  |
+| [options] | <code>object</code> |  |
+| [options.extractValue] | <code>function</code> \| <code>string</code> | entity extractor |
+| [options.matchWholeWords] | <code>boolean</code> | match whole words at regular expression |
+| [options.replaceDiacritics] | <code>boolean</code> | replace diacritics when matching regexp |
+| [options.dependencies] | <code>Array.&lt;string&gt;</code> | array of dependent entities |
 
 <div id="CustomEntityDetectionModel_setEntityDetector">&nbsp;</div>
 
@@ -423,6 +440,8 @@ bot.use(ai.match('intent1'), (req, res) => {
 | [options] | <code>object</code> |  |
 | [options.anonymize] | <code>boolean</code> | if true, value will not be sent to NLP |
 | [options.extractValue] | <code>function</code> \| <code>string</code> | entity extractor |
+| [options.matchWholeWords] | <code>boolean</code> | match whole words at regular expression |
+| [options.replaceDiacritics] | <code>boolean</code> | keep diacritics when matching regexp |
 | [options.dependencies] | <code>Array.&lt;string&gt;</code> | array of dependent entities |
 
 <div id="WingbotModel">&nbsp;</div>
