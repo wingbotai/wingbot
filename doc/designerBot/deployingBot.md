@@ -7,7 +7,7 @@ There are two components:
 - **wingbot.ai designer** - provides interactions and bot structure as interactions snapshot JSON
 - **wingbot chatbot** - standalone chatbot application
 
-And theese components communicates simply:
+And these components communicates simply:
 
 - a **chatbot** downloads current interactions snapshot from the **designer**
 - when making a new interactions snapshot **designer** validates it on **chatbot** and then invalidates cached snapshot

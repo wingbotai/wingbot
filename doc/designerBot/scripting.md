@@ -34,7 +34,7 @@ There is a **conversation state** accessible with `req.state`, which is stored u
 - `res.setState(data)` - stores data into the state, after the event processing finishes
 - `res.newState` - object, which is filled by `res.setState()` method during the messaging event processing
 
-And there are **Responder data**, which persists only during the messaging event processing. Theese are usefull especially for displaying data in responses.
+And there are **Responder data**, which persists only during the messaging event processing. these are usefull especially for displaying data in responses.
 
 > Do not confuse **Responder data** (`res.data`) with **Request data** (`req.event`), which contains transformed messaging event, or **action data** (`req.actionData()`) which contains additional action (postback, ref, e.t.c.) metadata
 
