@@ -8,6 +8,7 @@ const Request = require('../Request');
 const NotificationsStorage = require('./NotificationsStorage');
 const api = require('./api');
 const customFn = require('../utils/customFn');
+const customCondition = require('../utils/customCondition');
 
 const DEFAULT_LIMIT = 20;
 const DAY = 86400000;
@@ -512,7 +513,12 @@ class Notifications extends EventEmitter {
 
         if (res.data._fromInitialEvent
             && campaign.hasCondition) {
-            const fn = customFn(campaign.condition, `Campaign "${campaign.name}" condition`);
+            let fn;
+            if (!campaign.hasEditableCondition) {
+                fn = customFn(campaign.condition, `Campaign "${campaign.name}" condition`);
+            } else {
+                fn = customCondition(campaign.editableCondition, `Campaign "${campaign.name}" condition`);
+            }
 
             const fnRes = fn(req, res);
 

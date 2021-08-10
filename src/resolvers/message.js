@@ -4,15 +4,13 @@
 'use strict';
 
 const Router = require('../Router');
-const customFn = require('../utils/customFn');
+const getCondition = require('../utils/getCondition');
 const { cachedTranslatedCompilator, stateData } = require('./utils');
 
 function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
     return replies.map((reply) => {
 
-        const condition = reply.hasCondition
-            ? customFn(reply.conditionFn, 'Quick reply condition', allowForbiddenSnippetWords)
-            : () => true;
+        const condition = getCondition(reply, 'Quick reply condition', allowForbiddenSnippetWords);
 
         if (reply.isLocation) {
             return {
@@ -85,11 +83,7 @@ function message (params, {
         quickReplies = parseReplies(params.replies, linksMap, allowForbiddenSnippetWords);
     }
 
-    let condition = null;
-
-    if (params.hasCondition) {
-        condition = customFn(params.conditionFn, 'Message condition', allowForbiddenSnippetWords);
-    }
+    const condition = getCondition(params, 'Message condition', allowForbiddenSnippetWords);
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 

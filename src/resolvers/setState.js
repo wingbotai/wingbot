@@ -6,19 +6,11 @@
 const Router = require('../Router');
 const Ai = require('../Ai');
 const { getSetState } = require('../utils/getUpdate');
-const customFn = require('../utils/customFn');
+const getCondition = require('../utils/getCondition');
 
 function setState (params, { isLastIndex, allowForbiddenSnippetWords }) {
-    const {
-        hasCondition = false,
-        conditionFn = '() => true'
-    } = params;
 
-    let condition = null;
-
-    if (hasCondition) {
-        condition = customFn(conditionFn, '', allowForbiddenSnippetWords);
-    }
+    const condition = getCondition(params, '', allowForbiddenSnippetWords);
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 

@@ -4,7 +4,7 @@
 'use strict';
 
 const Router = require('../Router');
-const customFn = require('../utils/customFn');
+const getCondition = require('../utils/getCondition');
 const {
     stateData,
     cachedTranslatedCompilator,
@@ -19,17 +19,11 @@ function button (params, {
 }) {
     const {
         buttons = [],
-        text = null,
-        hasCondition,
-        conditionFn
+        text = null
     } = params;
     const compiledText = cachedTranslatedCompilator(text);
 
-    let condition = null;
-
-    if (hasCondition) {
-        condition = customFn(conditionFn, '', allowForbiddenSnippetWords);
-    }
+    const condition = getCondition(params, '', allowForbiddenSnippetWords);
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 

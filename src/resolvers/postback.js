@@ -4,15 +4,13 @@
 'use strict';
 
 const Router = require('../Router');
-const customFn = require('../utils/customFn');
+const getCondition = require('../utils/getCondition');
 const { shouldExecuteResolver } = require('./resolverTags');
 
 function postback (params, { linksMap, isLastIndex, allowForbiddenSnippetWords }) {
     const {
         routeId,
-        postBack: staticAction,
-        hasCondition,
-        conditionFn
+        postBack: staticAction
     } = params;
     let action = staticAction;
 
@@ -24,11 +22,7 @@ function postback (params, { linksMap, isLastIndex, allowForbiddenSnippetWords }
         }
     }
 
-    let condition = null;
-
-    if (hasCondition) {
-        condition = customFn(conditionFn, '', allowForbiddenSnippetWords);
-    }
+    const condition = getCondition(params, '', allowForbiddenSnippetWords);
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 

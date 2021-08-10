@@ -4,21 +4,15 @@
 'use strict';
 
 const Router = require('../Router');
-const customFn = require('../utils/customFn');
+const getCondition = require('../utils/getCondition');
 
 function subscribtions (params, { isLastIndex, allowForbiddenSnippetWords }) {
     const {
         tags = [],
-        unsetTag = false,
-        hasCondition = false,
-        conditionFn = '() => true'
+        unsetTag = false
     } = params;
 
-    let condition = null;
-
-    if (hasCondition) {
-        condition = customFn(conditionFn, '', allowForbiddenSnippetWords);
-    }
+    const condition = getCondition(params, '', allowForbiddenSnippetWords);
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
     const method = unsetTag ? 'unsubscribe' : 'subscribe';
