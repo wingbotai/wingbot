@@ -80,7 +80,8 @@ class MemoryStateStorage {
      */
     saveState (state) {
         const { senderId, pageId } = state;
-        this.store.set(this._key(senderId, pageId), state);
+        const stateCopy = JSON.parse(JSON.stringify(state));
+        this.store.set(this._key(senderId, pageId), stateCopy);
         return Promise.resolve(state);
     }
 
@@ -134,7 +135,11 @@ class MemoryStateStorage {
                     && key.pageId === state.pageId;
 
                 return false;
-            });
+            })
+            .map((e) => ({
+                ...e,
+                lastInteraction: new Date(e.lastInteraction)
+            }));
 
         let nextLastKey = null;
 
