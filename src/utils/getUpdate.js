@@ -101,7 +101,9 @@ function getSetState (setState = {}, req, res = null, useState = null) {
             if (val._$textInput) {
                 set = req.text();
             } else if (val._$entity) {
-                set = req.entity(val._$entity, 0, state);
+                set = typeof val._$ev !== 'undefined'
+                    ? val._$ev
+                    : req.entity(val._$entity, 0, state);
                 const cleanEntityName = `${val._$entity}`.replace(/^@/, '');
                 const key = `@${cleanEntityName}`;
 

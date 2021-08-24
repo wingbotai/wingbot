@@ -7,7 +7,7 @@ const Ai = require('./Ai');
 const { tokenize, parseActionPayload } = require('./utils');
 const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickReplies');
 const { getSetState } = require('./utils/getUpdate');
-const { vars } = require('./utils/stateVariables');
+const { vars, checkSetState } = require('./utils/stateVariables');
 const OrchestratorClient = require('./OrchestratorClient');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
@@ -864,7 +864,7 @@ class Request {
         }
 
         // @ts-ignore
-        const { _aiKeys: keys = [] } = this._action || {};
+        const { _aiKeys: aiKeys = [] } = this._action || {};
 
         const ret = {};
 
@@ -875,9 +875,9 @@ class Request {
 
         Object.keys(setState)
             .forEach((key) => {
-                const includes = keys.includes(key);
+                const isAiKey = aiKeys.includes(key);
 
-                if (findEntity && !includes) {
+                if (findEntity && !isAiKey) {
                     const isEntity = key.match(/^@/);
 
                     if ((isEntity && keysFromAi === this.AI_SETSTATE.EXCLUDE_WITH_SET_ENTITIES)
@@ -885,8 +885,8 @@ class Request {
                             && keysFromAi === this.AI_SETSTATE.EXCLUDE_WITHOUT_SET_ENTITIES)) {
                         ret[key] = setState[key];
                     }
-                } else if ((includes && keysFromAi === this.AI_SETSTATE.ONLY)
-                    || (!includes && keysFromAi === this.AI_SETSTATE.EXCLUDE)) {
+                } else if ((isAiKey && keysFromAi === this.AI_SETSTATE.ONLY)
+                    || (!isAiKey && keysFromAi === this.AI_SETSTATE.EXCLUDE)) {
 
                     ret[key] = setState[key];
                 }
@@ -938,7 +938,29 @@ class Request {
             res = parseActionPayload(this.state._expected);
         }
 
-        if (!res && this.isTextOrIntent()) {
+        if (res) {
+            // find global intent
+            let entitiesSetState = {};
+            let { setState = {} } = res;
+            for (const gi of this.globalIntents.values()) {
+                if (gi.action === res.action) {
+                    ({ entitiesSetState } = gi);
+                }
+            }
+            const newState = {
+                ...entitiesSetState,
+                ...setState
+            };
+            checkSetState(setState, newState);
+            setState = newState;
+
+            return {
+                ...res,
+                setState
+            };
+        }
+
+        if (this.isTextOrIntent()) {
             const winner = this.aiActionsWinner();
             if (winner) {
                 const _aiKeys = winner.setState ? Object.keys(winner.setState) : [];

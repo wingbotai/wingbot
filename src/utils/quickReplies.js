@@ -138,6 +138,29 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
                         setState = entitiesSetState;
                     } else {
                         checkSetState(setState, entitiesSetState);
+                        // all entities within setState should be removed
+                        setState = Object.keys(setState)
+                            .reduce((o, k) => {
+                                const setStateEntity = k.startsWith('@')
+                                    && setState[k]
+                                    && setState[k]
+                                    && setState[k]._$entity;
+                                const cleanEntityName = setStateEntity
+                                    && `${setStateEntity}`.replace(/^@/, '');
+
+                                if (setStateEntity
+                                    && typeof entitiesSetState[`@${cleanEntityName}`] === 'string') {
+                                    Object.assign(o, {
+                                        [k]: {
+                                            ...setState[k],
+                                            _$ev: entitiesSetState[`@${cleanEntityName}`]
+                                        }
+                                    });
+                                } else {
+                                    Object.assign(o, { [k]: setState[k] });
+                                }
+                                return o;
+                            }, {});
                         setState = {
                             ...entitiesSetState,
                             ...setState

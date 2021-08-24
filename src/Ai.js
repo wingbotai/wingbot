@@ -231,8 +231,10 @@ class Ai {
      * });
      */
     global (path, intents, title = null, meta = {}) {
-        const matcher = this._createIntentMatcher(intents);
         const usedEntities = this.matcher.parseEntitiesFromIntentRule(intents, true);
+        const rules = this.matcher.preprocessRule(intents);
+        const matcher = this._createIntentMatcher(rules, usedEntities);
+        const entitiesSetState = Ai.ai.matcher.getSetStateForEntityRules(rules);
         const id = uq++;
 
         const resolver = {
@@ -241,6 +243,7 @@ class Ai {
                 id,
                 matcher,
                 usedEntities,
+                entitiesSetState,
                 local: false,
                 action: '/*',
                 title,
@@ -272,8 +275,10 @@ class Ai {
      * });
      */
     local (path, intents, title = null) {
-        const matcher = this._createIntentMatcher(intents);
         const usedEntities = this.matcher.parseEntitiesFromIntentRule(intents, true);
+        const rules = this.matcher.preprocessRule(intents);
+        const matcher = this._createIntentMatcher(rules, usedEntities);
+        const entitiesSetState = Ai.ai.matcher.getSetStateForEntityRules(rules);
         const id = uq++;
 
         const resolver = {
@@ -282,6 +287,7 @@ class Ai {
                 id,
                 matcher,
                 usedEntities,
+                entitiesSetState,
                 local: true,
                 action: '/*',
                 title,
@@ -322,7 +328,9 @@ class Ai {
      * });
      */
     match (intent) {
-        const matcher = this._createIntentMatcher(intent);
+        const usedEntities = this.matcher.parseEntitiesFromIntentRule(intent, true);
+        const rules = this.matcher.preprocessRule(intent);
+        const matcher = this._createIntentMatcher(rules, usedEntities);
 
         return async (req) => {
             if (!req.isTextOrIntent()) {
@@ -354,7 +362,9 @@ class Ai {
             return null;
         }
 
+        const usedEntities = this.matcher.parseEntitiesFromIntentRule(intent, true);
         const setState = this._getSetStateForEntities(
+            usedEntities,
             winningIntent.entities,
             req.entities,
             req.state
@@ -366,14 +376,17 @@ class Ai {
         };
     }
 
-    _getSetStateForEntities (entities = [], detectedEntities = [], state = {}) {
-        return entities
-            .reduce((o, entity) => {
+    _getSetStateForEntities (usedEntities = [], entities = [], detectedEntities = [], state = {}) {
+        return usedEntities
+            .reduce((o, entityName) => {
+                const entity = entities.find((e) => e.entity === entityName)
+                    || detectedEntities.find((e) => e.entity === entityName);
+
                 // if the entity is already set without metadata, persist it
-                const key = `@${entity.entity}`;
+                const key = `@${entityName}`;
 
                 if (deepEqual(state[key], entity.value)
-                    && !detectedEntities.some((e) => e.entity === entity.entity)) {
+                    && !detectedEntities.some((e) => e.entity === entityName)) {
 
                     return Object.assign(o, vars.preserveMeta(key, entity.value, state));
                 }
@@ -382,9 +395,7 @@ class Ai {
             }, {});
     }
 
-    _createIntentMatcher (intent) {
-        const rules = this.matcher.preprocessRule(intent);
-
+    _createIntentMatcher (rules, usedEntities) {
         return (req) => {
             const winningIntent = this.matcher.match(req, rules);
 
@@ -394,6 +405,7 @@ class Ai {
 
             const aboveConfidence = winningIntent.score >= this.confidence;
             const setState = this._getSetStateForEntities(
+                usedEntities,
                 winningIntent.entities,
                 req.entities,
                 req.state

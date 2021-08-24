@@ -9,6 +9,7 @@ const Router = require('../src/Router');
 const Ai = require('../src/Ai');
 const CustomEntityDetectionModel = require('../src/wingbot/CustomEntityDetectionModel');
 const Request = require('../src/Request');
+const { setState } = require('../src/resolvers');
 
 const { ai } = Ai;
 
@@ -42,6 +43,15 @@ describe('<Ai> entity context', () => {
                 };
             })
             .setEntityDetector('toEntity', (text) => {
+                const prevMatch = text.match(/previous/);
+
+                if (prevMatch) {
+                    return {
+                        text: prevMatch[0],
+                        value: 'previous'
+                    };
+                }
+
                 const match = text.match(/toentity/);
 
                 if (!match) {
@@ -77,10 +87,22 @@ describe('<Ai> entity context', () => {
         });
 
         first.use(ai.global('bar-with', ['bar', '@entity']), (req, res) => {
-            res.text('bar with entity')
+            res.text(`bar with entity ${req.state['@entity']}`)
                 .text(`req.entity ${req.entity('entity')}`, [
                     { action: '/second/a', title: 'goto', match: ['@entity?'] }
                 ]);
+        });
+
+        first.use('goto-bar-with', (req, res, postBack) => {
+            postBack('bar-with');
+        });
+
+        first.use(ai.global('glob-with-entity', ['set-state-test', '@setStateEntity']), async (req, res) => {
+            await setState({
+                setState: { '@setStateEntity': { _$entity: 'setStateEntity' } }
+            }, { isLastIndex: false, allowForbiddenSnippetWords: false })(req, res);
+            const { '@setStateEntity': entityContent = '-' } = { ...req.state, ...res.newState };
+            res.text(`whats in ${entityContent}`);
         });
 
         first.use(ai.global('bar-without', ['bar']), (req, res) => {
@@ -100,14 +122,23 @@ describe('<Ai> entity context', () => {
                     setState: { here: { _$entity: 'toEntity' }, lele: { _$textInput: true } },
                     title: 'setStateToEntity'
                 },
-
                 {
                     action: 'setStateFromEntity',
                     match: ['@fromEntity'],
                     setState: { here: { _$entity: 'fromEntity' } },
                     title: 'setStateFromEntity'
+                },
+                {
+                    action: 'dictEntity',
+                    match: ['@dictEntity=sasa'],
+                    title: 'dictEntity',
+                    setState: { '@dictEntity': { _$entity: '@dictEntity' } }
                 }
             ]);
+        });
+
+        first.use('dictEntity', (req, res) => {
+            res.text(`en ${req.state['@dictEntity']}`);
         });
 
         first.use('setStateToEntity', (req, res) => {
@@ -126,7 +157,10 @@ describe('<Ai> entity context', () => {
         const second = new Router();
 
         second.use(ai.global('baz-with', ['baz', '@entity']), (req, res) => {
-            res.text('baz with entity');
+            res.text('baz with entity', {
+                '/first/bar-with': 'toFirstDirect',
+                '/first/goto-bar-with': 'toFirstGoto'
+            });
         });
 
         second.use(ai.global('baz-without', ['baz', '@entity!=']), (req, res) => {
@@ -198,6 +232,38 @@ describe('<Ai> entity context', () => {
         t = new Tester(bot);
     });
 
+    it('interaction header persists entities', async () => {
+        await t.intentWithEntity('baz', 'entity', 'entity-value');
+
+        await t.quickReplyText('toFirstDirect');
+
+        t.any().contains('bar with entity entity-value');
+
+        await t.postBack('/first/first');
+
+        t.any().contains('x entity-value');
+    });
+
+    it('interaction header persists entities', async () => {
+        await t.intentWithEntity('baz', 'entity', 'entity-value');
+
+        await t.quickReplyText('toFirstGoto');
+
+        t.any().contains('bar with entity entity-value');
+
+        await t.postBack('/first/first');
+
+        t.any().contains('x entity-value');
+    });
+
+    it('setState after entity header should set a new entity', async () => {
+        t.setState({ '@setStateEntity': 'prev' });
+
+        await t.intentWithEntity('set-state-test', 'setStateEntity', 'new');
+
+        t.any().contains('whats in new');
+    });
+
     it('negative entity with value not be matched with empty utterance', async () => {
         await t.postBack('negative-entity');
 
@@ -267,6 +333,20 @@ describe('<Ai> entity context', () => {
 
         // check it
         t.any().contains('en detected detected setStateToEntity');
+    });
+
+    it('sets state from entity in quick reply even if there previously been some other entity', async () => {
+        t.setState({
+            '@dictEntity': 'previous'
+        });
+        // set some context
+        await t.postBack('/first/bar-without');
+
+        // run the quick reply with entity
+        await t.text('dictEntity');
+
+        // check it
+        t.any().contains('en sasa');
     });
 
     it('is able to detect entity from quick reply', async () => {

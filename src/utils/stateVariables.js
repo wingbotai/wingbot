@@ -166,7 +166,8 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
             case DIALOG_CONTEXT: {
                 // compare state
 
-                if (previousState._lastVisitedPath !== undefined
+                if (lastInTurnover
+                    && previousState._lastVisitedPath !== undefined
                     && value.p !== res.newState._lastVisitedPath) {
 
                     delete state[key];

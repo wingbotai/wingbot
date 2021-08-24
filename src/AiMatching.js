@@ -215,7 +215,10 @@ class AiMatching {
      */
     getSetStateForEntityRules ({ entities }) {
         return entities.reduce((o, rule) => {
-            if (rule.optional && !rule.op) {
+            if (rule instanceof RegExp) {
+                return o;
+            }
+            if (!rule.op) {
                 const key = `@${rule.entity}`;
                 return Object.assign(o, vars.dialogContext(key, {
                     _$entity: key

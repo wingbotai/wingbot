@@ -65,6 +65,11 @@ describe('vars', () => {
 
             t.any()
                 .contains('try hello')
+                .contains('msg hello');
+
+            await t.postBack('b/msg');
+
+            t.any()
                 .contains('msg empty');
         });
 
