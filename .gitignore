@@ -13,7 +13,7 @@ tempSrc/**/*
 
 # NodeJs
 
-package-lock.json
+# package-lock.json
 /npm-debug.log
 node_modules
 /config/config.development.js
