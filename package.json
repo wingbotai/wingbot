@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.19.0",
+  "version": "3.19.1",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -52,7 +52,6 @@
     "mocha": "^8.2.1",
     "move-cli": "^1.2.1",
     "nyc": "^15.1.0",
-    "po2json": "^0.4.5",
     "rimraf": "^3.0.2",
     "sinon": "^9.2.1",
     "tsd-jsdoc": "^2.5.0"
@@ -69,7 +68,6 @@
   "optionalDependencies": {
     "axios": "^0.21.1",
     "handlebars": "^4.0.0",
-    "po2json": "^0.4.5",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7"
   }

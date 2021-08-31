@@ -46,8 +46,7 @@ const compileWithState = require('./src/utils/compileWithState');
 const plugins = require('./plugins/plugins.json');
 const {
     bufferloader,
-    MemoryStateStorage,
-    Translate
+    MemoryStateStorage
 } = require('./src/tools');
 const flags = require('./src/flags');
 
@@ -71,7 +70,6 @@ module.exports = {
     asserts,
     MemoryStateStorage,
     MemoryBotConfigStorage,
-    Translate,
     CachedModel,
     CustomEntityDetectionModel,
     parseActionPayload,
