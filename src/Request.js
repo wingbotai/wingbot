@@ -953,10 +953,13 @@ class Request {
             };
             checkSetState(setState, newState);
             setState = newState;
+            const aiKeys = res._aiKeys || Object.keys(entitiesSetState)
+                .filter((k) => typeof setState[k] !== 'undefined' && k.startsWith('@'));
 
             return {
                 ...res,
-                setState
+                setState,
+                _aiKeys: aiKeys
             };
         }
 
