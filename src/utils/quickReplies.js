@@ -263,7 +263,7 @@ function quickReplyAction (expectedKeywords, req, ai) {
                     _aiKeys,
                     setState: keyword.setState
                         ? { ...keyword.setState, ...setState }
-                        : { ...setState, _aiKeys }
+                        : { ...setState }
                 });
             }
         });

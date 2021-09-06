@@ -332,10 +332,12 @@ class Request {
         let entities;
         if (intent && intent.entities) {
             ({ entities } = intent);
+        } else if (this.entities.some((e) => e.entity === cleanName)) {
+            ({ entities } = this);
         } else if (typeof setState[stateKeyName] !== 'undefined') {
             entities = [{ entity: cleanName, value: setState[stateKeyName] }];
         } else {
-            ({ entities } = this);
+            return null;
         }
 
         const found = entities
@@ -953,7 +955,11 @@ class Request {
             };
             checkSetState(setState, newState);
             setState = newState;
-            const aiKeys = res._aiKeys || Object.keys(entitiesSetState)
+            const aiKeysSet = new Set([
+                ...(res._aiKeys || []),
+                ...Object.keys(entitiesSetState)
+            ]);
+            const aiKeys = Array.from(aiKeysSet)
                 .filter((k) => typeof setState[k] !== 'undefined' && k.startsWith('@'));
 
             return {

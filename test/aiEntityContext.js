@@ -10,6 +10,7 @@ const Ai = require('../src/Ai');
 const CustomEntityDetectionModel = require('../src/wingbot/CustomEntityDetectionModel');
 const Request = require('../src/Request');
 const { setState } = require('../src/resolvers');
+const { getSetState } = require('../src/utils/getUpdate');
 
 const { ai } = Ai;
 
@@ -622,6 +623,66 @@ describe('<Ai> entity context', () => {
         await t.postBack('set');
 
         t.any().contains('the content is xxx');
+    });
+
+    it('overrides does not override entity in state if previously set over postbacks', async () => {
+        const bot = new Router();
+
+        bot.use('try', (req, res) => {
+            res.text('whaat?')
+                .expectedIntent(['intent'], 'set');
+        });
+
+        bot.use(ai.global('set', ['intent', '@entita?']), async (req, res) => {
+            const obj = getSetState({ '@entita': { _$entity: '@entita' } }, req, res);
+            await Ai.ai.processSetStateEntities(req, setState);
+            res.setState(obj);
+
+            res.text(`the content is ${req.state['@entita']}`);
+        });
+
+        t = new Tester(bot);
+
+        await t.intentWithEntity('intent', 'entita', 'foo');
+
+        t.any().contains('the content is foo');
+
+        await t.postBack('try');
+
+        await t.intentWithEntity('intent', 'entita', 'bar');
+
+        t.any().contains('the content is bar');
+    });
+
+    it('entity in quick reply has priority', async () => {
+        const bot = new Router();
+
+        bot.use('try', (req, res) => {
+            res.text('whaat?')
+                .expectedIntent(['intent'], 'set', {}, {
+                    '@entita': 'sasalele'
+                });
+        });
+
+        bot.use(ai.global('set', ['intent', '@entita?']), async (req, res) => {
+            const obj = getSetState({ '@entita': { _$entity: '@entita' } }, req, res);
+            await Ai.ai.processSetStateEntities(req, setState);
+            res.setState(obj);
+
+            res.text(`the content is ${req.state['@entita']}`);
+        });
+
+        t = new Tester(bot);
+
+        await t.intentWithEntity('intent', 'entita', 'foo');
+
+        t.any().contains('the content is foo');
+
+        await t.postBack('try');
+
+        await t.intentWithEntity('intent', 'entita', 'bar');
+
+        t.any().contains('the content is sasalele');
     });
 
     it('overrides null values with detected ones', async () => {
