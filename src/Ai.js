@@ -382,6 +382,10 @@ class Ai {
                 const entity = entities.find((e) => e.entity === entityName)
                     || detectedEntities.find((e) => e.entity === entityName);
 
+                if (!entity) {
+                    return o;
+                }
+
                 // if the entity is already set without metadata, persist it
                 const key = `@${entityName}`;
 

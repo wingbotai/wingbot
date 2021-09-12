@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- AI Entity context when using optional entity
+## [3.19.3] 2021-09-06
+
+### Fixed
+
 - AI Entity context when using quick replies
 ## [3.19.2] 2021-08-24
 ### Fixed

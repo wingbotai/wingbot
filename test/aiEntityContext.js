@@ -710,4 +710,18 @@ describe('<Ai> entity context', () => {
         t.any().contains('the content is lele');
     });
 
+    it('works with optional entities', async () => {
+        const bot = new Router();
+
+        bot.use(ai.global('next', ['int', '@required', '@another?']), (req, res) => {
+            res.text(`the content is ${req.state['@required']}`);
+        });
+
+        t = new Tester(bot);
+
+        await t.intentWithEntity('int', 'required', 'sasalele');
+
+        t.any().contains('the content is sasalele');
+    });
+
 });
