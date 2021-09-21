@@ -485,13 +485,16 @@ class Responder {
             this._quickReplyCollector.push({
                 ...prep,
                 action: this.toAbsoluteAction(action.action),
-                ...data
+                data: {
+                    ...prep.data,
+                    ...data
+                }
             });
         } else {
             this._quickReplyCollector.push({
                 action: this.toAbsoluteAction(action),
                 title,
-                ...data,
+                data,
                 ...prep
             });
         }

@@ -110,6 +110,8 @@ describe('<Conditions>', function () {
             assert(compare('x', ConditionOperators['=='], 'x'));
             assert(compare(1, ConditionOperators['=='], '1'));
             assert(compare('1', ConditionOperators['=='], '1'));
+            assert(compare([1, 2], ConditionOperators['>='], '2'));
+            assert(compare([1, 2, 'x'], ConditionOperators['>='], '3'));
             assert(!compare('X', ConditionOperators['=='], 'x'));
         });
 
@@ -126,6 +128,8 @@ describe('<Conditions>', function () {
             assert(compare('aefaex aegaeg', ConditionOperators.contains, 'x'));
             assert(!compare('aefae aegaeg', ConditionOperators.contains, 'x'));
             assert(compare(122, ConditionOperators.contains, 12));
+            assert(compare([1, 2], ConditionOperators.contains, 2));
+            assert(!compare([1, 2], ConditionOperators.contains, 3));
             assert(!compare('eafaef', ConditionOperators.contains, 'x'));
             assert(!compare('==54', ConditionOperators.contains, ','));
             assert(compare('==54', ConditionOperators.contains, '='));

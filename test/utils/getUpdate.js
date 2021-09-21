@@ -43,6 +43,170 @@ describe('getSetState()', () => {
         });
     });
 
+    it('supports array operators', () => {
+        assert.deepEqual(getSetState({
+            k: { _$push: 2 }
+        }, {
+            state: {},
+            actionData: () => {}
+        }), {
+            k: [2]
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$add: 'a' }
+        }, {
+            state: {
+                k: 'x'
+            },
+            actionData: () => {}
+        }), {
+            k: ['x', 'a']
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$add: 'y' }
+        }, {
+            state: {
+                k: ['x', 'y']
+            },
+            actionData: () => {}
+        }), {
+            k: ['x', 'y']
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$rem: 'x' }
+        }, {
+            state: {
+                k: ['x', 'y']
+            },
+            actionData: () => {}
+        }), {
+            k: ['y']
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$pop: true }
+        }, {
+            state: {
+                k: ['x', 'y']
+            },
+            actionData: () => {}
+        }), {
+            k: ['x']
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$shift: true }
+        }, {
+            state: {
+                k: ['x', 'y']
+            },
+            actionData: () => {}
+        }), {
+            k: ['y']
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$push: '{{l}}' }
+        }, {
+            state: {
+                k: ['x', 'y'],
+                l: ['a', 'b']
+            },
+            actionData: () => {}
+        }), {
+            k: ['x', 'y', 'a', 'b']
+        });
+    });
+
+    it('knows entities when using array operators', () => {
+        assert.deepEqual(getSetState({
+            k: { _$push: '{{@entity}}' }
+        }, {
+            state: {
+                k: null
+            },
+            entities: [
+                { entity: 'entity', value: 'sasa' },
+                { entity: 'entity', value: 'lele' },
+                { entity: 'foo', value: 'bar' }
+            ],
+            actionData: () => {}
+        }), {
+            k: ['sasa', 'lele']
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$push: '{{[@foo]}}' }
+        }, {
+            state: {
+                k: ' '
+            },
+            entities: [
+                { entity: 'entity', value: 'sasa' },
+                { entity: 'entity', value: 'lele' },
+                { entity: 'foo', value: 'bar' }
+            ],
+            actionData: () => {}
+        }), {
+            k: ['bar']
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$set: '{{@bar}}' }
+        }, {
+            state: {
+                k: ' ',
+                '@bar': 'sasalele'
+            },
+            entities: [
+                { entity: 'entity', value: 'sasa' },
+                { entity: 'entity', value: 'lele' },
+                { entity: 'foo', value: 'bar' }
+            ],
+            actionData: () => {}
+        }), {
+            k: []
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$set: '{{[@bar]}}' }
+        }, {
+            state: {
+                k: ' ',
+                '@bar': 'sasalele'
+            },
+            entities: [
+                { entity: 'entity', value: 'sasa' },
+                { entity: 'entity', value: 'lele' },
+                { entity: 'foo', value: 'bar' }
+            ],
+            actionData: () => {}
+        }), {
+            k: ['sasalele']
+        });
+
+        assert.deepEqual(getSetState({
+            k: { _$set: '{{some.value}}' }
+        }, {
+            state: {
+                k: ' ',
+                '@bar': 'sasalele',
+                some: { value: 'X' }
+            },
+            entities: [
+                { entity: 'entity', value: 'sasa' },
+                { entity: 'entity', value: 'lele' },
+                { entity: 'foo', value: 'bar' }
+            ],
+            actionData: () => {}
+        }), {
+            k: ['X']
+        });
+    });
+
 });
 
 describe('getValue()', () => {

@@ -4,6 +4,8 @@
 'use strict';
 
 const { webalize } = require('webalize');
+const { getValue } = require('./getUpdate');
+const stateData = require('./stateData');
 
 const ConditionOperators = {
     'is false': 'if',
@@ -65,8 +67,16 @@ const stringToNumber = (string) => {
 const toNumber = (value) => {
     if (value === undefined) return 0;
     if (typeof value === 'number') return value;
+    if (Array.isArray(value)) return value.length;
     return (isStringNumber(value) ? stringToNumber(value) : Number.parseFloat(value));
 };
+
+const ARRAY_LENGTH_OPERATORS = [
+    ConditionOperators['<='],
+    ConditionOperators['>='],
+    ConditionOperators['<'],
+    ConditionOperators['>']
+];
 
 /**
  *
@@ -77,11 +87,12 @@ const toNumber = (value) => {
  */
 // eslint-disable-next-line import/prefer-default-export
 const compare = (variable, operator, value = undefined) => {
-    if (Array.isArray(variable)) {
+    const isArrayLengthCompare = ARRAY_LENGTH_OPERATORS.includes(operator);
+    if (Array.isArray(variable) && !isArrayLengthCompare) {
         return variable.some((variableElement) => compare(variableElement, operator, value));
     }
 
-    if (typeof variable === 'object') {
+    if (typeof variable === 'object' && !isArrayLengthCompare) {
         return Object.values(variable)
             .some((variableElement) => compare(variableElement, operator, value));
     }
@@ -134,24 +145,6 @@ const compare = (variable, operator, value = undefined) => {
     }
 };
 
-function getVariableValue (variable, req) {
-    // path to object props or array elements
-    if (variable.includes('.')) {
-        const split = variable.split('.');
-        let pointer = req.state;
-        split.forEach((path) => {
-            if (!Number.isNaN(+path)) {
-                pointer = pointer[+path];
-            } else {
-                pointer = pointer[path];
-            }
-        });
-        return pointer;
-    }
-
-    return req.state[variable];
-}
-
 /**
  *
  * @param {{value:string, operator:string, variable:string}[][]} condition
@@ -165,7 +158,8 @@ function customCondition (condition, description = '') {
     // @ts-ignore
     // eslint-disable-next-line no-unused-vars
     const resolver = (req, res) => condition.some((condList) => condList.every((cond) => {
-        const variableValue = getVariableValue(cond.variable, req);
+        const data = stateData(req, res);
+        const variableValue = getValue(cond.variable, data);
         return compare(variableValue, cond.operator, cond.value);
     }));
 
