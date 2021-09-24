@@ -358,10 +358,11 @@ class Ai {
         const rules = this.matcher.preprocessRule(intent);
         const winningIntent = this.matcher.match(req, rules, stateless);
 
-        if (!winningIntent || winningIntent.score < this.confidence) {
+        if (!winningIntent || winningIntent.score < this.threshold) {
             return null;
         }
 
+        const aboveConfidence = winningIntent.score >= this.confidence;
         const usedEntities = this.matcher.parseEntitiesFromIntentRule(intent, true);
         const setState = this._getSetStateForEntities(
             usedEntities,
@@ -372,7 +373,8 @@ class Ai {
 
         return {
             ...winningIntent,
-            setState
+            setState,
+            aboveConfidence
         };
     }
 

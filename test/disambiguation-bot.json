@@ -1,0 +1,120 @@
+{
+    "data" : [
+        {
+            "isRoot" : true,
+            "blockName" : "Root",
+            "staticBlockId" : "5444e110-dd6f-11ea-a35d-19546190d6d5",
+            "routes" : [
+                {
+                    "id" : "5444e111-dd6f-11ea-a35d-19546190d6d5",
+                    "path" : "start",
+                    "name" : "Start",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "Welcome, I'am a chatbot!"
+                                ],
+                                "hasCondition" : false,
+                                "replies" : [
+                                    {
+                                        "title": "go somewhere",
+                                        "targetRouteId": "e7d3348c-f9da-4de2-8b9a-9f0bd5520978",
+                                        "aiTags": ["intent", "@entity"]
+                                    },
+                                    {
+                                        "aiTitle": "{{[@bar]}}",
+                                        "targetRouteId": "1e6eac85-c8c4-4587-b179-28f2c674406b",
+                                        "aiTags": ["foo", "@bar"]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "ac377f60-e146-11ea-b4f2-ef90cb7940de",
+                    "isResponder" : true,
+                    "respondsToRouteId" : "5444e111-dd6f-11ea-a35d-19546190d6d5",
+                    "aiTags" : null,
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.customCode",
+                            "params" : {
+                                "codeBlockId": "ai.wingbot.disambiguation",
+                                "params": {
+                                    "local": "true"
+                                },
+                                "items": {
+                                    "diambiguations": {
+                                        "resolvers": [
+                                            {
+                                                "type" : "botbuild.message",
+                                                "params" : {
+                                                    "text" : [
+                                                        "disambiguation"
+                                                    ],
+                                                    "replies" : []
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "fallback"
+                                ],
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "e7d3348c-f9da-4de2-8b9a-9f0bd5520978",
+                    "path" : "next",
+                    "name" : "Next",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "content is {{[@entity]}}"
+                                ],
+                                "hasCondition" : false,
+                                "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "1e6eac85-c8c4-4587-b179-28f2c674406b",
+                    "path" : "foo-bar",
+                    "name" : "foobar",
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "foobar is {{[@bar]}}"
+                                ],
+                                "hasCondition" : false,
+                                "replies" : []
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

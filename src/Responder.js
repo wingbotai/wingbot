@@ -23,6 +23,7 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
  * @prop {string} [action]
  * @prop {object} [data]
  * @prop {object} [setState]
+ * @prop {string|Function} [aiTitle]
  * @prop {RegExp|string|string[]} [match]
  */
 
@@ -536,9 +537,10 @@ class Responder {
      * @param {string|string[]} intents
      * @param {string} action
      * @param {object} data
-     * @param {object} setState
+     * @param {object} [setState]
+     * @param {string|object[]} [aiTitle]
      */
-    expectedIntent (intents, action, data = {}, setState = null) {
+    expectedIntent (intents, action, data = {}, setState = null, aiTitle = null) {
         const { _expectedKeywords: ex = [] } = this.newState;
 
         const push = {
@@ -549,6 +551,10 @@ class Responder {
 
         if (setState) {
             Object.assign(push, { setState });
+        }
+
+        if (aiTitle) {
+            Object.assign(push, { title: aiTitle });
         }
 
         ex.push(push);

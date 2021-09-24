@@ -14,6 +14,15 @@
             "inputs": [
                 {
                     "type": "select",
+                    "name": "local",
+                    "label": "Disambiguate local handlers",
+                    "options": [
+                        { "value": "false", "label": "no, only globals" },
+                        { "value": "true", "label": "yes, only locals" }
+                    ]
+                },
+                {
+                    "type": "select",
                     "name": "min",
                     "label": "Minimum number of options",
                     "options": [

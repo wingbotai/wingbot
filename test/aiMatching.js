@@ -104,8 +104,8 @@ describe('<AiMatching>', () => {
 
             const badReq = fakeReq([intent('bad')]);
 
-            assert.deepEqual(ai.match(fooReq, rule), { ...foo, score: 1.1387999999999998 });
-            assert.deepEqual(ai.match(barReq, rule), { ...bar, score: 1.1387999999999998 });
+            assert.deepEqual(ai.match(fooReq, rule), { ...foo, score: 1.0932479999999998 });
+            assert.deepEqual(ai.match(barReq, rule), { ...bar, score: 1.0932479999999998 });
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
@@ -292,7 +292,7 @@ describe('<AiMatching>', () => {
             const goodReq = fakeReq([], [goodFoo]);
             const badReq = fakeReq([], [badFoo]);
 
-            const winningIntent = intent(null, [{ entity: 'foo', score: 0.98, value: undefined }], 0.979);
+            const winningIntent = intent(null, [{ entity: 'foo', score: 0.96, value: undefined }], 0.939);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
@@ -476,6 +476,92 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
             assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
             assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
+        });
+
+        it('should cope with low score entities', () => {
+            const rule = ai.preprocessRule(['intent', '@foo']);
+
+            // @ts-ignore
+            const fooEntity = entity('foo', 'value', 0.79);
+
+            const fooIntent = intent('intent', [fooEntity], 0.9);
+            const goodReq = fakeReq([fooIntent], [fooEntity]);
+            const winningIntent = intent('intent', [fooEntity], 0.42794152307218597);
+
+            const res = ai.match(goodReq, rule);
+            assert.deepEqual(res, winningIntent);
+        });
+
+        it('should cope with low score entities but retains OK@0.8', () => {
+            const rule = ai.preprocessRule(['intent', '@foo']);
+
+            // @ts-ignore
+            const fooEntity = entity('foo', 'value', 0.835);
+            const goodReq = fakeReq([intent('intent', [fooEntity], 0.8)], [fooEntity]);
+
+            const res = ai.match(goodReq, rule);
+            assert.ok(res, 'it should match');
+            assert.ok(res.score > 0.8, 'it should match');
+        });
+
+        it('should cope with low score entities but retains OK@0.85', () => {
+            const rule = ai.preprocessRule(['intent', '@foo']);
+
+            // @ts-ignore
+            const fooEntity = entity('foo', 'value', 0.835);
+            const goodReq = fakeReq([intent('intent', [fooEntity], 0.85)], [fooEntity]);
+
+            const res = ai.match(goodReq, rule);
+            assert.ok(res, 'it should match');
+            assert.ok(res.score > 0.85, 'it should match');
+        });
+
+        it('should cope with low score entities @0.85', () => {
+            const rule = ai.preprocessRule(['intent', '@foo']);
+
+            // @ts-ignore
+            const fooEntity = entity('foo', 'value', 0.835);
+            const goodReq = fakeReq([intent('intent', [fooEntity], 0.8)], [fooEntity]);
+
+            const res = ai.match(goodReq, rule);
+            assert.ok(res, 'it should match');
+            assert.ok(res.score < 0.85, 'it should match');
+        });
+
+        it('should cope with low score entities and intents @0.85', () => {
+            const rule = ai.preprocessRule(['intent', '@foo']);
+
+            // @ts-ignore
+            const fooEntity = entity('foo', 'value', 0.85);
+            const goodReq = fakeReq([intent('intent', [fooEntity], 0.85)], [fooEntity]);
+
+            const res = ai.match(goodReq, rule);
+            assert.ok(res, 'it should match');
+            assert.ok(res.score >= 0.85, 'it should match');
+        });
+
+        it('should cope with bad entities and intents @0.79', () => {
+            const rule = ai.preprocessRule(['intent', '@foo']);
+
+            // @ts-ignore
+            const fooEntity = entity('foo', 'value', 0.835);
+            const goodReq = fakeReq([intent('intent', [fooEntity], 0.79)], [fooEntity]);
+
+            const res = ai.match(goodReq, rule);
+            assert.ok(res, 'it should match');
+            assert.ok(res.score >= 0.79, 'it should match');
+        });
+
+        it('should cope with bad entities and intents @0.79', () => {
+            const rule = ai.preprocessRule(['intent', '@foo']);
+
+            // @ts-ignore
+            const fooEntity = entity('foo', 'value', 0.8);
+            const goodReq = fakeReq([intent('intent', [fooEntity], 0.79)], [fooEntity]);
+
+            const res = ai.match(goodReq, rule);
+            assert.ok(res, 'it should match');
+            assert.ok(res.score < 0.79, 'it should match');
         });
 
     });

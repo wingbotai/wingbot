@@ -62,6 +62,10 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
             Object.assign(ret, { match: reply.aiTags });
         }
 
+        if (reply.aiTitle) {
+            Object.assign(ret, { aiTitle: reply.aiTitle });
+        }
+
         return ret;
     });
 }
@@ -123,8 +127,10 @@ function message (params, {
 
             okQuickReplies
                 .filter((reply) => !reply.title && reply.match)
-                .forEach((reply) => {
-                    res.expectedIntent(reply.match, reply.action, reply.data, reply.setState);
+                .forEach(({
+                    match, action, data: replyData, setState, aiTitle
+                }) => {
+                    res.expectedIntent(match, action, replyData, setState, aiTitle);
                 });
         } else {
             // replies on last index will be present, so the addQuickReply will be working

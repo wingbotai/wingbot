@@ -94,7 +94,7 @@ class AiMatching {
         /**
          * When there are additional entities then required add a handicap for each unmatched entity
          * Also works, when an optional entity was not matched
-         * (0.03 by default)
+         * (0.02 by default)
          *
          * @type {number}
          */
@@ -102,7 +102,7 @@ class AiMatching {
 
         /**
          * When there is additional intent, the final score will be lowered by this value
-         * (0.06 by default)
+         * (0.02 by default)
          *
          * @type {number}
          */
@@ -463,20 +463,28 @@ class AiMatching {
             };
         }
 
-        const { score, handicap, matched } = this
+        const {
+            score: entitiesScore, handicap, matched, minScore
+        } = this
             ._entityMatching(
                 wantedEntities,
                 useEntities,
-                stateless ? {} : req.state
+                stateless ? {} : req.state,
+                requestIntent.entities
+                    ? (x) => Math.atan((x - 0.76) * 40) / Math.atan((1 - 0.76) * 40)
+                    : (x) => x
             );
 
         const allOptional = wantedEntities.every((e) => e.optional);
-        if (score === 0 && !allOptional) {
+        if (entitiesScore === 0 && !allOptional) {
             return { score: 0, entities: [] };
         }
 
+        const score = (Math.min(minScore + (handicap / 2), requestIntent.score) - handicap)
+            * ((this.multiMatchGain * entitiesScore) ** matched.length);
+
         return {
-            score: (requestIntent.score - handicap) * (this.multiMatchGain ** matched.length),
+            score,
             entities: matched
         };
     }
@@ -487,14 +495,16 @@ class AiMatching {
      * @param {EntityExpression[]} wantedEntities
      * @param {Entity[]} requestEntities
      * @param {object} [requestState]
-     * @returns {{score: number, handicap: number, matched: Entity[] }}
+     * @param {Function} [scoreFn]
+     * @returns {{score: number, handicap: number, matched: Entity[], minScore: number }}
      */
-    _entityMatching (wantedEntities, requestEntities = [], requestState = {}) {
+    _entityMatching (wantedEntities, requestEntities = [], requestState = {}, scoreFn = (x) => x) {
         const occurences = new Map();
 
         const matched = [];
         let handicap = 0;
         let sum = 0;
+        let minScore = 1;
 
         for (const wanted of wantedEntities) {
             const usedIndexes = occurences.has(wanted.entity)
@@ -540,7 +550,9 @@ class AiMatching {
             }
 
             if (!matching && !wanted.optional) {
-                return { score: 0, handicap: 0, matched: [] };
+                return {
+                    score: 0, handicap: 0, matched: [], minScore
+                };
             }
 
             if (!matching) { // optional
@@ -558,9 +570,13 @@ class AiMatching {
                     : this.redundantEntityHandicap + this.optionalHandicap;
             }
 
+            if (requestEntity && !wanted.optional && wanted.op !== COMPARE.NOT_EQUAL) {
+                minScore = Math.min(minScore, scoreFn(requestEntity.score));
+            }
+
             if (requestEntity) {
                 matched.push(requestEntity);
-                sum += requestEntity.score;
+                sum += scoreFn(requestEntity.score);
                 if (index !== -1) {
                     if (!occurences.has(wanted.entity)) occurences.set(wanted.entity, []);
                     occurences.get(wanted.entity).push(index);
@@ -568,17 +584,19 @@ class AiMatching {
             } else {
                 matched.push({
                     entity: wanted.entity,
-                    score: 1 - this.redundantEntityHandicap,
+                    score: 1 - (this.redundantEntityHandicap * 2),
                     value: undefined
                 });
-                sum += 1;
+                sum += 1 - (this.redundantEntityHandicap * 2);
             }
         }
 
         handicap += (requestEntities.length - matched.length) * this.redundantEntityHandicap;
         const score = matched.length === 0 ? 0 : sum / matched.length;
 
-        return { score, handicap, matched };
+        return {
+            score, handicap, matched, minScore
+        };
     }
 
     _entityIsMatching (op, compare, value) {

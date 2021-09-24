@@ -5,10 +5,12 @@
 
 const Ai = require('./Ai');
 const { tokenize, parseActionPayload } = require('./utils');
-const { disambiguationQuickReply, quickReplyAction } = require('./utils/quickReplies');
+const { quickReplyAction } = require('./utils/quickReplies');
+const { FLAG_DISAMBIGUATION_SELECTED } = require('./flags');
 const { getSetState } = require('./utils/getUpdate');
 const { vars, checkSetState } = require('./utils/stateVariables');
 const OrchestratorClient = require('./OrchestratorClient');
+const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
@@ -56,6 +58,8 @@ function makeTimestamp () {
  * @prop {number} sort
  * @prop {boolean} local
  * @prop {boolean} aboveConfidence
+ * @prop {object} [data]
+ * @prop {string|string[]} [match]
  * @prop {object} [setState]
  * @prop {boolean} [winner]
  * @prop {string|Function} [title]
@@ -189,6 +193,8 @@ class Request {
 
         this._aiActions = null;
 
+        this._quickReplyActions = null;
+
         this._aiWinner = null;
 
         // protected for now, filled by AI
@@ -231,9 +237,13 @@ class Request {
     /**
      * Get all matched actions from NLP intents
      *
+     * @param {boolean} [local]
      * @returns {IntentAction[]}
      */
-    aiActions () {
+    aiActions (local = false) {
+        if (local) {
+            return this._resolveQuickReplyActions();
+        }
         this.aiActionsWinner();
         return this._aiActions;
     }
@@ -256,31 +266,69 @@ class Request {
         return (aiActions || this._aiActions)
             .filter((a) => a.title)
             .slice(0, limit)
-            .map((a) => disambiguationQuickReply(
-                typeof a.title === 'function'
-                    ? a.title(this)
-                    : a.title,
-                a.intent.intent,
-                text,
-                overrideAction || a.action,
-                overrideAction
-                    ? {
-                        _action: a.action,
-                        _appId: a.appId
+            .map((a) => {
+                const {
+                    action,
+                    intent = { intent: null },
+                    setState = null,
+                    data = {},
+                    match = null,
+                    title
+                } = a;
+
+                const entities = intent.entities || [];
+
+                const templateData = {
+                    ...stateData(this),
+                    ...getSetState(setState || {}, this),
+                    intent: intent.intent,
+                    entities,
+                    ...entities.reduceRight((o, e) => ({
+                        ...o,
+                        [`@${e.entity}`]: e.value
+                    }), {})
+                };
+
+                const textTemplate = typeof title === 'function'
+                    ? title
+                    : cachedTranslatedCompilator(title);
+
+                const res = {
+                    title: textTemplate(templateData),
+                    action: overrideAction || action,
+                    data: {
+                        ...data,
+                        _senderMeta: {
+                            flag: FLAG_DISAMBIGUATION_SELECTED,
+                            likelyIntent: intent.intent,
+                            disambText: text
+                        }
                     }
-                    : {}
-            ));
+                };
+
+                if (setState) Object.assign(res, { setState });
+                if (match) Object.assign(res, { match });
+
+                return res;
+            });
     }
 
     /**
      * Returns true, if there is an action for disambiguation
      *
      * @param {number} minimum
+     * @param {boolean} [local]
      * @returns {boolean}
      */
-    hasAiActionsForDisambiguation (minimum = 1) {
-        this.aiActionsWinner();
-        return this._aiActions
+    hasAiActionsForDisambiguation (minimum = 1, local = false) {
+        let iterate;
+        if (local) {
+            iterate = this._resolveQuickReplyActions();
+        } else {
+            this.aiActionsWinner();
+            iterate = this._aiActions;
+        }
+        return iterate
             .filter((a) => a.title)
             .length >= minimum;
     }
@@ -1097,14 +1145,27 @@ class Request {
     _actionByExpectedKeywords () {
         let res = null;
 
-        if (!res && this.state._expectedKeywords) {
-            const payload = quickReplyAction(this.state._expectedKeywords, this, Ai.ai);
-            if (payload) {
+        if (this.state._expectedKeywords) {
+            const [payload] = this._resolveQuickReplyActions();
+            if (payload && payload.aboveConfidence) {
                 res = parseActionPayload(payload);
             }
         }
 
         return res;
+    }
+
+    _resolveQuickReplyActions () {
+        if (this._quickReplyActions === null) {
+            if (this.state._expectedKeywords) {
+                this._quickReplyActions = quickReplyAction(
+                    this.state._expectedKeywords, this, Ai.ai
+                );
+            } else {
+                this._quickReplyActions = [];
+            }
+        }
+        return this._quickReplyActions;
     }
 
     /**

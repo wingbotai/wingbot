@@ -11,7 +11,7 @@ const Plugins = require('./Plugins');
 const Ai = require('./Ai');
 const expected = require('./resolvers/expected');
 const bounce = require('./resolvers/bounce');
-const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
+const { cachedTranslatedCompilator } = require('./resolvers/utils');
 const defaultResourceMap = require('./defaultResourceMap');
 const { shouldExecuteResolver } = require('./resolvers/resolverTags');
 
@@ -454,11 +454,7 @@ class BuildRouter extends Router {
                 let { aiTitle = null } = route;
 
                 if (aiTitle) {
-                    const aiTitleRenderer = cachedTranslatedCompilator(aiTitle);
-                    aiTitle = (req) => {
-                        const state = stateData(req);
-                        return aiTitleRenderer(state);
-                    };
+                    aiTitle = cachedTranslatedCompilator(aiTitle);
                 }
 
                 if (route.aiGlobal) {

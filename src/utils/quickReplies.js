@@ -8,7 +8,12 @@ const { tokenize } = require('./tokenizer');
 const { FLAG_DISAMBIGUATION_SELECTED } = require('../flags');
 const { checkSetState } = require('./stateVariables');
 
-function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, setState = null) {
+/** @typedef {import('../Request')} Request */
+/** @typedef {import('../Ai')} Ai */
+
+function makeExpectedKeyword (
+    action, title, matcher = null, payloadData = {}, setState = null, aiTitle = null
+) {
     let match = null;
 
     if (Array.isArray(matcher)) {
@@ -16,7 +21,9 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, s
     } else if (matcher instanceof RegExp) {
         match = `#${matcher.source}#`;
     } else if (typeof matcher === 'string') {
-        match = `#${tokenize(matcher)}`;
+        match = matcher.startsWith('#')
+            ? matcher
+            : `#${tokenize(matcher)}`;
     } else {
         // make matcher from title
         match = `#${tokenize(title)}`;
@@ -30,14 +37,17 @@ function makeExpectedKeyword (action, title, matcher = null, payloadData = {}, s
     };
 
     if (setState) Object.assign(ret, { setState });
+    if (aiTitle) Object.assign(ret, { title: aiTitle });
 
     return ret;
 }
 
+/** @typedef {import('../Responder').QuickReply} QuickReply */
+
 /**
  *
  * @ignore
- * @param {object|object[]|null} replies
+ * @param {object|QuickReply[]|null} replies
  * @param {string} [path]
  * @param {Function} [translate=w => w]
  * @param {object[]} [quickReplyCollector]
@@ -92,6 +102,7 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
         .map((reply) => {
             const {
                 title,
+                aiTitle = null,
                 action,
                 match,
                 data = {},
@@ -193,8 +204,9 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
             }
 
             const translatedTitle = translate(title);
+            const translatedAiTitle = typeof aiTitle === 'string' ? translate(aiTitle) : aiTitle;
             const expect = makeExpectedKeyword(
-                absoluteAction, translatedTitle, match, data, setState
+                absoluteAction, translatedTitle, match, data, setState, translatedAiTitle
             );
             expectedKeywords.push(expect);
 
@@ -223,7 +235,7 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
  * @param {object[]} expectedKeywords
  * @param {Request} req
  * @param {Ai} ai
- * @returns {null|object}
+ * @returns {object[]}
  */
 function quickReplyAction (expectedKeywords, req, ai) {
     const text = req.text();
@@ -234,33 +246,42 @@ function quickReplyAction (expectedKeywords, req, ai) {
             .filter((keyword) => keyword.title && keyword.title.toLocaleLowerCase() === lcText);
 
         if (lowerCaseMatch.length === 1) {
-            return lowerCaseMatch[0];
+            return [
+                {
+                    ...lowerCaseMatch[0],
+                    aboveConfidence: true
+                }
+            ];
         }
 
         const exactMatch = expectedKeywords
             .filter((keyword) => keyword.title === text);
 
         if (exactMatch.length !== 0) {
-            return exactMatch[0];
+            return exactMatch
+                .map((e) => ({
+                    ...e,
+                    aboveConfidence: true
+                }));
         }
     } else if (!req.isTextOrIntent()) {
         return null;
     }
 
-    // @todo disambiguate
     const found = [];
     expectedKeywords
         .forEach((keyword) => {
             const intent = ai.ruleIsMatching(keyword.match, req, true);
             if (intent) {
-                const { score, setState } = intent;
-
+                const { score, setState, aboveConfidence } = intent;
                 const _aiKeys = Object.keys(setState);
 
                 found.push({
                     ...keyword,
+                    intent,
                     score,
                     _aiKeys,
+                    aboveConfidence,
                     setState: keyword.setState
                         ? { ...keyword.setState, ...setState }
                         : { ...setState }
@@ -268,18 +289,15 @@ function quickReplyAction (expectedKeywords, req, ai) {
             }
         });
 
-    if (found.length === 0) {
-        return null;
-    }
-
     found.sort(({ score: a }, { score: z }) => z - a);
 
-    return found[0];
+    return found;
 }
 
 /**
  * Create a disambiguation quick reply
  *
+ * @deprecated
  * @param {string} title - quick reply title
  * @param {string} likelyIntent - possible intent
  * @param {string} disambText - users text input
