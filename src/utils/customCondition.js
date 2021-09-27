@@ -4,7 +4,7 @@
 'use strict';
 
 const { webalize } = require('webalize');
-const { compileWithState } = require('.');
+const compileWithState = require('./compileWithState');
 const { getValue } = require('./getUpdate');
 const stateData = require('./stateData');
 
