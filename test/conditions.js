@@ -272,6 +272,39 @@ describe('<Conditions>', function () {
         assert.throws(() => customCondition(null));
     });
 
+    it('handles handlebars', async () => {
+        await assertCondition(
+            {
+                value: '{{variable}}',
+                operator: ConditionOperators['matches regexp'],
+                variable: 'x.2.z'
+            },
+            {
+                x: [
+                    {}, {}, {
+                        z: 'matching'
+                    }
+                ],
+                variable: '[a-z]'
+            }, true
+        );
+        await assertCondition(
+            {
+                value: '{{variable}}',
+                operator: ConditionOperators['matches regexp'],
+                variable: 'x.2.z'
+            },
+            {
+                x: [
+                    {}, {}, {
+                        z: 'n0tmatching'
+                    }
+                ],
+                variable: '^[a-z]$'
+            }, false
+        );
+    });
+
     it('handles object as variable', async () => {
         await assertCondition(
             {
@@ -284,7 +317,8 @@ describe('<Conditions>', function () {
                     {}, {}, {
                         z: 'a'
                     }
-                ]
+                ],
+                variable: 'a'
             }, true
         );
         await assertCondition(

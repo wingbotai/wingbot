@@ -4,6 +4,7 @@
 'use strict';
 
 const { webalize } = require('webalize');
+const { compileWithState } = require('.');
 const { getValue } = require('./getUpdate');
 const stateData = require('./stateData');
 
@@ -32,7 +33,6 @@ const isSimpleWord = (string) => {
     return webalize(word).length === word.trim().length;
 };
 
-// TODO better regex
 // wingbot.ai - sharedLib/editor/validator/validateVariableCondition
 /**
  *
@@ -51,7 +51,6 @@ const isStringNumber = (string) => {
  * @param {string} string
  * @returns {number}
  */
-// TODO čárka a tečka
 const stringToNumber = (string) => {
     if (typeof string !== 'string') return string;
     if (!isStringNumber(string)) throw new Error('String not a number');
@@ -114,7 +113,7 @@ const compare = (variable, operator, value = undefined) => {
             return !compare(variable, ConditionOperators.contains, value);
 
         case ConditionOperators['matches regexp']:
-            return new RegExp(`${value}`, 'gi').test(variable);
+            return new RegExp(`${unescape(`${value}`)}`, 'i').test(variable);
 
         case ConditionOperators['not matches regexp']:
             return !compare(variable, ConditionOperators['matches regexp'], value);
@@ -155,12 +154,11 @@ function customCondition (condition, description = '') {
         throw new Error(`Invalid condition (${description}) type`);
     }
 
-    // @ts-ignore
-    // eslint-disable-next-line no-unused-vars
     const resolver = (req, res) => condition.some((condList) => condList.every((cond) => {
         const data = stateData(req, res);
         const variableValue = getValue(cond.variable, data);
-        return compare(variableValue, cond.operator, cond.value);
+        const value = compileWithState(req, res, cond.value);
+        return compare(variableValue, cond.operator, value);
     }));
 
     return resolver;
