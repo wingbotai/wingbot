@@ -4,6 +4,7 @@
 'use strict';
 
 const ai = require('./Ai');
+const { FEATURE_PHRASES } = require('./features');
 const { FLAG_DO_NOT_LOG } = require('./flags');
 
 /** @typedef {import('./Request')} Request */
@@ -35,11 +36,11 @@ class ReturnSender {
     /**
      *
      * @param {ReturnSenderOptions} options
-     * @param {string} userId
+     * @param {string} senderId
      * @param {object} incommingMessage
      * @param {ChatLogStorage} logger - console like logger
      */
-    constructor (options, userId, incommingMessage, logger = null) {
+    constructor (options, senderId, incommingMessage, logger = null) {
         this._queue = [];
 
         /**
@@ -48,16 +49,14 @@ class ReturnSender {
         this.responses = [];
         this._results = [];
 
-        this._promise = Promise.resolve();
+        this._promise = null;
 
         this._isWorking = false;
 
         const isStandbyEvent = incommingMessage.isStandby;
+        this._sendLogs = !isStandbyEvent || options.logStandbyEvents;
 
-        this._sendLogs = logger !== null
-            && (!isStandbyEvent || options.logStandbyEvents);
-
-        this._userId = userId;
+        this._senderId = senderId;
 
         this._incommingMessage = incommingMessage;
 
@@ -65,6 +64,20 @@ class ReturnSender {
 
         this._sequence = 0;
 
+        this._sendLastMessageWithFinish = Array.isArray(incommingMessage.features)
+            && incommingMessage.features.includes(FEATURE_PHRASES);
+
+        /**
+         * @type {Function}
+         * @private
+         */
+        this._finish = null;
+        this._finishedPromise = new Promise((r) => {
+            this._finish = (val) => {
+                this._finished = true;
+                r(val);
+            };
+        });
         this._finished = false;
         this._catchedBeforeFinish = null;
 
@@ -75,7 +88,7 @@ class ReturnSender {
 
         this.propagatesWaitEvent = false;
 
-        this.simulatesOptIn = false;
+        this._simulatesOptIn = false;
         this.simulateFail = false;
 
         this._simulateStateChange = null;
@@ -99,6 +112,39 @@ class ReturnSender {
         this._tracking = {
             events: []
         };
+
+        this._intentsAndEntities = [];
+
+        /**
+         * @type {Function}
+         * @private
+         */
+        this._gotAnotherEventDefer = null;
+        this._anotherEventPromise = null;
+        this._gotAnotherEvent();
+    }
+
+    set simulatesOptIn (value) {
+        this._simulatesOptIn = value;
+        // simulate optin
+        const isOptIn = this._incommingMessage.optin && this._incommingMessage.optin.user_ref;
+
+        if (isOptIn && this._simulatesOptIn) {
+            this._simulateStateChange = { senderId: this._senderId };
+        }
+    }
+
+    get simulatesOptIn () {
+        return this._simulatesOptIn;
+    }
+
+    _gotAnotherEvent () {
+        if (this._gotAnotherEventDefer) {
+            this._gotAnotherEventDefer();
+        }
+        this._anotherEventPromise = new Promise((r) => {
+            this._gotAnotherEventDefer = r;
+        });
     }
 
     get tracking () {
@@ -109,17 +155,14 @@ class ReturnSender {
         return this._visitedInteractions.slice();
     }
 
+    get results () {
+        return this._results;
+    }
+
     _send (payload) { // eslint-disable-line no-unused-vars
         const res = {
             message_id: `${Date.now()}${Math.random()}.${this._sequence++}`
         };
-
-        // simulate optin
-        const isOptIn = this._incommingMessage.optin && this._incommingMessage.optin.user_ref;
-
-        if (isOptIn && this.simulatesOptIn) {
-            this._simulateStateChange = { senderId: this._userId };
-        }
 
         if (this.simulateFail) {
             return Promise.reject(new Error('Fail'));
@@ -191,9 +234,22 @@ class ReturnSender {
     async _work () {
         this._isWorking = true;
         let payload;
+        let req;
         let previousResponse = null;
         while (this._queue.length > 0) {
             payload = this._queue.shift();
+
+            let lastInQueueForNow = this._queue.length === 0;
+            if (this._queue.length === 0 && this._sendLastMessageWithFinish) {
+                await Promise.race([
+                    this._anotherEventPromise,
+                    this._finishedPromise
+                ]);
+                lastInQueueForNow = this._queue.length === 0;
+                if (lastInQueueForNow) { // still last in queue - finished event came
+                    req = await this._finishedPromise;
+                }
+            }
 
             if (payload.wait && !this.propagatesWaitEvent) {
                 await this._wait(payload.wait);
@@ -205,12 +261,40 @@ class ReturnSender {
                     });
                 }
             } else {
+                await this._enrichPayload(payload, req, lastInQueueForNow);
                 this.responses.push(payload);
                 previousResponse = await this._send(payload);
                 this._results.push(previousResponse);
             }
         }
         this._isWorking = false;
+    }
+
+    async _enrichPayload (payload, req, lastInQueueForNow) {
+        if (lastInQueueForNow && req && this._intentsAndEntities.length !== 0) {
+            const { phrases } = await ai.ai.getPhrases(req);
+
+            const phrasesSet = new Set();
+            const entities = [];
+
+            this._intentsAndEntities
+                .forEach((aiObj) => {
+                    if (aiObj.startsWith('@')) {
+                        entities.push(aiObj);
+                    }
+                    const keywords = phrases.get(aiObj) || [];
+                    keywords.forEach((kw) => {
+                        phrasesSet.add(kw);
+                    });
+                });
+
+            Object.assign(payload, {
+                expected: {
+                    entities,
+                    phrases: Array.from(phrasesSet)
+                }
+            });
+        }
     }
 
     visitedInteraction (action) {
@@ -228,15 +312,22 @@ class ReturnSender {
             }
             return;
         }
+        if (Array.isArray(payload.expectedIntentsAndEntities)) {
+            this._intentsAndEntities.push(...payload.expectedIntentsAndEntities);
+            return;
+        }
 
         this._queue.push(payload);
+        this._gotAnotherEvent();
 
         if (this._catchedBeforeFinish) {
             return;
         }
 
         if (!this._isWorking) {
-            this._promise = this._promise
+            const promise = this._promise || new Promise((r) => process.nextTick(r));
+
+            this._promise = promise
                 .then(() => this._work())
                 .catch((e) => {
                     if (this._finished) {
@@ -296,7 +387,7 @@ class ReturnSender {
 
             const expected = req.expected();
             Object.assign(meta, {
-                ...res.senderMeta,
+                ...(res && res.senderMeta),
                 timestamp: req.timestamp,
                 text,
                 intent: req.intent(ai.ai.confidence),
@@ -321,59 +412,71 @@ class ReturnSender {
         return meta;
     }
 
-    async finished (req = null, res = null) {
-        this._finished = true;
-
+    /**
+     *
+     * @param {Request} [req]
+     * @param {Responder} [res]
+     * @param {Error} [err]
+     * @param {Function} [reportError]
+     * @returns {Promise<Object>}
+     */
+    // eslint-disable-next-line no-console
+    async finished (req = null, res = null, err = null, reportError = console.error) {
+        this._finish(req);
         const meta = this._createMeta(req, res);
         const confidentInput = req && req.isConfidentInput();
-
+        let error = err;
         try {
             await this._promise;
-
-            if (this._catchedBeforeFinish) {
-                throw this._catchedBeforeFinish;
-            }
-
-            if (this._sendLogs && meta.flag !== FLAG_DO_NOT_LOG) {
-                this._sendLogs = false;
-                const sent = this.responses.map((s) => this._filterMessage(s));
-                const processedEvent = req
-                    ? req.event
-                    : this._incommingMessage;
-                let incomming = this._filterMessage(processedEvent, confidentInput, req);
-
-                if (processedEvent !== this._incommingMessage) {
-                    incomming = {
-                        ...incomming,
-                        original_event: this._incommingMessage
-                    };
-                }
-
-                await Promise.resolve(this._logger
-                    .log(this._userId, sent, incomming, meta));
-            }
-
-            const somethingSent = this._results.length > 0;
-
-            return {
-                status: somethingSent ? 200 : 204,
-                results: this._results
-            };
         } catch (e) {
-            const sent = this.responses.map((s) => this._filterMessage(s));
-            const incomming = this._filterMessage(this._incommingMessage, confidentInput);
+            error = e;
+        }
 
-            if (this._logger) {
-                await Promise.resolve(this._logger
-                    .error(e, this._userId, sent, incomming, meta));
+        if (!error) {
+            error = this._catchedBeforeFinish;
+        }
+
+        try {
+            const sent = this.responses.map((s) => this._filterMessage(s));
+            const processedEvent = req
+                ? req.event
+                : this._incommingMessage;
+            let incomming = this._filterMessage(processedEvent, confidentInput, req);
+
+            if (processedEvent !== this._incommingMessage) {
+                incomming = {
+                    ...incomming,
+                    original_event: this._incommingMessage
+                };
             }
 
-            throw e;
+            if (!this._logger || meta.flag === FLAG_DO_NOT_LOG) {
+                // noop
+            } else if (error) {
+                await Promise.resolve(this._logger
+                    .error(error, this._senderId, sent, incomming, meta));
+            } else if (this._sendLogs) {
+                this._sendLogs = false;
+                await Promise.resolve(this._logger
+                    .log(this._senderId, sent, incomming, meta));
+            }
+        } catch (e) {
+            await Promise.resolve(reportError(e, this._incommingMessage, this._senderId));
         }
-    }
 
-    get results () {
-        return this._results;
+        if (error) {
+            // @ts-ignore
+            const { code = 500, message } = error;
+            await Promise.resolve(reportError(error, this._incommingMessage, this._senderId));
+            return { status: code, error: message, results: this.results };
+        }
+
+        const somethingSent = this._results.length > 0;
+
+        return {
+            status: somethingSent ? 200 : 204,
+            results: this._results
+        };
     }
 
 }

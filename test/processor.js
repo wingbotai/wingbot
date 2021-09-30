@@ -10,6 +10,7 @@ const Request = require('../src/Request');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const ReducerWrapper = require('../src/ReducerWrapper');
+const { ReturnSender } = require('..');
 
 const EMPTY_STATE = { user: {} };
 
@@ -562,6 +563,44 @@ describe('Processor', function () {
             await t.postBack('start');
 
             t.res(0).contains('result is 2');
+        });
+
+        it('passes exceptions to ReturnSender', async () => {
+            const p = new Processor(new ReducerWrapper((req, res, postback) => {
+                if (req.isText()) {
+                    res.text('hello');
+                    postback('something');
+                } else {
+                    throw new Error(`some random fail from postback: ${req.action()}`);
+                }
+            }));
+
+            const msg = {
+                sender: { id: 'a' },
+                message: { text: 'foo' }
+            };
+
+            const logger = {
+                log: sinon.spy(),
+                error: sinon.spy()
+            };
+
+            const sender = new ReturnSender({}, msg.sender.id, msg, logger);
+
+            await p.processMessage(msg, 'page', sender);
+
+            assert.ok(logger.error.calledOnce);
+
+            const [error, senderId, sentArray, icomming, meta] = logger.error.firstCall.args;
+
+            assert.strictEqual(error.message, 'some random fail from postback: something');
+            assert.strictEqual(senderId, msg.sender.id);
+            assert.strictEqual(sentArray.length, 1);
+            assert.deepStrictEqual(icomming, msg);
+            assert.deepStrictEqual(meta, {
+                ...meta,
+                text: 'foo'
+            });
         });
 
     });

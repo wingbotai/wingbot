@@ -362,6 +362,54 @@ describe('Responder', function () {
 
     });
 
+    describe('#expectedIntent()', () => {
+
+        it('passes AI data to sender if phrases are supported', () => {
+            const { opts, messageSender, sendFn } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, {
+                ...opts,
+                features: ['phrases', 'voice']
+            });
+
+            res.expectedIntent(['#phrase-word'], 'action');
+
+            assert.strictEqual(sendFn.called, false);
+
+            res.expectedIntent(['intent'], 'action');
+
+            assert.deepStrictEqual(sendFn.lastCall.args[0], {
+                expectedIntentsAndEntities: ['intent']
+            });
+
+            res.expectedIntent(['@entity!=foo', '@bar?'], 'action');
+
+            assert.deepStrictEqual(sendFn.lastCall.args[0], {
+                expectedIntentsAndEntities: ['@entity', '@bar']
+            });
+
+            res.text('text', [
+                {
+                    action: 'somewhere', match: ['@some']
+                }
+            ], {
+                ssml: '<speak>a</speak>',
+                speed: 2.0
+            });
+
+            assert.deepStrictEqual(sendFn.lastCall.args[0], {
+                ...sendFn.lastCall.args[0],
+                message: {
+                    ...sendFn.lastCall.args[0].message,
+                    text: '-text',
+                    voice: {
+                        speed: 2.0
+                    }
+                }
+            });
+        });
+
+    });
+
     describe('#setMessagingType()', function () {
 
         it('sends default message type', function () {

@@ -17,13 +17,21 @@ function createResponse (intent = 'hello', score = 0.96) {
     return { tags: intent ? [{ intent, score: intent === 'low' ? 0.5 : score }] : [] };
 }
 
+/**
+ *
+ * @param {string|string[]} [text]
+ */
 function fakeReq (text = 'text') {
+    const texts = Array.isArray(text) ? text : [text];
     return [
         {
             action () { return null; },
             event: { timestamp: Date.now() },
-            text () { return text; },
-            isTextOrIntent () { return !!text; },
+            text () { return texts[0]; },
+            textAlternatives () {
+                return texts[0] ? texts.map((t) => ({ text: t, score: 1 })) : [];
+            },
+            isTextOrIntent () { return !!texts[0]; },
             intents: null,
             isQuickReply () { return false; },
             isConfidentInput () { return false; },
@@ -50,6 +58,18 @@ describe('<Ai>', function () {
 
         const model = new WingbotModel({ model: 'test', fetch: this.fakeRequest });
         ai.register(model);
+    });
+
+    describe('#getPhrases()', () => {
+
+        it('returns default empty phrases list, when using unknown model', async () => {
+            ai.deregister();
+            // @ts-ignore
+            const { phrases } = await ai.getPhrases({ state: { lang: 'random' } });
+
+            assert.strictEqual(phrases.size, 0);
+        });
+
     });
 
     describe('match()', function () {
@@ -83,6 +103,41 @@ describe('<Ai>', function () {
             assert.ok(this.fakeRequest.calledTwice);
             assert.strictEqual(res, Router.BREAK);
             assert.deepStrictEqual(args[0].intents, []);
+        });
+
+        it('supports alternatives', async function () {
+            syncRes = Promise.resolve(createResponse());
+
+            const fetch = sinon.spy(async (url) => ({
+                async json () {
+                    if (url.match(/text=sasa/)) {
+                        return createResponse('lowscore', 0.5);
+                    }
+
+                    if (url.match(/text=lele/)) {
+                        return createResponse('highscore', 0.9);
+                    }
+
+                    if (url.match(/text=lol/)) {
+                        return createResponse('other', 0.9);
+                    }
+
+                    return createResponse(null);
+                }
+            }));
+            const model = new WingbotModel({ model: 'test', fetch });
+            ai.register(model);
+
+            const mid = ai.match('lowscore');
+            const mid2 = ai.match(['highscore']);
+            const args = fakeReq(['sasa', 'lele']);
+            const args2 = fakeReq(['sasa', 'lele', 'lol']);
+            const res = await mid(...args);
+            const res2 = await mid2(...args2);
+
+            assert.strictEqual(fetch.callCount, 5);
+            assert.strictEqual(res, Router.BREAK);
+            assert.strictEqual(res2, Router.CONTINUE);
         });
 
         it('should skip request without texts', async function () {

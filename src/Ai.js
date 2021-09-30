@@ -7,6 +7,7 @@ const { WingbotModel } = require('./wingbot');
 const AiMatching = require('./AiMatching');
 const { vars } = require('./utils/stateVariables');
 const { deepEqual } = require('./utils/deepMapTools');
+const CustomEntityDetectionModel = require('./wingbot/CustomEntityDetectionModel');
 
 const DEFAULT_PREFIX = 'default';
 
@@ -39,6 +40,7 @@ let uq = 1;
 
 /** @typedef {import('./Request').IntentAction} IntentAction */
 /** @typedef {import('./Request')} Request */
+/** @typedef {import('./wingbot/CustomEntityDetectionModel').Phrases} Phrases */
 
 /**
  * @class Ai
@@ -347,7 +349,6 @@ class Ai {
                 return false;
             }
 
-            // @todo k cemu? logy? asi ne, zmazat
             req._winningIntent = winningIntent;
 
             return true;
@@ -425,8 +426,8 @@ class Ai {
         };
     }
 
-    _getModelForRequest (req, defaultModel = DEFAULT_PREFIX) {
-        if (req.isConfidentInput()) {
+    _getModelForRequest (req, isConfident = req.isConfidentInput(), defaultModel = DEFAULT_PREFIX) {
+        if (isConfident) {
             return null;
         }
 
@@ -460,7 +461,39 @@ class Ai {
         };
     }
 
-    async preloadIntent (req) {
+    /**
+     *
+     * @param {Request} req
+     * @returns {Promise}
+     */
+    async preloadAi (req) {
+        if (req.supportsFeature(req.FEATURE_PHRASES)) {
+            const model = this._getModelForRequest(req, false);
+
+            if (model.phrasesCacheTime) {
+                model.getPhrases()
+                    .catch(() => {});
+            }
+        }
+        return this._preloadIntent(req);
+    }
+
+    /**
+     * Returns phrases model from AI
+     *
+     * @param {Request} req
+     * @returns {Promise<Phrases>}
+     */
+    async getPhrases (req) {
+        const model = this._getModelForRequest(req, false);
+
+        if (model) {
+            return model.getPhrases();
+        }
+        return CustomEntityDetectionModel.getEmptyPhrasesObject();
+    }
+
+    async _preloadIntent (req) {
         const mockIntent = this._getMockIntent(req);
 
         if (mockIntent) {
@@ -502,8 +535,36 @@ class Ai {
                 return { intents: [], entities: [] };
             }
         }
-        const text = this.textFilter(req.text());
-        return model.resolve(text, req);
+
+        const results = await Promise.all(
+            req.textAlternatives()
+                .map(({ text, score }) => model
+                    .resolve(this.textFilter(text), req)
+                    .then((res) => ({
+                        ...res,
+                        _altScore: score
+                    })))
+        );
+
+        results.sort(({
+            intents: aIntents = [], _altScore: aAlt
+        }, {
+            intents: zIntents = [], _altScore: zAlt
+        }) => {
+            const [{ score: aScore = 0 } = {}] = aIntents;
+            const [{ score: zScore = 0 } = {}] = zIntents;
+
+            const a = aAlt * aScore;
+            const z = zAlt * zScore;
+
+            if (a === z) {
+                return zAlt - aAlt;
+            }
+
+            return z - a;
+        });
+
+        return results[0];
     }
 
     /**

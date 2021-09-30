@@ -5,19 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.22.0] 2021-09-30
+
+### Highlights
+
+- STT features for better voice understanding
+- introducing `features` array to support text+voice combined bots
+- better error handling
+
+### Added
+
+- `Request` now has:
+  - a new `features: string[]` property
+  - a new `FEATURES_*` constants
+  - the `supportsFeature(feature: string): boolean` method
+  - the `textAlternatives(): {text:string,score:number}[]` method returning all texts sent to bot
+- `Responder`'s `text()` got a new third argument with `VoiceControl` settings
+- `Ai` got a new `getPhrases()` method, which is used by `ReturnSender` to enrich the last message with expected entities and phrases
+
+### Changed
+
+- Exception handling in Processor now propagates all conversational exceptions to `ChatLogStorage` (finally)
+-
 ## [3.21.1] 2021-09-27
 
-## Fixed
+### Fixed
 
 - conditions now support handlebars
-## [3.21.0] 2021-09-24
+### [3.21.0] 2021-09-24
 
-## Added
+### Added
 
 - support for local handlers disambiguation
 ## [3.20.0] 2021-09-21
 
-## Added
+### Added
 
 - support for setState array operators (`_$push`, `_$pop`, `_$shift`, `_$add`, `_$set` `_$rem`)
 

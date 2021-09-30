@@ -79,8 +79,6 @@ const { mergeState } = require('./utils/stateVariables');
  * @prop {Function} [log] - console like error logger
  * @prop {object} [defaultState] - default chat state
  * @prop {boolean} [autoSeen] - send seen automatically
- * @prop {boolean} [waitsForSender] - use 'false' resolve the processing promise
- *  without waiting for message sender
  * @prop {number} [redirectLimit] - maximum number of redirects at single request
  * @prop {string} [secret] - Secret for calling orchestrator API
  * @prop {string} [apiUrl] - Url for calling orchestrator API
@@ -145,8 +143,7 @@ class Processor extends EventEmitter {
             autoTyping: false,
             autoSeen: false,
             redirectLimit: 20,
-            nameFromState: NAME_FROM_STATE,
-            waitsForSender: true
+            nameFromState: NAME_FROM_STATE
         };
 
         Object.assign(this.options, options);
@@ -198,6 +195,7 @@ class Processor extends EventEmitter {
                         Object.assign(resolvedData, { _localpostback: true });
                         previousAction = req.setAction(action, resolvedData);
                         if (typeof this.reducer === 'function') {
+                            // @ts-ignore
                             reduceResult = this.reducer(req, res, postBack);
                         } else {
                             reduceResult = this.reducer.reduce(req, res, postBack);
@@ -229,33 +227,31 @@ class Processor extends EventEmitter {
         return postBack;
     }
 
-    reportSendError (err, message, pageId) {
+    async _reportError (pageId, err, event, senderId = null) {
         if (err.code === 204) {
-            this.options.log.info(`nothing sent: ${err.message}`, message);
+            this.options.log.info(`nothing sent: ${err.message}`, event);
             return;
         }
         if (err.code !== 403) {
-            this.options.log.error(err, message);
+            this.options.log.error(err, event);
         }
-        if (!message || !message.sender || !message.sender.id) {
+        if (!senderId) {
             return;
         }
-        const senderId = message.sender.id;
+        try {
+            const state = await this._loadState(senderId, pageId, this.options.justUpdateTimeout);
 
-        this._loadState(senderId, pageId, this.options.justUpdateTimeout)
-            .then((state) => {
-                Object.assign(state, {
-                    lastSendError: new Date(),
-                    lastErrorMessage: err.message,
-                    lastErrorCode: err.code,
-                    lastInteraction: new Date()
-                });
-
-                return this.stateStorage.saveState(state);
-            })
-            .catch((e) => {
-                this.options.log.error(e);
+            Object.assign(state, {
+                lastSendError: new Date(),
+                lastErrorMessage: err.message,
+                lastErrorCode: err.code,
+                lastInteraction: new Date()
             });
+
+            await this.stateStorage.saveState(state);
+        } catch (e) {
+            this.options.log.error(`failed to log error: ${err.message}`, e);
+        }
     }
 
     async _preload () {
@@ -298,7 +294,7 @@ class Processor extends EventEmitter {
         } catch (e) {
             await preloadPromise;
             const { code = 500 } = e;
-            this.reportSendError(e, message, pageId);
+            await this._reportError(pageId, e, message);
             return { status: code };
         }
 
@@ -325,30 +321,31 @@ class Processor extends EventEmitter {
             return { status: 304 };
         }
 
-        let result;
+        const result = await this._dispatch(message, pageId, messageSender, responderData);
+        await preloadPromise;
+        return result;
+    }
+
+    async _dispatch (message, pageId, messageSender, responderData) {
+        let req;
+        let res;
+        let state;
+        let data;
+        const errorHandler = (...e) => this._reportError(pageId, ...e);
         try {
-            const {
+            ({
                 req, res, data, state
             } = await this
-                ._processMessage(message, pageId, messageSender, responderData, true);
-
-            if (this.options.waitsForSender) {
-                result = await messageSender.finished(req, res);
-            } else {
-                messageSender.finished(req, res)
-                    .catch((e) => this.reportSendError(e, message, pageId));
-                result = { status: 200 };
-            }
+                ._processMessage(message, pageId, messageSender, responderData, true));
 
             await this._emitInteractionEvent(req, messageSender, state, data);
 
+            return messageSender.finished(req, res, null, errorHandler);
         } catch (e) {
-            const { code = 500 } = e;
-            this.reportSendError(e, message, pageId);
-            result = { status: code, error: e.message, results: messageSender.results };
+            req = req || e.req;
+            res = res || e.res;
+            return messageSender.finished(req, res, e, errorHandler);
         }
-        await preloadPromise;
-        return result;
     }
 
     /**
@@ -392,18 +389,6 @@ class Processor extends EventEmitter {
         });
     }
 
-    async _finishSender (message, pageId, messageSender, req, res) {
-        let result;
-        try {
-            result = await messageSender.finished(req, res);
-        } catch (e) {
-            const { code = 500 } = e;
-            this.reportSendError(e, message, pageId);
-            result = { status: code, error: e.message };
-        }
-        return result;
-    }
-
     /**
      * Get matching NLP intents
      *
@@ -427,7 +412,7 @@ class Processor extends EventEmitter {
             // @ts-ignore
             const req = new Request(request, { lang }, pageId, this.reducer.globalIntents);
 
-            await Ai.ai.preloadIntent(req);
+            await Ai.ai.preloadAi(req);
 
             const actions = req.aiActions();
 
@@ -512,12 +497,12 @@ class Processor extends EventEmitter {
 
             // prepare request and responder
             let { state } = stateObject;
-
             // @ts-ignore
             req = new Request(
                 message,
                 state,
                 pageId,
+                // @ts-ignore
                 this.reducer.globalIntents,
                 {
                     apiUrl: this.options.apiUrl,
@@ -526,7 +511,16 @@ class Processor extends EventEmitter {
                     appId: responderData.appId
                 }
             );
-            res = new Responder(senderId, messageSender, token, this.options, responderData);
+
+            const options = {
+                ...this.options,
+                features: [
+                    ...(this.options.features || []),
+                    ...req.features
+                ]
+            };
+
+            res = new Responder(senderId, messageSender, token, options, responderData);
             const postBack = this._createPostBack(postbackAcumulator, req, res);
 
             let continueDispatching = true;
@@ -544,7 +538,7 @@ class Processor extends EventEmitter {
                 }
             }
 
-            await Ai.ai.preloadIntent(req);
+            await Ai.ai.preloadAi(req);
 
             // @deprecated backward compatibility
             const aByAi = req.actionByAi();
@@ -659,28 +653,33 @@ class Processor extends EventEmitter {
         } catch (e) {
             await this.stateStorage.saveState(originalState);
             await emitPromise;
+            Object.assign(e, { req, res });
             throw e;
         }
 
-        await this.stateStorage.saveState(stateObject);
+        try {
+            await this.stateStorage.saveState(stateObject);
+            // process postbacks
+            const {
+                state = stateObject.state,
+                data = res.data
+            } = await this._processPostbacks(
+                postbackAcumulator,
+                senderId,
+                pageId,
+                messageSender,
+                responderData
+            );
 
-        // process postbacks
-        const {
-            state = stateObject.state,
-            data = res.data
-        } = await this._processPostbacks(
-            postbackAcumulator,
-            senderId,
-            pageId,
-            messageSender,
-            responderData
-        );
+            await emitPromise; // probably has been resolved this time
 
-        await emitPromise; // probably has been resolved this time
-
-        return {
-            req, res, data, state
-        };
+            return {
+                req, res, data, state
+            };
+        } catch (e) {
+            Object.assign(e, { req, res });
+            throw e;
+        }
     }
 
     /**

@@ -176,6 +176,30 @@ describe('Request', function () {
 
     });
 
+    describe('#textAlternatives()', () => {
+
+        it('returns just alternatives if text is same', () => {
+            const data = Request.text(SENDER_ID, 'Foo Bar');
+            Object.assign(data.message, {
+                alternatives: [
+                    { text: 'Foo Bar', score: 0.9 }
+                ]
+            });
+            const req = new Request(data, {}, 'a');
+
+            assert.deepStrictEqual(req.textAlternatives(), [
+                { text: 'Foo Bar', score: 0.9 }
+            ]);
+        });
+
+        it('returns just empty array when using postback', () => {
+            const data = Request.postBack(SENDER_ID, 'action');
+            const req = new Request(data, {}, 'a');
+
+            assert.deepStrictEqual(req.textAlternatives(), []);
+        });
+    });
+
     describe('#postBack()', function () {
 
         it('should return action name', function () {
@@ -340,26 +364,26 @@ describe('Request', function () {
 
         it('should return intent, when present', async () => {
             const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.preloadIntent(req);
+            await Ai.ai.preloadAi(req);
             assert.strictEqual(req.intent(), 'foo');
         });
 
         it('should return intent data, when present', async () => {
             const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.preloadIntent(req);
+            await Ai.ai.preloadAi(req);
             assert.deepStrictEqual(req.intent(true), { intent: 'foo', score: 1 });
         });
 
         it('should return null, when present, but score is too low', async () => {
             const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.preloadIntent(req);
+            await Ai.ai.preloadAi(req);
             assert.strictEqual(req.intent(1.1), null);
             assert.strictEqual(req.intent(0.1), 'foo');
         });
 
         it('should return null, when intent is missing', async () => {
             const req = new Request(Request.postBack(SENDER_ID, 'any'), STATE);
-            await Ai.ai.preloadIntent(req);
+            await Ai.ai.preloadAi(req);
             assert.strictEqual(req.intent(), null);
             assert.strictEqual(req.intent(true), null);
         });

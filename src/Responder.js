@@ -11,6 +11,11 @@ const ListTemplate = require('./templates/ListTemplate');
 const { makeAbsolute, makeQuickReplies } = require('./utils');
 const { FLAG_DISAMBIGUATION_OFFERED, FLAG_DO_NOT_LOG } = require('./flags');
 const { checkSetState } = require('./utils/stateVariables');
+const {
+    FEATURE_VOICE,
+    FEATURE_SSML,
+    FEATURE_PHRASES
+} = require('./features');
 
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
@@ -33,6 +38,17 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
  * @prop {string} [likelyIntent]
  * @prop {string} [disambText]
  * @prop {string[]} [disambiguationIntents]
+ */
+
+/**
+ * @typedef {object} VoiceControl
+ * @prop {string} [ssml]
+ * @prop {number} [speed]
+ * @prop {number} [pitch]
+ * @prop {number} [volume]
+ * @prop {string} [style]
+ * @prop {string} [language]
+ * @prop {string} [voice]
  */
 
 /**
@@ -77,6 +93,8 @@ class Responder {
         }
 
         this._t = this.options.translator;
+
+        this._features = this.options.features || [];
 
         this._quickReplyCollector = [];
 
@@ -380,7 +398,8 @@ class Responder {
      * Send text as a response
      *
      * @param {string} text - text to send to user, can contain placeholders (%s)
-     * @param {object.<string,string|QuickReply>|QuickReply[]} [replies] - quick replies
+     * @param {Object.<string,string|QuickReply>|QuickReply[]} [replies] - quick replies
+     * @param {VoiceControl} [voice] - voice control data
      * @returns {this}
      *
      * @example
@@ -402,7 +421,7 @@ class Responder {
      *     }
      * ]);
      */
-    text (text, replies = null) {
+    text (text, replies = null, voice = null) {
         const messageData = {
             message: {
                 text: this._t(text)
@@ -428,9 +447,20 @@ class Responder {
                 this.finalMessageSent = true;
                 messageData.message.quick_replies = qrs;
 
-                const { _expectedKeywords: expectedKws = [] } = this.newState;
-                this.setState({ _expectedKeywords: [...expectedKws, ...expectedKeywords] });
+                this._addExpectedIntents(expectedKeywords);
                 this._quickReplyCollector = [];
+            }
+        }
+
+        if (voice && this._features.includes(FEATURE_VOICE)) {
+            Object.assign(messageData.message, {
+                voice: {
+                    ...voice
+                }
+            });
+
+            if (!this._features.includes(FEATURE_SSML)) {
+                delete messageData.message.voice.ssml;
             }
         }
 
@@ -541,8 +571,6 @@ class Responder {
      * @param {string|object[]} [aiTitle]
      */
     expectedIntent (intents, action, data = {}, setState = null, aiTitle = null) {
-        const { _expectedKeywords: ex = [] } = this.newState;
-
         const push = {
             action: this.toAbsoluteAction(action),
             match: intents,
@@ -557,10 +585,44 @@ class Responder {
             Object.assign(push, { title: aiTitle });
         }
 
-        ex.push(push);
-
-        this.setState({ _expectedKeywords: ex });
+        this._addExpectedIntents([push]);
         return this;
+    }
+
+    _addExpectedIntents (add) {
+        const { _expectedKeywords: ex = [] } = this.newState;
+        ex.push(...add);
+        this.setState({ _expectedKeywords: ex });
+
+        if (!this._features.includes(FEATURE_PHRASES)) {
+            return;
+        }
+
+        const expectedIntentsAndEntities = [];
+
+        // collect entities
+        add.forEach((e) => {
+            if (!Array.isArray(e.match)) return;
+
+            e.match
+                .forEach((rule) => {
+                    if (rule.startsWith('#')) {
+                        // @todo propagate also keywords
+                        return;
+                    }
+                    if (rule.startsWith('@')) {
+                        expectedIntentsAndEntities.push(rule
+                            .replace(/([!=><?]{1,3})([^=><!]+)?/, ''));
+                    } else {
+                        expectedIntentsAndEntities.push(rule);
+                    }
+
+                });
+        });
+
+        if (expectedIntentsAndEntities.length !== 0) {
+            this._messageSender.send({ expectedIntentsAndEntities });
+        }
     }
 
     /**

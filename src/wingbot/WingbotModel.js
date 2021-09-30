@@ -7,6 +7,7 @@ const systemEntities = require('../systemEntities');
 
 const DEFAULT_MATCHES = 3;
 const SERVICE_URL = 'https://model.wingbot.ai';
+const TRAINING_URL = 'http://training.wingbot.ai';
 
 /**
  * @typedef {object} Entity
@@ -36,6 +37,7 @@ class WingbotModel extends CachedModel {
     /**
      * @param {object} options
      * @param {string} [options.serviceUrl]
+     * @param {string} [options.trainingUrl]
      * @param {string} options.model
      * @param {number} [options.cacheSize]
      * @param {number} [options.matches]
@@ -56,12 +58,33 @@ class WingbotModel extends CachedModel {
         if (options.fetch) this._fetch = options.fetch;
 
         this._serviceUrl = options.serviceUrl || SERVICE_URL;
+        this._trainingUrl = options.trainingUrl || TRAINING_URL;
         this._model = options.model;
 
         // apply default entities
         systemEntities
             // @ts-ignore
             .forEach(([name, d, opts = {}]) => this.setEntityDetector(name, d, opts));
+    }
+
+    async _getPhrases () {
+        const res = await this._fetch(
+            `${this._trainingUrl}/${this._model}-phrases.json`,
+            { timeout: 10000 }
+        );
+
+        if ([404, 401, 403].includes(res.status)) {
+            // model does not exist probably
+            return { phrases: new Map() };
+        }
+
+        if (res.status !== 200) {
+            throw new Error(`Failed to load Phrases: ${res.statusText}`);
+        }
+
+        const { phrases = [] } = await res.json();
+
+        return { phrases: new Map(phrases) };
     }
 
     /**

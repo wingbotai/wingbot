@@ -11,6 +11,13 @@ const { getSetState } = require('./utils/getUpdate');
 const { vars, checkSetState } = require('./utils/stateVariables');
 const OrchestratorClient = require('./OrchestratorClient');
 const { cachedTranslatedCompilator, stateData } = require('./resolvers/utils');
+const {
+    FEATURE_VOICE,
+    FEATURE_SSML,
+    FEATURE_PHRASES,
+    FEATURE_TEXT,
+    getDefaultFeatureList
+} = require('./features');
 
 const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
 
@@ -84,6 +91,12 @@ function makeTimestamp () {
  */
 
 /**
+ * @typedef {object} TextAlternative
+ * @prop {string} text
+ * @prop {number} score
+ */
+
+/**
  * @typedef {number} AiSetStateOption
  */
 
@@ -97,18 +110,18 @@ function makeTimestamp () {
 class Request {
 
     /**
-     * @param {*} data
+     * @param {*} event
      * @param {*} state
      * @param {string} pageId
      * @param {Map} globalIntents
      * @param {RequestOrchestratorOptions} [orchestratorOptions]
      */
-    constructor (data, state, pageId, globalIntents = new Map(), orchestratorOptions = {}) {
-        this.campaign = data.campaign || null;
+    constructor (event, state, pageId, globalIntents = new Map(), orchestratorOptions = {}) {
+        this.campaign = event.campaign || null;
 
-        this.taskId = data.taskId || null;
+        this.taskId = event.taskId || null;
 
-        this._event = data;
+        this._event = event;
 
         /**
          * @enum {AiSetStateOption}
@@ -128,35 +141,35 @@ class Request {
          */
         this.params = {};
 
-        this.message = data.message || null;
+        this.message = event.message || null;
 
-        this._postback = data.postback || null;
+        this._postback = event.postback || null;
 
         this._referral = (this._postback && this._postback.referral)
-            || data.referral
+            || event.referral
             || null;
 
-        this._optin = data.optin || null;
+        this._optin = event.optin || null;
 
-        this.attachments = (data.message
-            && (data.message.attachment
-                ? [data.message.attachment]
-                : data.message.attachments)) || [];
+        this.attachments = (event.message
+            && (event.message.attachment
+                ? [event.message.attachment]
+                : event.message.attachments)) || [];
 
         /**
          * @prop {number|null} timestamp
          */
-        this.timestamp = data.timestamp || Date.now();
+        this.timestamp = event.timestamp || Date.now();
 
         /**
          * @prop {string} senderId sender.id from the event
          */
-        this.senderId = (data.sender && data.sender.id) || null;
+        this.senderId = (event.sender && event.sender.id) || null;
 
         /**
          * @prop {string} recipientId recipient.id from the event
          */
-        this.recipientId = data.recipient && data.recipient.id;
+        this.recipientId = event.recipient && event.recipient.id;
 
         /**
          * @prop {string} pageId page identifier from the event
@@ -167,6 +180,13 @@ class Request {
          * @prop {object} state current state of the conversation
          */
         this.state = state;
+
+        /**
+         * @prop {string[]} features supported messaging features
+         */
+        this.features = Array.isArray(event.features)
+            ? event.features
+            : getDefaultFeatureList();
 
         /**
          * @prop {string[]} state list of subscribed tags
@@ -208,6 +228,26 @@ class Request {
         };
 
         this._orchestrator = null;
+
+        /**
+         * @constant {string} FEATURE_VOICE channel supports voice messages
+         */
+        this.FEATURE_VOICE = FEATURE_VOICE;
+
+        /**
+         * @constant {string} FEATURE_SSML channel supports SSML voice messages
+         */
+        this.FEATURE_SSML = FEATURE_SSML;
+
+        /**
+         * @constant {string} FEATURE_PHRASES channel supports expected phrases messages
+         */
+        this.FEATURE_PHRASES = FEATURE_PHRASES;
+
+        /**
+         * @constant {string} FEATURE_TEXT channel supports text communication
+         */
+        this.FEATURE_TEXT = FEATURE_TEXT;
     }
 
     get data () {
@@ -226,7 +266,17 @@ class Request {
     }
 
     /**
-     * Returns true, if the incomming event is standby
+     * Returns true if a channel supports specified feature
+     *
+     * @param {string} feature
+     * @returns {boolean}
+     */
+    supportsFeature (feature) {
+        return this.features.includes(feature);
+    }
+
+    /**
+     * Returns true, if the incoming event is standby
      *
      * @returns {boolean}
      */
@@ -652,6 +702,30 @@ class Request {
         }
 
         return this.message.text || this._stickerToSmile() || '';
+    }
+
+    /**
+     * Returns all text message alternatives including it's score
+     *
+     * @returns {TextAlternative[]}
+     */
+    textAlternatives () {
+        if (!this.message || typeof this.message.text !== 'string') {
+            return [];
+        }
+        const { text, alternatives = [] } = this.message;
+
+        if (alternatives.some((a) => a.text === text)) {
+            return alternatives;
+        }
+
+        return [
+            {
+                text: this.message.text,
+                score: 1
+            },
+            ...alternatives
+        ];
     }
 
     /**

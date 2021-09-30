@@ -6,6 +6,7 @@
 const CustomEntityDetectionModel = require('./CustomEntityDetectionModel');
 
 const DEFAULT_CACHE_SIZE = 0;
+const DEFAULT_PHRASES_CACHE_TIME = 3600000; // one hour
 
 /**
  * @typedef {object} Entity
@@ -33,6 +34,7 @@ class CachedModel extends CustomEntityDetectionModel {
     /**
      * @param {object} options
      * @param {number} [options.cacheSize]
+     * @param {number} [options.cachePhrasesTime]
      * @param {{ warn: Function, error: Function }} [log]
      */
     constructor (options, log = console) {
@@ -41,13 +43,21 @@ class CachedModel extends CustomEntityDetectionModel {
         this._cacheSize = options.cacheSize || DEFAULT_CACHE_SIZE;
         this._cache = [];
         this._cacheMap = new Map();
+
+        /**
+         * @type {number}
+         */
+        this.phrasesCacheTime = DEFAULT_PHRASES_CACHE_TIME;
+
+        this._phrasesCache = null;
+        this._phrasesCachedAt = 0;
     }
 
     /**
      * @param {string} text - the user input
      * @param {Request} [req] - the user input
      * @returns {Promise<Result>}
-     */
+    */
     async resolve (text, req = null) {
         const local = await super.resolve(text, req);
 
@@ -89,6 +99,30 @@ class CachedModel extends CustomEntityDetectionModel {
             intents,
             entities
         };
+    }
+
+    async getPhrases () {
+        if (this._phrasesCachedAt > (Date.now() - this.phrasesCacheTime)) {
+            return this._phrasesCache;
+        }
+
+        if (!this._phrasesCache) {
+            this._phrasesCache = this._getPhrases()
+                .then((phrases) => {
+                    this._phrasesCache = phrases;
+                    this._phrasesCachedAt = Date.now();
+                    return phrases;
+                })
+                .catch((e) => {
+                    this._log.warn('AI query failed', e);
+                    this._phrasesCache = CustomEntityDetectionModel.getEmptyPhrasesObject();
+                    // cache the temporary result for one minute
+                    this._phrasesCachedAt = (Date.now() - this.phrasesCacheTime) + 60000;
+                    return this._phrasesCache;
+                });
+        }
+
+        return this._phrasesCache;
     }
 
     /**

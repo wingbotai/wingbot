@@ -9,6 +9,8 @@ const ReturnSender = require('../src/ReturnSender');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const { Processor, Request } = require('..');
+const { ai } = require('../src/Ai');
+const { WingbotModel } = require('../src/wingbot');
 
 describe('<ReturnSender>', () => {
 
@@ -73,12 +75,11 @@ describe('<ReturnSender>', () => {
             await new Promise((r) => setTimeout(r, 10));
 
             let err = null;
-            try {
-                await rs.finished();
-            } catch (e) {
+            await rs.finished(null, null, null, (e) => {
                 err = e;
-            }
+            });
 
+            // @ts-ignore
             assert.equal(err && err.message, 'Fail');
         });
 
@@ -113,6 +114,89 @@ describe('<ReturnSender>', () => {
 
             // @ts-ignore
             assert.equal(t.senderLogger.log.callCount, 1);
+        });
+
+    });
+
+    describe('#behavior with ExpectedIntentsAndEntities', () => {
+
+        const wait = (ts = 10) => new Promise((r) => setTimeout(r, ts));
+
+        let rs;
+        let req;
+        let fetch;
+
+        beforeEach(() => {
+            fetch = sinon.spy(async () => ({
+                status: 200,
+                json: async () => ({
+                    phrases: [
+                        ['intent', ['a', 'b']],
+                        ['@entity', ['b', 'c']]
+                    ]
+                })
+            }));
+
+            ai.register(new WingbotModel({
+                model: 'sasalele', fetch
+            }), 'sasalele');
+
+            const msg = { message: { text: 'foo' }, sender: { id: 'a' }, features: ['phrases'] };
+            req = new Request(msg, { lang: 'sasalele' }, 'page');
+            rs = new ReturnSender({}, msg.sender.id, msg);
+        });
+
+        it('saves last message before finish', async () => {
+            assert.strictEqual(req.supportsFeature(req.FEATURE_PHRASES), true);
+
+            rs.send({ message: { text: 'bar' } });
+
+            await wait();
+
+            rs.send({ expectedIntentsAndEntities: ['intent', '@entity'] });
+
+            assert.ok(!fetch.called);
+            assert.deepEqual(rs.results, []);
+
+            await wait(); // for sure
+
+            await rs.finished(req);
+
+            assert.ok(fetch.called);
+            assert.strictEqual(rs.results.length, 1);
+            assert.deepStrictEqual(rs.responses[0].expected, {
+                entities: ['@entity'],
+                phrases: ['a', 'b', 'c']
+            });
+        });
+
+        it('prolongs event sending when pushing another message', async () => {
+            await ai.preloadAi(req);
+
+            rs.send({ message: { text: 'bar' } });
+
+            await wait();
+
+            assert.strictEqual(rs.responses.length, 0);
+            rs.send({ expectedIntentsAndEntities: ['intent', '@entity'] });
+            assert.deepEqual(rs.results, []);
+
+            rs.send({ message: { text: 'another' } });
+
+            await wait(10);
+
+            assert.strictEqual(rs.results.length, 1);
+            assert.strictEqual(rs.responses[0].expected, undefined);
+
+            await wait(10);
+
+            await rs.finished(req);
+
+            assert.strictEqual(rs.results.length, 2);
+            assert.deepStrictEqual(rs.responses[1].expected, {
+                entities: ['@entity'],
+                phrases: ['a', 'b', 'c']
+            });
         });
 
     });
