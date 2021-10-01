@@ -91,7 +91,7 @@ const compare = (variable, operator, value = undefined) => {
         return variable.some((variableElement) => compare(variableElement, operator, value));
     }
 
-    if (typeof variable === 'object' && !isArrayLengthCompare) {
+    if (variable && typeof variable === 'object' && !isArrayLengthCompare) {
         return Object.values(variable)
             .some((variableElement) => compare(variableElement, operator, value));
     }
