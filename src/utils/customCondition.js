@@ -157,7 +157,13 @@ function customCondition (condition, description = '') {
     const resolver = (req, res) => condition.some((condList) => condList.every((cond) => {
         const data = stateData(req, res);
         const variableValue = getValue(cond.variable, data);
-        const value = compileWithState(req, res, cond.value);
+        const isRegExp = [
+            ConditionOperators['matches regexp'],
+            ConditionOperators['not matches regexp'],
+            ConditionOperators['is true'],
+            ConditionOperators['is false']
+        ].includes(cond.operator);
+        const value = isRegExp ? cond.value : compileWithState(req, res, cond.value);
         return compare(variableValue, cond.operator, value);
     }));
 

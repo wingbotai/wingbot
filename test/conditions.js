@@ -276,7 +276,7 @@ describe('<Conditions>', function () {
         await assertCondition(
             {
                 value: '{{{xyz}}}',
-                operator: ConditionOperators['matches regexp'],
+                operator: ConditionOperators['=='],
                 variable: 'x.2.z'
             },
             {
@@ -291,7 +291,7 @@ describe('<Conditions>', function () {
         await assertCondition(
             {
                 value: '{{{xyz}}}',
-                operator: ConditionOperators['matches regexp'],
+                operator: ConditionOperators['=='],
                 variable: 'x.2.z'
             },
             {
@@ -309,7 +309,7 @@ describe('<Conditions>', function () {
         await assertCondition(
             {
                 value: '{{variable}}',
-                operator: ConditionOperators['matches regexp'],
+                operator: ConditionOperators['=='],
                 variable: 'x.2.z'
             },
             {
@@ -318,13 +318,13 @@ describe('<Conditions>', function () {
                         z: 'matching'
                     }
                 ],
-                variable: '[a-z]'
+                variable: 'matching'
             }, true
         );
         await assertCondition(
             {
                 value: '{{variable}}',
-                operator: ConditionOperators['matches regexp'],
+                operator: ConditionOperators['=='],
                 variable: 'x.2.z'
             },
             {
@@ -333,7 +333,7 @@ describe('<Conditions>', function () {
                         z: 'n0tmatching'
                     }
                 ],
-                variable: '^[a-z]$'
+                variable: 'matching'
             }, false
         );
     });
