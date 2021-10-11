@@ -265,7 +265,7 @@ function quickReplyAction (expectedKeywords, req, ai) {
                 }));
         }
     } else if (!req.isTextOrIntent()) {
-        return null;
+        return [];
     }
 
     const found = [];
