@@ -187,6 +187,20 @@ describe('customEntityDetectionModel', () => {
             ]);
         });
 
+        it('keeps two duplicate entities', () => {
+            const m = new CustomEntityDetectionModel({});
+
+            // @ts-ignore
+            assert.deepStrictEqual(m.nonOverlapping([
+                { entity: 'a', start: 0, end: 2 },
+                { entity: 'b', start: 0, end: 2 },
+                { entity: 'b', start: 0, end: 5 },
+                { entity: 'b', start: 3, end: 5 }
+            ], []), [
+                { entity: 'b', start: 0, end: 5 }
+            ]);
+        });
+
         it('prefers expected duplicate entity', () => {
             const m = new CustomEntityDetectionModel({});
 

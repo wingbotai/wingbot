@@ -15,6 +15,7 @@ const media = require('./media');
 const button = require('./button');
 const subscribtions = require('./subscribtions');
 const setState = require('./setState');
+const expectedInput = require('./expectedInput');
 
 module.exports = {
     path,
@@ -28,5 +29,6 @@ module.exports = {
     carousel,
     button,
     subscribtions,
-    setState
+    setState,
+    expectedInput
 };

@@ -23,6 +23,15 @@ const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
 const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 
 /**
+ * @enum {string}
+ */
+const ExpectedInput = {
+    TYPE_PASSWORD: 'password'
+};
+
+Object.freeze(ExpectedInput);
+
+/**
  * @typedef {object} QuickReply
  * @prop {string} title
  * @prop {string} [action]
@@ -80,6 +89,11 @@ class Responder {
             translator: (w) => w,
             appUrl: ''
         };
+
+        /**
+         * @type {Object<string,ExpectedInput>}
+         */
+        this.ExpectedInputTypes = ExpectedInput;
 
         Object.assign(this.options, options);
         if (this.options.autoTyping) {
@@ -655,7 +669,7 @@ class Responder {
      *
      * After processing the user input, next requests will be processed as usual,
      *
-     *
+     * @param {ExpectedInput} [expectedInput]
      * @returns {this}
      * @example
      *
@@ -681,10 +695,29 @@ class Responder {
      *         .setState({ cardNumber });
      * });
      */
-    expectedConfidentInput () {
+    expectedConfidentInput (expectedInput = null) {
+        if (expectedInput) {
+            this.expectedInput(expectedInput);
+        }
         return this.setState({
             _expectedConfidentInput: true
         });
+    }
+
+    /**
+     *
+     * @param {ExpectedInput} type
+     * @returns {this}
+     * @example
+     * bot.use((req, res) => {
+     *     res.expectedInput(res.ExpectedInputTypes.TYPE_PASSWORD)
+     * });
+     */
+    expectedInput (type) {
+        this._messageSender.send({
+            expectedIntentsAndEntities: [{ type }]
+        });
+        return this;
     }
 
     /**

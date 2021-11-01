@@ -240,7 +240,9 @@ class ReturnSender {
             payload = this._queue.shift();
 
             let lastInQueueForNow = this._queue.length === 0;
-            if (this._queue.length === 0 && this._sendLastMessageWithFinish) {
+            if (this._queue.length === 0
+                && (this._sendLastMessageWithFinish
+                    || this._intentsAndEntities.some((e) => e && e.type))) {
                 await Promise.race([
                     this._anotherEventPromise,
                     this._finishedPromise
@@ -272,13 +274,24 @@ class ReturnSender {
 
     async _enrichPayload (payload, req, lastInQueueForNow) {
         if (lastInQueueForNow && req && this._intentsAndEntities.length !== 0) {
-            const { phrases } = await ai.ai.getPhrases(req);
+            const { phrases } = this._sendLastMessageWithFinish
+                ? await ai.ai.getPhrases(req)
+                : { phrases: new Map() };
 
             const phrasesSet = new Set();
             const entities = [];
+            let input = null;
 
             this._intentsAndEntities
                 .forEach((aiObj) => {
+                    // expected input
+                    if (aiObj && aiObj.type) {
+                        input = aiObj;
+                        return;
+                    }
+                    if (!this._sendLastMessageWithFinish) {
+                        return;
+                    }
                     if (aiObj.startsWith('@')) {
                         entities.push(aiObj);
                     }
@@ -294,6 +307,11 @@ class ReturnSender {
                     phrases: Array.from(phrasesSet)
                 }
             });
+            if (input) {
+                Object.assign(payload.expected, {
+                    input
+                });
+            }
         }
     }
 
