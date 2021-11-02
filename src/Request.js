@@ -83,6 +83,14 @@ function makeTimestamp () {
  */
 
 /**
+ * @typedef {object} QuickReplyDisambiguation
+ * @prop {string} action
+ * @prop {string} title
+ * @prop {object} data
+ * @prop {object} templateData
+ */
+
+/**
  * @typedef {object} RequestOrchestratorOptions
  * @prop {string} [apiUrl]
  * @prop {Promise<string>} [secret]
@@ -304,7 +312,7 @@ class Request {
      * @param {number} [limit]
      * @param {IntentAction[]} [aiActions]
      * @param {string} [overrideAction]
-     * @returns {QuickReply[]}
+     * @returns {QuickReplyDisambiguation[]}
      */
     aiActionsForQuickReplies (limit = 5, aiActions = null, overrideAction = null) {
         if (aiActions === null) {
@@ -346,6 +354,7 @@ class Request {
                 const res = {
                     title: textTemplate(templateData),
                     action: overrideAction || action,
+                    templateData,
                     data: {
                         ...data,
                         _senderMeta: {
