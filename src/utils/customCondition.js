@@ -88,6 +88,7 @@ const ARRAY_LENGTH_OPERATORS = [
 const compare = (variable, operator, value = undefined) => {
     const isArrayLengthCompare = ARRAY_LENGTH_OPERATORS.includes(operator);
     if (Array.isArray(variable) && !isArrayLengthCompare) {
+        // @todo if value === number && operator === '=='
         return variable.some((variableElement) => compare(variableElement, operator, value));
     }
 

@@ -157,7 +157,8 @@ function processButtons (
             type,
             url,
             webviewHeight = WEBVIEW_TALL,
-            targetRouteId
+            targetRouteId,
+            action
         } = btnAction;
 
         const isExtUrl = type === TYPE_URL_WITH_EXT;
@@ -172,7 +173,7 @@ function processButtons (
                 break;
             }
             case TYPE_POSTBACK: {
-                let postbackAction = linksMap.get(targetRouteId);
+                let postbackAction = linksMap.get(targetRouteId) || action;
 
                 if (postbackAction === '/') {
                     postbackAction = './';

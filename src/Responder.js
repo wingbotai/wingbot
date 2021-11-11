@@ -502,7 +502,7 @@ class Responder {
     /**
      * Appends quick reply, to be sent with following text method
      *
-     * @param {string|object} action - relative or absolute action
+     * @param {string|QuickReply} action - relative or absolute action
      * @param {string} [title] - quick reply title
      * @param {object} [data] - additional data
      * @param {boolean} [prepend] - set true to add reply at the beginning

@@ -109,7 +109,7 @@ describe('getSetState()', () => {
         });
 
         assert.deepEqual(getSetState({
-            k: { _$push: '{{l}}' }
+            k: { _$push: '{{l}},m, n' }
         }, {
             state: {
                 k: ['x', 'y'],
@@ -117,7 +117,7 @@ describe('getSetState()', () => {
             },
             actionData: () => {}
         }), {
-            k: ['x', 'y', 'a', 'b']
+            k: ['x', 'y', 'a', 'b', 'm', 'n']
         });
     });
 

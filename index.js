@@ -25,6 +25,7 @@ const Plugins = require('./src/Plugins');
 const NotificationsStorage = require('./src/notifications/NotificationsStorage');
 const Notifications = require('./src/notifications/Notifications');
 const MemoryBotConfigStorage = require('./src/tools/MemoryBotConfigStorage');
+const routeToEvents = require('./src/tools/routeToEvents');
 const GraphApi = require('./src/graphApi/GraphApi');
 const validateBotApi = require('./src/graphApi/validateBotApi');
 const postBackApi = require('./src/graphApi/postBackApi');
@@ -81,6 +82,9 @@ module.exports = {
     bounce,
     MockAiModel,
     compileWithState,
+
+    // for orchestrators notifications
+    routeToEvents,
 
     // Wingbot
     ai: Ai.ai,
