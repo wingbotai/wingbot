@@ -168,6 +168,9 @@ function getSetState (setState = {}, req, res = null, useState = null) {
                     if (entity && (!rear || req.entities.some((e) => e.entity === entity))) {
                         values = req.entities.filter((e) => e.entity === entity)
                             .map((e) => e.value);
+                        if (values.length === 0 && useState && useState[`@${entity}`]) {
+                            values = [useState[`@${entity}`]];
+                        }
                     } else if (variable) {
                         values = toArray(getValue(variable, state));
                     } else if (value === '' || value === null || value === undefined) {

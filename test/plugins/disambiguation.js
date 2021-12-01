@@ -3,7 +3,7 @@
  */
 'use strict';
 
-// const assert = require('assert');
+const assert = require('assert');
 const Tester = require('../../src/Tester');
 const Router = require('../../src/Router');
 const Ai = require('../../src/Ai');
@@ -176,7 +176,39 @@ describe('Disambiguation', () => {
 
             await t.quickReplyText('alternative');
 
+            const { state } = t.getState();
             t.any().contains('alternative');
+            assert.deepStrictEqual(state.authors, ['alternative']);
+        });
+
+        it('skips disambiguation with hith score', async () => {
+            await t.postBack('start');
+
+            await t.processMessage({
+                message: {
+                    text: 'disamb'
+                },
+                intent: 'intent-without-disamb',
+                score: 1,
+                entities: [
+                    {
+                        entity: 'standalone',
+                        value: 'primary',
+                        score: 0.91,
+                        alternatives: [
+                            {
+                                entity: 'standalone',
+                                value: 'alternative',
+                                score: 0.9
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            const { state } = t.getState();
+            t.any().contains('primary');
+            assert.deepStrictEqual(state.authors, ['primary']);
         });
 
     });

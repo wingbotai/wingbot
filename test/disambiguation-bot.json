@@ -33,7 +33,8 @@
                                     {
                                         "aiTitle": "{{[@standalone]}}",
                                         "targetRouteId": "1e6eac85-c8c4-4587-b179-28f2c674406b",
-                                        "aiTags": ["@standalone"]
+                                        "aiTags": ["@standalone"],
+                                        "setState": {"static":"foobar","authors":{"_$add":"{{@standalone}}"}}
                                     }
                                 ]
                             }
