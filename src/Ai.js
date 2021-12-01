@@ -363,7 +363,6 @@ class Ai {
             return null;
         }
 
-        const aboveConfidence = winningIntent.score >= this.confidence;
         const usedEntities = this.matcher.parseEntitiesFromIntentRule(intent, true);
         const setState = this._getSetStateForEntities(
             usedEntities,
@@ -372,10 +371,56 @@ class Ai {
             req.state
         );
 
+        const alterScoreMax = (1 - ((1 - this.confidence) / 2));
+        const alterEntities = winningIntent.entities
+            .filter((e) => alterScoreMax >= e.score && e.alternatives && e.alternatives.length > 0);
+
+        let alternatives = [];
+        if (alterEntities.length === 1) {
+            const [alterEntity] = alterEntities;
+            alternatives = alterEntity.alternatives
+                .map((alternative) => {
+                    if (alternative.value === alterEntity.value
+                        && alternative.entity === alterEntity.entity) {
+                        return null;
+                    }
+                    const reqEntities = req.entities
+                        .map((reqEntity) => {
+                            if (reqEntity.entity === alterEntity.entity
+                                && reqEntity.value === alterEntity.value) {
+
+                                return alternative;
+                            }
+                            return reqEntity;
+                        });
+
+                    const winner = this.matcher.match(req, rules, stateless, reqEntities);
+
+                    if (!winner || winner.score < this.threshold) {
+                        return null;
+                    }
+
+                    const alterSetState = this._getSetStateForEntities(
+                        this.matcher.parseEntitiesFromIntentRule(intent, true),
+                        winner.entities,
+                        reqEntities,
+                        req.state
+                    );
+
+                    return {
+                        ...winner,
+                        setState: alterSetState,
+                        aboveConfidence: winner.score >= this.confidence
+                    };
+                })
+                .filter((alt) => alt !== null);
+        }
+
         return {
             ...winningIntent,
             setState,
-            aboveConfidence
+            aboveConfidence: winningIntent.score >= this.confidence,
+            alternatives
         };
     }
 
@@ -570,12 +615,28 @@ class Ai {
     /**
      *
      * @param {IntentAction[]} aiActions
+     * @param {boolean} [forQuickReplies]
      * @returns {boolean}
      */
-    shouldDisambiguate (aiActions) {
-        if (aiActions.length === 0 || aiActions[0].aboveConfidence === false) {
+    shouldDisambiguate (aiActions, forQuickReplies = false) {
+        if (aiActions.length === 0
+            || aiActions[0].aboveConfidence === false
+            || (forQuickReplies && !aiActions[0].hasAiTitle)) {
+
             return false;
         }
+
+        // if (aiActions[0].intent) {
+        //     const { entities = [] } = aiActions[0].intent;
+        //     const [{ score = 0, alternatives = [] } = {}] = entities;
+
+        //     if (entities.length === 1
+        //         && score < (1 - ((1 - this.confidence) / 2))
+        //         && alternatives.length) {
+
+        //         return true;
+        //     }
+        // }
 
         // there will be no winner, if there are two different intents
         if (aiActions.length > 1 && aiActions[1].aboveConfidence !== false) {
@@ -588,14 +649,27 @@ class Ai {
             const margin = 1 - (secondScore / firstScore);
             const bothHaveTitle = first.title && second.title;
             const similarScore = margin < (1 - Ai.ai.confidence);
+            const hasAititles = !forQuickReplies || second.hasAiTitle;
 
-            const intentIsNotTheSame = !first.intent || !second.intent
-                || !first.intent.intent
-                || first.intent.intent !== second.intent.intent;
+            let intentsDiffers = true;
+            if (first.intent && second.intent && first.intent.intent === second.intent.intent) {
+                let { entities: firstEntities = [] } = first.intent;
+                let { entities: secondEntities = [] } = second.intent;
+
+                if (firstEntities.length > secondEntities.length) {
+                    [firstEntities, secondEntities] = [secondEntities, firstEntities];
+                }
+
+                const entitiesDiffers = secondEntities.some((f) => !firstEntities
+                    .some((s) => s.entity === f.entity && s.value === f.value));
+
+                intentsDiffers = entitiesDiffers;
+            }
 
             if (bothHaveTitle
                 && similarScore
-                && intentIsNotTheSame) {
+                && hasAititles
+                && intentsDiffers) {
 
                 return true;
             }

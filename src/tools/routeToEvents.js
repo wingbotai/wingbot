@@ -56,12 +56,42 @@ async function routeToEvents (pageId, senderId, state, resolvers) {
         ]
     });
 
-    await router.reduce(req, res);
+    let postback = null;
+    const postbackFn = (action, dat) => {
+        let payload;
+        let data;
+        if (typeof action === 'string') {
+            payload = action;
+            data = dat || {};
+        } else if (typeof action === 'object') {
+            payload = action.postback.action;
+            data = action.postback.data;
+        } else {
+            return;
+        }
+
+        if (data && Object.keys(data).length) {
+            payload = JSON.stringify({ action, data });
+        }
+
+        postback = {
+            sender: { id: req.senderId },
+            postback: {
+                payload
+            }
+        };
+    };
+
+    await router.reduce(req, res, postbackFn);
     await returnSender.finished(req, res);
 
     delete res.newState._lastAction;
     delete res.newState._lastVisitedPath;
     delete res.newState.lastAction;
+
+    if (postback) {
+        returnSender.responses.push(postback);
+    }
 
     return {
         events: returnSender.responses,

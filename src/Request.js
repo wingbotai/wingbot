@@ -42,6 +42,7 @@ function makeTimestamp () {
  * @prop {string} entity
  * @prop {string} value
  * @prop {number} score
+ * @prop {Entity[]} [alternatives]
  */
 
 /**
@@ -70,6 +71,7 @@ function makeTimestamp () {
  * @prop {object} [setState]
  * @prop {boolean} [winner]
  * @prop {string|Function} [title]
+ * @prop {boolean} [hasAiTitle]
  * @prop {object} meta
  * @prop {string} [meta.targetAppId]
  * @prop {string|null} [meta.targetAction]
@@ -320,6 +322,7 @@ class Request {
         }
 
         const text = this.text();
+        const knownTexts = new Set();
 
         return (aiActions || this._aiActions)
             .filter((a) => a.title)
@@ -336,16 +339,22 @@ class Request {
 
                 const entities = intent.entities || [];
 
-                const templateData = {
+                let templateData = {
                     ...stateData(this),
                     ...getSetState(setState || {}, this),
                     intent: intent.intent,
-                    entities,
-                    ...entities.reduceRight((o, e) => ({
-                        ...o,
-                        [`@${e.entity}`]: e.value
-                    }), {})
+                    entities
                 };
+                Object.keys(templateData)
+                    .forEach((key) => {
+                        if (key.match(/^@/)) {
+                            delete templateData[key];
+                        }
+                    });
+                templateData = entities.reduceRight((o, e) => ({
+                    ...o,
+                    [`@${e.entity}`]: e.value
+                }), templateData);
 
                 const textTemplate = typeof title === 'function'
                     ? title
@@ -355,6 +364,10 @@ class Request {
                     title: textTemplate(templateData),
                     action: overrideAction || action,
                     templateData,
+                    ...entities.reduceRight((o, e) => ({
+                        ...o,
+                        [`@${e.entity}`]: e.value
+                    }), {}),
                     data: {
                         ...data,
                         _senderMeta: {
@@ -369,6 +382,13 @@ class Request {
                 if (match) Object.assign(res, { match });
 
                 return res;
+            })
+            .filter((qr) => {
+                if (knownTexts.has(qr.title)) {
+                    return false;
+                }
+                knownTexts.add(qr.title);
+                return true;
             });
     }
 
@@ -1064,7 +1084,7 @@ class Request {
         }
 
         if (!res && this.state._expectedKeywords) {
-            res = this._actionByExpectedKeywords();
+            res = this._actionByExpectedKeywords(this.state._expected);
         }
 
         if (!res && this.state._expected) {
@@ -1225,17 +1245,23 @@ class Request {
         return aiActions[0];
     }
 
-    _actionByExpectedKeywords () {
-        let res = null;
-
-        if (this.state._expectedKeywords) {
-            const [payload] = this._resolveQuickReplyActions();
-            if (payload && payload.aboveConfidence) {
-                res = parseActionPayload(payload);
-            }
+    _actionByExpectedKeywords (expected) {
+        if (!this.state._expectedKeywords) {
+            return null;
         }
 
-        return res;
+        const actions = this._resolveQuickReplyActions();
+
+        if (expected && Ai.ai.shouldDisambiguate(actions, true)) {
+            return parseActionPayload(expected);
+        }
+
+        const [payload] = actions;
+        if (!payload || !payload.aboveConfidence) {
+            return null;
+        }
+
+        return parseActionPayload(payload);
     }
 
     _resolveQuickReplyActions () {

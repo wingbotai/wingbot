@@ -20,6 +20,12 @@ describe('routeToEvents', () => {
                 }
             },
             {
+                type: 'botbuild.postback',
+                params: {
+                    postBack: 'toBot'
+                }
+            },
+            {
                 type: 'botbuild.setState',
                 params: {
                     setState: {
@@ -39,6 +45,12 @@ describe('routeToEvents', () => {
                         text: 'Hello 1'
                     },
                     messaging_type: 'RESPONSE'
+                },
+                {
+                    sender: { id: SENDER_ID },
+                    postback: {
+                        payload: 'toBot'
+                    }
                 }
             ],
             setState: { foo: 'bar' },

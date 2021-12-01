@@ -11,6 +11,26 @@ const { checkSetState } = require('./stateVariables');
 /** @typedef {import('../Request')} Request */
 /** @typedef {import('../Ai')} Ai */
 
+/**
+ * @typedef {object} ExpectedKeyword
+ * @prop {string} action
+ * @prop {string} title
+ * @prop {null|string|string[]} match
+ * @prop {object} data
+ * @prop {boolean} [hasAiTitle]
+ * @prop {object} [setState]
+ */
+
+/**
+ *
+ * @param {string} action
+ * @param {string} title
+ * @param {RegExp|string|string[]} [matcher]
+ * @param {object} [payloadData]
+ * @param {object} [setState]
+ * @param {string} [aiTitle]
+ * @returns {ExpectedKeyword}
+ */
 function makeExpectedKeyword (
     action, title, matcher = null, payloadData = {}, setState = null, aiTitle = null
 ) {
@@ -37,7 +57,7 @@ function makeExpectedKeyword (
     };
 
     if (setState) Object.assign(ret, { setState });
-    if (aiTitle) Object.assign(ret, { title: aiTitle });
+    if (aiTitle) Object.assign(ret, { title: aiTitle, hasAiTitle: true });
 
     return ret;
 }
@@ -229,13 +249,33 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
     };
 }
 
+/** @typedef {import('../Request').Intent} Intent */
+
+/**
+ * @typedef {object} QuickReplyAction
+ * @prop {boolean} aboveConfidence
+ *
+ * @prop {string} action
+ * @prop {string} title
+ * @prop {null|string|string[]} match
+ * @prop {object} data
+ * @prop {number} score
+ * @prop {number} sort
+ *
+ * @prop {string} [title]
+ * @prop {object} [setState]
+ *
+ * @prop {string[]} [_aiKeys]
+ * @prop {Intent} [intent]
+ */
+
 /**
  *
  * @ignore
- * @param {object[]} expectedKeywords
+ * @param {ExpectedKeyword[]} expectedKeywords
  * @param {Request} req
  * @param {Ai} ai
- * @returns {object[]}
+ * @returns {QuickReplyAction[]}
  */
 function quickReplyAction (expectedKeywords, req, ai) {
     const text = req.text();
@@ -249,6 +289,8 @@ function quickReplyAction (expectedKeywords, req, ai) {
             return [
                 {
                     ...lowerCaseMatch[0],
+                    score: 1,
+                    sort: 1,
                     aboveConfidence: true
                 }
             ];
@@ -261,6 +303,8 @@ function quickReplyAction (expectedKeywords, req, ai) {
             return exactMatch
                 .map((e) => ({
                     ...e,
+                    score: 1,
+                    sort: 1,
                     aboveConfidence: true
                 }));
         }
@@ -280,16 +324,31 @@ function quickReplyAction (expectedKeywords, req, ai) {
                     ...keyword,
                     intent,
                     score,
+                    sort: score,
                     _aiKeys,
                     aboveConfidence,
                     setState: keyword.setState
                         ? { ...keyword.setState, ...setState }
                         : { ...setState }
                 });
+
+                for (const alternative of intent.alternatives) {
+                    found.push({
+                        ...keyword,
+                        intent: alternative,
+                        score: alternative.score,
+                        sort: alternative.score - 0.0001,
+                        _aiKeys: Object.keys(alternative.setState),
+                        aboveConfidence: alternative.aboveConfidence,
+                        setState: keyword.setState
+                            ? { ...keyword.setState, ...alternative.setState }
+                            : { ...alternative.setState }
+                    });
+                }
             }
         });
 
-    found.sort(({ score: a }, { score: z }) => z - a);
+    found.sort(({ sort: a }, { sort: z }) => z - a);
 
     return found;
 }

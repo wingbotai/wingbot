@@ -5,7 +5,7 @@
             "blockName" : "Root",
             "staticBlockId" : "5444e110-dd6f-11ea-a35d-19546190d6d5",
             "routes" : [
-                {
+                 {
                     "id" : "5444e111-dd6f-11ea-a35d-19546190d6d5",
                     "path" : "start",
                     "name" : "Start",
@@ -29,6 +29,11 @@
                                         "aiTitle": "{{[@bar]}}",
                                         "targetRouteId": "1e6eac85-c8c4-4587-b179-28f2c674406b",
                                         "aiTags": ["foo", "@bar"]
+                                    },
+                                    {
+                                        "aiTitle": "{{[@standalone]}}",
+                                        "targetRouteId": "1e6eac85-c8c4-4587-b179-28f2c674406b",
+                                        "aiTags": ["@standalone"]
                                     }
                                 ]
                             }
@@ -106,10 +111,47 @@
                             "type" : "botbuild.message",
                             "params" : {
                                 "text" : [
-                                    "foobar is {{[@bar]}}"
+                                    "foobar is {{[@bar]}}{{[@standalone]}}"
                                 ],
                                 "hasCondition" : false,
                                 "replies" : []
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "5444e111-dd6f-11ea-a35d-19546190d003",
+                    "path" : "intent-without-disamb",
+                    "name" : "Without disamb",
+                    "aiTags": ["intent-without-disamb"],
+                    "aiGlobal": true,
+                    "isEntryPoint" : true,
+                    "isFallback" : false,
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "not here"
+                                ],
+                                "hasCondition" : false
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id" : "5444e111-dd6f-11ea-a35d-19546190d004",
+                    "name" : "General fallback",
+                    "isEntryPoint" : true,
+                    "isFallback" : true,
+                    "resolvers" : [
+                        {
+                            "type" : "botbuild.message",
+                            "params" : {
+                                "text" : [
+                                    "general dont understand"
+                                ],
+                                "hasCondition" : false
                             }
                         }
                     ]

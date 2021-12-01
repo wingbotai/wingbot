@@ -144,6 +144,41 @@ describe('Disambiguation', () => {
 
             t.any().contains('foobar is hoho');
         });
+
+        it('works with alternatives', async () => {
+            await t.postBack('start');
+
+            await t.processMessage({
+                message: {
+                    text: 'disamb'
+                },
+                intent: 'intent-without-disamb',
+                score: 1,
+                entities: [
+                    {
+                        entity: 'standalone',
+                        value: 'primary',
+                        score: 0.9,
+                        alternatives: [
+                            {
+                                entity: 'standalone',
+                                value: 'alternative',
+                                score: 0.9
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            t.any()
+                .quickReplyTextContains('primary')
+                .quickReplyTextContains('alternative');
+
+            await t.quickReplyText('alternative');
+
+            t.any().contains('alternative');
+        });
+
     });
 
 });

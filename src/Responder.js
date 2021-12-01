@@ -596,7 +596,7 @@ class Responder {
         }
 
         if (aiTitle) {
-            Object.assign(push, { title: aiTitle });
+            Object.assign(push, { title: aiTitle, hasAiTitle: true });
         }
 
         this._addExpectedIntents([push]);

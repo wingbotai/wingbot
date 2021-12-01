@@ -356,10 +356,11 @@ class AiMatching {
      *
      * @param {AIRequest} req
      * @param {PreprocessorOutput} rule
-     * @param {boolean} stateless
+     * @param {boolean} [stateless]
+     * @param {Entity[]} [reqEntities]
      * @returns {Intent|null}
      */
-    match (req, rule, stateless = false) {
+    match (req, rule, stateless = false, reqEntities = req.entities) {
         const { regexps, intents, entities } = rule;
 
         const noIntentHandicap = req.intents.length === 0 ? 0 : this.redundantIntentHandicap;
@@ -371,7 +372,7 @@ class AiMatching {
                 if (regexpScore === 0) {
                     return null;
                 }
-                const handicap = req.entities.length * this.redundantEntityHandicap;
+                const handicap = reqEntities.length * this.redundantEntityHandicap;
                 return {
                     intent: null,
                     entities: [],
@@ -381,7 +382,7 @@ class AiMatching {
             const { score, handicap, matched } = this
                 ._entityMatching(
                     entities,
-                    req.entities,
+                    reqEntities,
                     stateless || intents.length === 0
                         ? {}
                         : req.state

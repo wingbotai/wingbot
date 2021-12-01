@@ -158,6 +158,12 @@ class Tester {
      * @returns {Promise<any>}
      */
     async processMessage (message, senderId = this.senderId, pageId = this.pageId, data = {}) {
+        if (!message.sender && !message.optin) {
+            Object.assign(message, {
+                sender: { id: senderId }
+            });
+        }
+
         const messageSender = new ReturnSender({}, senderId, message, this.senderLogger);
         messageSender.simulatesOptIn = true;
 

@@ -49,7 +49,7 @@ function postback (params, { linksMap, isLastIndex, allowForbiddenSnippetWords }
         const request = {
             sender: { id: req.senderId },
             postback: {
-                action: res.toAbsoluteAction(action),
+                action: routeId ? res.toAbsoluteAction(action) : action,
                 data: data || {}
             }
         };
@@ -60,7 +60,7 @@ function postback (params, { linksMap, isLastIndex, allowForbiddenSnippetWords }
 
         postBack(request);
 
-        return Router.END;
+        return routeId ? Router.END : ret;
     };
 }
 
