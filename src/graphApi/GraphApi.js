@@ -8,6 +8,7 @@ const { graphql, buildSchema } = require('graphql');
 const WingbotApiConnector = require('./WingbotApiConnector');
 // @ts-ignore
 const packageJson = require('../../package.json');
+const headersToAuditMeta = require('../utils/headersToAuditMeta');
 
 const DEFAULT_GROUPS = ['botEditor', 'botAdmin', 'appToken'];
 const KEYS_URL = 'https://api.wingbot.ai/keys';
@@ -18,6 +19,8 @@ const DEFAULT_CACHE = 86400000; // 24 hours
  * @param {*} [data]
  * @param {object[]} [errors]
  */
+
+/** @typedef {import('../CallbackAuditLog')} AuditLog */
 
 /**
  * Experimental chatbot API
@@ -32,6 +35,7 @@ class GraphApi {
      * @param {string} [options.appToken] - public token
      * @param {string[]} [options.groups] - list of allowed bot groups
      * @param {boolean} [options.useBundledGql] - uses library bundled graphql definition
+     * @param {AuditLog} [options.auditLog]
      */
     constructor (apis, options) {
         this._root = {
@@ -44,7 +48,16 @@ class GraphApi {
             token: null,
             groups: DEFAULT_GROUPS,
             keysUrl: KEYS_URL,
-            cacheKeys: DEFAULT_CACHE
+            cacheKeys: DEFAULT_CACHE,
+            auditLog: {
+                async callback () {
+                    // noop
+                },
+                defaultWid: '0',
+                async log () {
+                    // noop
+                }
+            }
         };
 
         Object.assign(opts, options);
@@ -56,6 +69,10 @@ class GraphApi {
         this._originalSchema = null;
 
         this._defaultGroups = opts.groups;
+
+        /** @type {AuditLog} */
+        // @ts-ignore
+        this.auditLog = opts.auditLog;
 
         this._apiConnector = new WingbotApiConnector({
             token: opts.token,
@@ -75,6 +92,10 @@ class GraphApi {
      * @param {object} headers
      * @param {string} [headers.Authorization]
      * @param {string} [headers.authorization]
+     * @param {string} [headers.Origin]
+     * @param {string} [headers.origin]
+     * @param {string} [headers.Referer]
+     * @param {string} [headers.referer]
      * @param {string} [wingbotToken]
      * @returns {Promise<GraphQlResponse>}
      */
@@ -83,13 +104,39 @@ class GraphApi {
         assert.equal(typeof body.query, 'string', 'GraphQL request should contain a query property');
 
         const authHeader = headers.Authorization || headers.authorization;
-        const token = await this._apiConnector.verifyToken(authHeader, wingbotToken);
+        let token = {};
+
+        const audit = async (action, payload = {}, important = false, warn = false) => {
+            await this.auditLog.log(
+                {
+                    category: 'API',
+                    action,
+                    payload
+                },
+                {
+                    id: token.id,
+                    jwt: token.id && authHeader.replace(/^bearer\s/i, '')
+                },
+                headersToAuditMeta(headers),
+                this.auditLog.defaultWid,
+                warn ? 'Warn' : 'Info',
+                important ? 'Important' : 'Debug'
+            );
+        };
+
+        try {
+            token = await this._apiConnector.verifyToken(authHeader, wingbotToken);
+        } catch (e) {
+            await audit('authorization failed', { message: e.message, authHeader }, true, true);
+            throw e;
+        }
 
         const schema = await this._schema();
 
         const ctx = {
             token,
-            groups: this._defaultGroups
+            groups: this._defaultGroups,
+            audit
         };
 
         // @ts-ignore

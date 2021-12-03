@@ -35,6 +35,7 @@ function postBackApi (processor, acl) {
 
             const event = Request.postBack(args.senderId, args.action, args.data);
 
+            await ctx.audit('postBack', args);
             return processor.processMessage(event, args.senderId, args.pageId);
         }
     };

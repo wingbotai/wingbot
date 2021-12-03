@@ -42,6 +42,8 @@ function conversationTestApi (testsSource, botFactory, options, acl) {
 
             const { bot: validationRequestBody, step = null, lang = null } = args;
 
+            await ctx.audit('conversationTest', args);
+
             return test.test(validationRequestBody, step, lang);
         }
     };

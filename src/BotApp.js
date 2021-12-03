@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const BotAppSender = require('./BotAppSender');
 const Processor = require('./Processor');
 const ReturnSender = require('./ReturnSender');
+const headersToAuditMeta = require('./utils/headersToAuditMeta');
 
 const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 
@@ -20,6 +21,8 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 /** @typedef {import('./Responder')} Responder */
 /** @typedef {import('./Processor').Plugin} Plugin */
 
+/** @typedef {import('./CallbackAuditLog')} AuditLog */
+
 /**
  * @typedef {object} BotAppOptions
  * @prop {string|Promise<string>} secret
@@ -28,6 +31,7 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
  * @prop {Function} [fetch]
  * @prop {ChatLogStorage} [chatLogStorage]
  * @prop {boolean} [preferSynchronousResponse]
+ * @prop {AuditLog} [auditLog]
  *
  * @typedef {ProcessorOptions & BotAppOptions} Options
  */
@@ -58,12 +62,14 @@ class BotApp {
             fetch = null,
             appId = null,
             preferSynchronousResponse = false,
+            auditLog = null,
             ...processorOptions
         } = options;
 
         this._secret = Promise.resolve(secret);
         this._fetch = fetch; // mock
         this._appId = appId;
+        this._auditLog = auditLog;
 
         let { apiUrl } = options;
 
@@ -140,13 +146,44 @@ class BotApp {
         };
     }
 
-    async _processIncommingMessage (message, senderId, pageId, appId, secret, sync = false) {
+    /**
+     * @param {ReturnSender} sender
+     * @param {string} senderId
+     * @param {string} pageId
+     * @param {object} headers
+     */
+    async _processSenderResponses (sender, senderId, pageId, headers) {
+        if (!this._auditLog) {
+            return;
+        }
+        await Promise.all(
+            sender.tracking.events.map(async (event) => {
+                if (!['audit', 'report'].includes(event.type)) {
+                    return;
+                }
+
+                await this._auditLog.log(
+                    event,
+                    { senderId, pageId },
+                    headersToAuditMeta(headers),
+                    this._auditLog.defaultWid,
+                    'Info',
+                    event.type === 'audit' ? 'Important' : 'Debug'
+                );
+            })
+        );
+    }
+
+    async _processIncommingMessage (
+        message, senderId, pageId, appId, secret, sync = false, headers = {}
+    ) {
         const { mid = null } = message;
 
         if (sync || this._preferSynchronousResponse) {
             const sender = new ReturnSender({}, senderId, message, this._senderLogger);
             sender.propagatesWaitEvent = true;
             const res = await this._processor.processMessage(message, pageId, sender, { appId });
+            await this._processSenderResponses(sender, senderId, pageId, headers);
 
             return {
                 status: res.status,
@@ -179,6 +216,7 @@ class BotApp {
 
         const sender = new BotAppSender(options, senderId, message, this._senderLogger);
         const res = await this._processor.processMessage(message, pageId, sender, { appId });
+        await this._processSenderResponses(sender, senderId, pageId, headers);
 
         return {
             status: res.status,
@@ -280,7 +318,7 @@ class BotApp {
 
         const body = JSON.parse(rawBody);
 
-        const entry = await this._processEntries(appId, secret, body.entry);
+        const entry = await this._processEntries(appId, secret, body.entry, rawHeaders);
 
         return {
             statusCode: 200,
@@ -293,7 +331,7 @@ class BotApp {
         };
     }
 
-    async _processEntries (appId, secret, entry = []) {
+    async _processEntries (appId, secret, entry = [], headers = {}) {
         return Promise.all(
             entry.map(async (event) => {
                 const {
@@ -308,7 +346,8 @@ class BotApp {
                     ...standby.map((e) => ({ ...e, isStandby: true }))
                 ];
 
-                const responses = await this._processMessaging(events, pageId, appId, secret, sync);
+                const responses = await this
+                    ._processMessaging(events, pageId, appId, secret, sync, headers);
 
                 return {
                     id: pageId,
@@ -318,7 +357,7 @@ class BotApp {
         );
     }
 
-    async _processMessaging (process, pageId, appId, secret, sync) {
+    async _processMessaging (process, pageId, appId, secret, sync, headers) {
         const eventsBySenderId = new Map();
         process.forEach((e) => this._processMessagingArrayItem(e, eventsBySenderId));
 
@@ -329,7 +368,7 @@ class BotApp {
 
                     for (const message of messaging) {
                         const res = await this._processIncommingMessage(
-                            message, senderId, pageId, appId, secret, sync
+                            message, senderId, pageId, appId, secret, sync, headers
                         );
 
                         responses.push(res);

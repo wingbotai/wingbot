@@ -8,6 +8,7 @@ const sinon = require('sinon');
 const BotAppSender = require('../src/BotAppSender');
 const BotApp = require('../src/BotApp');
 const Router = require('../src/Router');
+const { CallbackAuditLog } = require('..');
 
 const SECRET = 'a';
 const APP_ID = 'b';
@@ -313,6 +314,65 @@ describe('BotApp', () => {
         // @ts-ignore
         assert.strictEqual(fetch.callCount, 2);
 
+    });
+
+    it('works with audit log', async () => {
+        const spy = sinon.spy();
+
+        const auditLog = new CallbackAuditLog(spy);
+
+        const bot = new Router();
+
+        bot.use('start', (req, res) => {
+            res.text('hello');
+            res.trackEvent('log', 'not', 'not');
+            res.trackEvent('audit', 'cat', 'foo');
+            res.trackEvent('report', 'cat', 'bar');
+        });
+
+        app = new BotApp(bot, {
+            autoTyping: true, secret: SECRET, apiUrl: 'b', fetch, auditLog
+        });
+
+        const body = JSON.stringify({
+            entry: [
+                {
+                    id: PAGE_ID,
+                    requires_response: true,
+                    messaging: [
+                        {
+                            sender: { id: 's' },
+                            recipient: { id: PAGE_ID },
+                            mid: '2',
+                            postback: { payload: 'start' }
+                        }
+                    ]
+                }
+            ]
+        });
+        const authorization = await BotAppSender.signBody(body, SECRET, APP_ID);
+
+        await app.request(body, { authorization });
+
+        assert.strictEqual(spy.callCount, 2);
+        const [first] = spy.firstCall.args;
+        const [second] = spy.secondCall.args;
+        assert.deepStrictEqual(first, {
+            ...first,
+            eventType: 'audit',
+            category: 'cat',
+            action: 'foo',
+            level: 'Important',
+            type: 'Info'
+        });
+        assert.deepStrictEqual(second, {
+            ...second,
+            eventType: 'report',
+            category: 'cat',
+            action: 'bar',
+            level: 'Debug',
+            type: 'Info'
+        });
     });
 
 });

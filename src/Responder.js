@@ -190,7 +190,7 @@ class Responder {
      * Events are aggregated within ReturnSender and can be caught
      * within Processor's `interaction` event (event.tracking.events)
      *
-     * @param {string} type
+     * @param {string} type - (log,report,conversation,audit,user)
      * @param {string} category
      * @param {string} [action]
      * @param {string} [label]

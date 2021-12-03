@@ -131,6 +131,8 @@ function conversationsApi (
                 condition
             } = args;
 
+            await ctx.audit('conversations', args);
+
             const { data, lastKey: nextKey } = await stateStorage
                 .getStates(condition || {}, limit, lastKey);
 
@@ -153,6 +155,8 @@ function conversationsApi (
                 pageId,
                 senderId
             } = args;
+
+            await ctx.audit('conversation', args);
 
             const state = await stateStorage.getState(senderId, pageId);
 

@@ -30,3 +30,4 @@ node_modules
 
 .nyc_output
 out
+.DS_Store

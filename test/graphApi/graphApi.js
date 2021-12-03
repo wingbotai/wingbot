@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const sinon = require('sinon');
 const assert = require('assert');
 const { buildSchema } = require('graphql');
 const {
@@ -17,6 +18,7 @@ const BuildRouter = require('../../src/BuildRouter');
 const Plugins = require('../../src/Plugins');
 // @ts-ignore
 const simpleTestbot = require('../simple-testbot.json');
+const { CallbackAuditLog } = require('../..');
 
 describe('<GraphApi>', function () {
 
@@ -59,6 +61,7 @@ describe('<GraphApi>', function () {
                 {
                     title: 'start',
                     action: 'start',
+                    // @ts-ignore
                     _senderMeta: {
                         flag: 'd',
                         likelyIntent: 'likely'
@@ -479,7 +482,8 @@ describe('<GraphApi>', function () {
                 conversationsApi(tester.storage, null, null, undefined, { stateTextFilter })
             ], {
                 token: 'x',
-                appToken: 'y'
+                appToken: 'y',
+                auditLog: new CallbackAuditLog()
             });
 
             // make some states
@@ -694,6 +698,102 @@ describe('<GraphApi>', function () {
             assert.equal(typeof res.data, 'object');
             assert.deepEqual(res.data, {
                 subscribeUsers: true
+            });
+        });
+
+    });
+
+    describe('audit log', () => {
+
+        /** @type {import('sinon').SinonSpy} */
+        let spy;
+
+        beforeEach(() => {
+            spy = sinon.spy();
+
+            const auditLog = new CallbackAuditLog(spy);
+
+            api = new GraphApi([
+                postBackApi(tester),
+                conversationsApi(tester.storage),
+                validateBotApi(() => new BuildRouter({ botId: 'a', snapshot: 'b' }, new Plugins()), 'start', '*')
+            ], {
+                token: 'x',
+                appToken: 'y',
+                auditLog
+            });
+
+            api._cachedSchema = schema;
+        });
+
+        it('uses audit log', async () => {
+            try {
+                await api.request({
+                    query: `{
+                        conversations (limit: 1) {
+                            data {
+                                senderId
+                            },
+                            lastKey
+                        }
+                    }`
+                }, {
+                    authorization: 'sasalele'
+                });
+            } catch (e) {
+                // noop
+            }
+
+            assert.strictEqual(spy.callCount, 1);
+            const [event] = spy.firstCall.args;
+            assert.deepStrictEqual(event, {
+                ...event,
+                category: 'API',
+                action: 'authorization failed',
+                level: 'Important',
+                type: 'Warn',
+                payload: {
+                    message: 'Forbidden: Unknown key format',
+                    authHeader: 'sasalele'
+                }
+            });
+        });
+
+        it('records a fetch request', async () => {
+            // make some states
+            await tester.postBack('start');
+            tester.senderId = 'abc';
+            await tester.postBack('start');
+
+            const res = await api.request({
+                query: `{
+                    conversations (limit: 1) {
+                        data {
+                            senderId,
+                            pageId,
+                            lastInteraction,
+                            name,
+                            state,
+                            history {
+                                timestamp
+                            }
+                        },
+                        lastKey
+                    }
+                }`
+            }, headers);
+
+            assert.strictEqual(typeof res.data.conversations, 'object');
+            assert.strictEqual(typeof res.data.conversations.data, 'object');
+
+            assert.strictEqual(spy.callCount, 1);
+            const [event] = spy.firstCall.args;
+            assert.deepStrictEqual(event, {
+                ...event,
+                category: 'API',
+                action: 'conversations',
+                level: 'Debug',
+                type: 'Info'
             });
         });
 

@@ -99,6 +99,7 @@ function validateBotApi (botFactory, postBackTest = null, textTest = null, acl =
 
             const bot = botFactory();
 
+            await ctx.audit('validateBot', args);
             return validate(bot, validationRequestBody, postBackTest, textTest);
         }
     };

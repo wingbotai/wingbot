@@ -5,13 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.23.5] 2021-12-01
+## [3.25.0] 2021-12-01
+
+### Added
+
+- Support for Audit logs
+
+## [3.24.5] 2021-12-01
 
 ### Fixed
 
 - SetState from array when using
 
-## [3.23.4] 2021-11-30
+## [3.24.4] 2021-11-30
 
 ### Fixed
 

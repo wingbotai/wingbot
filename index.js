@@ -21,6 +21,7 @@ const { asserts } = require('./src/testTools');
 const BuildRouter = require('./src/BuildRouter');
 const MockAiModel = require('./src/MockAiModel');
 const ReturnSender = require('./src/ReturnSender');
+const CallbackAuditLog = require('./src/CallbackAuditLog');
 const Plugins = require('./src/Plugins');
 const NotificationsStorage = require('./src/notifications/NotificationsStorage');
 const Notifications = require('./src/notifications/Notifications');
@@ -70,6 +71,7 @@ module.exports = {
     bufferloader,
     asserts,
     MemoryStateStorage,
+    CallbackAuditLog,
     MemoryBotConfigStorage,
     CachedModel,
     CustomEntityDetectionModel,
