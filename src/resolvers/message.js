@@ -73,11 +73,10 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
 function message (params, {
     isLastIndex, isLastMessage, linksMap, allowForbiddenSnippetWords
 }) {
+
     if (typeof params.text !== 'string' && !Array.isArray(params.text)) {
         throw new Error('Message should be a text!');
     }
-
-    const textTemplate = cachedTranslatedCompilator(params.text);
 
     let quickReplies = null;
 
@@ -92,11 +91,31 @@ function message (params, {
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
     return (req, res) => {
-        if (condition !== null) {
-            if (!condition(req, res)) {
-                return ret;
-            }
+        if (condition && !condition(req, res)) {
+            return ret;
         }
+
+        const paramsText = params.text;
+
+        const supportsSSML = req.supportsFeature(req.FEATURE_SSML);
+        const supportsText = req.supportsFeature(req.FEATURE_TEXT);
+        const supportsVoice = req.supportsFeature(req.FEATURE_VOICE);
+
+        // no feature preference
+        if (supportsText) {
+            paramsText.text = params.text.filter((translation) => !translation.p);
+        }
+
+        // [null, 't', 'v', 's']
+        // translation.p can support this array (null is probably not)
+        if (supportsVoice) {
+            paramsText.text = params.text.filter((translation)=>translation.);
+        }
+
+        // TODO select text to be compiled
+        // send voice object
+
+        const textTemplate = cachedTranslatedCompilator(paramsText);
 
         const data = stateData(req, res);
         const text = textTemplate(data)
