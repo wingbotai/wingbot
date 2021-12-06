@@ -99,7 +99,7 @@ function validateBotApi (botFactory, postBackTest = null, textTest = null, acl =
 
             const bot = botFactory();
 
-            await ctx.audit('validateBot', args);
+            await ctx.audit('validateBot');
             return validate(bot, validationRequestBody, postBackTest, textTest);
         }
     };

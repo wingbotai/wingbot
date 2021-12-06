@@ -75,11 +75,6 @@ class CallbackAuditLog {
      * @param {Logger} log
      */
     constructor (callback = null, log = console) {
-        /**
-         * @type {Logger}
-         * @ignore
-         * @private
-         */
         this._log = log;
         this.defaultWid = '0';
 
