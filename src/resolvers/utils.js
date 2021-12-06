@@ -100,6 +100,13 @@ function randomizedCompiler (text, lang) {
     };
 }
 
+/**
+ * l - language
+ * t - alternatives
+ *
+ * @param {{l:string,t:string[]}[] | string} text
+ * @returns {(state:any)=>string}
+ */
 function cachedTranslatedCompilator (text) {
     const cache = new Map();
 
