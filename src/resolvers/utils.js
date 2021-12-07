@@ -36,13 +36,13 @@ function isTextObjectEmpty (text) {
 }
 
 /**
- *
  * @param {{t:string,l:string}[]|string} translations
  * @param {string} [lang]
  * @returns {null|string}
  */
 function getLanguageText (translations, lang = null) {
     let foundText;
+
     if (isArrayOfObjects(translations)) {
         if (lang) {
             foundText = translations.find((t) => t.l === lang);
