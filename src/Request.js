@@ -286,6 +286,14 @@ class Request {
     }
 
     /**
+     *
+     * @returns {string[]}
+     */
+    getSupportedFeatures () {
+        return this.features;
+    }
+
+    /**
      * Returns true, if the incoming event is standby
      *
      * @returns {boolean}
