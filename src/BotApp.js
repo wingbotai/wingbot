@@ -22,6 +22,7 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 /** @typedef {import('./Processor').Plugin} Plugin */
 
 /** @typedef {import('./CallbackAuditLog')} AuditLog */
+/** @typedef {import('./BotAppSender').TlsOptions} TlsOptions */
 
 /**
  * @typedef {object} BotAppOptions
@@ -32,6 +33,7 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
  * @prop {ChatLogStorage} [chatLogStorage]
  * @prop {boolean} [preferSynchronousResponse]
  * @prop {AuditLog} [auditLog]
+ * @prop {TlsOptions} [tls]
  *
  * @typedef {ProcessorOptions & BotAppOptions} Options
  */
@@ -63,6 +65,7 @@ class BotApp {
             appId = null,
             preferSynchronousResponse = false,
             auditLog = null,
+            tls = null,
             ...processorOptions
         } = options;
 
@@ -70,6 +73,7 @@ class BotApp {
         this._fetch = fetch; // mock
         this._appId = appId;
         this._auditLog = auditLog;
+        this._tls = tls;
 
         let { apiUrl } = options;
 
@@ -94,6 +98,18 @@ class BotApp {
 
         this._processor.plugin(BotApp.plugin());
         this._preferSynchronousResponse = preferSynchronousResponse;
+    }
+
+    /**
+     * Get authorization token for wingbot orchestrator
+     *
+     * @param {string} body
+     * @param {string} secret
+     * @param {string} appId
+     * @returns {Promise<string>}
+     */
+    static signBody (body, secret, appId) {
+        return BotAppSender.signBody(body, secret, appId);
     }
 
     /**
@@ -211,7 +227,8 @@ class BotApp {
             appId,
             secret,
             mid,
-            fetch: this._fetch
+            fetch: this._fetch,
+            tls: this._tls
         };
 
         const sender = new BotAppSender(options, senderId, message, this._senderLogger);

@@ -179,7 +179,7 @@ function getSetState (setState = {}, req, res = null, useState = null) {
                         const useValue = typeof value === 'string'
                             ? handlebars.compile(value)(stateData(req, res))
                                 .split(/(?<!\\),/g)
-                                .map((v) => v.trim())
+                                .map((v) => v.replace(/\\,/g, ',').trim())
                             : value;
                         values = toArray(useValue);
                     }

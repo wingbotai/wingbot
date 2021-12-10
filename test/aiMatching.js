@@ -139,6 +139,25 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
+        it('should match just single entity occurence', () => {
+            const rule = ai.preprocessRule(['@foo', '@foo!=']);
+
+            const foo = entity('foo');
+            const foo2 = entity('foo');
+
+            const badReq = fakeReq([], [foo, foo2]);
+            const goodReq = fakeReq([], [foo]);
+
+            const winningIntent = intent(
+                null,
+                [foo, { ...foo2, score: 0.96, value: undefined }],
+                1.1447999999999998
+            );
+
+            assert.deepEqual(ai.match(goodReq, rule), winningIntent);
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+        });
+
         it('somehow works with order of entities', () => {
             const rule = ai.preprocessRule(['@foo=1', '@foo=2']);
 
