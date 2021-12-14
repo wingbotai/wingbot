@@ -6,17 +6,17 @@
 /**
  * @constant {string} FEATURE_TEXT channel supports text communication
  */
-const FEATURE_TEXT = 'text';
+const FEATURE_TEXT = 't';
 
 /**
  * @constant {string} FEATURE_VOICE channel supports voice messages
  */
-const FEATURE_VOICE = 'voice';
+const FEATURE_VOICE = 'v';
 
 /**
  * @constant {string} FEATURE_SSML channel supports SSML voice messages
  */
-const FEATURE_SSML = 'ssml';
+const FEATURE_SSML = 's';
 
 /**
  * @constant {string} FEATURE_PHRASES channel supports expected phrases messages
