@@ -14,6 +14,7 @@ const AnyResponseAssert = require('./testTools/AnyResponseAssert');
 const ResponseAssert = require('./testTools/ResponseAssert');
 
 const Router = require('./Router'); // eslint-disable-line no-unused-vars
+const { FEATURE_TEXT } = require('./features');
 
 /**
  * Utility for testing requests
@@ -259,7 +260,7 @@ class Tester {
     }
 
     /**
-     * Checks, that a plugin used a block as a responde
+     * Checks, that a plugin used a block as a response
      *
      * @param {string} blockName
      * @returns {this}
@@ -308,7 +309,6 @@ class Tester {
      *
      * @param {string} text
      * @returns {Promise}
-     *
      * @memberOf Tester
      */
     text (text) {
@@ -429,13 +429,13 @@ class Tester {
      * @param {object} [data={}]
      * @param {string} [refAction=null] - referred action
      * @param {object} [refData={}] - referred action data
+     * @param {string[]} features
      * @returns {Promise}
-     *
      * @memberOf Tester
      */
-    postBack (action, data = {}, refAction = null, refData = {}) {
+    postBack (action, data = {}, refAction = null, refData = {}, features = [FEATURE_TEXT]) {
         return this.processMessage(Request
-            .postBack(this.senderId, action, data, refAction, refData));
+            .postBack(this.senderId, action, data, refAction, refData, null, features));
     }
 
 }

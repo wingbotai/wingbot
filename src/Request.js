@@ -1419,7 +1419,8 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
         data = {},
         refAction = null,
         refData = {},
-        timestamp = makeTimestamp()
+        timestamp = makeTimestamp(),
+        features = [FEATURE_TEXT]
     ) {
         const postback = {
             payload: {
@@ -1437,7 +1438,8 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
             sender: {
                 id: senderId
             },
-            postback
+            postback,
+            features
         };
     }
 
