@@ -12,8 +12,7 @@ const {
     stateData, getLanguageText, getLanguageTextObjects, randomizedCompiler
 } = require('./utils');
 const {
-    // eslint-disable-next-line no-unused-vars
-    FEATURE_SSML, FEATURE_TEXT, FEATURE_VOICE, FEATURE_PHRASES
+    FEATURE_SSML, FEATURE_TEXT, FEATURE_VOICE
 } = require('../features');
 
 /**
@@ -114,20 +113,15 @@ function findSupportedMessages (text, features, lang = null) {
     const useText = features.includes(FEATURE_TEXT);
     const useVoice = features.includes(FEATURE_VOICE);
 
-    let ssmlAlternatives = translations.filter((t) => t.p === 's').map((t) => t.t);
+    // filter out SSML alternatives - they will be used in voice control
+    let ssmlAlternatives = translations.filter((t) => t.p === FEATURE_SSML).map((t) => t.t);
     if (ssmlAlternatives.length === 0 || !useSSML) {
         ssmlAlternatives = null;
     }
 
-    translations = translations.filter((t) => t.p !== 's');
+    translations = translations.filter((t) => t.p !== FEATURE_SSML);
 
-    const textHasSSML = !ssmlAlternatives;
-
-    // filter out unsupported SSML
-    if (!useSSML && textHasSSML) {
-        translations = translations.filter((t) => t.p !== 's');
-    }
-
+    // find supported text alternatives
     translations = translations.filter((translation) => {
         // always use text+voice
         if (!translation.p) {
@@ -135,12 +129,12 @@ function findSupportedMessages (text, features, lang = null) {
         }
 
         // text only
-        if (useText && translation.p === 't') {
+        if (useText && translation.p === FEATURE_TEXT) {
             return true;
         }
 
         // voice (& SSML) only
-        if (useVoice && translation.p === 'v') {
+        if (useVoice && translation.p === FEATURE_VOICE) {
             return true;
         }
 
@@ -162,14 +156,15 @@ function message (params, {
         throw new Error('Message should be a text!');
     }
 
+    // parse quick replies
     let quickReplies = null;
-
     if (params.replies && !Array.isArray(params.replies)) {
         throw new Error('Replies should be an array');
     } else if (params.replies && params.replies.length > 0) {
         quickReplies = parseReplies(params.replies, linksMap, allowForbiddenSnippetWords);
     }
 
+    // compile condition
     const condition = getCondition(params, 'Message condition', allowForbiddenSnippetWords);
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
@@ -184,12 +179,15 @@ function message (params, {
         }
         const data = stateData(req, res);
 
+        // filter supported messages
+        /** @type {{translations:import('./utils').TextObject[],ssmlAlternatives:string[]}} */
         const supportedText = findSupportedMessages(
             params.text,
             req.getSupportedFeatures(),
             data.lang
         );
 
+        // find random alternative
         const textTemplate = randomizedCompiler([{
             l: data.lang,
             t: supportedText.translations.map((x) => x.t)
@@ -232,13 +230,14 @@ function message (params, {
             sendReplies = isLastMessage ? [] : undefined;
         }
 
+        // generate voice control
         let voiceControl = getVoiceControl(params, data.lang);
         if (supportedText.ssmlAlternatives) {
             if (!voiceControl) {
                 voiceControl = {};
             }
 
-            // get SSML alternative
+            // find SSML alternative
             const ssmlAlternativeTemplate = randomizedCompiler([{
                 l: data.lang,
                 t: supportedText.ssmlAlternatives
