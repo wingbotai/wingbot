@@ -17,8 +17,10 @@ function intent (i, entities = [], score = SCORE) {
     return { intent: i, entities, score };
 }
 
-function fakeReq (intents = [], entities = [], text = 'foo') {
-    return { intents, entities, text: () => text };
+function fakeReq (intents = [], entities = [], text = 'foo', state = {}) {
+    return {
+        intents, entities, text: () => text, state
+    };
 }
 
 describe('<AiMatching>', () => {
@@ -35,6 +37,18 @@ describe('<AiMatching>', () => {
             const badReq = fakeReq([intent('bad')]);
 
             assert.deepEqual(ai.match(req, rule), i, 'should match');
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+        });
+
+        it('is able to use hbs templates within conditions', () => {
+            const rule = ai.preprocessRule(['intent', '@entity={{stateVar}}']);
+
+            const e = entity('entity', 'v');
+            const i = intent('intent', [e]);
+            const req = fakeReq([i], [e], 't', { stateVar: 'v' });
+            const badReq = fakeReq([i], [e], 't', { stateVar: 'x' });
+
+            assert.deepEqual(ai.match(req, rule), { ...i, score: 1.1189912204122 }, 'should match');
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 

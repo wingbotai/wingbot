@@ -6,6 +6,18 @@
 const { replaceDiacritics } = require('./utils/tokenizer');
 const { vars } = require('./utils/stateVariables');
 
+/** @typedef {import('handlebars')} Handlebars */
+
+/** @type {Handlebars} */
+let handlebars;
+try {
+    // @ts-ignore
+    handlebars = module.require('handlebars');
+} catch (er) {
+    // @ts-ignore
+    handlebars = { compile: (text) => () => text };
+}
+
 const FULL_EMOJI_REGEX = /^#((?:[\u2600-\u27bf].?|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])+)$/;
 const HAS_CLOSING_HASH = /^#(.+)#$/;
 const ENTITY_REGEX = /^@([^=><!?]+)(\?)?([!=><]{1,2})?([^=><!]+)?$/i;
@@ -46,7 +58,7 @@ const COMPARE = {
  * @prop {string} entity - the requested entity
  * @prop {boolean} [optional] - the match is optional
  * @prop {Compare} [op] - comparison operation
- * @prop {string[]|number[]} [compare] - value to compare with
+ * @prop {(string|number|Function)[]} [compare] - value to compare
  */
 
 /**
@@ -138,6 +150,17 @@ class AiMatching {
         return returnIfEmpty;
     }
 
+    _hbsOrFn (value, cb) {
+        if (typeof value === 'string' && value.match(/\{\{.+\}\}/)) {
+            const compiler = handlebars.compile(value);
+            return (data) => {
+                const res = compiler(data);
+                return cb(res);
+            };
+        }
+        return cb(value);
+    }
+
     _normalizeComparisonArray (compare, op) {
         const arr = Array.isArray(compare) ? compare : [compare];
 
@@ -150,7 +173,7 @@ class AiMatching {
             const [val] = arr;
 
             return [
-                this._normalizeToNumber(val, 0)
+                this._hbsOrFn(val, (r) => this._normalizeToNumber(r, 0))
             ];
         }
 
@@ -158,12 +181,12 @@ class AiMatching {
             const [min, max] = arr;
 
             return [
-                this._normalizeToNumber(min, -Infinity),
-                this._normalizeToNumber(max, Infinity)
+                this._hbsOrFn(min, (r) => this._normalizeToNumber(r, -Infinity)),
+                this._hbsOrFn(max, (r) => this._normalizeToNumber(r, Infinity))
             ];
         }
 
-        return arr.map((cmp) => `${cmp}`);
+        return arr.map((cmp) => this._hbsOrFn(cmp, (r) => `${r}`));
     }
 
     _stringOpToOperation (op) {
@@ -227,7 +250,8 @@ class AiMatching {
 
             if (rule.op === COMPARE.EQUAL
                 && rule.compare
-                && rule.compare.length === 1) {
+                && rule.compare.length === 1
+                && typeof rule.compare[0] !== 'function') {
 
                 const key = `@${rule.entity}`;
                 const value = rule.compare[0];
@@ -519,7 +543,7 @@ class AiMatching {
                         return false;
                     }
                     entityExists = true;
-                    return this._entityIsMatching(wanted.op, wanted.compare, e.value);
+                    return this._entityIsMatching(wanted.op, wanted.compare, e.value, requestState);
                 });
 
             let requestEntity = requestEntities[index];
@@ -543,11 +567,13 @@ class AiMatching {
                     };
 
                     matching = this
-                        ._entityIsMatching(wanted.op, wanted.compare, requestEntity.value);
+                        ._entityIsMatching(
+                            wanted.op, wanted.compare, requestEntity.value, requestState
+                        );
                 }
             } else if (!entityExists) {
                 matching = this
-                    ._entityIsMatching(wanted.op, wanted.compare, undefined);
+                    ._entityIsMatching(wanted.op, wanted.compare, undefined, requestState);
             }
 
             if (!matching && !wanted.optional) {
@@ -600,7 +626,7 @@ class AiMatching {
         };
     }
 
-    _entityIsMatching (op, compare, value) {
+    _entityIsMatching (op, compare, value, requestState) {
         const operation = op || (typeof compare !== 'undefined' ? COMPARE.EQUAL : null);
 
         if (typeof value === 'undefined') {
@@ -609,13 +635,17 @@ class AiMatching {
                 : false;
         }
 
+        const useCmp = (compare || []).map((c) => (typeof c === 'function'
+            ? c(requestState)
+            : c));
+
         switch (operation) {
             case COMPARE.EQUAL:
-                return compare.length === 0 || compare.includes(`${value}`);
+                return useCmp.length === 0 || useCmp.includes(`${value}`);
             case COMPARE.NOT_EQUAL:
-                return compare.length !== 0 && !compare.includes(`${value}`);
+                return useCmp.length !== 0 && !useCmp.includes(`${value}`);
             case COMPARE.RANGE: {
-                const [min, max] = compare;
+                const [min, max] = useCmp;
                 const normalized = this._normalizeToNumber(value);
                 if (normalized === null) {
                     return false;
@@ -626,7 +656,7 @@ class AiMatching {
             case COMPARE.LT:
             case COMPARE.GTE:
             case COMPARE.LTE: {
-                const [cmp] = compare;
+                const [cmp] = useCmp;
                 const normalized = this._normalizeToNumber(value);
                 if (normalized === null) {
                     return false;

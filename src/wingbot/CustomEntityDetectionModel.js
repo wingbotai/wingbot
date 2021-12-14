@@ -284,12 +284,12 @@ class CustomEntityDetectionModel {
      * @param {string} text
      * @param {string} [singleEntity]
      * @param {string[]} expectedEntities
+     * @param {DetectedEntity[]} [entities] - previously detected entities to include
      * @returns {Promise<DetectedEntity[]>}
      */
-    async resolveEntities (text, singleEntity = null, expectedEntities = []) {
+    async resolveEntities (text, singleEntity = null, expectedEntities = [], entities = []) {
         const resolved = new Set();
         let missing = Array.from(this._entityDetectors.keys());
-        const entities = [];
 
         while (missing.length !== 0) {
             let detect = [];
