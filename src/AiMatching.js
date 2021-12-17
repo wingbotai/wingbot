@@ -403,13 +403,27 @@ class AiMatching {
                     score: regexpScore - handicap
                 };
             }
+
+            let useState;
+            if (stateless) {
+                useState = {};
+            } else if (intents.length === 0) {
+                useState = Object.entries(req.state)
+                    .reduce((o, [k, v]) => {
+                        if (k.startsWith('@')) {
+                            return o;
+                        }
+                        return Object.assign(o, { [k]: v });
+                    }, {});
+            } else {
+                useState = req.state;
+            }
+
             const { score, handicap, matched } = this
                 ._entityMatching(
                     entities,
                     reqEntities,
-                    stateless || intents.length === 0
-                        ? {}
-                        : req.state
+                    useState
                 );
 
             const allOptional = entities.every((e) => e.optional);

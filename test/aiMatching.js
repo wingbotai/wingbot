@@ -52,6 +52,18 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
+        it('is able to use hbs templates within conditions', () => {
+            const rule = ai.preprocessRule(['@entity={{stateVar}}']);
+
+            const e = entity('entity', 'v');
+            const i = intent('intent', [e]);
+            const req = fakeReq([i], [e], 't', { stateVar: 'v' });
+            const badReq = fakeReq([i], [e], 't', { stateVar: 'x' });
+
+            assert.deepEqual(ai.match(req, rule), { ...i, score: 0.9299999999999999, intent: null }, 'should match');
+            assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
+        });
+
         it('should match entity', () => {
             const rule = ai.preprocessRule(['@entity?', 'intent', 'diff']);
 
