@@ -33,6 +33,7 @@ describe('customEntityDetectionModel', () => {
             });
 
             m.setEntityDetector('price', /@NUMBER\s*(k[čc]|korun)/, { anonymize: true });
+            m.setEntityDetector('total', /celkem\s@PRICE/, { replaceDiacritics: true });
         });
 
         it('should resolve entities somehow', async () => {
@@ -112,6 +113,21 @@ describe('customEntityDetectionModel', () => {
                     score: 1,
                     start: 16,
                     end: 18
+                }
+            ]);
+
+            const { entities: e2, text: t2 } = await m.resolve('celkem 120 Kč');
+
+            // @ts-ignore
+            assert.strictEqual(t2, 'celkem 120 kč');
+            assert.deepEqual(e2, [
+                {
+                    entity: 'total',
+                    value: 120,
+                    text: 'celkem 120 Kč',
+                    score: 1,
+                    start: 0,
+                    end: 13
                 }
             ]);
         });

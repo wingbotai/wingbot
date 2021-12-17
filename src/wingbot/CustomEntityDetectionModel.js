@@ -194,8 +194,14 @@ class CustomEntityDetectionModel {
         }
     }
 
-    _escapeRegex (string) {
-        return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+    _escapeRegex (string, shouldReplaceDiacritics) {
+        const ret = string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+        if (!shouldReplaceDiacritics) {
+            return ret;
+        }
+
+        return replaceDiacritics(ret);
     }
 
     /**
@@ -426,7 +432,7 @@ class CustomEntityDetectionModel {
             let replaced = source.replace(/@[A-Z0-9-]+/g, (value) => {
                 const matchingEntities = entities
                     .filter((e) => `@${e.entity.toUpperCase()}` === value)
-                    .map((e) => this._escapeRegex(e.text));
+                    .map((e) => this._escapeRegex(e.text, options.replaceDiacritics));
 
                 if (matchingEntities.length === 0) {
                     return value;
