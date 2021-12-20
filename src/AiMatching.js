@@ -405,9 +405,7 @@ class AiMatching {
             }
 
             let useState;
-            if (stateless) {
-                useState = {};
-            } else if (intents.length === 0) {
+            if (stateless || intents.length === 0) {
                 useState = Object.entries(req.state)
                     .reduce((o, [k, v]) => {
                         if (k.startsWith('@')) {

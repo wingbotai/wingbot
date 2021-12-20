@@ -61,6 +61,7 @@ describe('<AiMatching>', () => {
             const badReq = fakeReq([i], [e], 't', { stateVar: 'x' });
 
             assert.deepEqual(ai.match(req, rule), { ...i, score: 0.9299999999999999, intent: null }, 'should match');
+            assert.deepEqual(ai.match(req, rule, true), { ...i, score: 0.9299999999999999, intent: null }, 'should match');
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
