@@ -21,7 +21,7 @@ const FEATURE_SSML = 's';
 /**
  * @constant {string} FEATURE_PHRASES channel supports expected phrases messages
  */
-const FEATURE_PHRASES = 'phrases';
+const FEATURE_PHRASES = 'p';
 
 function getDefaultFeatureList () {
     return [FEATURE_TEXT];
