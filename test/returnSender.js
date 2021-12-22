@@ -141,7 +141,7 @@ describe('<ReturnSender>', () => {
                 model: 'sasalele', fetch
             }), 'sasalele');
 
-            const msg = { message: { text: 'foo' }, sender: { id: 'a' }, features: ['phrases'] };
+            const msg = { message: { text: 'foo' }, sender: { id: 'a' }, features: ['p'] };
             req = new Request(msg, { lang: 'sasalele' }, 'page');
             rs = new ReturnSender({}, msg.sender.id, msg);
         });
