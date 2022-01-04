@@ -22,7 +22,7 @@ const {
  * @param {string} lang
  * @returns {null | import('../Responder').VoiceControl}
  */
-function getVoiceControl (params, lang) {
+function getVoiceControl (params, lang = null) {
     const voiceControl = {};
 
     const voiceControlProps = ['speed', 'pitch', 'volume', 'voice', 'style', 'language'];

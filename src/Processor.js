@@ -179,7 +179,7 @@ class Processor extends EventEmitter {
         }
     }
 
-    _createPostBack (postbackAcumulator, req, res) {
+    _createPostBack (postbackAcumulator, req, res, features) {
         const postBack = (action, inputData = {}, dontWaitTillEndOfLoop = false) => {
             let data = inputData;
             if (typeof data === 'function') {
@@ -214,11 +214,12 @@ class Processor extends EventEmitter {
                 postbackAcumulator.push(data
                     .then((result) => ({
                         action,
-                        data: Object.assign(result || {}, { _localpostback: true })
+                        data: Object.assign(result || {}, { _localpostback: true }),
+                        features
                     })));
             } else {
                 Object.assign(data, { _localpostback: true });
-                postbackAcumulator.push({ action, data });
+                postbackAcumulator.push({ action, data, features });
             }
 
             return Promise.resolve();
@@ -512,16 +513,17 @@ class Processor extends EventEmitter {
                 }
             );
 
+            const features = [
+                ...(this.options.features || []),
+                ...req.features
+            ];
             const options = {
                 ...this.options,
-                features: [
-                    ...(this.options.features || []),
-                    ...req.features
-                ]
+                features
             };
 
             res = new Responder(senderId, messageSender, token, options, responderData);
-            const postBack = this._createPostBack(postbackAcumulator, req, res);
+            const postBack = this._createPostBack(postbackAcumulator, req, res, features);
 
             let continueDispatching = true;
 
@@ -729,13 +731,14 @@ class Processor extends EventEmitter {
     _processPostbacks (postbackAcumulator, senderId, pageId, messageSender, responderData) {
         return postbackAcumulator.reduce((promise, postback) => promise
             .then(() => postback)
-            .then(({ action, data = {} }) => {
+            .then(({ action, data = {}, features }) => {
                 let request;
                 if (typeof action === 'object') {
                     request = action;
                 } else {
                     request = Request.postBack(senderId, action, data);
                 }
+                Object.assign(request, { features });
                 return this._processMessage(request, pageId, messageSender, responderData);
             }), Promise.resolve({}));
     }
