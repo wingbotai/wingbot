@@ -114,12 +114,12 @@ function findSupportedMessages (text, features, lang = null) {
     const useVoice = features.includes(FEATURE_VOICE);
 
     // filter out SSML alternatives - they will be used in voice control
-    let ssmlAlternatives = translations.filter((t) => t.p === FEATURE_SSML).map((t) => t.t);
+    let ssmlAlternatives = translations.filter((t) => t.p === 's').map((t) => t.t);
     if (ssmlAlternatives.length === 0 || !useSSML) {
         ssmlAlternatives = null;
     }
 
-    translations = translations.filter((t) => t.p !== FEATURE_SSML);
+    translations = translations.filter((t) => t.p !== 's');
 
     // find supported text alternatives
     translations = translations.filter((translation) => {
@@ -129,12 +129,12 @@ function findSupportedMessages (text, features, lang = null) {
         }
 
         // text only
-        if (useText && translation.p === FEATURE_TEXT) {
+        if (useText && translation.p === 't') {
             return true;
         }
 
         // voice (& SSML) only
-        if (useVoice && translation.p === FEATURE_VOICE) {
+        if (useVoice && translation.p === 'v') {
             return true;
         }
 
