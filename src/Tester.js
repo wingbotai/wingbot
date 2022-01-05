@@ -14,6 +14,7 @@ const AnyResponseAssert = require('./testTools/AnyResponseAssert');
 const ResponseAssert = require('./testTools/ResponseAssert');
 
 const Router = require('./Router'); // eslint-disable-line no-unused-vars
+const ReducerWrapper = require('./ReducerWrapper'); // eslint-disable-line no-unused-vars
 const { FEATURE_TEXT } = require('./features');
 
 /**
@@ -119,6 +120,11 @@ class Tester {
          * @prop {console} use own loggger
          */
         this.senderLogger = undefined;
+
+        /**
+         * @prop {string[]}
+         */
+        this.features = undefined;
     }
 
     dealloc () {
@@ -150,6 +156,15 @@ class Tester {
     }
 
     /**
+     * Set features for all messages
+     *
+     * @param {string[]} [features]
+     */
+    setFeatures (features) {
+        this.features = features || [FEATURE_TEXT];
+    }
+
+    /**
      * Use tester as a connector :)
      *
      * @param {object} message - wingbot chat event
@@ -163,6 +178,10 @@ class Tester {
             Object.assign(message, {
                 sender: { id: senderId }
             });
+        }
+
+        if (this.features) {
+            Object.assign(message, { features: this.features });
         }
 
         const messageSender = new ReturnSender({}, senderId, message, this.senderLogger);
@@ -429,13 +448,12 @@ class Tester {
      * @param {object} [data={}]
      * @param {string} [refAction=null] - referred action
      * @param {object} [refData={}] - referred action data
-     * @param {string[]} features
      * @returns {Promise}
      * @memberOf Tester
      */
-    postBack (action, data = {}, refAction = null, refData = {}, features = [FEATURE_TEXT]) {
+    postBack (action, data = {}, refAction = null, refData = {}) {
         return this.processMessage(Request
-            .postBack(this.senderId, action, data, refAction, refData, null, features));
+            .postBack(this.senderId, action, data, refAction, refData, null));
     }
 
 }
