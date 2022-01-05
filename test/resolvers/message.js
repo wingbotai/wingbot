@@ -70,22 +70,22 @@ describe('Message voice control', () => {
             t = new Tester(bot);
         });
         it('should return only SSML', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_SSML, FEATURE_VOICE]);
+            t.setFeatures([FEATURE_SSML, FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
             t.lastRes().contains('voice');
             assert(t.lastRes().response.message.voice.ssml.includes('<speak>'));
         });
 
         it('should return text, or voice text', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_TEXT]);
+            t.setFeatures([FEATURE_TEXT]);
+            await t.postBack('messageResolver', null, null, null);
             assert(!t.lastRes().response.message.voice);
             t.lastRes().contains('text');
         });
 
         it('should return voice or voice text', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_VOICE]);
+            t.setFeatures([FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
             const { voice } = t.lastRes().response.message;
             assert(voice);
             assert(voice.speed === defaultMessageParams.speed);
@@ -97,18 +97,26 @@ describe('Message voice control', () => {
         });
 
         it('should return from both voice & text alternatives with SSML in voice', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_TEXT, FEATURE_VOICE, FEATURE_SSML]);
+            t.setFeatures([FEATURE_TEXT, FEATURE_VOICE, FEATURE_SSML]);
+            await t.postBack('messageResolver', null, null, null);
             const { text, voice } = t.lastRes().response.message;
             assert(text.includes('voice') || text.includes('text'));
             assert(voice.ssml.includes('<speak>'));
         });
 
         it('should return voice text', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_TEXT, FEATURE_VOICE]);
+            t.setFeatures([FEATURE_TEXT, FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
             const { text, voice } = t.lastRes().response.message;
             assert(!!voice);
+            assert(text.includes('voice') || text.includes('text'));
+        });
+
+        it('should return text or voicetext with no features', async () => {
+            t.setFeatures(null);
+            await t.postBack('messageResolver', null, null, null);
+            const { text, voice } = t.lastRes().response.message;
+            assert(!voice);
             assert(text.includes('voice') || text.includes('text'));
         });
 
@@ -138,43 +146,50 @@ describe('Message voice control', () => {
             t = new Tester(bot);
         });
         it('should return only SSML', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_SSML, FEATURE_VOICE]);
+            t.setFeatures([FEATURE_SSML, FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
             t.lastRes().contains('voice');
             assert(t.lastRes().response.message.voice.ssml.includes('<speak>'));
         });
 
         it('should return text, or voice text', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_TEXT]);
+            t.setFeatures([FEATURE_TEXT]);
+            await t.postBack('messageResolver', null, null, null);
             assert(!t.lastRes().response.message.voice);
             t.lastRes().contains('text');
         });
 
         it('should return voice or voice text', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_VOICE]);
+            t.setFeatures([FEATURE_VOICE]);
+            await t.postBack('messageResolver');
             const { voice } = t.lastRes().response.message;
             assert(!voice);
             t.lastRes().contains('voice');
         });
 
         it('should return from both voice & text alternatives with SSML in voice', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_TEXT, FEATURE_VOICE, FEATURE_SSML]);
+            t.setFeatures([FEATURE_TEXT, FEATURE_VOICE, FEATURE_SSML]);
+            await t.postBack('messageResolver', null, null, null);
             const { text, voice } = t.lastRes().response.message;
             assert(text.includes('voice') || text.includes('text'));
             assert(voice.ssml.includes('<speak>'));
         });
 
         it('should return voice text', async () => {
-            // eslint-disable-next-line no-console
-            await t.postBack('messageResolver', null, null, null, [FEATURE_TEXT, FEATURE_VOICE]);
+            t.setFeatures([FEATURE_TEXT, FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
+            const { text, voice } = t.lastRes().response.message;
+            assert(!voice);
+            assert(text.includes('voice') || text.includes('text'));
+        });
+
+        it('should return text or voicetext with no features', async () => {
+            t.setFeatures(null);
+            await t.postBack('messageResolver', null, null, null);
             const { text, voice } = t.lastRes().response.message;
             assert(!voice);
             assert(text.includes('voice') || text.includes('text'));
         });
 
     });
-
 });
