@@ -19,6 +19,7 @@ const { replaceDiacritics } = require('../utils');
  * @callback EntityDetector
  * @param {string} text - part of text
  * @param {DetectedEntity[]} entities - dependent entities
+ * @param {boolean} [searchWithinWords] - optional ability to search within words
  * @returns {DetectedEntity[]|DetectedEntity|Promise<DetectedEntity>|Promise<DetectedEntity[]>}
  */
 
@@ -154,19 +155,53 @@ class CustomEntityDetectionModel {
      * @param {string} entity
      * @param {string} text
      * @param {DetectedEntity[]} entities
+     * @param {DetectedEntity[]} subWord
      * @returns {Promise<DetectedEntity[]>}
      */
-    async _detectEntities (entity, text, entities) {
+    async _detectAllEntities (entity, text, entities, subWord) {
+        const [regularResults, subWordResults] = await Promise.all([
+            this._detectEntities(entity, text, entities, subWord, false),
+            this._detectEntities(entity, text, entities, subWord, true)
+        ]);
+
+        const cleanSubWordResults = subWordResults
+            .filter((regular) => !regularResults
+                .some((e) => e.start < regular.end && e.end > regular.start
+                    && e.end >= regular.end && e.start <= regular.start));
+
+        subWord.push(...cleanSubWordResults);
+
+        return regularResults;
+    }
+
+    /**
+     *
+     * @param {string} entity
+     * @param {string} text
+     * @param {DetectedEntity[]} entities
+     * @param {DetectedEntity[]} subWord
+     * @param {boolean} detectSubWords
+     * @returns {Promise<DetectedEntity[]>}
+     */
+    async _detectEntities (entity, text, entities, subWord, detectSubWords) {
         const { entityDetector, dependencies } = this._entityDetectors.get(entity);
+
+        if (detectSubWords && entityDetector.length < 3) {
+            return [];
+        }
 
         const collected = [];
         let o = 0;
         let t = text;
         try {
             for (let i = 0; i < text.length; i++) {
-
-                const dependentEntities = entities.filter((e) => dependencies.includes(`@${e.entity.toUpperCase()}`));
-                const res = await Promise.resolve(entityDetector(t, dependentEntities));
+                const dependentEntities = [
+                    ...subWord.filter((e) => dependencies.includes(`@${e.entity.toUpperCase()}`)),
+                    ...entities.filter((e) => dependencies.includes(`@${e.entity.toUpperCase()}`))
+                ];
+                const res = await Promise.resolve(
+                    entityDetector(t, dependentEntities, detectSubWords)
+                );
 
                 const resWasArray = Array.isArray(res);
                 const resArray = resWasArray ? res : [res];
@@ -287,15 +322,58 @@ class CustomEntityDetectionModel {
 
     /**
      *
+     * @param {boolean} [known]
+     * @returns {string[]} -
+     */
+    getDependentEntities (known = null) {
+        const entities = new Set();
+        const knownEntities = new Map(
+            Array.from(this._entityDetectors.keys())
+                .map((key) => [key.toLowerCase(), key])
+        );
+
+        for (const { dependencies } of this._entityDetectors.values()) {
+            for (const entity of dependencies) {
+                const lowerCase = entity.replace(/^@/, '').toLowerCase();
+                const isKnown = knownEntities.has(lowerCase);
+
+                if (isKnown && known !== false) {
+                    entities.add(knownEntities.get(lowerCase));
+                } else if (!isKnown && known !== true) {
+                    entities.add(lowerCase);
+                }
+            }
+        }
+
+        return Array.from(entities.values());
+    }
+
+    /**
+     *
      * @param {string} text
      * @param {string} [singleEntity]
-     * @param {string[]} expectedEntities
-     * @param {DetectedEntity[]} [entities] - previously detected entities to include
+     * @param {string[]} [expected]
+     * @param {DetectedEntity[]} [prevEnts] - previously detected entities to include
+     * @param {DetectedEntity[]} [subWord] - previously detected entities within words
      * @returns {Promise<DetectedEntity[]>}
      */
-    async resolveEntities (text, singleEntity = null, expectedEntities = [], entities = []) {
-        const resolved = new Set();
+    async resolveEntities (text, singleEntity = null, expected = [], prevEnts = [], subWord = []) {
+        // mark unknown dependencies as resolved
+        const resolved = new Set(
+            this.getDependentEntities(false)
+                .map((entity) => `@${entity.toUpperCase()}`)
+        );
+
         let missing = Array.from(this._entityDetectors.keys());
+        const entities = prevEnts.map((e) => {
+            if (typeof e.text === 'string') {
+                return e;
+            }
+            return {
+                ...e,
+                text: text.substring(e.start, e.end)
+            };
+        });
 
         while (missing.length !== 0) {
             let detect = [];
@@ -321,7 +399,7 @@ class CustomEntityDetectionModel {
             }
 
             const results = await Promise.all(
-                detect.map((entity) => this._detectEntities(entity, text, entities))
+                detect.map((entity) => this._detectAllEntities(entity, text, entities, subWord))
             );
 
             detect.forEach((entity) => resolved.add(`@${entity.toUpperCase()}`));
@@ -329,7 +407,7 @@ class CustomEntityDetectionModel {
             results.forEach((res) => entities.push(...res));
         }
 
-        const clean = this.nonOverlapping(entities, expectedEntities);
+        const clean = this.nonOverlapping(entities, expected);
 
         if (!singleEntity) {
             return clean;
@@ -421,8 +499,9 @@ class CustomEntityDetectionModel {
         /**
          * @param {string} text
          * @param {DetectedEntity[]} entities
+         * @param {boolean} searchWithinWords
          */
-        return (text, entities) => {
+        return (text, entities, searchWithinWords) => {
             if (typeof extractValue === 'string'
                 && !this._entityByDependency(entities, extractValue)) {
 
@@ -437,10 +516,11 @@ class CustomEntityDetectionModel {
                 if (matchingEntities.length === 0) {
                     return value;
                 }
+                matchingEntities.sort((a, z) => z.length - a.length);
                 return `(${matchingEntities.join('|')})`;
             });
 
-            if (options.matchWholeWords) {
+            if (options.matchWholeWords && !searchWithinWords) {
                 replaced = `(?<=(^|[^a-z0-9\u00C0-\u017F]))${replaced}(?=([^a-z0-9\u00C0-\u017F]|$))`;
             }
 
@@ -451,6 +531,8 @@ class CustomEntityDetectionModel {
                 matchText = replaceDiacritics(matchText);
             }
             const match = matchText.match(r);
+
+            // console.log({ matchText, replaced, match: match && match[0], searchWithinWords });
 
             if (!match) {
                 return null;
@@ -467,19 +549,15 @@ class CustomEntityDetectionModel {
 
             if (typeof extractValue === 'function') {
                 value = extractValue(match, useEntities);
-            } else if (typeof extractValue === 'string' || dependencies.length === 1) {
+            } else if (typeof extractValue === 'string' || dependencies.length > 0) {
                 const entityName = typeof extractValue === 'string'
                     ? extractValue
                     : dependencies[0];
 
                 const entity = this._entityByDependency(useEntities, entityName);
                 value = entity ? entity.value : null;
-            } else if (entities.length === 0) {
-                [value] = match;
             } else {
-                value = useEntities.reduce((o, e) => Object.assign(o, {
-                    [e.entity]: e.value
-                }), {});
+                [value] = match;
             }
 
             return {

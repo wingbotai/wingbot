@@ -34,6 +34,9 @@ describe('customEntityDetectionModel', () => {
 
             m.setEntityDetector('price', /@NUMBER\s*(k[čc]|korun)/, { anonymize: true });
             m.setEntityDetector('total', /celkem\s@PRICE/, { replaceDiacritics: true });
+
+            m.setEntityDetector('parent', /[=]+/, { matchWholeWords: true });
+            m.setEntityDetector('child', /@PARENT\s?lkko/);
         });
 
         it('should resolve entities somehow', async () => {
@@ -128,6 +131,40 @@ describe('customEntityDetectionModel', () => {
                     score: 1,
                     start: 0,
                     end: 13
+                }
+            ]);
+
+            const { entities: e3, text: t3 } = await m.resolve('120Kč');
+
+            // @ts-ignore
+            assert.strictEqual(t3, '@PRICE');
+            assert.deepEqual(e3, [
+                {
+                    entity: 'price',
+                    value: 120,
+                    text: '120Kč',
+                    score: 1,
+                    start: 0,
+                    end: 5
+                }
+            ]);
+        });
+
+        it('copes with subword information', async () => {
+            assert.strictEqual((await m.resolve('=sasalele')).entities.length, 0);
+            assert.strictEqual((await m.resolve('=')).entities.length, 1);
+            assert.strictEqual((await m.resolve('lkko')).entities.length, 0);
+
+            const { entities } = await m.resolve('===lkko');
+
+            assert.deepEqual(entities, [
+                {
+                    entity: 'child',
+                    value: '===',
+                    text: '===lkko',
+                    score: 1,
+                    start: 0,
+                    end: 7
                 }
             ]);
         });
