@@ -58,6 +58,14 @@ const { replaceDiacritics } = require('../utils');
 
 /** @typedef {import('../Request')} Request */
 
+function optionalWrap (l, r, content) {
+    const consistent = !l === !r;
+    if (consistent) {
+        return `(${content})`;
+    }
+    return `${l || ''}(${content})${r || ''}`;
+}
+
 class CustomEntityDetectionModel {
 
     /**
@@ -508,16 +516,16 @@ class CustomEntityDetectionModel {
                 return null;
             }
 
-            let replaced = source.replace(/@[A-Z0-9-]+/g, (value) => {
+            let replaced = source.replace(/(\()?@([A-Z0-9-]+)(\))?/g, (value, l, ent, r) => {
                 const matchingEntities = entities
-                    .filter((e) => `@${e.entity.toUpperCase()}` === value)
+                    .filter((e) => e.entity.toUpperCase() === ent)
                     .map((e) => this._escapeRegex(e.text, options.replaceDiacritics));
 
                 if (matchingEntities.length === 0) {
-                    return value;
+                    return optionalWrap(l, r, `@${ent}`);
                 }
                 matchingEntities.sort((a, z) => z.length - a.length);
-                return `(${matchingEntities.join('|')})`;
+                return optionalWrap(l, r, matchingEntities.join('|'));
             });
 
             if (options.matchWholeWords && !searchWithinWords) {

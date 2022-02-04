@@ -39,6 +39,40 @@ describe('customEntityDetectionModel', () => {
             m.setEntityDetector('child', /@PARENT\s?lkko/);
         });
 
+        it('should work well with optional entities', async () => {
+            m.setEntityDetector('optional', /@PARENT?\s?sasalele/);
+
+            const entities = await m.resolveEntities('sasalele');
+
+            assert.deepEqual(entities, [
+                {
+                    entity: 'optional',
+                    value: null,
+                    text: 'sasalele',
+                    score: 1,
+                    start: 0,
+                    end: 8
+                }
+            ]);
+        });
+
+        it('should work well with inconsistent optional entities', async () => {
+            m.setEntityDetector('optional', /(@PARENT?\s?sasalele|foobar)/);
+
+            const entities = await m.resolveEntities('foobar');
+
+            assert.deepEqual(entities, [
+                {
+                    entity: 'optional',
+                    value: null,
+                    text: 'foobar',
+                    score: 1,
+                    start: 0,
+                    end: 6
+                }
+            ]);
+        });
+
         it('should resolve entities somehow', async () => {
             const entities = await m.resolveEntities('hello 123 456');
 
