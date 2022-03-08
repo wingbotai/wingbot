@@ -19,6 +19,28 @@ const WEBVIEW_FULL = 'full';
 const WEBVIEW_TALL = 'tall';
 const WEBVIEW_COMPACT = 'compact';
 
+/**
+ * @typedef {Translation[] | Translation | string[] | string} Translations
+ */
+
+/**
+ * @typedef {object} TextObject
+ * @prop {string} t - text
+ * @prop {string} l - lang
+ * @prop {string|null} p - purpose
+ */
+
+/**
+ * @typedef Translation
+ * @property {string|string[]} t - text alternatives
+ * @property {string | null} l - language
+ * @property {string|string[]} [p] - purposes
+ * null = default + voice
+ * t = text
+ * v = voice
+ * s = ssml
+ */
+
 function isArrayOfObjects (translations) {
     return Array.isArray(translations)
         && typeof translations[0] === 'object'
@@ -36,18 +58,20 @@ function isTextObjectEmpty (text) {
 }
 
 /**
- *
- * @param {{t:string,l:string}[]|string} translations
+ * @param {Translations} translations
  * @param {string} [lang]
  * @returns {null|string}
  */
 function getLanguageText (translations, lang = null) {
     let foundText;
+
     if (isArrayOfObjects(translations)) {
         if (lang) {
+            // @ts-ignore
             foundText = translations.find((t) => t.l === lang);
         }
         if (isTextObjectEmpty(foundText)) {
+            // @ts-ignore
             foundText = translations.find((t) => !isTextObjectEmpty(t));
         }
         foundText = foundText ? foundText.t : null;
@@ -62,6 +86,58 @@ function getLanguageText (translations, lang = null) {
         }
     }
     return foundText || '';
+}
+/**
+ *
+ * @param {Translations} translations
+ * @param {string} [lang]
+ * @returns {TextObject[]}
+ */
+function getLanguageTextObjects (translations, lang = null) {
+    /** @type {{t:string|string[],l?:string,p?:string|string[]}[]} */
+    let foundTexts;
+
+    if (!Array.isArray(translations) || typeof translations[0] === 'string') {
+        // @ts-ignore
+        foundTexts = [{ t: translations, l: lang }];
+    } else { // is array of objects
+        foundTexts = translations
+            // @ts-ignore
+            .filter(({ l = null, ...to }) => l === lang && !isTextObjectEmpty(to));
+
+        if (foundTexts.length === 0) {
+            const { l: firstNonEmptyLang = null } = translations
+                // @ts-ignore
+                .find((to) => !isTextObjectEmpty(to)) || {};
+
+            foundTexts = translations
+                // @ts-ignore
+                .filter(({ l = null, ...to }) => l === firstNonEmptyLang && !isTextObjectEmpty(to));
+        }
+    }
+
+    return foundTexts
+        .reduce((a, to) => {
+            if (Array.isArray(to.t)) {
+                const purposes = Array.isArray(to.p)
+                    ? to.p
+                    : [to.p];
+                a.push(
+                    ...to.t.map((t, i) => ({
+                        ...to, t, p: purposes[i] || null
+                    }))
+                );
+            } else {
+                a.push(to);
+            }
+            return a;
+        }, [])
+        .filter((to) => !!to.t)
+        .map(({
+            t, l = null, p = null, ...rest
+        }) => ({
+            t, l, p, ...rest
+        }));
 }
 
 function randomizedCompiler (text, lang) {
@@ -100,6 +176,13 @@ function randomizedCompiler (text, lang) {
     };
 }
 
+/**
+ * l - language
+ * t - alternatives
+ *
+ * @param {{l:string,t:string[]}[] | string} text
+ * @returns {(state:any)=>string}
+ */
 function cachedTranslatedCompilator (text) {
     const cache = new Map();
 
@@ -194,7 +277,9 @@ function processButtons (
 
 module.exports = {
     getLanguageText,
+    getLanguageTextObjects,
     cachedTranslatedCompilator,
+    randomizedCompiler,
     getText,
     stateData,
 

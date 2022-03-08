@@ -5,6 +5,7 @@
 
 const assert = require('assert');
 const sinon = require('sinon');
+const { FEATURE_PHRASES, FEATURE_VOICE } = require('../src/features');
 const Responder = require('../src/Responder');
 
 const SENDER_ID = 123;
@@ -368,7 +369,7 @@ describe('Responder', function () {
             const { opts, messageSender, sendFn } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, {
                 ...opts,
-                features: ['phrases', 'voice']
+                features: [FEATURE_PHRASES, FEATURE_VOICE]
             });
 
             res.expectedIntent(['#phrase-word'], 'action');

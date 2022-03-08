@@ -2,10 +2,40 @@
  * @author David Menger
  */
 'use strict';
-
+// eslint-disable-next-line no-unused-vars
+const Responder = require('../Responder');
+// eslint-disable-next-line no-unused-vars
+const Request = require('../Request');
 const Router = require('../Router');
 const getCondition = require('../utils/getCondition');
-const { cachedTranslatedCompilator, stateData } = require('./utils');
+const {
+    stateData, getLanguageText, getLanguageTextObjects, randomizedCompiler
+} = require('./utils');
+const {
+    FEATURE_SSML, FEATURE_TEXT, FEATURE_VOICE
+} = require('../features');
+
+/**
+ * Returns voice control props from params
+ *
+ * @param {any} params
+ * @param {string} lang
+ * @returns {null | import('../Responder').VoiceControl}
+ */
+function getVoiceControl (params, lang = null) {
+    const voiceControl = {};
+
+    const voiceControlProps = ['speed', 'pitch', 'volume', 'voice', 'style', 'language'];
+
+    voiceControlProps.forEach((prop) => {
+        if (params[prop]) {
+            voiceControl[prop] = getLanguageText(params[prop], lang);
+        }
+    });
+
+    // if voiceControl is empty, return null
+    return Object.keys(voiceControl).length > 0 ? voiceControl : null;
+}
 
 function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
     return replies.map((reply) => {
@@ -45,7 +75,7 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
             action,
             condition,
             title: reply.title
-                ? cachedTranslatedCompilator(reply.title)
+                ? randomizedCompiler(reply.title)
                 : null,
             data: {}
         };
@@ -70,43 +100,108 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
     });
 }
 
+/**
+ * @param {import('./utils').Translations} text
+ * @param {string[]} features
+ * @param {string} lang
+ * @returns {{translations: import('./utils').TextObject[],ssmlAlternatives:string[] | null}}
+ */
+function findSupportedMessages (text, features, lang = null) {
+    let translations = getLanguageTextObjects(text, lang);
+
+    const useSSML = features.includes(FEATURE_SSML);
+    const useText = features.includes(FEATURE_TEXT);
+    const useVoice = features.includes(FEATURE_VOICE);
+
+    // filter out SSML alternatives - they will be used in voice control
+    let ssmlAlternatives = translations.filter((t) => t.p === 's').map((t) => t.t);
+    if (ssmlAlternatives.length === 0 || !useSSML) {
+        ssmlAlternatives = null;
+    }
+
+    translations = translations.filter((t) => t.p !== 's');
+
+    // find supported text alternatives
+    translations = translations.filter((translation) => {
+        // always use text+voice
+        if (!translation.p) {
+            return true;
+        }
+
+        // text only
+        if (useText && translation.p === 't') {
+            return true;
+        }
+
+        // voice (& SSML) only
+        if (useVoice && translation.p === 'v') {
+            return true;
+        }
+
+        return false;
+    });
+
+    return {
+        translations,
+        ssmlAlternatives
+    };
+}
+
 function message (params, {
+    // @ts-ignore
     isLastIndex, isLastMessage, linksMap, allowForbiddenSnippetWords
-}) {
+} = {}) {
+
     if (typeof params.text !== 'string' && !Array.isArray(params.text)) {
         throw new Error('Message should be a text!');
     }
 
-    const textTemplate = cachedTranslatedCompilator(params.text);
-
+    // parse quick replies
     let quickReplies = null;
-
     if (params.replies && !Array.isArray(params.replies)) {
         throw new Error('Replies should be an array');
     } else if (params.replies && params.replies.length > 0) {
         quickReplies = parseReplies(params.replies, linksMap, allowForbiddenSnippetWords);
     }
 
+    // compile condition
     const condition = getCondition(params, 'Message condition', allowForbiddenSnippetWords);
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
+    /**
+     * @param {Request} req
+     * @param {Responder} res
+     */
     return (req, res) => {
-        if (condition !== null) {
-            if (!condition(req, res)) {
-                return ret;
-            }
+        if (condition && !condition(req, res)) {
+            return ret;
         }
-
         const data = stateData(req, res);
+
+        // filter supported messages
+        /** @type {{translations:import('./utils').TextObject[],ssmlAlternatives:string[]}} */
+        const supportedText = findSupportedMessages(
+            params.text,
+            req.features,
+            data.lang
+        );
+
+        // find random alternative
+        const textTemplate = randomizedCompiler([{
+            l: data.lang,
+            t: supportedText.translations.map((x) => x.t)
+        }]);
+
         const text = textTemplate(data)
             .trim();
 
+        let sendReplies;
         if (quickReplies) {
             const okQuickReplies = quickReplies
                 .filter((reply) => reply.condition(req, res));
 
-            const sendReplies = okQuickReplies
+            sendReplies = okQuickReplies
                 .filter((reply) => reply.title
                     || reply.isLocation
                     || reply.isEmail
@@ -123,8 +218,6 @@ function message (params, {
                     return rep;
                 });
 
-            res.text(text, sendReplies);
-
             okQuickReplies
                 .filter((reply) => !reply.title && reply.match)
                 .forEach(({
@@ -134,9 +227,26 @@ function message (params, {
                 });
         } else {
             // replies on last index will be present, so the addQuickReply will be working
-            const sendReplies = isLastMessage ? [] : undefined;
-            res.text(text, sendReplies);
+            sendReplies = isLastMessage ? [] : undefined;
         }
+
+        // generate voice control
+        let voiceControl = getVoiceControl(params, data.lang);
+        if (supportedText.ssmlAlternatives) {
+            // find SSML alternative
+            const ssmlAlternativeTemplate = randomizedCompiler([{
+                l: data.lang,
+                t: supportedText.ssmlAlternatives
+            }]);
+
+            voiceControl = {
+                ...voiceControl,
+                ssml: ssmlAlternativeTemplate(data)
+                    .trim()
+            };
+        }
+
+        res.text(text, sendReplies, voiceControl);
 
         return ret;
     };

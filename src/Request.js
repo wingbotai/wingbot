@@ -1411,7 +1411,8 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
         data = {},
         refAction = null,
         refData = {},
-        timestamp = makeTimestamp()
+        timestamp = makeTimestamp(),
+        features = [FEATURE_TEXT]
     ) {
         const postback = {
             payload: {
@@ -1429,7 +1430,8 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
             sender: {
                 id: senderId
             },
-            postback
+            postback,
+            features
         };
     }
 
@@ -1724,5 +1726,25 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
     }
 
 }
+
+/**
+ * @constant {string} FEATURE_VOICE channel supports voice messages
+ */
+Request.FEATURE_VOICE = FEATURE_VOICE;
+
+/**
+ * @constant {string} FEATURE_SSML channel supports SSML voice messages
+ */
+Request.FEATURE_SSML = FEATURE_SSML;
+
+/**
+ * @constant {string} FEATURE_PHRASES channel supports expected phrases messages
+ */
+Request.FEATURE_PHRASES = FEATURE_PHRASES;
+
+/**
+ * @constant {string} FEATURE_TEXT channel supports text communication
+ */
+Request.FEATURE_TEXT = FEATURE_TEXT;
 
 module.exports = Request;
