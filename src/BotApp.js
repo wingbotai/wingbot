@@ -262,7 +262,8 @@ class BotApp {
             pageId,
             appId,
             secret,
-            fetch: this._fetch
+            fetch: this._fetch,
+            tls: this._tls
         };
 
         const sender = new BotAppSender(options, senderId, message, this._senderLogger);
