@@ -4,9 +4,12 @@
 'use strict';
 
 const Router = require('../Router');
+const getCondition = require('../utils/getCondition');
 const { stateData, cachedTranslatedCompilator } = require('./utils');
 
-function media (params, { isLastIndex }) {
+function media (params,
+    // @ts-ignore
+    { isLastIndex } = {}) {
     const { type, url } = params;
 
     const urlString = url || '';
@@ -19,7 +22,13 @@ function media (params, { isLastIndex }) {
         throw new Error(`Unsupported media type: ${type}`);
     }
 
+    const condition = getCondition(params, 'Media condition');
+
     return (req, res) => {
+        if (condition && !condition(req, res)) {
+            return ret;
+        }
+
         const data = stateData(req, res);
         const sendUrl = urlTemplate(data);
 
