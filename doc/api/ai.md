@@ -15,6 +15,13 @@
 </dd>
 </dl>
 
+## Members
+
+<dl>
+<dt><a href="#handlebars">handlebars</a> : <code>Handlebars</code></dt>
+<dd></dd>
+</dl>
+
 ## Typedefs
 
 <dl>
@@ -39,6 +46,8 @@
 <dd></dd>
 <dt><a href="#Result">Result</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#Phrases">Phrases</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#Entity">Entity</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Intent">Intent</a> : <code>object</code></dt>
@@ -56,6 +65,8 @@
 <dt><a href="#Entity">Entity</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#Intent">Intent</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#Comparable">Comparable</a> : <code>string</code> | <code>number</code> | <code>function</code></dt>
 <dd></dd>
 <dt><a href="#EntityExpression">EntityExpression</a> : <code>object</code></dt>
 <dd></dd>
@@ -77,6 +88,8 @@
 * [Ai](#Ai)
     * [.confidence](#Ai_confidence) : <code>number</code>
     * [.threshold](#Ai_threshold) : <code>number</code>
+    * [.sttMaxAlternatives](#Ai_sttMaxAlternatives) : <code>number</code>
+    * [.sttScoreThreshold](#Ai_sttScoreThreshold) : <code>number</code>
     * [.logger](#Ai_logger) : <code>object</code>
     * [.matcher](#Ai_matcher) : [<code>AiMatching</code>](#AiMatching)
     * [.getPrefix(defaultModel, req)](#Ai_getPrefix)
@@ -88,7 +101,9 @@
     * [.global(path, intents, [title], [meta])](#Ai_global) ⇒ <code>object</code>
     * [.local(path, intents, [title])](#Ai_local) ⇒ <code>object</code>
     * [.match(intent)](#Ai_match) ⇒ <code>function</code>
-    * [.shouldDisambiguate(aiActions)](#Ai_shouldDisambiguate) ⇒ <code>boolean</code>
+    * [.preloadAi(req)](#Ai_preloadAi) ⇒ <code>Promise</code>
+    * [.getPhrases(req)](#Ai_getPhrases) ⇒ [<code>Promise.&lt;Phrases&gt;</code>](#Phrases)
+    * [.shouldDisambiguate(aiActions, [forQuickReplies])](#Ai_shouldDisambiguate) ⇒ <code>boolean</code>
 
 <div id="Ai_confidence">&nbsp;</div>
 
@@ -100,6 +115,18 @@ Upper threshold - for match method and for navigate method
 
 ### ai.threshold : <code>number</code>
 Lower threshold - for disambiguation
+
+**Kind**: instance property of [<code>Ai</code>](#Ai)  
+<div id="Ai_sttMaxAlternatives">&nbsp;</div>
+
+### ai.sttMaxAlternatives : <code>number</code>
+Upper limit for NLP resolving of STT alternatives
+
+**Kind**: instance property of [<code>Ai</code>](#Ai)  
+<div id="Ai_sttScoreThreshold">&nbsp;</div>
+
+### ai.sttScoreThreshold : <code>number</code>
+Minimal score to consider text as recognized well
 
 **Kind**: instance property of [<code>Ai</code>](#Ai)  
 <div id="Ai_logger">&nbsp;</div>
@@ -303,14 +330,35 @@ bot.use(ai.match('intent1'), (req, res) => {
     res.text('Oh, intent 1 :)');
 });
 ```
-<div id="Ai_shouldDisambiguate">&nbsp;</div>
+<div id="Ai_preloadAi">&nbsp;</div>
 
-### ai.shouldDisambiguate(aiActions) ⇒ <code>boolean</code>
+### ai.preloadAi(req) ⇒ <code>Promise</code>
 **Kind**: instance method of [<code>Ai</code>](#Ai)  
 
 | Param | Type |
 | --- | --- |
-| aiActions | <code>Array.&lt;IntentAction&gt;</code> | 
+| req | <code>Request</code> | 
+
+<div id="Ai_getPhrases">&nbsp;</div>
+
+### ai.getPhrases(req) ⇒ [<code>Promise.&lt;Phrases&gt;</code>](#Phrases)
+Returns phrases model from AI
+
+**Kind**: instance method of [<code>Ai</code>](#Ai)  
+
+| Param | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+
+<div id="Ai_shouldDisambiguate">&nbsp;</div>
+
+### ai.shouldDisambiguate(aiActions, [forQuickReplies]) ⇒ <code>boolean</code>
+**Kind**: instance method of [<code>Ai</code>](#Ai)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| aiActions | <code>Array.&lt;IntentAction&gt;</code> |  | 
+| [forQuickReplies] | <code>boolean</code> | <code>false</code> | 
 
 <div id="CustomEntityDetectionModel">&nbsp;</div>
 
@@ -319,10 +367,13 @@ bot.use(ai.match('intent1'), (req, res) => {
 
 * [CustomEntityDetectionModel](#CustomEntityDetectionModel)
     * [new CustomEntityDetectionModel(options, [log])](#new_CustomEntityDetectionModel_new)
+    * [.phrasesCacheTime](#CustomEntityDetectionModel_phrasesCacheTime) : <code>number</code>
     * [._normalizeResult(entities, entity, text, offset, originalText)](#CustomEntityDetectionModel__normalizeResult)
-    * [._detectEntities(entity, text, entities)](#CustomEntityDetectionModel__detectEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+    * [._detectAllEntities(entity, text, entities, subWord)](#CustomEntityDetectionModel__detectAllEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+    * [._detectEntities(entity, text, entities, subWord, detectSubWords)](#CustomEntityDetectionModel__detectEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
     * [.nonOverlapping(entities, [expectedEntities])](#CustomEntityDetectionModel_nonOverlapping) ⇒ [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity)
-    * [.resolveEntities(text, [singleEntity], expectedEntities)](#CustomEntityDetectionModel_resolveEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+    * [.getDependentEntities([known])](#CustomEntityDetectionModel_getDependentEntities) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.resolveEntities(text, [singleEntity], [expected], [prevEnts], [subWord])](#CustomEntityDetectionModel_resolveEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
     * [.resolve(text, [req])](#CustomEntityDetectionModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
     * [._extractRegExpDependencies(regexp)](#CustomEntityDetectionModel__extractRegExpDependencies)
     * [._entityByDependency(entities, dependency)](#CustomEntityDetectionModel__entityByDependency) ⇒ [<code>DetectedEntity</code>](#DetectedEntity) \| <code>null</code>
@@ -338,6 +389,10 @@ bot.use(ai.match('intent1'), (req, res) => {
 | options | <code>object</code> | 
 | [log] | <code>Object</code> | 
 
+<div id="CustomEntityDetectionModel_phrasesCacheTime">&nbsp;</div>
+
+### customEntityDetectionModel.phrasesCacheTime : <code>number</code>
+**Kind**: instance property of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
 <div id="CustomEntityDetectionModel__normalizeResult">&nbsp;</div>
 
 ### customEntityDetectionModel.\_normalizeResult(entities, entity, text, offset, originalText)
@@ -351,9 +406,9 @@ bot.use(ai.match('intent1'), (req, res) => {
 | offset | <code>number</code> | 
 | originalText | <code>string</code> | 
 
-<div id="CustomEntityDetectionModel__detectEntities">&nbsp;</div>
+<div id="CustomEntityDetectionModel__detectAllEntities">&nbsp;</div>
 
-### customEntityDetectionModel.\_detectEntities(entity, text, entities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+### customEntityDetectionModel.\_detectAllEntities(entity, text, entities, subWord) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
 
 | Param | Type |
@@ -361,6 +416,20 @@ bot.use(ai.match('intent1'), (req, res) => {
 | entity | <code>string</code> | 
 | text | <code>string</code> | 
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+| subWord | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+
+<div id="CustomEntityDetectionModel__detectEntities">&nbsp;</div>
+
+### customEntityDetectionModel.\_detectEntities(entity, text, entities, subWord, detectSubWords) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type |
+| --- | --- |
+| entity | <code>string</code> | 
+| text | <code>string</code> | 
+| entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+| subWord | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
+| detectSubWords | <code>boolean</code> | 
 
 <div id="CustomEntityDetectionModel_nonOverlapping">&nbsp;</div>
 
@@ -374,16 +443,28 @@ Return only entities without overlap
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | 
 | [expectedEntities] | <code>Array.&lt;string&gt;</code> | 
 
-<div id="CustomEntityDetectionModel_resolveEntities">&nbsp;</div>
+<div id="CustomEntityDetectionModel_getDependentEntities">&nbsp;</div>
 
-### customEntityDetectionModel.resolveEntities(text, [singleEntity], expectedEntities) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+### customEntityDetectionModel.getDependentEntities([known]) ⇒ <code>Array.&lt;string&gt;</code>
 **Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+**Returns**: <code>Array.&lt;string&gt;</code> - -  
 
 | Param | Type | Default |
 | --- | --- | --- |
-| text | <code>string</code> |  | 
-| [singleEntity] | <code>string</code> | <code>null</code> | 
-| expectedEntities | <code>Array.&lt;string&gt;</code> |  | 
+| [known] | <code>boolean</code> | <code></code> | 
+
+<div id="CustomEntityDetectionModel_resolveEntities">&nbsp;</div>
+
+### customEntityDetectionModel.resolveEntities(text, [singleEntity], [expected], [prevEnts], [subWord]) ⇒ <code>Promise.&lt;Array.&lt;DetectedEntity&gt;&gt;</code>
+**Kind**: instance method of [<code>CustomEntityDetectionModel</code>](#CustomEntityDetectionModel)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| text | <code>string</code> |  |  |
+| [singleEntity] | <code>string</code> | <code>null</code> |  |
+| [expected] | <code>Array.&lt;string&gt;</code> |  |  |
+| [prevEnts] | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) |  | previously detected entities to include |
+| [subWord] | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) |  | previously detected entities within words |
 
 <div id="CustomEntityDetectionModel_resolve">&nbsp;</div>
 
@@ -462,6 +543,7 @@ Return only entities without overlap
 | --- | --- |
 | options | <code>object</code> | 
 | [options.serviceUrl] | <code>string</code> | 
+| [options.trainingUrl] | <code>string</code> | 
 | options.model | <code>string</code> | 
 | [options.cacheSize] | <code>number</code> | 
 | [options.matches] | <code>number</code> | 
@@ -488,6 +570,7 @@ Return only entities without overlap
 
 * [CachedModel](#CachedModel)
     * [new CachedModel(options, [log])](#new_CachedModel_new)
+    * [.phrasesCacheTime](#CachedModel_phrasesCacheTime) : <code>number</code>
     * [.resolve(text, [req])](#CachedModel_resolve) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
     * [._queryModel(text)](#CachedModel__queryModel) ⇒ <code>Promise.&lt;(Array.&lt;Intent&gt;\|Result)&gt;</code>
 
@@ -499,8 +582,13 @@ Return only entities without overlap
 | --- | --- |
 | options | <code>object</code> | 
 | [options.cacheSize] | <code>number</code> | 
+| [options.cachePhrasesTime] | <code>number</code> | 
 | [log] | <code>Object</code> | 
 
+<div id="CachedModel_phrasesCacheTime">&nbsp;</div>
+
+### cachedModel.phrasesCacheTime : <code>number</code>
+**Kind**: instance property of [<code>CachedModel</code>](#CachedModel)  
 <div id="CachedModel_resolve">&nbsp;</div>
 
 ### cachedModel.resolve(text, [req]) ⇒ [<code>Promise.&lt;Result&gt;</code>](#Result)
@@ -538,7 +626,7 @@ Class responsible for NLP Routing by score
     * [.parseEntitiesFromIntentRule(intentRule, onlyExpected)](#AiMatching_parseEntitiesFromIntentRule) ⇒ <code>Array.&lt;string&gt;</code>
     * [._parseEntitiesFromIntentRule(intentRules)](#AiMatching__parseEntitiesFromIntentRule) ⇒ [<code>Array.&lt;EntityExpression&gt;</code>](#EntityExpression)
     * [.preprocessRule(intentRule)](#AiMatching_preprocessRule) ⇒ [<code>PreprocessorOutput</code>](#PreprocessorOutput)
-    * [.match(req, rule, stateless)](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
+    * [.match(req, rule, [stateless], [reqEntities])](#AiMatching_match) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
     * [._matchRegexp(req, regexps, noIntentHandicap)](#AiMatching__matchRegexp) ⇒ <code>number</code>
 
 <div id="AiMatching_optionalHandicap">&nbsp;</div>
@@ -553,14 +641,14 @@ When the entity is optional, the final score should be little bit lower
 ### aiMatching.redundantEntityHandicap : <code>number</code>
 When there are additional entities then required add a handicap for each unmatched entity
 Also works, when an optional entity was not matched
-(0.03 by default)
+(0.02 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
 <div id="AiMatching_redundantIntentHandicap">&nbsp;</div>
 
 ### aiMatching.redundantIntentHandicap : <code>number</code>
 When there is additional intent, the final score will be lowered by this value
-(0.06 by default)
+(0.02 by default)
 
 **Kind**: instance property of [<code>AiMatching</code>](#AiMatching)  
 <div id="AiMatching_multiMatchGain">&nbsp;</div>
@@ -614,7 +702,7 @@ Create a rule to be cached inside a routing structure
 
 <div id="AiMatching_match">&nbsp;</div>
 
-### aiMatching.match(req, rule, stateless) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
+### aiMatching.match(req, rule, [stateless], [reqEntities]) ⇒ [<code>Intent</code>](#Intent) \| <code>null</code>
 Calculate a matching score of preprocessed rule against the request
 
 **Kind**: instance method of [<code>AiMatching</code>](#AiMatching)  
@@ -623,7 +711,8 @@ Calculate a matching score of preprocessed rule against the request
 | --- | --- | --- |
 | req | [<code>AIRequest</code>](#AIRequest) |  | 
 | rule | [<code>PreprocessorOutput</code>](#PreprocessorOutput) |  | 
-| stateless | <code>boolean</code> | <code>false</code> | 
+| [stateless] | <code>boolean</code> | <code>false</code> | 
+| [reqEntities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) |  | 
 
 <div id="AiMatching__matchRegexp">&nbsp;</div>
 
@@ -636,6 +725,10 @@ Calculate a matching score of preprocessed rule against the request
 | regexps | [<code>Array.&lt;RegexpComparator&gt;</code>](#RegexpComparator) | 
 | noIntentHandicap | <code>number</code> | 
 
+<div id="handlebars">&nbsp;</div>
+
+## handlebars : <code>Handlebars</code>
+**Kind**: global variable  
 <div id="COMPARE">&nbsp;</div>
 
 ## COMPARE : <code>enum</code>
@@ -715,6 +808,7 @@ Text filter function
 | --- | --- | --- |
 | text | <code>string</code> | part of text |
 | entities | [<code>Array.&lt;DetectedEntity&gt;</code>](#DetectedEntity) | dependent entities |
+| [searchWithinWords] | <code>boolean</code> | optional ability to search within words |
 
 <div id="ValueExtractor">&nbsp;</div>
 
@@ -730,8 +824,9 @@ Text filter function
 
 ## Entity : <code>object</code>
 **Kind**: global typedef  
+**Properties**
 
-| Param | Type |
+| Name | Type |
 | --- | --- |
 | entity | <code>string</code> | 
 | value | <code>string</code> | 
@@ -741,8 +836,9 @@ Text filter function
 
 ## Intent : <code>object</code>
 **Kind**: global typedef  
+**Properties**
 
-| Param | Type |
+| Name | Type |
 | --- | --- |
 | intent | <code>string</code> | 
 | score | <code>number</code> | 
@@ -752,12 +848,23 @@ Text filter function
 
 ## Result : <code>object</code>
 **Kind**: global typedef  
+**Properties**
 
-| Param | Type |
+| Name | Type |
 | --- | --- |
 | text | <code>string</code> | 
 | entities | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 | intents | [<code>Array.&lt;Intent&gt;</code>](#Intent) | 
+
+<div id="Phrases">&nbsp;</div>
+
+## Phrases : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| phrases | <code>Map.&lt;string, Array.&lt;string&gt;&gt;</code> | 
 
 <div id="Entity">&nbsp;</div>
 
@@ -849,6 +956,10 @@ Text filter function
 | score | <code>number</code> | 
 | [entities] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
+<div id="Comparable">&nbsp;</div>
+
+## Comparable : <code>string</code> \| <code>number</code> \| <code>function</code>
+**Kind**: global typedef  
 <div id="EntityExpression">&nbsp;</div>
 
 ## EntityExpression : <code>object</code>
@@ -860,7 +971,7 @@ Text filter function
 | entity | <code>string</code> | the requested entity |
 | [optional] | <code>boolean</code> | the match is optional |
 | [op] | [<code>Compare</code>](#Compare) | comparison operation |
-| [compare] | <code>Array.&lt;string&gt;</code> \| <code>Array.&lt;number&gt;</code> | value to compare with |
+| [compare] | [<code>Array.&lt;Comparable&gt;</code>](#Comparable) | value to compare |
 
 <div id="IntentRule">&nbsp;</div>
 

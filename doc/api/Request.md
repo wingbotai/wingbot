@@ -6,6 +6,35 @@
 </dd>
 </dl>
 
+## Constants
+
+<dl>
+<dt><a href="#FEATURE_VOICE">FEATURE_VOICE</a> : <code>string</code></dt>
+<dd><p>channel supports voice messages</p>
+</dd>
+<dt><a href="#FEATURE_SSML">FEATURE_SSML</a> : <code>string</code></dt>
+<dd><p>channel supports SSML voice messages</p>
+</dd>
+<dt><a href="#FEATURE_PHRASES">FEATURE_PHRASES</a> : <code>string</code></dt>
+<dd><p>channel supports expected phrases messages</p>
+</dd>
+<dt><a href="#FEATURE_TEXT">FEATURE_TEXT</a> : <code>string</code></dt>
+<dd><p>channel supports text communication</p>
+</dd>
+<dt><a href="#FEATURE_VOICE">FEATURE_VOICE</a> : <code>string</code></dt>
+<dd><p>channel supports voice messages</p>
+</dd>
+<dt><a href="#FEATURE_SSML">FEATURE_SSML</a> : <code>string</code></dt>
+<dd><p>channel supports SSML voice messages</p>
+</dd>
+<dt><a href="#FEATURE_PHRASES">FEATURE_PHRASES</a> : <code>string</code></dt>
+<dd><p>channel supports expected phrases messages</p>
+</dd>
+<dt><a href="#FEATURE_TEXT">FEATURE_TEXT</a> : <code>string</code></dt>
+<dd><p>channel supports text communication</p>
+</dd>
+</dl>
+
 ## Typedefs
 
 <dl>
@@ -19,7 +48,11 @@
 <dd></dd>
 <dt><a href="#QuickReply">QuickReply</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#QuickReplyDisambiguation">QuickReplyDisambiguation</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#RequestOrchestratorOptions">RequestOrchestratorOptions</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TextAlternative">TextAlternative</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#AiSetStateOption">AiSetStateOption</a> : <code>number</code></dt>
 <dd></dd>
@@ -33,23 +66,25 @@ Instance of {Request} class is passed as first parameter of handler (req)
 **Kind**: global class  
 
 * [Request](#Request)
-    * [new Request(data, state, pageId, globalIntents, [orchestratorOptions])](#new_Request_new)
+    * [new Request(event, state, pageId, globalIntents, [orchestratorOptions])](#new_Request_new)
     * [.params](#Request_params)
     * [.timestamp](#Request_timestamp)
     * [.senderId](#Request_senderId)
     * [.recipientId](#Request_recipientId)
     * [.pageId](#Request_pageId)
     * [.state](#Request_state)
+    * [.features](#Request_features)
     * [.subscribtions](#Request_subscribtions)
     * [.entities](#Request_entities)
     * [.intents](#Request_intents)
     * [._orchestratorClientOptions](#Request__orchestratorClientOptions) : <code>OrchestratorClientOptions</code>
     * [.event](#Request_event) : <code>object</code>
     * [.AI_SETSTATE](#Request_AI_SETSTATE) : <code>enum</code>
+    * [.supportsFeature(feature)](#Request_supportsFeature) ⇒ <code>boolean</code>
     * [.isStandby()](#Request_isStandby) ⇒ <code>boolean</code>
-    * [.aiActions()](#Request_aiActions) ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
-    * [.aiActionsForQuickReplies([limit], [aiActions], [overrideAction])](#Request_aiActionsForQuickReplies) ⇒ [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply)
-    * [.hasAiActionsForDisambiguation(minimum)](#Request_hasAiActionsForDisambiguation) ⇒ <code>boolean</code>
+    * [.aiActions([local])](#Request_aiActions) ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
+    * [.aiActionsForQuickReplies([limit], [aiActions], [overrideAction])](#Request_aiActionsForQuickReplies) ⇒ [<code>Array.&lt;QuickReplyDisambiguation&gt;</code>](#QuickReplyDisambiguation)
+    * [.hasAiActionsForDisambiguation(minimum, [local])](#Request_hasAiActionsForDisambiguation) ⇒ <code>boolean</code>
     * [.intent(getDataOrScore)](#Request_intent) ⇒ <code>null</code> \| <code>string</code> \| [<code>Intent</code>](#Intent)
     * [.entity(name, [sequence])](#Request_entity) ⇒ <code>number</code> \| <code>string</code> \| <code>null</code>
     * [.isAttachment()](#Request_isAttachment) ⇒ <code>boolean</code>
@@ -66,6 +101,7 @@ Instance of {Request} class is passed as first parameter of handler (req)
     * [.isText()](#Request_isText) ⇒ <code>boolean</code>
     * [.isSticker([includeToTextStickers])](#Request_isSticker) ⇒ <code>boolean</code>
     * [.text([tokenized])](#Request_text) ⇒ <code>string</code>
+    * [.textAlternatives()](#Request_textAlternatives) ⇒ [<code>Array.&lt;TextAlternative&gt;</code>](#TextAlternative)
     * [.expected()](#Request_expected) ⇒ [<code>Action</code>](#Action) \| <code>null</code>
     * [.expectedKeywords([justOnce])](#Request_expectedKeywords)
     * [.expectedContext([justOnce], [includeKeywords])](#Request_expectedContext) ⇒ <code>object</code>
@@ -85,11 +121,11 @@ Instance of {Request} class is passed as first parameter of handler (req)
 
 <div id="new_Request_new">&nbsp;</div>
 
-### new Request(data, state, pageId, globalIntents, [orchestratorOptions])
+### new Request(event, state, pageId, globalIntents, [orchestratorOptions])
 
 | Param | Type |
 | --- | --- |
-| data | <code>\*</code> | 
+| event | <code>\*</code> | 
 | state | <code>\*</code> | 
 | pageId | <code>string</code> | 
 | globalIntents | <code>Map</code> | 
@@ -155,6 +191,16 @@ Instance of {Request} class is passed as first parameter of handler (req)
 | --- | --- | --- |
 | state | <code>object</code> | current state of the conversation |
 
+<div id="Request_features">&nbsp;</div>
+
+### request.features
+**Kind**: instance property of [<code>Request</code>](#Request)  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| features | <code>Array.&lt;string&gt;</code> | supported messaging features |
+
 <div id="Request_subscribtions">&nbsp;</div>
 
 ### request.subscribtions
@@ -209,21 +255,37 @@ The original messaging event
 | EXCLUDE_WITH_SET_ENTITIES | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>-2</code> | 
 | EXCLUDE_WITHOUT_SET_ENTITIES | [<code>AiSetStateOption</code>](#AiSetStateOption) | <code>-3</code> | 
 
+<div id="Request_supportsFeature">&nbsp;</div>
+
+### request.supportsFeature(feature) ⇒ <code>boolean</code>
+Returns true if a channel supports specified feature
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
+
+| Param | Type |
+| --- | --- |
+| feature | <code>string</code> | 
+
 <div id="Request_isStandby">&nbsp;</div>
 
 ### request.isStandby() ⇒ <code>boolean</code>
-Returns true, if the incomming event is standby
+Returns true, if the incoming event is standby
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
 <div id="Request_aiActions">&nbsp;</div>
 
-### request.aiActions() ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
+### request.aiActions([local]) ⇒ [<code>Array.&lt;IntentAction&gt;</code>](#IntentAction)
 Get all matched actions from NLP intents
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [local] | <code>boolean</code> | <code>false</code> | 
+
 <div id="Request_aiActionsForQuickReplies">&nbsp;</div>
 
-### request.aiActionsForQuickReplies([limit], [aiActions], [overrideAction]) ⇒ [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply)
+### request.aiActionsForQuickReplies([limit], [aiActions], [overrideAction]) ⇒ [<code>Array.&lt;QuickReplyDisambiguation&gt;</code>](#QuickReplyDisambiguation)
 Covert all matched actions for disambiguation purposes
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
@@ -236,7 +298,7 @@ Covert all matched actions for disambiguation purposes
 
 <div id="Request_hasAiActionsForDisambiguation">&nbsp;</div>
 
-### request.hasAiActionsForDisambiguation(minimum) ⇒ <code>boolean</code>
+### request.hasAiActionsForDisambiguation(minimum, [local]) ⇒ <code>boolean</code>
 Returns true, if there is an action for disambiguation
 
 **Kind**: instance method of [<code>Request</code>](#Request)  
@@ -244,6 +306,7 @@ Returns true, if there is an action for disambiguation
 | Param | Type | Default |
 | --- | --- | --- |
 | minimum | <code>number</code> | <code>1</code> | 
+| [local] | <code>boolean</code> | <code>false</code> | 
 
 <div id="Request_intent">&nbsp;</div>
 
@@ -423,6 +486,12 @@ Returns text of the message
 ```js
 console.log(req.text(true)) // "can-you-help-me"
 ```
+<div id="Request_textAlternatives">&nbsp;</div>
+
+### request.textAlternatives() ⇒ [<code>Array.&lt;TextAlternative&gt;</code>](#TextAlternative)
+Returns all text message alternatives including it's score
+
+**Kind**: instance method of [<code>Request</code>](#Request)  
 <div id="Request_expected">&nbsp;</div>
 
 ### request.expected() ⇒ [<code>Action</code>](#Action) \| <code>null</code>
@@ -623,6 +692,54 @@ typeof res.postBack(true) === 'object';
 
 ### request.expectedEntities() ⇒ <code>Array.&lt;string&gt;</code>
 **Kind**: instance method of [<code>Request</code>](#Request)  
+<div id="FEATURE_VOICE">&nbsp;</div>
+
+## FEATURE\_VOICE : <code>string</code>
+channel supports voice messages
+
+**Kind**: global constant  
+<div id="FEATURE_SSML">&nbsp;</div>
+
+## FEATURE\_SSML : <code>string</code>
+channel supports SSML voice messages
+
+**Kind**: global constant  
+<div id="FEATURE_PHRASES">&nbsp;</div>
+
+## FEATURE\_PHRASES : <code>string</code>
+channel supports expected phrases messages
+
+**Kind**: global constant  
+<div id="FEATURE_TEXT">&nbsp;</div>
+
+## FEATURE\_TEXT : <code>string</code>
+channel supports text communication
+
+**Kind**: global constant  
+<div id="FEATURE_VOICE">&nbsp;</div>
+
+## FEATURE\_VOICE : <code>string</code>
+channel supports voice messages
+
+**Kind**: global constant  
+<div id="FEATURE_SSML">&nbsp;</div>
+
+## FEATURE\_SSML : <code>string</code>
+channel supports SSML voice messages
+
+**Kind**: global constant  
+<div id="FEATURE_PHRASES">&nbsp;</div>
+
+## FEATURE\_PHRASES : <code>string</code>
+channel supports expected phrases messages
+
+**Kind**: global constant  
+<div id="FEATURE_TEXT">&nbsp;</div>
+
+## FEATURE\_TEXT : <code>string</code>
+channel supports text communication
+
+**Kind**: global constant  
 <div id="Entity">&nbsp;</div>
 
 ## Entity : <code>object</code>
@@ -634,6 +751,7 @@ typeof res.postBack(true) === 'object';
 | entity | <code>string</code> | 
 | value | <code>string</code> | 
 | score | <code>number</code> | 
+| [alternatives] | [<code>Array.&lt;Entity&gt;</code>](#Entity) | 
 
 <div id="Intent">&nbsp;</div>
 
@@ -672,9 +790,12 @@ typeof res.postBack(true) === 'object';
 | sort | <code>number</code> | 
 | local | <code>boolean</code> | 
 | aboveConfidence | <code>boolean</code> | 
+| [data] | <code>object</code> | 
+| [match] | <code>string</code> \| <code>Array.&lt;string&gt;</code> | 
 | [setState] | <code>object</code> | 
 | [winner] | <code>boolean</code> | 
 | [title] | <code>string</code> \| <code>function</code> | 
+| [hasAiTitle] | <code>boolean</code> | 
 | meta | <code>object</code> | 
 | [meta.targetAppId] | <code>string</code> | 
 | [meta.targetAction] | <code>string</code> \| <code>null</code> | 
@@ -691,6 +812,19 @@ typeof res.postBack(true) === 'object';
 | action | <code>string</code> | 
 | title | <code>\*</code> | 
 
+<div id="QuickReplyDisambiguation">&nbsp;</div>
+
+## QuickReplyDisambiguation : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| action | <code>string</code> | 
+| title | <code>string</code> | 
+| data | <code>object</code> | 
+| templateData | <code>object</code> | 
+
 <div id="RequestOrchestratorOptions">&nbsp;</div>
 
 ## RequestOrchestratorOptions : <code>object</code>
@@ -703,6 +837,17 @@ typeof res.postBack(true) === 'object';
 | [secret] | <code>Promise.&lt;string&gt;</code> | 
 | [fetch] | <code>function</code> | 
 | [appId] | <code>string</code> | 
+
+<div id="TextAlternative">&nbsp;</div>
+
+## TextAlternative : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| text | <code>string</code> | 
+| score | <code>number</code> | 
 
 <div id="AiSetStateOption">&nbsp;</div>
 

@@ -14,6 +14,12 @@
 <dd></dd>
 <dt><a href="#Campaign">Campaign</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#Subscription">Subscription</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#PreprocessSubscriptions">PreprocessSubscriptions</a> ⇒ <code>Promise.&lt;Array.&lt;Subscription&gt;&gt;</code> | <code><a href="#Subscription">Array.&lt;Subscription&gt;</a></code></dt>
+<dd></dd>
+<dt><a href="#PreprocessSubscribers">PreprocessSubscribers</a> ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> | <code>Array.&lt;string&gt;</code></dt>
+<dd></dd>
 <dt><a href="#Tag">Tag</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#Target">Target</a> : <code>Object</code></dt>
@@ -193,7 +199,8 @@ Creates a new instance on notification service
 | [options.log] | <code>console</code> | logger |
 | [options.default24Clearance] | <code>number</code> | use this clearance to ensure delivery in 24h |
 | [options.allAudienceTag] | <code>string</code> | tag to mark all users |
-| [options.preprocessSubscribers] | <code>function</code> | to preprocess GQL api given senderIds |
+| [options.preprocessSubscribers] | [<code>PreprocessSubscribers</code>](#PreprocessSubscribers) | preprocess senderIds import |
+| [options.preprocessSubscriptions] | [<code>PreprocessSubscriptions</code>](#PreprocessSubscriptions) |  |
 
 <div id="CampaignTarget">&nbsp;</div>
 
@@ -259,6 +266,40 @@ Creates a new instance on notification service
 | allowRepeat | <code>boolean</code> |  |
 | startAt | <code>number</code> |  |
 | slideRound | <code>number</code> |  |
+
+<div id="Subscription">&nbsp;</div>
+
+## Subscription : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| senderId | <code>string</code> | 
+| pageId | <code>string</code> | 
+| [meta] | <code>string</code> | 
+
+<div id="PreprocessSubscriptions">&nbsp;</div>
+
+## PreprocessSubscriptions ⇒ <code>Promise.&lt;Array.&lt;Subscription&gt;&gt;</code> \| [<code>Array.&lt;Subscription&gt;</code>](#Subscription)
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| subscriptions | [<code>Array.&lt;Subscription&gt;</code>](#Subscription) | 
+| pageId | <code>string</code> | 
+
+<div id="PreprocessSubscribers">&nbsp;</div>
+
+## PreprocessSubscribers ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> \| <code>Array.&lt;string&gt;</code>
+**Kind**: global typedef  
+**Returns**: <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> \| <code>Array.&lt;string&gt;</code> - list of senderIds  
+
+| Param | Type |
+| --- | --- |
+| senderIds | <code>Array.&lt;string&gt;</code> | 
+| pageId | <code>string</code> | 
+| tag | <code>string</code> | 
 
 <div id="Tag">&nbsp;</div>
 

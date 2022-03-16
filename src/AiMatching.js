@@ -54,11 +54,15 @@ const COMPARE = {
  */
 
 /**
+ * @typedef {string|number|Function} Comparable
+ */
+
+/**
  * @typedef {object} EntityExpression
  * @prop {string} entity - the requested entity
  * @prop {boolean} [optional] - the match is optional
  * @prop {Compare} [op] - comparison operation
- * @prop {(string|number|Function)[]} [compare] - value to compare
+ * @prop {Comparable[]} [compare] - value to compare
  */
 
 /**

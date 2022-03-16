@@ -50,9 +50,11 @@ Adapter for Wingbot flight director
     * [new BotApp(bot, options)](#new_BotApp_new)
     * _instance_
         * [.processor](#BotApp_processor) ⇒ [<code>Processor</code>](#Processor)
+        * [._processSenderResponses(sender, senderId, pageId, headers)](#BotApp__processSenderResponses)
         * ~~[.processMessage(message, senderId, pageId, data)](#BotApp_processMessage) ⇒ <code>Promise.&lt;{status:number}&gt;</code>~~
         * [.request(rawBody, rawHeaders)](#BotApp_request) ⇒ [<code>Promise.&lt;ApiResponse&gt;</code>](#ApiResponse)
     * _static_
+        * [.signBody(body, secret, appId)](#BotApp_signBody) ⇒ <code>Promise.&lt;string&gt;</code>
         * [.plugin()](#BotApp_plugin) ⇒ [<code>Plugin</code>](#Plugin)
 
 <div id="new_BotApp_new">&nbsp;</div>
@@ -70,6 +72,18 @@ Adapter for Wingbot flight director
 Get the processor instance
 
 **Kind**: instance property of [<code>BotApp</code>](#BotApp)  
+<div id="BotApp__processSenderResponses">&nbsp;</div>
+
+### botApp.\_processSenderResponses(sender, senderId, pageId, headers)
+**Kind**: instance method of [<code>BotApp</code>](#BotApp)  
+
+| Param | Type |
+| --- | --- |
+| sender | <code>ReturnSender</code> | 
+| senderId | <code>string</code> | 
+| pageId | <code>string</code> | 
+| headers | <code>object</code> | 
+
 <div id="BotApp_processMessage">&nbsp;</div>
 
 ### ~~botApp.processMessage(message, senderId, pageId, data) ⇒ <code>Promise.&lt;{status:number}&gt;</code>~~
@@ -127,6 +141,19 @@ app.get('/bot', express.text(), (req, res) => {
        })
 });
 ```
+<div id="BotApp_signBody">&nbsp;</div>
+
+### BotApp.signBody(body, secret, appId) ⇒ <code>Promise.&lt;string&gt;</code>
+Get authorization token for wingbot orchestrator
+
+**Kind**: static method of [<code>BotApp</code>](#BotApp)  
+
+| Param | Type |
+| --- | --- |
+| body | <code>string</code> | 
+| secret | <code>string</code> | 
+| appId | <code>string</code> | 
+
 <div id="BotApp_plugin">&nbsp;</div>
 
 ### BotApp.plugin() ⇒ [<code>Plugin</code>](#Plugin)
@@ -157,6 +184,8 @@ Returns processor plugin, which updates thread context automatically
 | [fetch] | <code>function</code> |  |
 | [chatLogStorage] | <code>ChatLogStorage</code> |  |
 | [preferSynchronousResponse] | <code>boolean</code> |  |
+| [auditLog] | <code>AuditLog</code> |  |
+| [tls] | <code>TlsOptions</code> |  |
 
 <div id="ApiResponse">&nbsp;</div>
 
@@ -257,7 +286,6 @@ Returns processor plugin, which updates thread context automatically
 | [log] | <code>function</code> | console like error logger |
 | [defaultState] | <code>object</code> | default chat state |
 | [autoSeen] | <code>boolean</code> | send seen automatically |
-| [waitsForSender] | <code>boolean</code> | use 'false' resolve the processing promise  without waiting for message sender |
 | [redirectLimit] | <code>number</code> | maximum number of redirects at single request |
 | [secret] | <code>string</code> | Secret for calling orchestrator API |
 | [apiUrl] | <code>string</code> | Url for calling orchestrator API |

@@ -57,6 +57,7 @@ Experimental chatbot API
 
 * [GraphApi](#GraphApi)
     * [new GraphApi(apis, options)](#new_GraphApi_new)
+    * [.auditLog](#GraphApi_auditLog) : <code>AuditLog</code>
     * [.request(body, headers, [wingbotToken])](#GraphApi_request) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
 
 <div id="new_GraphApi_new">&nbsp;</div>
@@ -71,7 +72,12 @@ Experimental chatbot API
 | [options.appToken] | <code>string</code> | public token |
 | [options.groups] | <code>Array.&lt;string&gt;</code> | list of allowed bot groups |
 | [options.useBundledGql] | <code>boolean</code> | uses library bundled graphql definition |
+| [options.auditLog] | <code>AuditLog</code> |  |
 
+<div id="GraphApi_auditLog">&nbsp;</div>
+
+### graphApi.auditLog : <code>AuditLog</code>
+**Kind**: instance property of [<code>GraphApi</code>](#GraphApi)  
 <div id="GraphApi_request">&nbsp;</div>
 
 ### graphApi.request(body, headers, [wingbotToken]) ⇒ [<code>Promise.&lt;GraphQlResponse&gt;</code>](#GraphQlResponse)
@@ -86,6 +92,10 @@ Experimental chatbot API
 | headers | <code>object</code> | 
 | [headers.Authorization] | <code>string</code> | 
 | [headers.authorization] | <code>string</code> | 
+| [headers.Origin] | <code>string</code> | 
+| [headers.origin] | <code>string</code> | 
+| [headers.Referer] | <code>string</code> | 
+| [headers.referer] | <code>string</code> | 
 | [wingbotToken] | <code>string</code> | 
 
 <div id="postBackApi">&nbsp;</div>

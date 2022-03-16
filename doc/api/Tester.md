@@ -50,8 +50,10 @@
         * [.testData](#Tester_testData)
         * [.allowEmptyResponse](#Tester_allowEmptyResponse)
         * [.senderLogger](#Tester_senderLogger)
+        * [.features](#Tester_features)
         * [.setExpandRandomTexts()](#Tester_setExpandRandomTexts)
         * [.cleanup()](#Tester_cleanup)
+        * [.setFeatures([features])](#Tester_setFeatures)
         * [.processMessage(message, senderId, pageId, [data])](#Tester_processMessage) ⇒ <code>Promise.&lt;any&gt;</code>
         * [.res([index])](#Tester_res) ⇒ [<code>ResponseAssert</code>](#ResponseAssert)
         * [.any()](#Tester_any) ⇒ [<code>AnyResponseAssert</code>](#AnyResponseAssert)
@@ -110,6 +112,16 @@ Utility for testing requests
 | --- | --- | --- |
 | use | <code>console</code> | own loggger |
 
+<div id="Tester_features">&nbsp;</div>
+
+### tester.features
+**Kind**: instance property of [<code>Tester</code>](#Tester)  
+**Properties**
+
+| Type |
+| --- |
+| <code>Array.&lt;string&gt;</code> | 
+
 <div id="Tester_setExpandRandomTexts">&nbsp;</div>
 
 ### tester.setExpandRandomTexts()
@@ -123,6 +135,17 @@ It joins them into a single sting
 Clear acquired responses and data
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
+<div id="Tester_setFeatures">&nbsp;</div>
+
+### tester.setFeatures([features])
+Set features for all messages
+
+**Kind**: instance method of [<code>Tester</code>](#Tester)  
+
+| Param | Type |
+| --- | --- |
+| [features] | <code>Array.&lt;string&gt;</code> | 
+
 <div id="Tester_processMessage">&nbsp;</div>
 
 ### tester.processMessage(message, senderId, pageId, [data]) ⇒ <code>Promise.&lt;any&gt;</code>
@@ -174,7 +197,7 @@ Checks, that app past the action
 <div id="Tester_respondedWithBlock">&nbsp;</div>
 
 ### tester.respondedWithBlock(blockName) ⇒ <code>this</code>
-Checks, that a plugin used a block as a responde
+Checks, that a plugin used a block as a response
 
 **Kind**: instance method of [<code>Tester</code>](#Tester)  
 

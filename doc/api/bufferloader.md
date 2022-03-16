@@ -4,10 +4,6 @@
 <dt><a href="#MemoryStateStorage">MemoryStateStorage</a></dt>
 <dd><p>Memory conversation state storage for testing purposes</p>
 </dd>
-<dt><a href="#Translate">Translate</a></dt>
-<dd></dd>
-<dt><a href="#Translate">Translate</a></dt>
-<dd></dd>
 <dt><a href="#ReturnSender">ReturnSender</a></dt>
 <dd></dd>
 </dl>
@@ -35,7 +31,9 @@
 <dt><a href="#compileWithState">compileWithState(req, res, template)</a></dt>
 <dd><p>Utility, which helps to render handlebars syntax with all variables within conversations state</p>
 </dd>
-<dt><a href="#disambiguationQuickReply">disambiguationQuickReply(title, likelyIntent, disambText, action, data)</a></dt>
+<dt><a href="#makeExpectedKeyword">makeExpectedKeyword(action, title, [matcher], [payloadData], [setState], [aiTitle])</a> ⇒ <code><a href="#ExpectedKeyword">ExpectedKeyword</a></code></dt>
+<dd></dd>
+<dt><del><a href="#disambiguationQuickReply">disambiguationQuickReply(title, likelyIntent, disambText, action, data)</a></del></dt>
 <dd><p>Create a disambiguation quick reply</p>
 </dd>
 </dl>
@@ -43,6 +41,10 @@
 ## Typedefs
 
 <dl>
+<dt><a href="#ExpectedKeyword">ExpectedKeyword</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#QuickReplyAction">QuickReplyAction</a> : <code>object</code></dt>
+<dd></dd>
 <dt><a href="#State">State</a> : <code>object</code></dt>
 <dd></dd>
 <dt><a href="#StateCondition">StateCondition</a> : <code>object</code></dt>
@@ -112,179 +114,28 @@ Memory conversation state storage for testing purposes
 | limit | <code>number</code> | <code>20</code> | 
 | lastKey | <code>string</code> | <code>null</code> | 
 
-<div id="Translate">&nbsp;</div>
-
-## Translate
-**Kind**: global class  
-
-* [Translate](#Translate)
-    * [new Translate()](#new_Translate_new)
-    * [new Translate([options])](#new_Translate_new)
-    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;object&gt;</code>
-    * [.middleware(languageResolver)](#Translate_middleware) ⇒ <code>function</code>
-
-<div id="new_Translate_new">&nbsp;</div>
-
-### new Translate()
-Tool for text translation
-
-<div id="new_Translate_new">&nbsp;</div>
-
-### new Translate([options])
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [options] | <code>object</code> |  |
-| [options.sourcePath] | <code>string</code> | optional source path of translation folder |
-| [options.fileSuffix] | <code>string</code> | by default `.locale.po` |
-
-<div id="Translate_translator">&nbsp;</div>
-
-### translate.translator(languages) ⇒ <code>Promise.&lt;object&gt;</code>
-Creates static translator for static settings
-
-**Kind**: instance method of [<code>Translate</code>](#Translate)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| languages | <code>Array.&lt;string&gt;</code> | list of required languages |
-
-**Example**  
-```js
-const { Translate } = require('wingbot');
-
-const translate = new Translate({ sourcePath: __dirname });
-
-const t = translate.translator(['cs', 'en']);
-
-// czech
-t.cs.t('requested text');
-
-// english
-t.en.t('requested text');
-```
-<div id="Translate_middleware">&nbsp;</div>
-
-### translate.middleware(languageResolver) ⇒ <code>function</code>
-Bots middleware for text translations
-
-- will be looking for `<lang>.locale.po` by default
-
-**Kind**: instance method of [<code>Translate</code>](#Translate)  
-
-| Param | Type |
-| --- | --- |
-| languageResolver | <code>function</code> | 
-
-**Example**  
-```js
-const { Translate } = require('wingbot');
-
-const translate = new Translate({ sourcePath: __dirname });
-
-bot.use(translate.middleware((req, res) => 'cs'));
-
-bot.use((req, res) => {
-   res.text(res.t('Translated text'));
-});
-```
-<div id="Translate">&nbsp;</div>
-
-## Translate
-**Kind**: global class  
-
-* [Translate](#Translate)
-    * [new Translate()](#new_Translate_new)
-    * [new Translate([options])](#new_Translate_new)
-    * [.translator(languages)](#Translate_translator) ⇒ <code>Promise.&lt;object&gt;</code>
-    * [.middleware(languageResolver)](#Translate_middleware) ⇒ <code>function</code>
-
-<div id="new_Translate_new">&nbsp;</div>
-
-### new Translate()
-Tool for text translation
-
-<div id="new_Translate_new">&nbsp;</div>
-
-### new Translate([options])
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [options] | <code>object</code> |  |
-| [options.sourcePath] | <code>string</code> | optional source path of translation folder |
-| [options.fileSuffix] | <code>string</code> | by default `.locale.po` |
-
-<div id="Translate_translator">&nbsp;</div>
-
-### translate.translator(languages) ⇒ <code>Promise.&lt;object&gt;</code>
-Creates static translator for static settings
-
-**Kind**: instance method of [<code>Translate</code>](#Translate)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| languages | <code>Array.&lt;string&gt;</code> | list of required languages |
-
-**Example**  
-```js
-const { Translate } = require('wingbot');
-
-const translate = new Translate({ sourcePath: __dirname });
-
-const t = translate.translator(['cs', 'en']);
-
-// czech
-t.cs.t('requested text');
-
-// english
-t.en.t('requested text');
-```
-<div id="Translate_middleware">&nbsp;</div>
-
-### translate.middleware(languageResolver) ⇒ <code>function</code>
-Bots middleware for text translations
-
-- will be looking for `<lang>.locale.po` by default
-
-**Kind**: instance method of [<code>Translate</code>](#Translate)  
-
-| Param | Type |
-| --- | --- |
-| languageResolver | <code>function</code> | 
-
-**Example**  
-```js
-const { Translate } = require('wingbot');
-
-const translate = new Translate({ sourcePath: __dirname });
-
-bot.use(translate.middleware((req, res) => 'cs'));
-
-bot.use((req, res) => {
-   res.text(res.t('Translated text'));
-});
-```
 <div id="ReturnSender">&nbsp;</div>
 
 ## ReturnSender
 **Kind**: global class  
 
 * [ReturnSender](#ReturnSender)
-    * [new ReturnSender(options, userId, incommingMessage, logger)](#new_ReturnSender_new)
+    * [new ReturnSender(options, senderId, incommingMessage, logger)](#new_ReturnSender_new)
     * [.responses](#ReturnSender_responses) : <code>Array.&lt;object&gt;</code>
     * [.waits](#ReturnSender_waits) : <code>boolean</code>
     * [.textFilter](#ReturnSender_textFilter) : [<code>textFilter</code>](#textFilter)
     * [.modifyStateAfterLoad()](#ReturnSender_modifyStateAfterLoad) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
     * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+    * [.finished([req], [res], [err], [reportError])](#ReturnSender_finished) ⇒ <code>Promise.&lt;Object&gt;</code>
 
 <div id="new_ReturnSender_new">&nbsp;</div>
 
-### new ReturnSender(options, userId, incommingMessage, logger)
+### new ReturnSender(options, senderId, incommingMessage, logger)
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | options | [<code>ReturnSenderOptions</code>](#ReturnSenderOptions) |  |  |
-| userId | <code>string</code> |  |  |
+| senderId | <code>string</code> |  |  |
 | incommingMessage | <code>object</code> |  |  |
 | logger | [<code>ChatLogStorage</code>](#ChatLogStorage) | <code></code> | console like logger |
 
@@ -316,6 +167,18 @@ For example to remove any confidential data
 
 ### returnSender.modifyStateBeforeStore() ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
 **Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_finished">&nbsp;</div>
+
+### returnSender.finished([req], [res], [err], [reportError]) ⇒ <code>Promise.&lt;Object&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [req] | <code>Request</code> | <code></code> | 
+| [res] | <code>Responder</code> | <code></code> | 
+| [err] | <code>Error</code> | <code></code> | 
+| [reportError] | <code>function</code> |  | 
+
 <div id="FLAG_DISAMBIGUATION_SELECTED">&nbsp;</div>
 
 ## FLAG\_DISAMBIGUATION\_SELECTED
@@ -383,9 +246,25 @@ function myPluginFactory (params) {
     };
 }
 ```
+<div id="makeExpectedKeyword">&nbsp;</div>
+
+## makeExpectedKeyword(action, title, [matcher], [payloadData], [setState], [aiTitle]) ⇒ [<code>ExpectedKeyword</code>](#ExpectedKeyword)
+**Kind**: global function  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| action | <code>string</code> |  | 
+| title | <code>string</code> |  | 
+| [matcher] | <code>RegExp</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code> | <code></code> | 
+| [payloadData] | <code>object</code> |  | 
+| [setState] | <code>object</code> | <code></code> | 
+| [aiTitle] | <code>string</code> | <code>null</code> | 
+
 <div id="disambiguationQuickReply">&nbsp;</div>
 
-## disambiguationQuickReply(title, likelyIntent, disambText, action, data)
+## ~~disambiguationQuickReply(title, likelyIntent, disambText, action, data)~~
+***Deprecated***
+
 Create a disambiguation quick reply
 
 **Kind**: global function  
@@ -397,6 +276,41 @@ Create a disambiguation quick reply
 | disambText | <code>string</code> | users text input |
 | action | <code>string</code> | action to process the disambbiguation |
 | data | <code>object</code> | optional data |
+
+<div id="ExpectedKeyword">&nbsp;</div>
+
+## ExpectedKeyword : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| action | <code>string</code> | 
+| title | <code>string</code> | 
+| match | <code>null</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code> | 
+| data | <code>object</code> | 
+| [hasAiTitle] | <code>boolean</code> | 
+| [setState] | <code>object</code> | 
+
+<div id="QuickReplyAction">&nbsp;</div>
+
+## QuickReplyAction : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| aboveConfidence | <code>boolean</code> | 
+| action | <code>string</code> | 
+| title | <code>string</code> | 
+| match | <code>null</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code> | 
+| data | <code>object</code> | 
+| score | <code>number</code> | 
+| sort | <code>number</code> | 
+| [title] | <code>string</code> | 
+| [setState] | <code>object</code> | 
+| [_aiKeys] | <code>Array.&lt;string&gt;</code> | 
+| [intent] | <code>Intent</code> | 
 
 <div id="State">&nbsp;</div>
 

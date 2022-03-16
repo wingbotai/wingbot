@@ -13,6 +13,8 @@
 <dd></dd>
 <dt><a href="#SenderMeta">SenderMeta</a> : <code>object</code></dt>
 <dd></dd>
+<dt><a href="#VoiceControl">VoiceControl</a> : <code>object</code></dt>
+<dd></dd>
 </dl>
 
 <div id="Responder">&nbsp;</div>
@@ -24,6 +26,7 @@ Instance of responder is passed as second parameter of handler (res)
 
 * [Responder](#Responder)
     * [.newState](#Responder_newState)
+    * [.ExpectedInputTypes](#Responder_ExpectedInputTypes) : <code>Object.&lt;string, ExpectedInput&gt;</code>
     * [.finalMessageSent](#Responder_finalMessageSent)
     * [.startedOutput](#Responder_startedOutput)
     * [.senderMeta](#Responder_senderMeta) ⇒ [<code>SenderMeta</code>](#SenderMeta)
@@ -41,13 +44,14 @@ Instance of responder is passed as second parameter of handler (res)
     * [.setPersona(personaId)](#Responder_setPersona) ⇒ <code>this</code>
     * [.isResponseType()](#Responder_isResponseType) ⇒ <code>boolean</code>
     * [.setData(data)](#Responder_setData) ⇒ <code>this</code>
-    * [.text(text, [replies])](#Responder_text) ⇒ <code>this</code>
+    * [.text(text, [replies], [voice])](#Responder_text) ⇒ <code>this</code>
     * [.setState(object)](#Responder_setState) ⇒ <code>this</code>
     * [.addQuickReply(action, [title], [data], [prepend], [justToExisting])](#Responder_addQuickReply)
     * [.keepPreviousContext(req, [justOnce], [includeKeywords])](#Responder_keepPreviousContext) ⇒ <code>this</code>
-    * [.expectedIntent(intents, action, data, setState)](#Responder_expectedIntent)
+    * [.expectedIntent(intents, action, data, [setState], [aiTitle])](#Responder_expectedIntent)
     * [.expected(action, data)](#Responder_expected) ⇒ <code>this</code>
-    * [.expectedConfidentInput()](#Responder_expectedConfidentInput) ⇒ <code>this</code>
+    * [.expectedConfidentInput([expectedInput])](#Responder_expectedConfidentInput) ⇒ <code>this</code>
+    * [.expectedInput(type)](#Responder_expectedInput) ⇒ <code>this</code>
     * [.toAbsoluteAction(action)](#Responder_toAbsoluteAction) ⇒ <code>string</code>
     * [.currentAction()](#Responder_currentAction) ⇒ <code>string</code>
     * [.image(imageUrl, [reusable])](#Responder_image) ⇒ <code>this</code>
@@ -82,6 +86,10 @@ into the conversation state.
 | --- |
 | <code>object</code> | 
 
+<div id="Responder_ExpectedInputTypes">&nbsp;</div>
+
+### responder.ExpectedInputTypes : <code>Object.&lt;string, ExpectedInput&gt;</code>
+**Kind**: instance property of [<code>Responder</code>](#Responder)  
 <div id="Responder_finalMessageSent">&nbsp;</div>
 
 ### responder.finalMessageSent
@@ -166,13 +174,13 @@ within Processor's `interaction` event (event.tracking.events)
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 
-| Param | Type | Default |
-| --- | --- | --- |
-| type | <code>string</code> |  | 
-| category | <code>string</code> |  | 
-| [action] | <code>string</code> |  | 
-| [label] | <code>string</code> |  | 
-| [value] | <code>number</code> | <code>0</code> | 
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| type | <code>string</code> |  | (log,report,conversation,audit,user) |
+| category | <code>string</code> |  |  |
+| [action] | <code>string</code> |  |  |
+| [label] | <code>string</code> |  |  |
+| [value] | <code>number</code> | <code>0</code> |  |
 
 <div id="Responder_send">&nbsp;</div>
 
@@ -309,7 +317,7 @@ bot.use('bar', (req, res) => {
 ```
 <div id="Responder_text">&nbsp;</div>
 
-### responder.text(text, [replies]) ⇒ <code>this</code>
+### responder.text(text, [replies], [voice]) ⇒ <code>this</code>
 Send text as a response
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
@@ -317,7 +325,8 @@ Send text as a response
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | text | <code>string</code> |  | text to send to user, can contain placeholders (%s) |
-| [replies] | <code>object.&lt;string, (string\|QuickReply)&gt;</code> \| [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply) | <code></code> | quick replies |
+| [replies] | <code>Object.&lt;string, (string\|QuickReply)&gt;</code> \| [<code>Array.&lt;QuickReply&gt;</code>](#QuickReply) | <code></code> | quick replies |
+| [voice] | [<code>VoiceControl</code>](#VoiceControl) | <code></code> | voice control data |
 
 **Example**  
 ```js
@@ -363,7 +372,7 @@ Appends quick reply, to be sent with following text method
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| action | <code>string</code> \| <code>object</code> |  | relative or absolute action |
+| action | <code>string</code> \| [<code>QuickReply</code>](#QuickReply) |  | relative or absolute action |
 | [title] | <code>string</code> |  | quick reply title |
 | [data] | <code>object</code> |  | additional data |
 | [prepend] | <code>boolean</code> | <code>false</code> | set true to add reply at the beginning |
@@ -412,7 +421,7 @@ bot.use('need-color', (req, res) => {
 ```
 <div id="Responder_expectedIntent">&nbsp;</div>
 
-### responder.expectedIntent(intents, action, data, setState)
+### responder.expectedIntent(intents, action, data, [setState], [aiTitle])
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
 
 | Param | Type | Default |
@@ -420,7 +429,8 @@ bot.use('need-color', (req, res) => {
 | intents | <code>string</code> \| <code>Array.&lt;string&gt;</code> |  | 
 | action | <code>string</code> |  | 
 | data | <code>object</code> |  | 
-| setState | <code>object</code> | <code></code> | 
+| [setState] | <code>object</code> | <code></code> | 
+| [aiTitle] | <code>string</code> \| <code>Array.&lt;object&gt;</code> | <code>null</code> | 
 
 <div id="Responder_expected">&nbsp;</div>
 
@@ -436,7 +446,7 @@ When user writes some text as reply, it will be processed as action
 
 <div id="Responder_expectedConfidentInput">&nbsp;</div>
 
-### responder.expectedConfidentInput() ⇒ <code>this</code>
+### responder.expectedConfidentInput([expectedInput]) ⇒ <code>this</code>
 Makes a following user input anonymized
 
 - disables processing of it with NLP
@@ -447,6 +457,11 @@ Makes a following user input anonymized
 After processing the user input, next requests will be processed as usual,
 
 **Kind**: instance method of [<code>Responder</code>](#Responder)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [expectedInput] | [<code>ExpectedInput</code>](#ExpectedInput) | <code></code> | 
+
 **Example**  
 ```js
 const { Router } = require('wingbot');
@@ -469,6 +484,21 @@ bot.use('received-card-number', (req, res) => {
 
     res.text('got it')
         .setState({ cardNumber });
+});
+```
+<div id="Responder_expectedInput">&nbsp;</div>
+
+### responder.expectedInput(type) ⇒ <code>this</code>
+**Kind**: instance method of [<code>Responder</code>](#Responder)  
+
+| Param | Type |
+| --- | --- |
+| type | [<code>ExpectedInput</code>](#ExpectedInput) | 
+
+**Example**  
+```js
+bot.use((req, res) => {
+    res.expectedInput(res.ExpectedInputTypes.TYPE_PASSWORD)
 });
 ```
 <div id="Responder_toAbsoluteAction">&nbsp;</div>
@@ -739,6 +769,16 @@ Set skill for tracking (will used untill it will be changed)
 | --- | --- |
 | skill | <code>string</code> \| <code>null</code> | 
 
+<div id="ExpectedInput">&nbsp;</div>
+
+## ExpectedInput : <code>enum</code>
+**Kind**: global enum  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| TYPE_PASSWORD | <code>string</code> | <code>&quot;password&quot;</code> | 
+
 <div id="QuickReply">&nbsp;</div>
 
 ## QuickReply : <code>object</code>
@@ -751,6 +791,7 @@ Set skill for tracking (will used untill it will be changed)
 | [action] | <code>string</code> | 
 | [data] | <code>object</code> | 
 | [setState] | <code>object</code> | 
+| [aiTitle] | <code>string</code> \| <code>function</code> | 
 | [match] | <code>RegExp</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code> | 
 
 <div id="SenderMeta">&nbsp;</div>
@@ -765,4 +806,20 @@ Set skill for tracking (will used untill it will be changed)
 | [likelyIntent] | <code>string</code> | 
 | [disambText] | <code>string</code> | 
 | [disambiguationIntents] | <code>Array.&lt;string&gt;</code> | 
+
+<div id="VoiceControl">&nbsp;</div>
+
+## VoiceControl : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [ssml] | <code>string</code> | 
+| [speed] | <code>number</code> | 
+| [pitch] | <code>number</code> | 
+| [volume] | <code>number</code> | 
+| [style] | <code>string</code> | 
+| [language] | <code>string</code> | 
+| [voice] | <code>string</code> | 
 
