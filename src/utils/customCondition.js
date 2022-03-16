@@ -42,7 +42,7 @@ const isSimpleWord = (string) => {
 const isStringNumber = (string) => {
     if (typeof string !== 'string') return false;
     if (string.length === 0) return false;
-    return !!new RegExp(/^([0-9]*[, ]{0,1})*[., ]{0,1}[0-9]*$/)
+    return !!/^([0-9]*[, ]{0,1})*[., ]{0,1}[0-9]*$/
         .test((string).replace(/\s+/g, ''));
 };
 
@@ -55,7 +55,7 @@ const stringToNumber = (string) => {
     if (typeof string !== 'string') return string;
     if (!isStringNumber(string)) throw new Error('String not a number');
     let trimmed;
-    if (new RegExp(/^[^,.]+,[^,.]+$/).test(string)) {
+    if (/^[^,.]+,[^,.]+$/.test(string)) {
         trimmed = string.replace(',', '.');
     } else {
         trimmed = string.replace(/(\s|,)+/g, '').replace(',', '.');

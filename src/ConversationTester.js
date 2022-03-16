@@ -305,9 +305,8 @@ class ConversationTester {
         return testCases
             // @ts-ignore
             .reduce(
-                (map, testCase) => map.set(
-                    testCase.list, [...(map.get(testCase.list) || []), testCase]
-                ),
+                (map, testCase) => map
+                    .set(testCase.list, [...(map.get(testCase.list) || []), testCase]),
                 new Map()
             );
     }

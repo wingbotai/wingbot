@@ -286,7 +286,8 @@ describe('<Conditions>', function () {
                     }
                 ],
                 xyz: '\\"""'
-            }, false
+            },
+            false
         );
         await assertCondition(
             {
@@ -301,7 +302,8 @@ describe('<Conditions>', function () {
                     }
                 ],
                 xyz: '\\"""'
-            }, true
+            },
+            true
         );
     });
 
@@ -319,7 +321,8 @@ describe('<Conditions>', function () {
                     }
                 ],
                 variable: 'matching'
-            }, true
+            },
+            true
         );
         await assertCondition(
             {
@@ -334,7 +337,8 @@ describe('<Conditions>', function () {
                     }
                 ],
                 variable: 'matching'
-            }, false
+            },
+            false
         );
     });
 
@@ -352,7 +356,8 @@ describe('<Conditions>', function () {
                     }
                 ],
                 variable: 'a'
-            }, true
+            },
+            true
         );
         await assertCondition(
             {
@@ -366,7 +371,8 @@ describe('<Conditions>', function () {
                         z: 'a'
                     }
                 ]
-            }, false
+            },
+            false
         );
     });
 });

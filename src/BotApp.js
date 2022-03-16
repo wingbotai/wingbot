@@ -87,14 +87,12 @@ class BotApp {
         this._senderLogger = chatLogStorage;
         this._verify = promisify(jwt.verify);
 
-        this._processor = new Processor(
-            bot, {
-                ...processorOptions,
-                secret,
-                fetch: this._fetch,
-                apiUrl: gqlApiUrl
-            }
-        );
+        this._processor = new Processor(bot, {
+            ...processorOptions,
+            secret,
+            fetch: this._fetch,
+            apiUrl: gqlApiUrl
+        });
 
         this._processor.plugin(BotApp.plugin());
         this._preferSynchronousResponse = preferSynchronousResponse;
@@ -191,7 +189,13 @@ class BotApp {
     }
 
     async _processIncommingMessage (
-        message, senderId, pageId, appId, secret, sync = false, headers = {}
+        message,
+        senderId,
+        pageId,
+        appId,
+        secret,
+        sync = false,
+        headers = {}
     ) {
         const { mid = null } = message;
 
@@ -386,7 +390,13 @@ class BotApp {
 
                     for (const message of messaging) {
                         const res = await this._processIncommingMessage(
-                            message, senderId, pageId, appId, secret, sync, headers
+                            message,
+                            senderId,
+                            pageId,
+                            appId,
+                            secret,
+                            sync,
+                            headers
                         );
 
                         responses.push(res);

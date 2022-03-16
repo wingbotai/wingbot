@@ -88,8 +88,10 @@ function toArray (previousValue) {
 const ENTITY_HBS_REGEXP = /^\s*\{\{\[?@([^@[\]{}\s]+)(\])?\}\}\s*$/;
 const VARIABLE_HBS_REGEXP = /^\s*\{\{\[?([^@[\]{}\s]+)\]?\}\}\s*$/;
 
-function getSetState (setState = {}, req, res = null, useState = null) {
-
+function getSetState (setState, req, res = null, useState = null) {
+    if (!setState) {
+        return {};
+    }
     const keys = Object.keys(setState)
         .filter((k) => k !== '_');
 

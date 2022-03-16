@@ -202,18 +202,21 @@ function getText (text, state) {
     return renderer(state);
 }
 
+// eslint-disable-next-line no-unused-vars
+const DEFAULT_LINK_TRANSLATOR = (senderId, defaultText, urlText, isExtUrl, reqState) => urlText;
+
 function processButtons (
     buttons,
     state,
     elem,
     linksMap,
     senderId,
-    // eslint-disable-next-line no-unused-vars
-    linksTranslator = (sndr, defaultText, urlText, isExtUrl, reqState) => urlText,
+    linksTranslator,
     allowForbiddenSnippetWords,
     req,
     res
 ) {
+    const translateLinks = linksTranslator || DEFAULT_LINK_TRANSLATOR;
 
     buttons.forEach(({
         title: btnTitle,
@@ -251,7 +254,7 @@ function processButtons (
             case TYPE_URL_WITH_EXT: {
                 const hasExtention = type === TYPE_URL_WITH_EXT;
                 let urlText = getText(url, state);
-                urlText = linksTranslator(senderId, defaultText, urlText, isExtUrl, state);
+                urlText = translateLinks(senderId, defaultText, urlText, isExtUrl, state);
                 elem.urlButton(btnTitleText, urlText, hasExtention, webviewHeight);
                 break;
             }

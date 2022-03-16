@@ -1272,7 +1272,9 @@ class Request {
         if (this._quickReplyActions === null) {
             if (this.state._expectedKeywords) {
                 this._quickReplyActions = quickReplyAction(
-                    this.state._expectedKeywords, this, Ai.ai
+                    this.state._expectedKeywords,
+                    this,
+                    Ai.ai
                 );
             } else {
                 this._quickReplyActions = [];

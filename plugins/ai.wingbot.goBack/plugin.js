@@ -3,7 +3,7 @@
  * @param {import('../../src/Responder')} res
  * @param {Function} postback
  */
-module.exports = (req, res, postback) => {
+module.exports = function (req, res, postback) {
     if (req.state.beforeLastInteraction
         && !req.state.beforeLastInteraction.match(/\/\*$/)
         && req.state.beforeLastInteraction !== res.currentAction()) {

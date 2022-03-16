@@ -3,7 +3,7 @@
  * @param {import('../../src/Responder')} res
  * @param {Function} postback
  */
-module.exports = (req, res, postback) => {
+module.exports = function (req, res, postback) {
     let { breadcrumbs = [] } = req.state;
     let shift = req.state.breadcrumbAction === req.state._lastAction
         ? 2

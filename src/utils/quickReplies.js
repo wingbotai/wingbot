@@ -32,7 +32,12 @@ const { checkSetState } = require('./stateVariables');
  * @returns {ExpectedKeyword}
  */
 function makeExpectedKeyword (
-    action, title, matcher = null, payloadData = {}, setState = null, aiTitle = null
+    action,
+    title,
+    matcher = null,
+    payloadData = {},
+    setState = null,
+    aiTitle = null
 ) {
     let match = null;
 
@@ -226,7 +231,12 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
             const translatedTitle = translate(title);
             const translatedAiTitle = typeof aiTitle === 'string' ? translate(aiTitle) : aiTitle;
             const expect = makeExpectedKeyword(
-                absoluteAction, translatedTitle, match, data, setState, translatedAiTitle
+                absoluteAction,
+                translatedTitle,
+                match,
+                data,
+                setState,
+                translatedAiTitle
             );
             expectedKeywords.push(expect);
 

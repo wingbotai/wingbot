@@ -13,6 +13,7 @@
     },
     "plugins": ["jsdoc"],
     "rules": {
+        "no-promise-executor-return": 0,
         "func-names": 0,
         "strict": [2, "global"],
         "indent": [2, 4, {"SwitchCase": 1}],

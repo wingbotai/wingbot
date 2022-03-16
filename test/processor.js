@@ -115,9 +115,8 @@ describe('Processor', function () {
 
             const stateStorage = createStateStorage();
             const opts = makeOptions(stateStorage);
-            const proc = new Processor(
-                new ReducerWrapper(reducer), Object.assign(opts, { autoSeen: true })
-            );
+            const reducerWrap = new ReducerWrapper(reducer);
+            const proc = new Processor(reducerWrap, Object.assign(opts, { autoSeen: true }));
 
             return proc.processMessage({
                 sender: {

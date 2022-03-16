@@ -119,9 +119,8 @@ function notificationsApiFactory (storage, notifications, acl, options = {}) {
                 };
             }
 
-            const data = await storage.getUnsuccessfulSubscribersByCampaign(
-                campaignId, sentWithoutReaction, pageId
-            );
+            const data = await storage
+                .getUnsuccessfulSubscribersByCampaign(campaignId, sentWithoutReaction, pageId);
 
             return {
                 data,

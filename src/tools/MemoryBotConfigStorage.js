@@ -22,7 +22,7 @@ class MemoryBotConfigStorage {
      * @param {Function|string[]} [acl] - acl configuration
      * @returns {{updateBot:Function}}
      */
-    api (onUpdate = () => Promise.resolve(), acl) {
+    api (onUpdate = () => Promise.resolve(), acl = []) {
         const storage = this;
         return {
             async updateBot (args, ctx) {

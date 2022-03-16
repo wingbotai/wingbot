@@ -5,7 +5,7 @@
 
 const assert = require('assert');
 const sinon = require('sinon');
-const { mockServer } = require('graphql-tools');
+const { graphql, buildSchema } = require('graphql');
 const Router = require('../src/Router');
 const Tester = require('../src/Tester');
 const OrchestratorClient = require('../src/OrchestratorClient');
@@ -42,17 +42,19 @@ describe('OrchestratorClient', () => {
             }
         `;
 
-        const server = mockServer(schema, {
-            ChatQuery: () => ({
-                conversationToken: () => 'my-conversation-token'
-            })
-        });
+        const builtSchema = buildSchema(schema);
+
+        const root = {
+            chat: {
+                conversationToken: 'my-conversation-token'
+            }
+        };
 
         // Mock fetch method to be able catch call to orchestrator
         fetch = sinon.spy(async (url, { body }) => {
             const req = JSON.parse(body);
             // Pass request to mock graphql server
-            const res = await server.query(req.query, req.variables);
+            const res = await graphql(builtSchema, req.query, root, {}, req.variables);
             // Return result in format like from orchestrator
             return { json: () => ({ data: res.data, request: {} }) };
         });

@@ -77,11 +77,9 @@ class OrchestratorClient {
      */
     async addConversationTokenToUrl (url, expirationInSeconds, tokenName = 'wbchtoken') {
         const { conversationToken } = await this.getConversationToken(expirationInSeconds);
-        return withParams(
-            url, {
-                query: { [tokenName]: conversationToken }
-            }
-        );
+        return withParams(url, {
+            query: { [tokenName]: conversationToken }
+        });
     }
 
     /**

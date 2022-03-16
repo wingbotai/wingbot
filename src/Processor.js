@@ -100,7 +100,7 @@ const { mergeState } = require('./utils/stateVariables');
  * @prop {string|null} [meta.targetAction]
  */
 
-const NAME_FROM_STATE = (state) => {
+function NAME_FROM_STATE (state) {
     if (state.user && state.user.firstName) {
         return `${state.user.firstName} ${state.user.lastName}`;
     }
@@ -108,7 +108,7 @@ const NAME_FROM_STATE = (state) => {
         return `${state.user.name}`;
     }
     return null;
-};
+}
 
 /**
  * Messaging event processor

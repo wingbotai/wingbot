@@ -7,9 +7,11 @@ const Router = require('../Router');
 const getCondition = require('../utils/getCondition');
 const { stateData, cachedTranslatedCompilator } = require('./utils');
 
-function media (params,
+function media (
+    params,
     // @ts-ignore
-    { isLastIndex } = {}) {
+    { isLastIndex } = {}
+) {
     const { type, url } = params;
 
     const urlString = url || '';

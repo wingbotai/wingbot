@@ -578,10 +578,12 @@ class AiMatching {
                         score: 1
                     };
 
-                    matching = this
-                        ._entityIsMatching(
-                            wanted.op, wanted.compare, requestEntity.value, requestState
-                        );
+                    matching = this._entityIsMatching(
+                        wanted.op,
+                        wanted.compare,
+                        requestEntity.value,
+                        requestState
+                    );
                 }
             } else if (!entityExists) {
                 matching = this

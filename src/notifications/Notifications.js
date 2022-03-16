@@ -369,7 +369,10 @@ class Notifications extends EventEmitter {
 
         await Promise.all(tasks
             .map((task) => this._messageDeliveryByMid(
-                task.campaignId, eventType, senderId, pageId
+                task.campaignId,
+                eventType,
+                senderId,
+                pageId
             )));
 
         return {
