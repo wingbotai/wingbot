@@ -3,8 +3,40 @@
  */
 'use strict';
 
-const { infoToProjection } = require('graphql-mongodb-projection');
 const apiAuthorizer = require('../../graphApi/apiAuthorizer');
+
+/**
+ *
+ * @param {*} info
+ * @returns {object}
+ */
+
+function getFields (info) {
+    if (info.fieldNodes) {
+        const fieldNodes = info.fieldNodes.filter((k) => k.kind === 'Field');
+
+        if (fieldNodes.length !== 1) {
+            return {};
+        }
+
+        return getFields(fieldNodes[0]);
+    }
+
+    const nodes = info.selectionSet ? info.selectionSet.selections : info.fieldNodes;
+
+    if (!info.selectionSet) {
+        return true;
+    }
+
+    return nodes.reduce((o, fieldInfo) => {
+        if (fieldInfo.kind !== 'Field' || !fieldInfo.name || !fieldInfo.name.value) {
+            return o;
+        }
+        return Object.assign(o, {
+            [fieldInfo.name.value]: getFields(fieldInfo)
+        });
+    }, {});
+}
 
 function notificationsApiFactory (storage, notifications, acl, options = {}) {
     return {
@@ -115,7 +147,7 @@ function notificationsApiFactory (storage, notifications, acl, options = {}) {
                 return null;
             }
 
-            const fields = infoToProjection(info);
+            const fields = getFields(info);
 
             const {
                 include,
@@ -132,7 +164,15 @@ function notificationsApiFactory (storage, notifications, acl, options = {}) {
             }
 
             if (fields.data) {
-                const res = storage.getSubscribtions(include, exclude, limit, pageId, lastKey);
+                const res = await storage
+                    .getSubscribtions(include, exclude, limit, pageId, lastKey);
+
+                if (fields.data.meta && typeof options.preprocessSubscriptions === 'function') {
+                    res.data = await Promise.resolve(
+                        options.preprocessSubscriptions(res.data, pageId)
+                    );
+                }
+
                 return Object.assign(res, { count });
             }
 
@@ -159,8 +199,12 @@ function notificationsApiFactory (storage, notifications, acl, options = {}) {
                 );
             }
 
-            for (const senderId of senderIds) {
-                await storage.subscribe(`${senderId}`, pageId, tag);
+            // make it little bit faster
+            while (senderIds.length > 0) {
+                await Promise.all(
+                    senderIds.splice(0, 5)
+                        .map((senderId) => storage.subscribe(`${senderId}`, pageId, tag))
+                );
             }
 
             return true;

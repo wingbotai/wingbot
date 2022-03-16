@@ -104,6 +104,28 @@ const DEFAULT_CAMPAIGN_DATA = {
  */
 
 /**
+ * @typedef {object} Subscription
+ * @prop {string} senderId
+ * @prop {string} pageId
+ * @prop {string} [meta]
+ */
+
+/**
+ * @callback PreprocessSubscriptions
+ * @param {Subscription[]} subscriptions
+ * @param {string} pageId
+ * @returns {Promise<Subscription[]>|Subscription[]}
+ */
+
+/**
+ * @callback PreprocessSubscribers
+ * @param {string[]} senderIds
+ * @param {string} pageId
+ * @param {string} tag
+ * @returns {Promise<string[]>|string[]} list of senderIds
+ */
+
+/**
  * Experimental notifications service
  *
  * @class Notifications
@@ -121,7 +143,8 @@ class Notifications extends EventEmitter {
      * @param {console} [options.log] - logger
      * @param {number} [options.default24Clearance] - use this clearance to ensure delivery in 24h
      * @param {string} [options.allAudienceTag] - tag to mark all users
-     * @param {Function} [options.preprocessSubscribers] - to preprocess GQL api given senderIds
+     * @param {PreprocessSubscribers} [options.preprocessSubscribers] - preprocess senderIds import
+     * @param {PreprocessSubscriptions} [options.preprocessSubscriptions]
      */
     constructor (notificationStorage = new NotificationsStorage(), options = {}) {
         super();
@@ -138,6 +161,7 @@ class Notifications extends EventEmitter {
         this._lts = new Map();
 
         this._preprocessSubscribers = options.preprocessSubscribers;
+        this._preprocessSubscriptions = options.preprocessSubscriptions;
     }
 
     /**
@@ -150,7 +174,8 @@ class Notifications extends EventEmitter {
      */
     api (acl = null) {
         const options = {
-            preprocessSubscribers: this._preprocessSubscribers
+            preprocessSubscribers: this._preprocessSubscribers,
+            preprocessSubscriptions: this._preprocessSubscriptions
         };
         return api(this._storage, this, acl, options);
     }

@@ -744,8 +744,12 @@ class Request {
         }
         const { text, alternatives = [] } = this.message;
 
-        if (alternatives.some((a) => a.text === text)) {
-            return alternatives;
+        const sorted = alternatives
+            .slice()
+            .sort(({ score: a }, { score: z }) => z - a);
+
+        if (sorted.some((a) => a.text === text)) {
+            return sorted;
         }
 
         return [
@@ -753,7 +757,7 @@ class Request {
                 text: this.message.text,
                 score: 1
             },
-            ...alternatives
+            ...sorted
         ];
     }
 

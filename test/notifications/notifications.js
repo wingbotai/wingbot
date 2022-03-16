@@ -70,7 +70,7 @@ describe('Notifications', function () {
             };
 
             for (let k = 100; k < 100 + TEST_ITEMS; k++) {
-                await notifications.subscribe(`${k}`, 'test');
+                await notifications.subscribe(`${k}`, 'test', 'test');
             }
 
             let campaign = await notifications.createCampaign('name', 'start');

@@ -13,6 +13,7 @@ type Tags {
 type Subscribtion {
     pageId: String
     senderId: String
+    meta: String
 }
 
 type Subscribtions {

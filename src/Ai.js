@@ -65,6 +65,20 @@ class Ai {
         this.threshold = 0.3;
 
         /**
+         * Upper limit for NLP resolving of STT alternatives
+         *
+         * @type {number}
+         */
+        this.sttMaxAlternatives = 3;
+
+        /**
+         * Minimal score to consider text as recognized well
+         *
+         * @type {number}
+         */
+        this.sttScoreThreshold = 0.3;
+
+        /**
          * The logger (console by default)
          *
          * @type {object}
@@ -581,14 +595,17 @@ class Ai {
             }
         }
 
+        const texts = req.textAlternatives()
+            .filter((alt) => alt.score >= this.sttScoreThreshold)
+            .slice(0, this.sttMaxAlternatives);
+
         const results = await Promise.all(
-            req.textAlternatives()
-                .map(({ text, score }) => model
-                    .resolve(this.textFilter(text), req)
-                    .then((res) => ({
-                        ...res,
-                        _altScore: score
-                    })))
+            texts.map(({ text, score }) => model
+                .resolve(this.textFilter(text), req)
+                .then((res) => ({
+                    ...res,
+                    _altScore: score
+                })))
         );
 
         results.sort(({

@@ -72,7 +72,9 @@ describe('<GraphApi>', function () {
 
         tester = new Tester(bot);
 
-        const notifications = new Notifications();
+        const notifications = new Notifications(undefined, {
+            preprocessSubscriptions: (subscriptions) => subscriptions.map((s) => ({ ...s, meta: `meta-${s.senderId}` }))
+        });
 
         api = new GraphApi([
             notifications.api(),
@@ -408,6 +410,29 @@ describe('<GraphApi>', function () {
             const { count } = res.data.subscribtions;
 
             assert.strictEqual(count, 2);
+        });
+
+        it('should be able show metadata', async () => {
+            api._apiConnector._useBundledGql = true;
+
+            const res = await api.request({
+                query: `{
+                    subscribtions {
+                        data {
+                            senderId
+                            meta
+                        }
+                    }
+                }`
+            }, headers);
+
+            const { data } = res.data.subscribtions;
+
+            assert.ok(Array.isArray(data));
+            assert.deepEqual(data, [
+                { senderId: '1', meta: 'meta-1' },
+                { senderId: '2', meta: 'meta-2' }
+            ]);
         });
 
     });
