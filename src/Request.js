@@ -742,21 +742,35 @@ class Request {
         if (!this.message || typeof this.message.text !== 'string') {
             return [];
         }
-        const { text, alternatives = [] } = this.message;
+        const { text: messageText, alternatives = [] } = this.message;
+
+        const unique = new Set();
+        let max = 0;
 
         const sorted = alternatives
             .slice()
-            .sort(({ score: a }, { score: z }) => z - a);
+            .map(({ text, score = 1 }) => ({ text, score }))
+            .sort(({ score: a }, { score: z }) => z - a)
+            .filter((a) => {
+                const norm = tokenize(a.text);
+                if (unique.has(norm) || !a.text) {
+                    return false;
+                }
+                max = Math.max(max, a.score);
+                unique.add(norm);
+                return true;
+            });
 
-        if (sorted.some((a) => a.text === text)) {
+        const normalized = tokenize(messageText);
+
+        if (unique.has(normalized)) {
             return sorted;
         }
 
+        max = max ? Math.min(1, max + 0.1) : 1;
+
         return [
-            {
-                text: this.message.text,
-                score: 1
-            },
+            { text: messageText, score: max },
             ...sorted
         ];
     }

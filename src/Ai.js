@@ -76,7 +76,7 @@ class Ai {
          *
          * @type {number}
          */
-        this.sttScoreThreshold = 0.3;
+        this.sttScoreThreshold = 0;
 
         /**
          * The logger (console by default)
@@ -599,34 +599,57 @@ class Ai {
             .filter((alt) => alt.score >= this.sttScoreThreshold)
             .slice(0, this.sttMaxAlternatives);
 
+        const altMax = Math.max(0, ...texts.map((t) => t.score));
+        const altKoef = (1 - this.confidence);
+
         const results = await Promise.all(
             texts.map(({ text, score }) => model
                 .resolve(this.textFilter(text), req)
                 .then((res) => ({
                     ...res,
-                    _altScore: score
+                    intents: res.intents
+                        .map((i) => ({
+                            ...i,
+                            score: i.score - (altKoef * (altMax - score))
+                        }))
+                        .sort(({ score: a }, { score: z }) => z - a)
                 })))
         );
 
         results.sort(({
-            intents: aIntents = [], _altScore: aAlt
+            intents: [aIntent = { score: 0 }]
         }, {
-            intents: zIntents = [], _altScore: zAlt
-        }) => {
-            const [{ score: aScore = 0 } = {}] = aIntents;
-            const [{ score: zScore = 0 } = {}] = zIntents;
+            intents: [zIntent = { score: 0 }]
+        }) => zIntent.score - aIntent.score);
 
-            const a = aAlt * aScore;
-            const z = zAlt * zScore;
+        const [winner = { intents: [], entities: [] }, ...others] = results;
 
-            if (a === z) {
-                return zAlt - aAlt;
-            }
+        if (others.length === 0) {
+            return winner;
+        }
 
-            return z - a;
+        const { intents } = winner;
+
+        const known = new Set(intents.map((i) => i.intent));
+
+        others.forEach((other) => {
+            intents.push(
+                ...other.intents.filter(({ score, intent }) => {
+                    if (score >= this.confidence || known.has(intent)) {
+                        return false;
+                    }
+                    known.add(intent);
+                    return true;
+                })
+            );
         });
 
-        return results[0];
+        intents.sort(({ score: a }, { score: z }) => z - a);
+
+        return {
+            ...winner,
+            intents
+        };
     }
 
     /**
