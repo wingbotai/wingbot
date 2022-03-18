@@ -452,7 +452,7 @@ class NotificationsStorage {
      * @param {string} tag
      * @returns {Promise}
      */
-    subscribe (senderId, pageId, tag) {
+    _subscribe (senderId, pageId, tag) {
         const key = `${senderId}|${pageId}`;
         let subscribtion = this._subscribtions.get(key);
         if (!subscribtion) {
@@ -467,6 +467,18 @@ class NotificationsStorage {
         }
 
         this._subscribtions.set(key, subscribtion);
+    }
+
+    /**
+     *
+     * @param {string|string[]} senderId
+     * @param {string} pageId
+     * @param {string} tag
+     * @returns {Promise}
+     */
+    subscribe (senderId, pageId, tag) {
+        const insert = Array.isArray(senderId) ? senderId : [senderId];
+        insert.forEach((sender) => this._subscribe(sender, pageId, tag));
         return Promise.resolve();
     }
 

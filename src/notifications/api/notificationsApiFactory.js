@@ -198,12 +198,16 @@ function notificationsApiFactory (storage, notifications, acl, options = {}) {
                 );
             }
 
+            senderIds = senderIds.slice();
+
             // make it little bit faster
             while (senderIds.length > 0) {
-                await Promise.all(
-                    senderIds.splice(0, 5)
-                        .map((senderId) => storage.subscribe(`${senderId}`, pageId, tag))
-                );
+                if (storage.subscribe.length > 3) {
+                    const insertSenders = senderIds.splice(0, 500);
+                    await storage.subscribe(insertSenders, pageId, tag, true);
+                } else {
+                    await storage.subscribe(senderIds.pop(), pageId, tag);
+                }
             }
 
             return true;
