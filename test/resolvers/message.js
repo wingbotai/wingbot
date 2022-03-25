@@ -46,6 +46,47 @@ const ssmlText = [
 ];
 
 describe('Message voice control', () => {
+
+    describe('quick reply translation', () => {
+
+        it('shows translated quick replies', async () => {
+            const bot = new Router();
+
+            bot.use('go', message({
+                text: [
+                    { l: 'cs', t: ['Czech text'] },
+                    { l: 'en', t: ['English text'] }
+                ],
+                replies: [
+                    {
+                        targetRouteId: 'route-id',
+                        title: [
+                            { l: 'cs', t: 'Czech reply' },
+                            { l: 'en', t: 'En reply' }
+                        ]
+                    }
+                ]
+            }, {
+                isLastIndex: true,
+                isLastMessage: true,
+                allowForbiddenSnippetWords: false,
+                linksMap: new Map([
+                    ['route-id', '/some']
+                ])
+            }));
+
+            const t = new Tester(bot);
+
+            t.setState({ lang: 'en' });
+
+            await t.postBack('go');
+
+            t.any().contains('English text');
+            t.any().quickReplyTextContains('En reply');
+        });
+
+    });
+
     describe('defaultMessageParams', () => {
 
         /** @type {Tester} */

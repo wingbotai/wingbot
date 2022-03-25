@@ -9,7 +9,11 @@ const Request = require('../Request');
 const Router = require('../Router');
 const getCondition = require('../utils/getCondition');
 const {
-    stateData, getLanguageText, getLanguageTextObjects, randomizedCompiler
+    stateData,
+    getLanguageText,
+    getLanguageTextObjects,
+    randomizedCompiler,
+    cachedTranslatedCompilator
 } = require('./utils');
 const {
     FEATURE_SSML, FEATURE_TEXT, FEATURE_VOICE
@@ -75,7 +79,7 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
             action,
             condition,
             title: reply.title
-                ? randomizedCompiler(reply.title)
+                ? cachedTranslatedCompilator(reply.title)
                 : null,
             data: {}
         };
