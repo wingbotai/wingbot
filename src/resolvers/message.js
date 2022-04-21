@@ -19,14 +19,17 @@ const {
     FEATURE_SSML, FEATURE_TEXT, FEATURE_VOICE
 } = require('../features');
 
+/** @typedef {import('../Responder').VoiceControl} VoiceControl */
+/** @typedef {import('./utils').Translations} Translations */
+/** @typedef {import('./utils').TextObject} TextObject */
 /**
  * Returns voice control props from params
  *
  * @param {any} params
  * @param {string} lang
- * @returns {null | import('../Responder').VoiceControl}
+ * @returns {null | VoiceControl}
  */
-function getVoiceControl (params, lang = null) {
+function getVoiceControlFromParams (params, lang = null) {
     const voiceControl = {};
 
     const voiceControlProps = ['speed', 'pitch', 'volume', 'voice', 'style', 'language'];
@@ -105,10 +108,10 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
 }
 
 /**
- * @param {import('./utils').Translations} text
+ * @param {Translations} text
  * @param {string[]} features
  * @param {string} lang
- * @returns {{translations: import('./utils').TextObject[],ssmlAlternatives:string[] | null}}
+ * @returns {{translations:TextObject[],ssmlAlternatives:string[] | null}}
  */
 function findSupportedMessages (text, features, lang = null) {
     let translations = getLanguageTextObjects(text, lang);
@@ -184,7 +187,6 @@ function message (params, {
         const data = stateData(req, res);
 
         // filter supported messages
-        /** @type {{translations:import('./utils').TextObject[],ssmlAlternatives:string[]}} */
         const supportedText = findSupportedMessages(
             params.text,
             req.features,
@@ -235,7 +237,7 @@ function message (params, {
         }
 
         // generate voice control
-        let voiceControl = getVoiceControl(params, data.lang);
+        let voiceControl = getVoiceControlFromParams(params, data.lang);
         if (supportedText.ssmlAlternatives) {
             // find SSML alternative
             const ssmlAlternativeTemplate = randomizedCompiler([{

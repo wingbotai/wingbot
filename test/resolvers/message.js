@@ -14,7 +14,7 @@ const defaultMessageParams = {
     replies: [],
     speed: 2,
     pitch: 2,
-    volume: 2,
+    volume: undefined,
     voice: 'voice',
     style: null,
     language: 'language'
@@ -22,7 +22,9 @@ const defaultMessageParams = {
 
 const noVoiceMessageParams = {
     hasCondition: false,
-    replies: []
+    replies: [],
+    style: null,
+    speed: undefined
 };
 
 const ssmlText = [
