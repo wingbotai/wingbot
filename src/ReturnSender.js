@@ -24,6 +24,12 @@ const { FLAG_DO_NOT_LOG } = require('./flags');
  */
 
 /**
+ * @typedef {object} UploadResult
+ * @prop {string} [url]
+ * @prop {string|number} [attachmentId]
+ */
+
+/**
  * Text filter function
  *
  * @callback textFilter
@@ -317,6 +323,17 @@ class ReturnSender {
 
     visitedInteraction (action) {
         this._visitedInteractions.push(action);
+    }
+
+    /**
+     *
+     * @param {Buffer} data
+     * @param {string} contentType
+     * @param {string} fileName
+     * @returns {Promise<UploadResult>}
+     */
+    async upload (data, contentType, fileName) { // eslint-disable-line no-unused-vars
+        throw new Error('#upload() not supported by this channel');
     }
 
     send (payload) {

@@ -5,6 +5,7 @@
 
 const jwt = require('jsonwebtoken');
 const { default: fetch, Headers } = require('node-fetch');
+const FormData = require('form-data');
 const crypto = require('crypto');
 const { Agent } = require('https');
 const { promisify } = require('util');
@@ -12,6 +13,7 @@ const ReturnSender = require('./ReturnSender');
 
 /** @typedef {import('./ReturnSender').ReturnSenderOptions} ReturnSenderOptions */
 /** @typedef {import('./ReturnSender').ChatLogStorage} ChatLogStorage */
+/** @typedef {import('./ReturnSender').UploadResult} UploadResult */
 
 /**
  * @typedef {object} TlsOptions
@@ -89,6 +91,38 @@ class BotAppSender extends ReturnSender {
         }
 
         return this._agent;
+    }
+
+    /**
+     *
+     * @param {Buffer} data
+     * @param {string} contentType
+     * @param {string} fileName
+     * @returns {Promise<UploadResult>}
+     */
+    async upload (data, contentType, fileName) {
+        const formData = new FormData();
+
+        const nonce = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(36).padEnd(11, '0');
+
+        formData.append('nonce', nonce);
+        formData.append('f0', data, { filename: fileName, contentType });
+
+        const [token, agent] = await Promise.all([
+            BotAppSender.signBody(nonce, this._secret, this._appId),
+            this._getAgent()
+        ]);
+
+        const headers = new Headers();
+
+        headers.set('Authorization', token);
+
+        const response = await this._fetch(this._apiUrl, {
+            headers, body: formData, agent, method: 'POST'
+        })
+            .then((r) => r.json());
+
+        return response;
     }
 
     async _send (payload) {

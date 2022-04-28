@@ -60,6 +60,8 @@ Object.freeze(ExpectedInput);
  * @prop {string} [voice]
  */
 
+/** @typedef {import('./ReturnSender').UploadResult} UploadResult */
+
 /**
  * Instance of responder is passed as second parameter of handler (res)
  *
@@ -537,6 +539,7 @@ class Responder {
             });
         } else {
             this._quickReplyCollector.push({
+                // @ts-ignore
                 action: this.toAbsoluteAction(action),
                 title,
                 data,
@@ -747,6 +750,30 @@ class Responder {
             return `/${ret}`;
         }
         return ret;
+    }
+
+    /**
+     *
+     * @param {Buffer} data
+     * @param {string} contentType
+     * @param {string} fileName
+     * @returns {Promise<UploadResult>}
+     */
+    async upload (data, contentType, fileName) {
+        const result = await this._messageSender.upload(data, contentType, fileName);
+
+        if (!result.url) {
+            throw new Error(`Got no url on file upload ${fileName}. Probably a compatibility issue.`);
+        }
+
+        let [type] = contentType.split('/');
+
+        if (!['image', 'video', 'audio'].includes(type)) {
+            type = 'file';
+        }
+
+        this._attachment(result.url, type, true);
+        return result;
     }
 
     /**
