@@ -264,6 +264,9 @@ class Request {
          * @constant {string} FEATURE_TRACKING channel supports tracking protocol
          */
         this.FEATURE_TRACKING = FEATURE_TRACKING;
+
+        /** @type {object} */
+        this.configuration = Object.freeze({});
     }
 
     get data () {

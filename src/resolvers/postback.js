@@ -7,7 +7,17 @@ const Router = require('../Router');
 const getCondition = require('../utils/getCondition');
 const { shouldExecuteResolver } = require('./resolverTags');
 
-function postback (params, { linksMap, isLastIndex, allowForbiddenSnippetWords }) {
+/** @typedef {import('../BuildRouter').BotContext} BotContext */
+/** @typedef {import('../Router').Resolver} Resolver */
+
+/**
+ *
+ * @param {object} params
+ * @param {BotContext} context
+ * @returns {Resolver}
+ */
+function postback (params, context) {
+    const { linksMap, isLastIndex } = context;
     const {
         routeId,
         postBack: staticAction
@@ -22,12 +32,12 @@ function postback (params, { linksMap, isLastIndex, allowForbiddenSnippetWords }
         }
     }
 
-    const condition = getCondition(params, '', allowForbiddenSnippetWords);
+    const condition = getCondition(params, context, 'postback');
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
     return (req, res, postBack) => {
-        if (!shouldExecuteResolver(req, params)) {
+        if (!action || !shouldExecuteResolver(req, params)) {
             return ret;
         }
 

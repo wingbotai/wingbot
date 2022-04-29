@@ -545,7 +545,7 @@ class Notifications extends EventEmitter {
             if (!campaign.hasEditableCondition) {
                 fn = customFn(campaign.condition, `Campaign "${campaign.name}" condition`);
             } else {
-                fn = customCondition(campaign.editableCondition, `Campaign "${campaign.name}" condition`);
+                fn = customCondition(campaign.editableCondition, req.configuration, `Campaign "${campaign.name}" condition`);
             }
 
             const fnRes = fn(req, res);

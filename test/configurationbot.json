@@ -4,26 +4,20 @@
       {
         "routes": [
           {
-            "name": "AI Interactions entry point",
-            "path": "/",
-            "resolvers": [],
-            "id": 1507123727796,
-            "isRoot": true
-          },
-          {
             "name": "Global AI Interaction",
             "path": "global-ai-interaction",
+            "isEntryPoint": "true",
             "resolvers": [
               {
                 "type": "botbuild.message",
                 "params": {
                   "replies": [],
-                  "text": "This is the global interaction"
+                  "text": "This should not happen"
                 },
                 "id": 1507123797059
               }
             ],
-            "id": 1507123761617,
+            "id": 1507123761112,
             "aiTags": [
               "globalIntent"
             ]
@@ -33,8 +27,8 @@
         "blockName": "AI Interactions",
         "botId": "2a781536-40eb-4aa4-95aa-68848e6661a4",
         "id": "58f62016-3388-478d-a459-36c623c4a875",
-        "staticBlockId": "3c234132-868f-4b01-a0c3-2624d848d4c2",
-        "stageBlock": "HEAD|3c234132-868f-4b01-a0c3-2624d848d4c2"
+        "staticBlockId": "3c234132-868f-4b01-a0c3-2624d848d4c9",
+        "stageBlock": "HEAD|3c234132-868f-4b01-a0c3-2624d848d4c9"
       },
       {
         "routes": [
@@ -48,34 +42,20 @@
                   "text": "text",
                   "buttons": [
                     {
-                      "title": "akce",
+                      "title": "nesmi",
                       "action": {
-                        "webviewHeight": "full",
-                        "targetRouteId": null,
-                        "type": "web_url",
-                        "url": "http://goo.gl"
+                        "targetRouteId": 1507123761112,
+                        "type": "postback"
                       },
                       "id": 1518712255669
                     },
                     {
-                      "title": "druha",
+                      "title": "musi",
                       "action": {
-                        "webviewHeight": "full",
-                        "targetRouteId": 1507123084071,
-                        "type": "postback",
-                        "url": null
+                        "targetRouteId": 1507123395255,
+                        "type": "postback"
                       },
-                      "id": 1518717995318
-                    },
-                    {
-                      "title": "share",
-                      "action": {
-                        "webviewHeight": "full",
-                        "targetRouteId": null,
-                        "type": "element_share",
-                        "url": null
-                      },
-                      "id": 1518718007290
+                      "id": 1518712255660
                     }
                   ]
                 },
@@ -87,10 +67,13 @@
                   "replies": [
                     {
                       "title": "go back",
-                      "targetRouteId": 1507123084071
+                      "targetRouteId": 1507123084071,
+                      "setState": {
+                        "sasaLele": "{{c.bar}} here"
+                      }
                     }
                   ],
-                  "text": "Want continue?"
+                  "text": "Want continue {{configuration.foo}}"
                 },
                 "id": 1507123071875
               }
@@ -178,7 +161,7 @@
                                 "targetRouteId": 1507123084071
                               }
                             ],
-                            "text": "Can go outside?"
+                            "text": "Can go outside? {{c.foo}} {{sasaLele}}"
                           },
                           "id": 1507123414443
                         }
@@ -199,6 +182,13 @@
               {
                 "type": "botbuild.postback",
                 "params": {
+                  "routeId": 1507123761112
+                },
+                "id": 1507123319280
+              },
+              {
+                "type": "botbuild.postback",
+                "params": {
                   "routeId": 1507123353009
                 },
                 "id": 1507123359282
@@ -214,7 +204,7 @@
                 "type": "botbuild.inlineCode",
                 "params": {
                   "description": "increment state",
-                  "code": "(req, res) => {\n    res.text(`got ${req.text()}`);\n}"
+                  "code": "(req, res) => {\n    res.text(`got ${req.text()} ${req.configuration.foo}`);\n}"
                 },
                 "id": 1507627874451
               }
@@ -267,7 +257,7 @@
                 "params": {
                   "conditionFn": "(req, res) => {\n    return !req.state.a;\n}",
                   "text": [
-                    { "t": "This is the first time, you're here", "l": "default" },
+                    { "t": "This is the first time, you're here {{configuration.foo}}", "l": "default" },
                     { "t": "To je poprvé", "l": "cz" }
                   ],
                   "replies": [],
@@ -353,84 +343,13 @@
                 "id": 1507627874459
               },
               {
-                "type": "botbuild.carousel",
-                "params": {
-                  "items": [
-                    {
-                      "image": null,
-                      "imageAspect": "horizontal",
-                      "id": 1518676730865,
-                      "buttons": [
-                        {
-                          "title": "to the web",
-                          "action": {
-                            "webviewHeight": "full",
-                            "targetRouteId": null,
-                            "type": "web_url",
-                            "url": "https://goo.gl"
-                          },
-                          "id": 1518676742443
-                        },
-                        {
-                          "title": "as a postback",
-                          "action": {
-                            "webviewHeight": "full",
-                            "targetRouteId": 1516214359209,
-                            "type": "postback",
-                            "url": null
-                          },
-                          "id": 1518676823494
-                        }
-                      ],
-                      "title": "First title",
-                      "subtitle": null
-                    },
-                    {
-                      "image": "http://www.catster.com/wp-content/uploads/2015/06/20140118-cat-music-videos-christopher-cross-sailing.png",
-                      "imageAspect": "horizontal",
-                      "id": 1518676737681,
-                      "buttons": [
-                        {
-                          "title": "another web",
-                          "action": {
-                            "webviewHeight": "full",
-                            "targetRouteId": null,
-                            "type": "web_url_extension",
-                            "url": "/local/link"
-                          },
-                          "id": 1518676845738
-                        },
-                        {
-                          "title": "share",
-                          "action": {
-                            "webviewHeight": "full",
-                            "targetRouteId": null,
-                            "type": "element_share",
-                            "url": null
-                          },
-                          "id": 1518676876137
-                        }
-                      ],
-                      "title": "Second title",
-                      "subtitle": "subtitle"
-                    }
-                  ],
-                  "imageAspect": "square"
-                },
-                "id": 1518627281574
-              },
-              {
-                "type": "botbuild.carousel",
-                "params": {
-                  "items": [],
-                  "imageAspect": "square"
-                },
-                "id": 1518627281575
-              },
-              {
                 "type": "botbuild.message",
                 "params": {
                   "replies": [
+                    {
+                      "titie": "Nesmi tu byt",
+                      "targetRouteId": 1507123761112
+                    },
                     {
                       "title": [
                         { "t": "Go To Subblock", "l": "default" },
@@ -438,7 +357,7 @@
                       ],
                       "targetRouteId": 1507122998196,
                       "hasCondition": true,
-                      "conditionFn": "(req, res) => req.state.a > 0"
+                      "conditionFn": "(req, res) => { console.log(req.configuration); return req.configuration.foo === 'root value'; }"
                     },
                     {
                       "title": null,
@@ -457,14 +376,14 @@
             "isRoot": true
           },
           {
-            "name": "Fallback integration of AI iteractions",
-            "path": "fallback-integration-of-ai-iteractions",
+            "name": "Disabled dialogue",
+            "path": "disabled",
             "resolvers": [
               {
                 "type": "botbuild.include",
                 "params": {
                   "items": {},
-                  "staticBlockId": "3c234132-868f-4b01-a0c3-2624d848d4c2"
+                  "staticBlockId": "3c234132-868f-4b01-a0c3-2624d848d4c9"
                 },
                 "id": 1507123868393
               }
@@ -523,7 +442,7 @@
                 "id": 1507123408256
               }
             ],
-            "id": 1507123395255
+            "id": 1507123395250
           },
           {
             "name": "Continued action",
@@ -538,7 +457,7 @@
                       "targetRouteId": 1507123395255
                     }
                   ],
-                  "text": "Lets try to go deeper"
+                  "text": "Deeper {{sasaLele}}"
                 },
                 "id": 1507123380278
               }

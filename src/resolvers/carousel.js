@@ -17,12 +17,12 @@ const {
     TYPE_URL_WITH_EXT
 } = require('./utils');
 
-function carousel (params, {
-    isLastIndex,
-    linksMap,
-    linksTranslator = (a, b, c) => c,
-    allowForbiddenSnippetWords
-}) {
+function carousel (params, context) {
+    const {
+        isLastIndex,
+        linksMap,
+        linksTranslator = (a, b, c) => c
+    } = context;
     const {
         items = [],
         shareable = false,
@@ -36,7 +36,7 @@ function carousel (params, {
             return ret;
         }
 
-        const state = stateData(req, res);
+        const state = stateData(req, res, context.configuration);
         const isSquare = imageAspect === ASPECT_SQUARE;
         const tpl = res.genericTemplate(shareable, isSquare);
 
@@ -99,10 +99,8 @@ function carousel (params, {
                 buttons,
                 state,
                 elem,
-                linksMap,
                 senderId,
-                linksTranslator,
-                allowForbiddenSnippetWords,
+                context,
                 req,
                 res
             );

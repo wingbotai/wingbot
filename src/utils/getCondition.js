@@ -6,7 +6,20 @@
 const customCondition = require('./customCondition');
 const customFn = require('./customFn');
 
-module.exports = (params, description = '', allowForbiddenSnippetWords = false) => {
+/** @typedef {import('../BuildRouter').BotContext} BotContext */
+
+/**
+ *
+ * @param {object} params
+ * @param {BotContext} context
+ * @param {string} description
+ * @returns {Function}
+ */
+module.exports = function getCondition (params, context, description = '') {
+    const {
+        allowForbiddenSnippetWords = false,
+        configuration
+    } = context;
     const {
         hasCondition = false,
         conditionFn = '() => true',
@@ -18,7 +31,7 @@ module.exports = (params, description = '', allowForbiddenSnippetWords = false) 
 
     if (hasCondition) {
         if (hasEditableCondition) {
-            condition = customCondition(editableCondition);
+            condition = customCondition(editableCondition, configuration, description);
         } else {
             condition = customFn(conditionFn, description, allowForbiddenSnippetWords);
         }
