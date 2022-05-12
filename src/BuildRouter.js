@@ -159,7 +159,6 @@ class BuildRouter extends Router {
      * @param {ConfigStorage} [context.configStorage] - function, that translates links globally
      * @param {boolean} [context.allowForbiddenSnippetWords] - disable security rule
      * @param {RouteConfig[]} [context.routeConfigs] - list of disabled routes
-     * @param {object} [context.config] - context data
      * @param {object} [context.configuration]
      * @param {fetch} [fetchFn] - override a request function
      * @example
