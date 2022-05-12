@@ -566,7 +566,8 @@ class BuildRouter extends Router {
             'botbuild.path',
             'botbuild.customCode',
             'botbuild.inlineCode',
-            'botbuild.plugin'
+            'botbuild.plugin',
+            'botbuild.postback'
         ].includes(type)) {
             return fn;
         }
