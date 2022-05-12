@@ -563,7 +563,10 @@ class BuildRouter extends Router {
 
         if ([
             'botbuild.include',
-            'botbuild.path'
+            'botbuild.path',
+            'botbuild.customCode',
+            'botbuild.inlineCode',
+            'botbuild.plugin'
         ].includes(type)) {
             return fn;
         }
