@@ -196,9 +196,22 @@ class ReturnSender {
             ? this.confidentInputFilter
             : this.textFilter;
 
+        let { message } = payload;
+
+        if (message && message.voice && message.voice.ssml) {
+            message = {
+                ...message,
+                text: message.text ? message.text : message.voice.ssml,
+                voice: {
+                    ...message.voice,
+                    ssml: filter(message.voice.ssml)
+                }
+            };
+        }
+
         // text message
-        if (payload.message && payload.message.text) {
-            let { text } = payload.message;
+        if (message && message.text) {
+            let { text } = message;
 
             if (req && req._anonymizedText) {
                 text = req._anonymizedText;
@@ -207,27 +220,27 @@ class ReturnSender {
             return {
                 ...payload,
                 message: {
-                    ...payload.message,
+                    ...message,
                     text: filter(text)
                 }
             };
         }
 
         // button message
-        if (payload.message && payload.message.attachment
-            && payload.message.attachment.type === 'template'
-            && payload.message.attachment.payload
-            && payload.message.attachment.payload.text) {
+        if (message && message.attachment
+            && message.attachment.type === 'template'
+            && message.attachment.payload
+            && message.attachment.payload.text) {
 
             return {
                 ...payload,
                 message: {
-                    ...payload.message,
+                    ...message,
                     attachment: {
-                        ...payload.message.attachment,
+                        ...message.attachment,
                         payload: {
-                            ...payload.message.attachment.payload,
-                            text: filter(payload.message.attachment.payload.text)
+                            ...message.attachment.payload,
+                            text: filter(message.attachment.payload.text)
                         }
                     }
                 }

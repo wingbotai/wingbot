@@ -23,6 +23,7 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 
 /** @typedef {import('./CallbackAuditLog')} AuditLog */
 /** @typedef {import('./BotAppSender').TlsOptions} TlsOptions */
+/** @typedef {import('./ReturnSender').ReturnSenderOptions} ReturnSenderOptions */
 
 /**
  * @typedef {object} BotAppOptions
@@ -35,7 +36,7 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
  * @prop {AuditLog} [auditLog]
  * @prop {TlsOptions} [tls]
  *
- * @typedef {ProcessorOptions & BotAppOptions} Options
+ * @typedef {ProcessorOptions & BotAppOptions & ReturnSenderOptions} Options
  */
 
 /**
@@ -66,8 +67,19 @@ class BotApp {
             preferSynchronousResponse = false,
             auditLog = null,
             tls = null,
+
+            textFilter,
+            logStandbyEvents,
+            confidentInputFilter,
+
             ...processorOptions
         } = options;
+
+        this._returnSenderOptions = {
+            textFilter,
+            logStandbyEvents,
+            confidentInputFilter
+        };
 
         this._secret = Promise.resolve(secret);
         this._fetch = fetch; // mock
@@ -200,7 +212,8 @@ class BotApp {
         const { mid = null } = message;
 
         if (sync || this._preferSynchronousResponse) {
-            const sender = new ReturnSender({}, senderId, message, this._senderLogger);
+            const options = this._returnSenderOptions;
+            const sender = new ReturnSender(options, senderId, message, this._senderLogger);
             sender.propagatesWaitEvent = true;
             const res = await this._processor.processMessage(message, pageId, sender, { appId });
             await this._processSenderResponses(sender, senderId, pageId, headers);
@@ -226,6 +239,7 @@ class BotApp {
         }
 
         const options = {
+            ...this._returnSenderOptions,
             apiUrl: this._apiUrl,
             pageId,
             appId,
