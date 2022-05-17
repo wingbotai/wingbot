@@ -497,15 +497,21 @@ class BuildRouter extends Router {
                 nextRouteIsSameResponder = nextRoute.respondsToRouteId === route.respondsToRouteId;
             }
 
+            const buildInfo = {
+                expectedToAddResolver: !!route.expectedPath,
+                attachedRouter: false
+            };
+
             const resolvers = [
                 ...this._buildRouteHead(route, nextRouteIsSameResponder),
-                ...this.buildResolvers(route.resolvers, route, route.expectedPath)
+                ...this.buildResolvers(route.resolvers, route, buildInfo)
             ];
 
             if (route.expectedPath) {
                 // attach expected before last message, if there is
                 resolvers.push(expected({
-                    path: route.expectedPath
+                    path: route.expectedPath,
+                    attachedRouter: buildInfo.attachedRouter
                 }, {
                     isLastIndex: true
                 }));
@@ -524,7 +530,7 @@ class BuildRouter extends Router {
         return -1;
     }
 
-    buildResolvers (resolvers, route = {}, expectedToAddResolver = false) {
+    buildResolvers (resolvers, route = {}, buildInfo = {}) {
         const {
             path: ctxPath, isFallback, isResponder, expectedPath, id
         } = route;
@@ -535,7 +541,7 @@ class BuildRouter extends Router {
         return resolvers.map((resolver, i) => {
             const context = {
                 ...this._context,
-                isLastIndex: lastIndex === i && !expectedToAddResolver,
+                isLastIndex: lastIndex === i && !buildInfo.expectedToAddResolver,
                 isLastMessage: lastMessageIndex === i,
                 router: this,
                 linksMap: this._linksMap,
@@ -546,11 +552,11 @@ class BuildRouter extends Router {
                 routeId: id
             };
 
-            return this._resolverFactory(resolver, context);
+            return this._resolverFactory(resolver, context, buildInfo);
         });
     }
 
-    _resolverFactory (resolver, context) {
+    _resolverFactory (resolver, context, buildInfo) {
         const { type } = resolver;
 
         if (!this.resources.has(type)) {
@@ -560,6 +566,10 @@ class BuildRouter extends Router {
         const factoryFn = this.resources.get(type);
 
         const fn = factoryFn(resolver.params, context, this._plugins);
+
+        if (fn.reduce) {
+            Object.assign(buildInfo, { attachedRouter: true });
+        }
 
         if ([
             'botbuild.include',

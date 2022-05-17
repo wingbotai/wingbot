@@ -834,7 +834,9 @@ class Request {
      * });
      */
     expectedContext (justOnce = false, includeKeywords = false) {
-        const { _expected: expected, _expectedConfidentInput: confident } = this.state;
+        const ad = this.actionData();
+        const expected = ad._useExpected || this.state._expected;
+        const confident = this.state._expectedConfidentInput;
 
         const ret = {};
 
