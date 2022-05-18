@@ -260,7 +260,7 @@ class Router extends ReducerWrapper {
     }
 
     // used as protected method
-    async processReducers (reducers, req, res, postBack, path, action, doNotTrack = false) {
+    async processReducers (reducers, req, res, postBack, action, doNotTrack = false) {
         const routeToReduce = {
             reducers,
             path: res.routePath

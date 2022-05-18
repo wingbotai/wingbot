@@ -41,7 +41,7 @@ function wrapPluginFunction (
                     return true;
                 }
                 const reducers = preprocessedItems.get(codeBlockName);
-                return router.processReducers(reducers, req, res, postBack, path, action, true);
+                return router.processReducers(reducers, req, res, postBack, action, true);
             }
         });
 

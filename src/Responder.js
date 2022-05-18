@@ -528,6 +528,8 @@ class Responder {
         if (prepend) Object.assign(prep, { _prepend: true });
         if (justToExisting) Object.assign(prep, { _justToExisting: true });
 
+        const useCa = this.currentAction();
+
         if (actionIsObject) {
             this._quickReplyCollector.push({
                 ...prep,
@@ -535,7 +537,8 @@ class Responder {
                 data: {
                     ...prep.data,
                     ...data
-                }
+                },
+                useCa
             });
         } else {
             this._quickReplyCollector.push({
@@ -543,6 +546,7 @@ class Responder {
                 action: this.toAbsoluteAction(action),
                 title,
                 data,
+                useCa,
                 ...prep
             });
         }

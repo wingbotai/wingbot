@@ -133,7 +133,8 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
                 data = {},
                 isLocation = false,
                 isEmail = false,
-                isPhone = false
+                isPhone = false,
+                useCa = currentAction
             } = reply;
             let {
                 setState = null
@@ -219,7 +220,7 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
                 payload = {
                     action: absoluteAction,
                     data: {
-                        _ca: currentAction,
+                        _ca: useCa,
                         ...data
                     }
                 };

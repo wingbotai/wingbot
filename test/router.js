@@ -327,7 +327,7 @@ describe('Router', function () {
             const list = router.createReducersArray([route]);
 
             router.use('/theAction', async (r, s, pb, path, action) => {
-                await router.processReducers(list, r, s, pb, path, action);
+                await router.processReducers(list, r, s, pb, action);
             });
 
             wrapRouter.use('/inner', router);
