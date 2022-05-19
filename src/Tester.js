@@ -70,8 +70,15 @@ class Tester {
         };
 
         this._listener = (senderIdentifier, action, text, req, prevAction, doNotTrack) => {
+            const reqAction = req.action();
+            if (reqAction && !this._actionMatches(action, reqAction)) {
+                this._actionsCollector.push({
+                    action: reqAction, text, prevAction, doNotTrack, isReqAction: true
+                });
+            }
+
             this._actionsCollector.push({
-                action, text, prevAction, doNotTrack
+                action, text, prevAction, doNotTrack, isReqAction: false
             });
         };
 
@@ -255,22 +262,30 @@ class Tester {
         return new ResponseAssert(this.responses[this.responses.length - 1]);
     }
 
+    _actionMatches (botAction, path) {
+        return botAction === path
+            || (path === '*' && botAction === '/*')
+            || (!botAction.match(/\*/) && actionMatches(botAction, path));
+    }
+
     /**
-     * Checks, that app past the action
+     * Checks, that request passed an interaction
      *
      * @param {string} path
+     * @param {boolean} [matchRequestActions]
      * @returns {this}
      *
      * @memberOf Tester
      */
-    passedAction (path) {
+    passedAction (path, matchRequestActions = false) {
         const ok = this.actions
-            .some((action) => (action.action === path
-                || (!action.action.match(/\*/) && actionMatches(action.action, path))));
+            .some((action) => (!action.isReqAction || matchRequestActions)
+                && this._actionMatches(action.action, path));
         let actual;
         if (!ok) {
             const set = new Set();
             actual = this.actions
+                .filter((a) => !a.isReqAction || matchRequestActions)
                 .map((a) => (a.doNotTrack ? `(system interaction) ${a.action}` : a.action))
                 .filter((a) => !set.has(a) && set.add(a));
             assert.fail(asserts.ex('Interaction was not passed', path, actual));

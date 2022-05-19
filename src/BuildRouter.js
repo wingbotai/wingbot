@@ -310,7 +310,8 @@ class BuildRouter extends Router {
             this._configTs = 0;
         }
         if (this._prebuiltGlobalIntents !== null) {
-            this.globalIntents = new Map(this._prebuiltGlobalIntents);
+            this.globalIntents.clear();
+            this._prebuiltGlobalIntents.forEach(([k, v]) => this.globalIntents.set(k, v));
         }
     }
 
@@ -326,7 +327,8 @@ class BuildRouter extends Router {
         if (this._prebuiltGlobalIntents === null) {
             this._prebuiltGlobalIntents = Array.from(this.globalIntents.entries());
         } else {
-            this.globalIntents = new Map(this._prebuiltGlobalIntents);
+            this.globalIntents.clear();
+            this._prebuiltGlobalIntents.forEach(([k, v]) => this.globalIntents.set(k, v));
         }
 
         if (this._prebuiltRoutesCount === null) {
