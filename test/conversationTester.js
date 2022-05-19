@@ -17,6 +17,7 @@ describe('<ConversationTester>', () => {
     let enStorage;
     let csStorage;
     let botFactory;
+    let xStorage;
 
     beforeEach(() => {
         /** @type {import('../src/ConversationTester').TestCase[]} */
@@ -208,6 +209,28 @@ describe('<ConversationTester>', () => {
         };
 
         /** @type {import('../src/ConversationTester').TextCase[]} */
+        xStorage = {
+            async getTestCases () {
+                return [
+                    {
+                        list: 'Cat',
+                        name: 'foo',
+                        steps: [
+                            {
+                                step: 1,
+                                rowNum: 1,
+                                action: 'valid text',
+                                passedAction: 'valid-text',
+                                textContains: 'bar\nFallback',
+                                quickRepliesContains: ''
+                            }
+                        ]
+                    }
+                ];
+            }
+        };
+
+        /** @type {import('../src/ConversationTester').TextCase[]} */
         textStorage = {
             async getTestCases () {
                 return [
@@ -276,7 +299,15 @@ describe('<ConversationTester>', () => {
                     .passThread('1');
             });
 
+            bot.use(Ai.ai.global('valid-text', ['#valid-text']), (req, res) => {
+                res.setState({ foo: 'bar' });
+                return false;
+            });
+
             bot.use((req, res) => {
+                if (res.newState.foo) {
+                    res.text(res.newState.foo);
+                }
                 res.text('Fallback')
                     .passThread('1');
             });
@@ -328,6 +359,16 @@ describe('<ConversationTester>', () => {
             assert.strictEqual(out.total, 6);
             assert.strictEqual(out.passed, 2);
             assert.strictEqual(out.failed, 4);
+        });
+
+        it('should work', async () => {
+            const t = new ConversationTester(xStorage, botFactory);
+
+            const out = await t.test();
+
+            assert.strictEqual(out.total, 1);
+            assert.strictEqual(out.passed, 1);
+            assert.strictEqual(out.failed, 0);
         });
 
         it('should work with language', async () => {

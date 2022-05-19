@@ -69,9 +69,14 @@ class Tester {
             info: e => console.info(e) // eslint-disable-line
         };
 
+        this._cachedGiMap = null;
+
         this._listener = (senderIdentifier, action, text, req, prevAction, doNotTrack) => {
             const reqAction = req.action();
-            if (reqAction && !this._actionMatches(action, reqAction)) {
+            if (reqAction
+                && !this._actionMatches(action, reqAction)
+                && this._actionHasGlobalIntent(reqAction)) {
+
                 this._actionsCollector.push({
                     action: reqAction, text, prevAction, doNotTrack, isReqAction: true
                 });
@@ -134,10 +139,27 @@ class Tester {
         this.features = null;
     }
 
+    _actionHasGlobalIntent (action) {
+        if (!this.processor.reducer
+            || !('globalIntents' in this.processor.reducer)) {
+            return false;
+        }
+        if (this._cachedGiMap === null) {
+            this._cachedGiMap = new Set();
+
+            for (const value of this.processor.reducer.globalIntents.values()) {
+                this._cachedGiMap.add(value.action);
+            }
+        }
+
+        return this._cachedGiMap.has(action.replace(/^\/?/, '/'));
+    }
+
     dealloc () {
         this.processor.reducer
             .removeListener('_action', this._listener);
         this.processor.reducer = null;
+        this._cachedGiMap = null;
     }
 
     /**
