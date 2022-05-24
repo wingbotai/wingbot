@@ -6,14 +6,6 @@
 const Router = require('../Router'); // eslint-disable-line
 const ai = require('../Ai'); // eslint-disable-line
 const fetch = require('node-fetch'); // eslint-disable-line
-let request;
-try {
-    // @ts-ignore
-    request = module.require('request-promise-native');
-} catch (e) {
-    // eslint-disable-next-line no-unused-vars
-    request = () => { throw new Error('To use request, you have to manually install request-promise-native into your bot.'); };
-}
 let axios;
 try {
     // @ts-ignore
