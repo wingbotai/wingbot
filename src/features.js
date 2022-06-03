@@ -23,6 +23,11 @@ const FEATURE_SSML = 'ssml';
  */
 const FEATURE_PHRASES = 'phrases';
 
+/**
+ * @constant {string} FEATURE_TRACKING channel supports tracking protocol
+ */
+const FEATURE_TRACKING = 'tracking';
+
 function getDefaultFeatureList () {
     return [FEATURE_TEXT];
 }
@@ -32,5 +37,6 @@ module.exports = {
     FEATURE_VOICE,
     FEATURE_SSML,
     FEATURE_PHRASES,
+    FEATURE_TRACKING,
     getDefaultFeatureList
 };

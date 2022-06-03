@@ -16,6 +16,7 @@ const {
     FEATURE_SSML,
     FEATURE_PHRASES,
     FEATURE_TEXT,
+    FEATURE_TRACKING,
     getDefaultFeatureList
 } = require('./features');
 
@@ -258,6 +259,11 @@ class Request {
          * @constant {string} FEATURE_TEXT channel supports text communication
          */
         this.FEATURE_TEXT = FEATURE_TEXT;
+
+        /**
+         * @constant {string} FEATURE_TRACKING channel supports tracking protocol
+         */
+        this.FEATURE_TRACKING = FEATURE_TRACKING;
     }
 
     get data () {
@@ -1768,5 +1774,10 @@ Request.FEATURE_PHRASES = FEATURE_PHRASES;
  * @constant {string} FEATURE_TEXT channel supports text communication
  */
 Request.FEATURE_TEXT = FEATURE_TEXT;
+
+/**
+ * @constant {string} FEATURE_TRACKING channel supports tracking protocol
+ */
+Request.FEATURE_TRACKING = FEATURE_TRACKING;
 
 module.exports = Request;

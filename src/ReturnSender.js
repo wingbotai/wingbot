@@ -4,7 +4,7 @@
 'use strict';
 
 const ai = require('./Ai');
-const { FEATURE_PHRASES } = require('./features');
+const { FEATURE_PHRASES, FEATURE_TRACKING } = require('./features');
 const { FLAG_DO_NOT_LOG } = require('./flags');
 
 /** @typedef {import('./Request')} Request */
@@ -70,8 +70,10 @@ class ReturnSender {
 
         this._sequence = 0;
 
-        this._sendLastMessageWithFinish = Array.isArray(incommingMessage.features)
-            && incommingMessage.features.includes(FEATURE_PHRASES);
+        this._features = Array.isArray(incommingMessage.features) ? incommingMessage.features : ['text'];
+
+        this._sendLastMessageWithFinish = this._features.includes(FEATURE_PHRASES)
+            || this._features.includes(FEATURE_TRACKING);
 
         /**
          * @type {Function}
@@ -259,9 +261,7 @@ class ReturnSender {
             payload = this._queue.shift();
 
             let lastInQueueForNow = this._queue.length === 0;
-            if (this._queue.length === 0
-                && (this._sendLastMessageWithFinish
-                    || this._intentsAndEntities.some((e) => e && e.type))) {
+            if (this._queue.length === 0 && this._sendLastMessageWithFinish) {
                 await Promise.race([
                     this._anotherEventPromise,
                     this._finishedPromise
@@ -292,8 +292,16 @@ class ReturnSender {
     }
 
     async _enrichPayload (payload, req, lastInQueueForNow) {
-        if (lastInQueueForNow && req && this._intentsAndEntities.length !== 0) {
-            const { phrases } = this._sendLastMessageWithFinish
+        if (!lastInQueueForNow) {
+            return;
+        }
+        if (this._features.includes(FEATURE_TRACKING)) {
+            const tracking = this._createTracking(req);
+            Object.assign(payload, { tracking });
+        }
+        if (req && this._intentsAndEntities.length !== 0) {
+            const supportsPhrases = this._features.includes(FEATURE_PHRASES);
+            const { phrases } = supportsPhrases
                 ? await ai.ai.getPhrases(req)
                 : { phrases: new Map() };
 
@@ -308,7 +316,7 @@ class ReturnSender {
                         input = aiObj;
                         return;
                     }
-                    if (!this._sendLastMessageWithFinish) {
+                    if (!supportsPhrases) {
                         return;
                     }
                     if (aiObj.startsWith('@')) {
@@ -362,6 +370,8 @@ class ReturnSender {
         }
         if (Array.isArray(payload.expectedIntentsAndEntities)) {
             this._intentsAndEntities.push(...payload.expectedIntentsAndEntities);
+            this._sendLastMessageWithFinish = this._sendLastMessageWithFinish
+                || this._intentsAndEntities.some((e) => e && e.type);
             return;
         }
 
@@ -414,6 +424,29 @@ class ReturnSender {
             ...intent,
             entities: this._cleanupEntities(intent.entities)
         };
+    }
+
+    _createTracking (req = null, res = null) {
+        const payload = {};
+        const meta = {
+            actions: this._visitedInteractions.slice()
+        };
+
+        if (req) {
+            Object.assign(meta, {
+                intent: req.intent(ai.ai.confidence),
+                confidence: ai.ai.confidence,
+                intents: (req.intents || [])
+                    .map((i) => this._cleanupIntent(i)),
+                entities: this._cleanupEntities((req.entities || [])
+                    .filter((e) => e.score >= ai.ai.confidence))
+            });
+        }
+        if (res) {
+            Object.assign(payload, res.senderMeta);
+        }
+
+        return Object.assign(this._tracking, { payload, meta });
     }
 
     /**

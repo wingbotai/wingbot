@@ -209,7 +209,7 @@ class BotApp {
         sync = false,
         headers = {}
     ) {
-        const { mid = null } = message;
+        const setResponseToMid = message.response_to_mid || message.mid;
 
         if (sync || this._preferSynchronousResponse) {
             const options = this._returnSenderOptions;
@@ -220,6 +220,7 @@ class BotApp {
 
             return {
                 status: res.status,
+                // yes, it should be just mid
                 response_to_mid: message.mid,
                 messaging: sender.responses
                     .map((response) => {
@@ -229,8 +230,8 @@ class BotApp {
                         }
 
                         // attach response_to_mid
-                        if (typeof response.response_to_mid === 'undefined' && mid) {
-                            Object.assign(response, { response_to_mid: mid });
+                        if (typeof response.response_to_mid === 'undefined' && setResponseToMid) {
+                            Object.assign(response, { response_to_mid: setResponseToMid });
                         }
 
                         return response;
@@ -244,7 +245,7 @@ class BotApp {
             pageId,
             appId,
             secret,
-            mid,
+            mid: setResponseToMid,
             fetch: this._fetch,
             tls: this._tls
         };
