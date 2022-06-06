@@ -20,7 +20,7 @@ const UNSUBSCRIBE = '_$unsubscribe';
 
 function getUpdate (attr, value, currentState = {}) {
     let param;
-    let rest = attr;
+    let rest = attr && attr.replace(/\u2219/g, '.');
     let state = currentState;
     const ret = {};
     let up = ret;
@@ -53,7 +53,7 @@ function getUpdate (attr, value, currentState = {}) {
 
 function getValue (attr, currentState = {}) {
     let param;
-    let rest = attr;
+    let rest = attr && attr.replace(/\u2219/g, '.');
     let state = currentState;
 
     do {
