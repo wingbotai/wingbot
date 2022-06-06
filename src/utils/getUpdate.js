@@ -20,7 +20,7 @@ const UNSUBSCRIBE = '_$unsubscribe';
 
 function getUpdate (attr, value, currentState = {}) {
     let param;
-    let rest = attr;
+    let rest = attr && attr.replace(/\u2219/g, '.');
     let state = currentState;
     const ret = {};
     let up = ret;
@@ -53,7 +53,7 @@ function getUpdate (attr, value, currentState = {}) {
 
 function getValue (attr, currentState = {}) {
     let param;
-    let rest = attr;
+    let rest = attr && attr.replace(/\u2219/g, '.');
     let state = currentState;
 
     do {
@@ -88,7 +88,7 @@ function toArray (previousValue) {
 const ENTITY_HBS_REGEXP = /^\s*\{\{\[?@([^@[\]{}\s]+)(\])?\}\}\s*$/;
 const VARIABLE_HBS_REGEXP = /^\s*\{\{\[?([^@[\]{}\s]+)\]?\}\}\s*$/;
 
-function getSetState (setState, req, res = null, useState = null) {
+function getSetState (setState, req, res = null, useState = null, configuration = null) {
     if (!setState) {
         return {};
     }
@@ -179,7 +179,7 @@ function getSetState (setState, req, res = null, useState = null) {
                         values = [];
                     } else {
                         const useValue = typeof value === 'string'
-                            ? handlebars.compile(value)(stateData(req, res))
+                            ? handlebars.compile(value)(stateData(req, res, configuration))
                                 .split(/(?<!\\),/g)
                                 .map((v) => v.replace(/\\,/g, ',').trim())
                             : value;
@@ -205,7 +205,7 @@ function getSetState (setState, req, res = null, useState = null) {
                 set = val;
             }
         } else if (typeof val === 'string') {
-            set = handlebars.compile(val)(stateData(req, res));
+            set = handlebars.compile(val)(stateData(req, res, configuration));
         } else if (val === null
             || SCALAR_TYPES.includes(typeof val)) {
             set = val;

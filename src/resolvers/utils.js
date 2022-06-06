@@ -205,18 +205,18 @@ function getText (text, state) {
 // eslint-disable-next-line no-unused-vars
 const DEFAULT_LINK_TRANSLATOR = (senderId, defaultText, urlText, isExtUrl, reqState) => urlText;
 
+/** @typedef {import('../BuildRouter').BotContext} BotContext */
+
 function processButtons (
     buttons,
     state,
     elem,
-    linksMap,
     senderId,
-    linksTranslator,
-    allowForbiddenSnippetWords,
+    context,
     req,
     res
 ) {
-    const translateLinks = linksTranslator || DEFAULT_LINK_TRANSLATOR;
+    const translateLinks = context.linksTranslator || DEFAULT_LINK_TRANSLATOR;
 
     buttons.forEach(({
         title: btnTitle,
@@ -230,7 +230,7 @@ function processButtons (
         if (hasCondition) {
             const condition = getCondition({
                 hasCondition, conditionFn, hasEditableCondition, editableCondition
-            }, 'Quick reply condition', allowForbiddenSnippetWords);
+            }, context, 'Quick reply condition');
 
             if (!condition(req, res)) {
                 return;
@@ -259,7 +259,7 @@ function processButtons (
                 break;
             }
             case TYPE_POSTBACK: {
-                let postbackAction = linksMap.get(targetRouteId) || action;
+                let postbackAction = context.linksMap.get(targetRouteId) || action;
 
                 if (postbackAction === '/') {
                     postbackAction = './';

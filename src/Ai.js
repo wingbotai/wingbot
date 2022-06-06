@@ -229,7 +229,7 @@ class Ai {
      *
      * @param {string} path
      * @param {IntentRule|IntentRule[]} intents
-     * @param {string} [title] - disambiguation title
+     * @param {string|Function} [title] - disambiguation title
      * @param {object} [meta] - metadata for multibot environments
      * @param {object} [meta.targetAppId] - target application id
      * @param {object} [meta.targetAction] - target action
@@ -276,7 +276,7 @@ class Ai {
      *
      * @param {string} path
      * @param {IntentRule|IntentRule[]} intents
-     * @param {string} [title] - disambiguation title
+     * @param {string|Function} [title] - disambiguation title
      * @returns {object} - the middleware
      * @memberOf Ai
      * @example

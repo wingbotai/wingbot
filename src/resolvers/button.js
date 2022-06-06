@@ -11,19 +11,26 @@ const {
     processButtons
 } = require('./utils');
 
-function button (params, {
-    isLastIndex,
-    linksMap,
-    linksTranslator,
-    allowForbiddenSnippetWords
-}) {
+/** @typedef {import('../BuildRouter').BotContext} BotContext */
+/** @typedef {import('../Router').Resolver} Resolver */
+
+/**
+ *
+ * @param {object} params
+ * @param {BotContext} context
+ * @returns {Resolver}
+ */
+function button (params, context) {
+    const {
+        isLastIndex
+    } = context;
     const {
         buttons = [],
         text = null
     } = params;
     const compiledText = cachedTranslatedCompilator(text);
 
-    const condition = getCondition(params, '', allowForbiddenSnippetWords);
+    const condition = getCondition(params, context, 'button');
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
@@ -37,17 +44,15 @@ function button (params, {
             }
         }
 
-        const state = stateData(req, res);
+        const state = stateData(req, res, context.configuration);
         const tpl = res.button(compiledText(state));
 
         processButtons(
             buttons,
             state,
             tpl,
-            linksMap,
             req.senderId,
-            linksTranslator,
-            allowForbiddenSnippetWords,
+            context,
             req,
             res
         );

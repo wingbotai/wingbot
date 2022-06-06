@@ -148,15 +148,16 @@ const compare = (variable, operator, value = undefined) => {
 /**
  *
  * @param {{value:string, operator:string, variable:string}[][]} condition
+ * @param {object} configuration
  * @param {string} description
  */
-function customCondition (condition, description = '') {
+function customCondition (condition, configuration, description = '') {
     if (typeof condition !== 'object' || !Array.isArray(condition)) {
         throw new Error(`Invalid condition (${description}) type`);
     }
 
     const resolver = (req, res) => condition.some((condList) => condList.every((cond) => {
-        const data = stateData(req, res);
+        const data = stateData(req, res, configuration);
         const variableValue = getValue(cond.variable, data);
         const isRegExp = [
             ConditionOperators['matches regexp'],

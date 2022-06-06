@@ -8,11 +8,20 @@ const Ai = require('../Ai');
 const { getSetState } = require('../utils/getUpdate');
 const getCondition = require('../utils/getCondition');
 
-function setState (params, { isLastIndex, allowForbiddenSnippetWords }) {
+/** @typedef {import('../BuildRouter').BotContext} BotContext */
+/** @typedef {import('../Router').Resolver} Resolver */
 
-    const condition = getCondition(params, '', allowForbiddenSnippetWords);
+/**
+ *
+ * @param {object} params
+ * @param {BotContext} context
+ * @returns {Resolver}
+ */
+function setState (params, context) {
 
-    const ret = isLastIndex ? Router.END : Router.CONTINUE;
+    const condition = getCondition(params, context, 'setState');
+
+    const ret = context.isLastIndex ? Router.END : Router.CONTINUE;
 
     return async (req, res) => {
         if (condition !== null) {

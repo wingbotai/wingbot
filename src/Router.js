@@ -140,7 +140,12 @@ class Router extends ReducerWrapper {
 
                 const reducersArray = reducer.map((re) => {
                     const {
-                        resolverPath, reduce, isReducer, globalIntents: gis, globalIntentsMeta = {}
+                        resolverPath,
+                        reduce,
+                        isReducer,
+                        globalIntents: gis,
+                        globalIntentsMeta,
+                        configuration
                     } = this._createReducer(
                         re,
                         pathContext.path
@@ -149,16 +154,19 @@ class Router extends ReducerWrapper {
                     Object.assign(pathContext, { path: resolverPath });
                     Object.assign(pathContext.globalIntentsMeta, globalIntentsMeta);
                     isAnyReducer = isAnyReducer || isReducer;
-                    return { reduce, isReducer };
+                    return { reduce, isReducer, configuration };
                 });
 
                 return {
-                    reducers: reducersArray, isReducer: isAnyReducer, isOr: true, globalIntents
+                    reducers: reducersArray,
+                    isReducer: isAnyReducer,
+                    isOr: true,
+                    globalIntents
                 };
             }
 
             const {
-                resolverPath, reduce, isReducer, globalIntents, globalIntentsMeta = {}
+                resolverPath, reduce, isReducer, globalIntents, globalIntentsMeta, configuration
             } = this._createReducer(
                 reducer,
                 pathContext.path
@@ -167,7 +175,9 @@ class Router extends ReducerWrapper {
             Object.assign(pathContext, { path: resolverPath });
             Object.assign(pathContext.globalIntentsMeta, globalIntentsMeta);
 
-            return { reduce, isReducer, globalIntents };
+            return {
+                reduce, isReducer, globalIntents, configuration
+            };
         });
     }
 
@@ -178,7 +188,8 @@ class Router extends ReducerWrapper {
         const {
             globalIntents = new Map(),
             path,
-            globalIntentsMeta = {}
+            globalIntentsMeta = {},
+            configuration = null
         } = reducer;
 
         if (typeof reducer === 'string' || path) {
@@ -219,7 +230,7 @@ class Router extends ReducerWrapper {
         }
 
         return {
-            resolverPath, isReducer, reduce, globalIntents, globalIntentsMeta
+            resolverPath, isReducer, reduce, globalIntents, globalIntentsMeta, configuration
         };
     }
 
@@ -291,6 +302,9 @@ class Router extends ReducerWrapper {
 
             let pathContext = `${path === '/' ? '' : path}${route.path.replace(/\/\*/, '')}`;
             res.setPath(path, route.path);
+            if (reducer.configuration) {
+                req.configuration = reducer.configuration;
+            }
 
             let result;
 

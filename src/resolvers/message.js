@@ -44,10 +44,10 @@ function getVoiceControlFromParams (params, lang = null) {
     return Object.keys(voiceControl).length > 0 ? voiceControl : null;
 }
 
-function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
+function parseReplies (replies, linksMap, context) {
     return replies.map((reply) => {
 
-        const condition = getCondition(reply, 'Quick reply condition', allowForbiddenSnippetWords);
+        const condition = getCondition(reply, context, 'Quick reply condition');
 
         if (reply.isLocation) {
             return {
@@ -78,6 +78,10 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
             }
         }
 
+        if (!action) {
+            return null;
+        }
+
         const ret = {
             action,
             condition,
@@ -104,7 +108,8 @@ function parseReplies (replies, linksMap, allowForbiddenSnippetWords) {
         }
 
         return ret;
-    });
+    })
+        .filter((r) => r !== null);
 }
 
 /**
@@ -154,11 +159,20 @@ function findSupportedMessages (text, features, lang = null) {
     };
 }
 
-function message (params, {
-    // @ts-ignore
-    isLastIndex, isLastMessage, linksMap, allowForbiddenSnippetWords
-} = {}) {
+/** @typedef {import('../BuildRouter').BotContext} BotContext */
+/** @typedef {import('../Router').Resolver} Resolver */
 
+/**
+ *
+ * @param {object} params
+ * @param {BotContext} context
+ * @returns {Resolver}
+ */
+function message (params, context = {}) {
+    const {
+        // @ts-ignore
+        isLastIndex, isLastMessage, linksMap, configuration
+    } = context;
     if (typeof params.text !== 'string' && !Array.isArray(params.text)) {
         throw new Error('Message should be a text!');
     }
@@ -168,11 +182,11 @@ function message (params, {
     if (params.replies && !Array.isArray(params.replies)) {
         throw new Error('Replies should be an array');
     } else if (params.replies && params.replies.length > 0) {
-        quickReplies = parseReplies(params.replies, linksMap, allowForbiddenSnippetWords);
+        quickReplies = parseReplies(params.replies, linksMap, context);
     }
 
     // compile condition
-    const condition = getCondition(params, 'Message condition', allowForbiddenSnippetWords);
+    const condition = getCondition(params, context, 'Message condition');
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
@@ -184,7 +198,7 @@ function message (params, {
         if (condition && !condition(req, res)) {
             return ret;
         }
-        const data = stateData(req, res);
+        const data = stateData(req, res, configuration);
 
         // filter supported messages
         const supportedText = findSupportedMessages(

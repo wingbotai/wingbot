@@ -14,6 +14,7 @@ const { mergeState } = require('./utils/stateVariables');
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Intent} Intent */
 /** @typedef {import('./ReducerWrapper')} ReducerWrapper */
 /** @typedef {import('./Router')} Router */
+/** @typedef {import('./BuildRouter')} BuildRouter */
 
 /**
  * @typedef {object} AutoTypingConfig
@@ -121,7 +122,7 @@ class Processor extends EventEmitter {
     /**
      * Creates an instance of Processor
      *
-     * @param {ReducerWrapper|Router} reducer
+     * @param {ReducerWrapper|Router|BuildRouter} reducer
      * @param {ProcessorOptions} [options] - processor options
      *
      * @memberOf Processor
@@ -546,6 +547,11 @@ class Processor extends EventEmitter {
             const aByAi = req.actionByAi();
             if (aByAi && aByAi !== req.action()) {
                 res.setBookmark(aByAi);
+            }
+
+            if ('getConfiguration' in this.reducer) {
+                const configuration = this.reducer.getConfiguration(state._lastAction);
+                req.configuration = Object.freeze(configuration);
             }
 
             // process setState

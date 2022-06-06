@@ -22,12 +22,15 @@ const BOUNCE_RETURN = {
     IF_POSSIBLE: 'ifpos'
 };
 
+/** @typedef {import('../BuildRouter').Route} Route */
+
+/** @typedef {BOUNCE_RETURN} BounceReturn */
+/** @typedef {BOUNCE_ALLOW} BounceAllow */
+
 /**
  *
  *
- * @param {object} route
- * @param {BOUNCE_ALLOW} [route.bounceAllowedTo]
- * @param {BOUNCE_RETURN} [route.bounceReturn]
+ * @param {Route} route
  * @param {boolean} nextRouteIsSameResponder
  * @param {string} [referredRoutePath]
  * @returns {Function|null}

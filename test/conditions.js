@@ -37,7 +37,7 @@ const assertCondition = async (condition, state, result) => {
     t.setState(state);
 
     bot.use('test', (req, res) => {
-        const r = getCondition(getParamsFromEditableCondition([[condition]]))(req, res);
+        const r = getCondition(getParamsFromEditableCondition([[condition]]), {})(req, res);
         res.text(r);
     });
     await t.postBack('test');

@@ -17,6 +17,67 @@ const { shouldExecuteResolver } = require('./resolvers/resolverTags');
 
 const MESSAGE_RESOLVER_NAME = 'botbuild.message';
 
+/** @typedef {import('./Router').Middleware} Middleware */
+
+/**
+ * @typedef {object} Resolver
+ * @prop {string} type
+ * @prop {object} params
+ * @prop {string} [params.staticBlockId]
+ * @prop {string} [tag]
+ */
+
+/** @typedef {import('./resolvers/bounce').BounceAllow} BounceAllow */
+/** @typedef {import('./resolvers/bounce').BounceReturn} BounceReturn */
+
+/**
+ * @typedef {object} Route
+ * @prop {number} id
+ * @prop {string|null} path
+ * @prop {Resolver[]} resolvers
+ * @prop {boolean} [isFallback]
+ * @prop {string[]} [aiTags]
+ * @prop {boolean} [isResponder]
+ * @prop {number} [respondsToRouteId]
+ * @prop {string|any[]} [aiTitle]
+ * @prop {boolean} [aiGlobal]
+ * @prop {BounceAllow} [bounceAllowedTo]
+ * @prop {BounceReturn} [bounceReturn]
+ * @prop {boolean} [isEntryPoint]
+ */
+
+/**
+ * @typedef {object} RouteTransformation
+ * @prop {string} [expectedPath]
+ *
+ * @typedef {RouteTransformation & Route} TransformedRoute
+ */
+
+/**
+ * @typedef {Map<string|number,string>} LinksMap
+ */
+
+/** @type {TransformedRoute} */
+const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
+
+/**
+ * @typedef {object} Block
+ * @prop {string} staticBlockId
+ * @prop {Route[]} routes
+ * @prop {boolean} [isRoot]
+ * @prop {boolean} [disabled]
+ * @prop {string} [blockName]
+ * @prop {string} [blockType]
+ */
+
+/**
+ * @typedef {object} BotConfig
+ * @prop {string} botId - the ID of bot
+ * @prop {string} snapshot - snapshot stage of bot
+ * @prop {string|Promise<string>} token - authorization token for bot
+ * @prop {string} [url] - specify alternative configuration resource
+ */
+
 /**
  * @typedef {object} ConfigStorage
  * @prop {{():Promise}} invalidateConfig
@@ -24,6 +85,61 @@ const MESSAGE_RESOLVER_NAME = 'botbuild.message';
  * @prop {{(config:Object):Promise<Object>}} updateConfig
  * @prop {{():Promise<Object>}} getConfig
  */
+
+/**
+ * @typedef {object} RouteConfig
+ * @prop {string} path
+ * @prop {boolean} enabled
+ * @prop {object} configuration
+ */
+
+/**
+ * @callback LinkTranslator
+ * @param {string} senderId
+ * @param {string} textLabel
+ * @param {string} urlText
+ * @param {boolean} [isExtUrl]
+ * @param {object} [state]
+ * @returns {string}
+ */
+
+/**
+ * @typedef {object} BotContext
+ * @prop {LinkTranslator} [linksTranslator] - function, that translates links globally
+ * @prop {ConfigStorage} [configStorage] - function, that translates links globally
+ * @prop {boolean} [allowForbiddenSnippetWords] - disable security rule
+ * @prop {RouteConfig[]} [routeConfigs] - list of disabled routes
+ * @prop {object} [configuration] - context data
+ * @prop {LinksMap} [linksMap]
+ * @prop {boolean} [isLastIndex]
+ * @prop {boolean} [isLastMessage]
+ * @prop {BuildRouter} [router]
+ * @prop {string} [path]
+ * @prop {boolean} [isFallback]
+ * @prop {string} [expectedPath]
+ * @prop {boolean} [isResponder]
+ * @prop {string|number} [routeId]
+ * @prop {string} [blockName]
+ * @prop {string} [blockType]
+ * @prop {boolean} [isRoot]
+ * @prop {string} [staticBlockId]
+ * @prop {Block[]} [blocks]
+ * @prop {object} [BuildRouter]
+ */
+
+function deepFreeze (object) {
+    const propNames = Object.getOwnPropertyNames(object);
+
+    for (const name of propNames) {
+        const value = object[name];
+
+        if (value && typeof value === 'object') {
+            deepFreeze(value);
+        }
+    }
+
+    return Object.freeze(object);
+}
 
 /**
  * Build bot from Wingbot configuration file or snapshot url
@@ -36,16 +152,14 @@ class BuildRouter extends Router {
      * Create new router from configuration
      *
      * @constructor
-     * @param {object} block
-     * @param {string} [block.botId] - the ID of bot
-     * @param {string} [block.snapshot] - snapshot stage of bot
-     * @param {string|Promise<string>} [block.token] - authorization token for bot
-     * @param {string} [block.url] - specify alternative configuration resource
+     * @param {BotConfig|Block} block
      * @param {Plugins} plugins - custom code blocks resource
      * @param {object} context - the building context
      * @param {object} [context.linksTranslator] - function, that translates links globally
      * @param {ConfigStorage} [context.configStorage] - function, that translates links globally
      * @param {boolean} [context.allowForbiddenSnippetWords] - disable security rule
+     * @param {RouteConfig[]} [context.routeConfigs] - list of disabled routes
+     * @param {object} [context.configuration]
      * @param {fetch} [fetchFn] - override a request function
      * @example
      *
@@ -76,8 +190,10 @@ class BuildRouter extends Router {
 
         this._plugins = plugins;
 
+        /** @type {BotContext} */
         this._context = context;
 
+        /** @type {LinksMap} */
         this._linksMap = new Map();
 
         this._loadBotUrl = null;
@@ -94,7 +210,7 @@ class BuildRouter extends Router {
 
         this.resources = defaultResourceMap();
 
-        this._loadBotAuthorization = block.token || null;
+        this._loadBotAuthorization = 'token' in block ? block.token : null;
 
         this._configStorage = context.configStorage;
 
@@ -112,7 +228,7 @@ class BuildRouter extends Router {
         this._snapshot = null;
         this._botId = null;
 
-        if (typeof block.routes === 'object') {
+        if ('routes' in block) {
             this._buildBot(block);
         } else if (typeof block.url === 'string') {
             this._loadBotUrl = block.url;
@@ -315,6 +431,12 @@ class BuildRouter extends Router {
         }
     }
 
+    /**
+     *
+     * @param {Block} block
+     * @param {number} setConfigTimestamp
+     * @param {string} lastmod
+     */
     _buildBot (block, setConfigTimestamp = Number.MAX_SAFE_INTEGER, lastmod = '-') {
         try {
             if (setConfigTimestamp !== Number.MAX_SAFE_INTEGER) {
@@ -390,7 +512,13 @@ class BuildRouter extends Router {
         });
     }
 
+    /**
+     *
+     * @param {Block} block
+     * @returns {LinksMap}
+     */
     _createLinksMap (block) {
+        /** @type {LinksMap} */
         const linksMap = new Map();
 
         block.routes
@@ -402,35 +530,140 @@ class BuildRouter extends Router {
         if (prevLinksMap) {
             for (const [from, to] of prevLinksMap.entries()) {
                 if (!linksMap.has(from)) {
-
-                    (path.posix || path).join('..', to);
-
-                    linksMap.set(from, (path.posix || path).join('..', to));
+                    linksMap.set(from, this._joinPaths('..', to));
                 }
             }
         }
 
         block.routes.forEach((route) => {
-            let resolver;
-            for (resolver of route.resolvers) {
-                if (resolver.type !== 'botbuild.include') {
-                    continue;
-                }
-                this._findEntryPointsInResolver(linksMap, resolver, route, this._context);
+            const enabledNestedBlock = this._getBlockById(this._getIncludedBlockId(route));
+            if (!enabledNestedBlock) {
+                return;
+            }
+            const routeConfig = this._getRouteConfig(route);
+            if (this._enabledByRouteConfig(routeConfig)) {
+                this._findEntryPointsInResolver(linksMap, enabledNestedBlock, route);
             }
         });
 
         return linksMap;
     }
 
-    _findEntryPointsInResolver (linksMap, resolver, route, context) {
-        const includedBlock = (context.blocks || [])
-            .find((b) => b.staticBlockId === resolver.params.staticBlockId);
+    /**
+     *
+     * @param {RouteConfig} routeConfig
+     */
+    _enabledByRouteConfig (routeConfig) {
+        return !this._context.routeConfigs || (routeConfig && routeConfig.enabled);
+    }
 
-        if (!includedBlock) {
-            return;
+    _joinPaths (...args) {
+        return (path.posix || path).join(...args);
+    }
+
+    _normalizeConfigPath (routePath, ctxPath = null) {
+        const joined = ctxPath
+            ? this._joinPaths(ctxPath, routePath)
+            : routePath;
+
+        return joined
+            .replace(/^\/?|(_responder)?\/?$/g, '/');
+    }
+
+    /**
+     *
+     * @param {Route} route
+     * @returns {string|null}
+     */
+    _getIncludedBlockId (route) {
+        const includeResolver = route.resolvers.find((r) => r.type === 'botbuild.include');
+
+        return includeResolver
+            ? includeResolver.params.staticBlockId
+            : null;
+    }
+
+    /**
+     *
+     * @param {string} staticBlockId
+     * @returns {Block|null}
+     */
+    _getBlockById (staticBlockId) {
+        if (!staticBlockId) {
+            return null;
+        }
+        const nestedBlock = (this._context.blocks || [])
+            .find((b) => b.staticBlockId === staticBlockId);
+
+        if (!nestedBlock || nestedBlock.disabled) {
+            return null;
+        }
+        return nestedBlock;
+    }
+
+    /**
+     *
+     * @param {TransformedRoute} route
+     * @returns {RouteConfig}
+     */
+    _getRouteConfig (route) {
+        const { path: ctxPath, routeConfigs } = this._context;
+        if (!routeConfigs || !route.path || route.isFallback) {
+            return null;
         }
 
+        let rPath;
+        if (!route.isResponder) {
+            rPath = route.path;
+        } else if (route.expectedPath) {
+            rPath = route.expectedPath;
+        } else if (this._linksMap.has(route.respondsToRouteId)) {
+            rPath = this._linksMap.get(route.respondsToRouteId);
+        } else {
+            throw new Error('Illegal state');
+        }
+
+        const routePath = this._normalizeConfigPath(rPath, ctxPath);
+        return routeConfigs.find((config) => {
+            const configPath = this._normalizeConfigPath(config.path);
+
+            return configPath === routePath;
+        });
+    }
+
+    /**
+     *
+     * @param {string} routePath
+     * @returns {object}
+     */
+    getConfiguration (routePath) {
+        const { path: ctxPath, routeConfigs, configuration = {} } = this._context;
+        if (!routeConfigs || !routePath) {
+            return deepFreeze(configuration);
+        }
+        const normalized = this._normalizeConfigPath(routePath, ctxPath);
+
+        const configs = routeConfigs
+            .filter((config) => {
+                const configPath = this._normalizeConfigPath(config.path);
+                return normalized.startsWith(configPath);
+            })
+            .sort((a, z) => a.path.length - z.path.length);
+
+        return deepFreeze(configs.reduce((cfg, config) => ({
+            ...cfg,
+            ...config.configuration
+        }), configuration));
+    }
+
+    /**
+     *
+     * @param {LinksMap} linksMap
+     * @param {Block} includedBlock
+     * @param {TransformedRoute} route
+     * @returns {void}
+     */
+    _findEntryPointsInResolver (linksMap, includedBlock, route) {
         let basePath = `${route.path}/`;
 
         if (route.isFallback) {
@@ -438,14 +671,20 @@ class BuildRouter extends Router {
         }
 
         includedBlock.routes.forEach((blockRoute) => {
-            if (!blockRoute.isEntryPoint || blockRoute.isRoot) {
+            if (!blockRoute.isEntryPoint) {
                 return;
             }
 
-            linksMap.set(`${blockRoute.id}`, `${basePath}${blockRoute.path}`);
+            linksMap.set(blockRoute.id, `${basePath}${blockRoute.path}`);
         });
     }
 
+    /**
+     *
+     * @param {TransformedRoute} route
+     * @param {boolean} nextRouteIsSameResponder
+     * @returns {Middleware[]}
+     */
     _buildRouteHead (route, nextRouteIsSameResponder) {
         const resolvers = [];
 
@@ -453,10 +692,10 @@ class BuildRouter extends Router {
             let aiResolver = null;
 
             if (route.aiTags && route.aiTags.length) {
-                let { aiTitle = null } = route;
+                let aiTitle = null;
 
-                if (aiTitle) {
-                    aiTitle = cachedTranslatedCompilator(aiTitle);
+                if (route.aiTitle) {
+                    aiTitle = cachedTranslatedCompilator(route.aiTitle);
                 }
 
                 if (route.aiGlobal) {
@@ -488,8 +727,25 @@ class BuildRouter extends Router {
         return resolvers;
     }
 
+    /**
+     *
+     * @param {TransformedRoute[]} routes
+     */
     _buildRoutes (routes) {
         routes.forEach((route, i) => {
+            const routeConfig = this._getRouteConfig(route);
+
+            if (routeConfig && !routeConfig.enabled) {
+                return;
+            }
+
+            const includedBlockId = this._getIncludedBlockId(route);
+            const nestedBlock = this._getBlockById(includedBlockId);
+
+            if (includedBlockId && (!nestedBlock || !this._enabledByRouteConfig(routeConfig))) {
+                return;
+            }
+
             const nextRoute = routes.length > (i + 1)
                 ? routes[i + 1]
                 : null;
@@ -523,6 +779,11 @@ class BuildRouter extends Router {
         });
     }
 
+    /**
+     *
+     * @param {Resolver[]} resolvers
+     * @returns {number}
+     */
     _lastMessageIndex (resolvers) {
         for (let i = resolvers.length - 1; i >= 0; i--) {
             if (resolvers[i].type === MESSAGE_RESOLVER_NAME) {
@@ -532,15 +793,30 @@ class BuildRouter extends Router {
         return -1;
     }
 
-    buildResolvers (resolvers, route = {}, buildInfo = {}) {
+    /**
+     *
+     * @param {Resolver[]} resolvers
+     * @param {TransformedRoute} route
+     * @param {*} buildInfo
+     * @returns {Middleware[]}
+     */
+    buildResolvers (resolvers, route = DUMMY_ROUTE, buildInfo = {}) {
         const {
             path: ctxPath, isFallback, isResponder, expectedPath, id
         } = route;
+
+        const routeConfig = this._getRouteConfig(route);
+        const routeConfigData = routeConfig && routeConfig.configuration;
 
         const lastMessageIndex = this._lastMessageIndex(resolvers);
         const lastIndex = resolvers.length - 1;
 
         return resolvers.map((resolver, i) => {
+            const configuration = deepFreeze({
+                ...this._context.configuration,
+                ...routeConfigData
+            });
+
             const context = {
                 ...this._context,
                 isLastIndex: lastIndex === i && !buildInfo.expectedToAddResolver,
@@ -551,13 +827,25 @@ class BuildRouter extends Router {
                 isFallback,
                 isResponder,
                 expectedPath,
-                routeId: id
+                routeId: id,
+                configuration
             };
 
-            return this._resolverFactory(resolver, context, buildInfo);
+            const resFn = this._resolverFactory(resolver, context, buildInfo);
+
+            // @ts-ignore
+            resFn.configuration = configuration;
+            return resFn;
         });
     }
 
+    /**
+     *
+     * @param {Resolver} resolver
+     * @param {BotContext} context
+     * @param {*} buildInfo
+     * @returns {Middleware}
+     */
     _resolverFactory (resolver, context, buildInfo) {
         const { type } = resolver;
 
@@ -618,9 +906,9 @@ class BuildRouter extends Router {
 }
 
 /**
- * @param {object[]} blocks - blocks list
+ * @param {Block[]} blocks - blocks list
  * @param {Plugins} [plugins]
- * @param {object} [context]
+ * @param {BotContext} [context]
  */
 BuildRouter.fromData = function fromData (blocks, plugins = new Plugins(), context = {}) {
 
