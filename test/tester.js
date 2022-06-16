@@ -354,8 +354,9 @@ describe('Tester', function () {
 
         t.any().contains('v1');
 
-        const res2 = await t.quickReplyText('look');
-        assert.strictEqual(res2, false);
+        const res2 = await t.quickReplyText('look')
+            .catch((e) => e.message);
+        assert.strictEqual(res2, 'Quick reply "look" has not been found. (no quick replies available)');
     });
 
     it('throws nice exceptions', async () => {

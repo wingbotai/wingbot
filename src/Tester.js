@@ -452,7 +452,7 @@ class Tester {
     }
 
     /**
-     * Send quick reply if text exactly matches, otherwise returns false
+     * Send quick reply if text exactly matches, otherwise throws exception
      *
      * @param {string} text
      * @returns {Promise<boolean>}
@@ -460,22 +460,38 @@ class Tester {
      * @memberOf Tester
      */
     async quickReplyText (text) {
+        let but = 'has not been found.';
 
         if (this.responses.length !== 0) {
-            const search = tokenize(text);
+            const normalize = (t) => `${t}`.toLocaleLowerCase().replace(/\s+/g, ' ').trim();
+            const normalizedText = normalize(text);
+            const search = tokenize(normalizedText);
             const last = this.responses[this.responses.length - 1];
             const quickReplys = asserts.getQuickReplies(last);
-            const res = quickReplys
+            let res = quickReplys
                 .filter(({ title = '', payload }) => title && payload && tokenize(title) === search);
 
-            if (res[0]) {
+            if (res.length > 1) {
+                res = res
+                    .filter(({ title = '' }) => normalize(title) === normalizedText);
+            }
+
+            if (res.length === 1) {
                 const { title, payload } = res[0];
                 await this.processMessage(Request.quickReplyText(this.senderId, title, payload));
                 return true;
             }
+
+            if (res.length > 1) {
+                but = 'found, but there are multiple occurences.';
+            }
+
+            but += quickReplys.length
+                ? ` (found: ${quickReplys.map((q) => q.title).filter((q) => !!q).join(', ')})`
+                : ' (no quick replies available)';
         }
 
-        return false;
+        throw new Error(`Quick reply "${text}" ${but}`);
     }
 
     /**
