@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.34.0] 2022-06-16
+
+### Added
+
+- AI model got method `#setDetectorOptions`, which allows to disable anonymization.
+
 ## [3.33.1-2] 2022-06-16
 
 ### Fixed
@@ -308,7 +314,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - event emmiting at processor
+
 ## [3.10.0] 2021-03-19
+
 ### Added
 
 - support for controlling quick reply and button source (`req.actionData()._ca`);

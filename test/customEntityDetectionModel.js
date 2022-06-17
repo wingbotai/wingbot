@@ -32,7 +32,8 @@ describe('customEntityDetectionModel', () => {
                 };
             });
 
-            m.setEntityDetector('price', /@NUMBER\s*(k[čc]|korun)/, { anonymize: true });
+            m.setEntityDetector('price', /@NUMBER\s*(k[čc]|korun)/)
+                .setDetectorOptions('price', { anonymize: true });
             m.setEntityDetector('total', /celkem\s@PRICE/, { replaceDiacritics: true });
 
             m.setEntityDetector('parent', /[=]+/, { matchWholeWords: true });

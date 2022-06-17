@@ -468,6 +468,7 @@ class CustomEntityDetectionModel {
         return {
             text: cleanText,
             intents: [],
+            // @ts-ignore
             entities
         };
     }
@@ -612,6 +613,28 @@ class CustomEntityDetectionModel {
             anonymize: !!options.anonymize
         });
 
+        return this;
+    }
+
+    /**
+     * Sets options to entity detector.
+     * Useful for disabling anonymization of local system entities.
+     *
+     * @param {string} name
+     * @param {object} options
+     * @param {boolean} [options.anonymize]
+     * @returns {this}
+     * @example
+     *
+     * ai.register('wingbot-model-name')
+     *     .setDetectorOptions('phone', { anonymize: false })
+     *     .setDetectorOptions('email', { anonymize: false })
+     */
+    setDetectorOptions (name, options) {
+        if (!this._entityDetectors.has(name)) {
+            throw new Error('Can\'t set entity detector options. Entity "name" does not exist.');
+        }
+        Object.assign(this._entityDetectors.get(name), options);
         return this;
     }
 
