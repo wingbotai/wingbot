@@ -5,7 +5,9 @@
 
 const assert = require('assert');
 const sinon = require('sinon');
+const { Tester, Router } = require('..');
 const { FEATURE_PHRASES, FEATURE_VOICE } = require('../src/features');
+const { button } = require('../src/resolvers');
 const Responder = require('../src/Responder');
 
 const SENDER_ID = 123;
@@ -306,6 +308,93 @@ describe('Responder', function () {
             assert.equal(payload.buttons[1].messenger_extensions, true);
 
             assert(opts.translator.calledThrice);
+        });
+
+        it('should send attachment button with markdown content', function () {
+            const { sendFn, opts, messageSender } = createAssets();
+            const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
+
+            res.setPath('/hello');
+
+            res.button('Hello')
+                .attachmentButton('title', {
+                    content: '# Heading',
+                    contentType: 'text/markdown'
+                })
+                .send();
+
+            assert(sendFn.calledOnce);
+            assert.equal(sendFn.firstCall.args[0].recipient.id, SENDER_ID);
+
+            const { attachment } = sendFn.firstCall.args[0].message;
+            assert.equal(attachment.type, 'template');
+
+            const { payload } = attachment;
+            assert.equal(payload.template_type, 'button');
+            assert.equal(payload.buttons.length, 1);
+
+            assert.equal(payload.buttons[0].title, '-title');
+            assert.equal(payload.buttons[0].type, 'attachment');
+            assert.equal(payload.buttons[0].payload.content, Buffer.from('# Heading').toString('base64'));
+            assert.equal(payload.buttons[0].payload.content_type, 'text/markdown');
+        });
+
+        it('should compile bot snapshot to button', async () => {
+            const resolver = {
+                id: '123',
+                type: 'botbuild.button',
+                params: {
+                    text: 'button text',
+                    hasCondition: false,
+                    conditionFn: '(req,res)=>{return true;}',
+                    buttons: [
+                        {
+                            id: 1234,
+                            action: {
+                                payload: {
+                                    content: '# Heading 1',
+                                    contentType: 'text/markdown'
+                                },
+                                type: 'attachment'
+                            },
+                            title: 'title'
+                        }
+                    ],
+                    setVars: [],
+                    interactionId: 'xxx',
+                    errors: [],
+                    tag: null
+                }
+            };
+
+            const context = {
+                isLastIndex: false
+            };
+
+            const buttonResolver = button(resolver.params, context);
+
+            const router = new Router();
+            router.use('/test', buttonResolver);
+            const tester = new Tester(router);
+
+            (await tester.postBack('/test'));
+            const result = tester.res().response.message.attachment;
+            assert(result.type === 'template');
+            assert.deepEqual(result.payload, {
+                buttons: [
+                    {
+                        payload: {
+                            content: Buffer.from('# Heading 1').toString('base64'),
+                            content_type: 'text/markdown'
+                        },
+                        // template_type: 'button',
+                        title: 'title',
+                        type: 'attachment'
+                    }
+                ],
+                template_type: 'button',
+                text: 'button text'
+            });
         });
 
     });

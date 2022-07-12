@@ -14,6 +14,7 @@ const TYPE_SHARE = 'element_share';
 const TYPE_URL = 'web_url';
 const TYPE_URL_WITH_EXT = 'web_url_extension';
 const TYPE_POSTBACK = 'postback';
+const TYPE_ATTACHMENT = 'attachment';
 
 const WEBVIEW_FULL = 'full';
 const WEBVIEW_TALL = 'tall';
@@ -227,10 +228,11 @@ function processButtons (
         editableCondition,
         setState
     }) => {
+
         if (hasCondition) {
             const condition = getCondition({
                 hasCondition, conditionFn, hasEditableCondition, editableCondition
-            }, context, 'Quick reply condition');
+            }, context, 'Button condition');
 
             if (!condition(req, res)) {
                 return;
@@ -244,7 +246,8 @@ function processButtons (
             url,
             webviewHeight = WEBVIEW_TALL,
             targetRouteId,
-            action
+            action,
+            payload
         } = btnAction;
 
         const isExtUrl = type === TYPE_URL_WITH_EXT;
@@ -272,6 +275,9 @@ function processButtons (
             }
             case TYPE_SHARE:
                 elem.shareButton(btnTitleText);
+                break;
+            case TYPE_ATTACHMENT:
+                elem.attachmentButton(btnTitleText, payload);
                 break;
             default:
         }
