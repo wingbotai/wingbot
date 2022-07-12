@@ -31,19 +31,11 @@ const { makeAbsolute } = require('../utils');
  * @param {Payload} payload
  * @returns {EncodedPayload}
  */
-function encodePayload (payload) {
-    const encodedPayload = {
-        content: payload.content,
-        content_type: payload.contentType
+function encodePayload ({ content, contentType }) {
+    return {
+        content: Buffer.from(content).toString('base64'),
+        content_type: contentType
     };
-
-    switch (payload.contentType) {
-        default:
-            encodedPayload.content = Buffer.from(payload.content).toString('base64');
-            break;
-    }
-
-    return encodedPayload;
 }
 
 /**
