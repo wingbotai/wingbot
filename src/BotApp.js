@@ -46,6 +46,15 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
  * @prop {object} headers
  */
 
+function defaultMsg (senderId, pageId) {
+    return {
+        sender: { id: senderId },
+        recipient: { id: pageId },
+        mid: null,
+        timestamp: Date.now()
+    };
+}
+
 /**
  * Adapter for Wingbot flight director
  *
@@ -239,18 +248,7 @@ class BotApp {
             };
         }
 
-        const options = {
-            ...this._returnSenderOptions,
-            apiUrl: this._apiUrl,
-            pageId,
-            appId,
-            secret,
-            mid: setResponseToMid,
-            fetch: this._fetch,
-            tls: this._tls
-        };
-
-        const sender = new BotAppSender(options, senderId, message, this._senderLogger);
+        const sender = await this.createSender(senderId, pageId, message);
         const res = await this._processor.processMessage(message, pageId, sender, { appId });
         await this._processSenderResponses(sender, senderId, pageId, headers);
 
@@ -259,6 +257,39 @@ class BotApp {
             response_to_mid: message.mid,
             messaging: []
         };
+    }
+
+    /**
+     * Creates a Sender to be able, for example, to upload files
+     *
+     * @param {string} senderId
+     * @param {string} pageId
+     * @param {object} [message]
+     * @param {string|Promise<string>} [secret]
+     * @returns {Promise<BotAppSender>}
+     */
+    async createSender (
+        senderId,
+        pageId,
+        message = defaultMsg(senderId, pageId),
+        secret = this._secret
+    ) {
+        const useSecret = await Promise.resolve(secret);
+
+        const setResponseToMid = message.response_to_mid || message.mid;
+
+        const options = {
+            ...this._returnSenderOptions,
+            apiUrl: this._apiUrl,
+            pageId,
+            appId: this._appId,
+            secret: useSecret,
+            mid: setResponseToMid,
+            fetch: this._fetch,
+            tls: this._tls
+        };
+
+        return new BotAppSender(options, senderId, message, this._senderLogger);
     }
 
     /**
