@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Attachment button with support for Markdown content.
+- Attachment button with support for Markdown content. (`ButtonTemplate#attachmentButton()`)
+- added `BotApp#createSender()` method
 
 ## [3.34.0] 2022-06-16
 

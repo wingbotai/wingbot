@@ -295,7 +295,6 @@ class BotApp {
     /**
      * Compatibility method for Notification engine
      *
-     * @deprecated
      * @param {object} message - wingbot chat event
      * @param {string} senderId - chat event sender identifier
      * @param {string} pageId - channel/page identifier
