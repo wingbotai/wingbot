@@ -7,6 +7,38 @@ const BaseTemplate = require('./BaseTemplate');
 const { makeAbsolute } = require('../utils');
 
 /**
+ * @typedef MarkdownPayload
+ * @prop {"text/markdown"} contentType
+ * @prop {string} content
+ */
+
+/**
+ * Designer payload type
+ *
+ * @typedef {MarkdownPayload} Payload
+ */
+
+/**
+ * @typedef EncodedPayload
+ * @prop {string} content
+ * @prop {"text/markdown"} content_type
+ */
+
+/**
+ * Encodes different types of payloads from designer snapshot to payload for chat
+ * Content is Base64 encoded.
+ *
+ * @param {Payload} payload
+ * @returns {EncodedPayload}
+ */
+function encodePayload ({ content, contentType }) {
+    return {
+        content: Buffer.from(content).toString('base64'),
+        content_type: contentType
+    };
+}
+
+/**
  * Helps with creating of button template
  * Instance of button template is returned by {Responder}
  *
@@ -88,6 +120,31 @@ class ButtonTemplate extends BaseTemplate {
                 },
                 ...(hasSetState ? { setState } : {})
             })
+        });
+        return this;
+    }
+
+    /**
+     * Adds button, which opens a popup with content on click.
+     *
+     * @param {string} title
+     * @param {Payload} payload
+     * @returns {this}
+     *
+     * @example
+     * res.button('text')
+     *  .attachmentButton('button title', {
+     *      content: '# Heading 1',
+     *      contentType: 'text/markdown'
+     *   })
+     *  .send();
+     *
+     */
+    attachmentButton (title, payload) {
+        this.buttons.push({
+            type: 'attachment',
+            title: this._t(title),
+            payload: encodePayload(payload)
         });
         return this;
     }
