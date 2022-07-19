@@ -248,7 +248,7 @@ class BotApp {
             };
         }
 
-        const sender = await this.createSender(senderId, pageId, message);
+        const sender = await this.createSender(senderId, pageId, message, secret, appId);
         const res = await this._processor.processMessage(message, pageId, sender, { appId });
         await this._processSenderResponses(sender, senderId, pageId, headers);
 
@@ -266,13 +266,15 @@ class BotApp {
      * @param {string} pageId
      * @param {object} [message]
      * @param {string|Promise<string>} [secret]
+     * @param {string} appId
      * @returns {Promise<BotAppSender>}
      */
     async createSender (
         senderId,
         pageId,
         message = defaultMsg(senderId, pageId),
-        secret = this._secret
+        secret = this._secret,
+        appId = this._appId
     ) {
         const useSecret = await Promise.resolve(secret);
 
@@ -282,7 +284,7 @@ class BotApp {
             ...this._returnSenderOptions,
             apiUrl: this._apiUrl,
             pageId,
-            appId: this._appId,
+            appId,
             secret: useSecret,
             mid: setResponseToMid,
             fetch: this._fetch,

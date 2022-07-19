@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.35.0] - 2022-7-12
 
+### Fixed
+
+- BotApp does not pass appId
+
+## [3.35.0] - 2022-7-12
+
 ### Added
 
 - Attachment button with support for Markdown content. (`ButtonTemplate#attachmentButton()`)
