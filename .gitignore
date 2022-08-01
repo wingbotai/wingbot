@@ -31,3 +31,7 @@ node_modules
 .nyc_output
 out
 .DS_Store
+
+#documentation purposes
+.cache
+public
