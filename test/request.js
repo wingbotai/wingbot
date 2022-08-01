@@ -15,6 +15,8 @@ const STATE = {};
 const REF_ACTION = 'action_REF_ACTION';
 const REF_DATA = { b: 2 };
 
+const mockRes = { setData () { } };
+
 describe('Request', function () {
 
     it('should have senderId and recipientId and pageId', function () {
@@ -364,26 +366,26 @@ describe('Request', function () {
 
         it('should return intent, when present', async () => {
             const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.preloadAi(req);
+            await Ai.ai.preloadAi(req, mockRes);
             assert.strictEqual(req.intent(), 'foo');
         });
 
         it('should return intent data, when present', async () => {
             const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.preloadAi(req);
+            await Ai.ai.preloadAi(req, mockRes);
             assert.deepStrictEqual(req.intent(true), { intent: 'foo', score: 1 });
         });
 
         it('should return null, when present, but score is too low', async () => {
             const req = new Request(Request.intentWithText(SENDER_ID, 'any', 'foo'), STATE);
-            await Ai.ai.preloadAi(req);
+            await Ai.ai.preloadAi(req, mockRes);
             assert.strictEqual(req.intent(1.1), null);
             assert.strictEqual(req.intent(0.1), 'foo');
         });
 
         it('should return null, when intent is missing', async () => {
             const req = new Request(Request.postBack(SENDER_ID, 'any'), STATE);
-            await Ai.ai.preloadAi(req);
+            await Ai.ai.preloadAi(req, mockRes);
             assert.strictEqual(req.intent(), null);
             assert.strictEqual(req.intent(true), null);
         });

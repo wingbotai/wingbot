@@ -8,7 +8,7 @@ const sinon = require('sinon');
 const ReturnSender = require('../src/ReturnSender');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
-const { Processor, Request } = require('..');
+const { Processor, Request, Responder } = require('..');
 const { ai } = require('../src/Ai');
 const { WingbotModel } = require('../src/wingbot');
 const { FEATURE_PHRASES } = require('../src/features');
@@ -125,6 +125,7 @@ describe('<ReturnSender>', () => {
 
         let rs;
         let req;
+        let res;
         let fetch;
 
         beforeEach(() => {
@@ -145,6 +146,7 @@ describe('<ReturnSender>', () => {
             const msg = { message: { text: 'foo' }, sender: { id: 'a' }, features: [FEATURE_PHRASES] };
             req = new Request(msg, { lang: 'sasalele' }, 'page');
             rs = new ReturnSender({}, msg.sender.id, msg);
+            res = new Responder('id', rs);
         });
 
         it('saves last message before finish', async () => {
@@ -172,7 +174,7 @@ describe('<ReturnSender>', () => {
         });
 
         it('prolongs event sending when pushing another message', async () => {
-            await ai.preloadAi(req);
+            await ai.preloadAi(req, res);
 
             rs.send({ message: { text: 'bar' } });
 

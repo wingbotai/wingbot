@@ -541,7 +541,7 @@ class Processor extends EventEmitter {
                 }
             }
 
-            await Ai.ai.preloadAi(req);
+            await Ai.ai.preloadAi(req, res);
 
             // @deprecated backward compatibility
             const aByAi = req.actionByAi();

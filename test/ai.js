@@ -23,6 +23,7 @@ function createResponse (intent = 'hello', score = 0.96) {
  */
 function fakeReq (text = 'text') {
     const texts = Array.isArray(text) ? text : [text];
+    const data = {};
     return [
         {
             action () { return null; },
@@ -39,7 +40,9 @@ function fakeReq (text = 'text') {
             state: {}
         },
         {
-            bookmark: () => null
+            _data: data,
+            bookmark: () => null,
+            setData: (d) => Object.assign(data, d)
         },
         sinon.spy()
     ];
@@ -330,7 +333,7 @@ describe('<Ai>', function () {
                 event: { timestamp: Date.now() }
             };
 
-            return match(req, { bookmark: () => null })
+            return match(req, { bookmark () {}, setData () {} })
                 .then((res) => {
                     assert.strictEqual(res, Router.CONTINUE);
                     const { intent, score } = req.intents[0];
@@ -352,7 +355,7 @@ describe('<Ai>', function () {
                 isTextOrIntent: () => true, isQuickReply: () => false, event, action: () => null
             };
 
-            return match(req, { bookmark: () => null })
+            return match(req, { bookmark () {}, setData () {} })
                 .then((res) => {
                     assert.strictEqual(res, Router.CONTINUE);
                     const { intent, score } = req.intents[0];

@@ -40,6 +40,8 @@ let uq = 1;
 
 /** @typedef {import('./Request').IntentAction} IntentAction */
 /** @typedef {import('./Request')} Request */
+/** @typedef {import('./Responder')} Responder */
+/** @typedef {import('./wingbot/CachedModel').Result} Result */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Phrases} Phrases */
 
 /**
@@ -348,13 +350,13 @@ class Ai {
         const rules = this.matcher.preprocessRule(intent);
         const matcher = this._createIntentMatcher(rules, usedEntities);
 
-        return async (req) => {
+        return async (req, res) => {
             if (!req.isTextOrIntent()) {
                 return false;
             }
 
             if (!req.intents) {
-                await this._loadIntents(req);
+                await this._loadIntents(req, res);
             }
 
             const winningIntent = matcher(req);
@@ -523,9 +525,10 @@ class Ai {
     /**
      *
      * @param {Request} req
+     * @param {Responder} [res]
      * @returns {Promise}
      */
-    async preloadAi (req) {
+    async preloadAi (req, res = null) {
         if (req.supportsFeature(req.FEATURE_PHRASES)) {
             const model = this._getModelForRequest(req, false);
 
@@ -534,7 +537,7 @@ class Ai {
                     .catch(() => {});
             }
         }
-        return this._preloadIntent(req);
+        return this._preloadIntent(req, res);
     }
 
     /**
@@ -552,12 +555,43 @@ class Ai {
         return CustomEntityDetectionModel.getEmptyPhrasesObject();
     }
 
-    async _preloadIntent (req) {
+    /**
+     *
+     * @param {Request} req
+     * @param {Responder} res
+     * @param {Result} result
+     * @returns {void}
+     */
+    _setResultToReqRes (req, res, result) {
+        const { text = null, intents, entities = [] } = result;
+        Object.assign(req, { intents, entities, _anonymizedText: text });
+
+        if (!res) {
+            return;
+        }
+
+        const entitiesObj = (entities || []).reduce((o, { entity, value }) => {
+            const list = o[entity] || [];
+            list.push(value);
+            return Object.assign(o, { [entity]: list });
+        }, {});
+
+        res.setData({
+            '@': entitiesObj
+        });
+    }
+
+    /**
+     *
+     * @param {Request} req
+     * @param {Responder} [res]
+     * @returns {Promise}
+     */
+    async _preloadIntent (req, res = null) {
         const mockIntent = this._getMockIntent(req);
 
         if (mockIntent) {
-            req.intents = mockIntent.intents;
-            req.entities = mockIntent.entities;
+            this._setResultToReqRes(req, res, mockIntent);
             return;
         }
 
@@ -571,15 +605,15 @@ class Ai {
                 req.intents = [];
                 return;
             }
-            await this._loadIntents(req, model);
+            await this._loadIntents(req, res, model);
         } else {
             req.intents = [];
         }
     }
 
-    async _loadIntents (req, model = null) {
-        const { text = null, intents, entities = [] } = await this._queryModel(req, model);
-        Object.assign(req, { intents, entities, _anonymizedText: text });
+    async _loadIntents (req, res = null, model = null) {
+        const result = await this._queryModel(req, model);
+        this._setResultToReqRes(req, res, result);
     }
 
     async _queryModel (req, useModel = null) {

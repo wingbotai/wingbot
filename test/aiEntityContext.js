@@ -81,7 +81,7 @@ describe('<Ai> entity context', () => {
             const first = new Router();
 
             first.use(ai.global('custom', ['@customentity']), (req, res) => {
-                res.text(`e ${req.entity('customentity')}`);
+                res.text(`e ${req.entity('customentity')} ${res.data['@'].customentity[0]}`);
             });
 
             first.use('chacha', (req, res) => {
@@ -558,7 +558,7 @@ describe('<Ai> entity context', () => {
         it('passes the text through entity detector just once', async () => {
             await t.text('youyou');
 
-            t.any().contains('e detected');
+            t.any().contains('e detected detected');
 
             // @ts-ignore
             assert.strictEqual(t.getState().state['@customentity'], 'detected');
