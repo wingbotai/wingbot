@@ -9,7 +9,7 @@ permissions:
   contents: write
 jobs:
 
-  build-gatsby:
+  test-and-build-gatsby:
     name: test-and-deploy-documentation
     runs-on: ubuntu-latest
 
