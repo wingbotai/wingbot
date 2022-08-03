@@ -1,0 +1,3 @@
+User-agent: *
+Sitemap: https://wingbotai.github.io/wingbot-documentation-deployment/sitemap/sitemap-index.xml
+Host: https://wingbotai.github.io

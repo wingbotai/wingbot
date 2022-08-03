@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/advancedRouting/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/architecture/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/asyncActions/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/buildingConversation/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/conversationState/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/extendingProcessor/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/nestingRouters/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/nlpRouting/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/core/templates/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/designer/analytics/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/designer/chatbotApi/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/designer/deployingBot/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/designer/plugins/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/designer/scripting/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/designer/testing/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/Ai/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/BotApp/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/BuildRouter/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/GraphApi/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/ButtonTemplate/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/Notifications/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/Request/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/Responder/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/Router/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/Tester/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/bufferloader/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://wingbotai.github.io/wingbot-documentation-deployment/docs/api/stateVariables/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+</urlset>
