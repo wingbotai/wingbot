@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: "/wingbot-documentation-deployment",
+  pathPrefix: "/wingbot",
   plugins: [
     {
       resolve: "smooth-doc",
