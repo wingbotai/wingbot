@@ -5,15 +5,17 @@ on:
     branches:
       - master
       - production
+permissions:
+  contents: write
 jobs:
 
-  test:
-    name: test
+  build-gatsby:
+    name: test-and-deploy-documentation
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.x]
 
     steps:
 
@@ -27,10 +29,21 @@ jobs:
           cache: 'npm'
 
       - name: Npm install
-        run: npm install
+        run: npm install && cd documentation && npm install --legacy-peer-deps && cd ..
 
       - name: Test
         run: npm run test
+
+      - name: Generate mdx documentation files
+        run: node bin/makeApiDoc
+
+      - name: Build documentation website with gatsby
+        run: cd documentation && npm run build
+      
+      - name: Deploy documentation to github pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: documentation/public # The folder the action should deploy.
 
   # deploy:
   #   name: deploy
