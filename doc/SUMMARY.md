@@ -56,6 +56,7 @@
     * [Bookmarks](tutorial/nlpRouting.md#bookmarks-global-intents-under-control)
     * [System entities](tutorial/nlpRouting.md#system-entities)
 * [Extending the Processor](tutorial/extendingProcessor.md)
+* [Anonymisation](tutorial/anonymization.md)
 
 ## API
 
