@@ -1,3 +1,3 @@
 User-agent: *
-Sitemap: https://wingbotai.github.io/sitemap.xml
+Sitemap: https://wingbotai.github.io/wingbot/sitemap/sitemap-index.xml
 Host: https://wingbotai.github.io
