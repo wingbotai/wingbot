@@ -33,6 +33,9 @@ jobs:
 
       - name: Test
         run: npm run test
+      
+      - name: Rewrite gatsby confing inside smoothdoc
+        run: cp documentation/smooth-doc-gatsby-config.js documentation/node_modules/smooth-doc/gatsby-config.js
 
       - name: Generate mdx documentation files
         run: node bin/makeApiDoc
