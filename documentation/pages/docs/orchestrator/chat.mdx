@@ -1,0 +1,88 @@
+---
+title: How to connect Wingbot Webchat to any website # Title of your page
+section: ORCHESTRATOR # Sidebar navigation group title
+order: 1 # Order in the sidebar navigation group
+---
+
+# How to connect Wingbot Webchat to any website
+
+## Basic setup
+
+On the example below you can see the minimal setup for connecting the Wingbot webchat to a website.
+
+```html
+<link href="https://orchestrator.wingbot.ai/styles/wingbotChat.css" rel='stylesheet' type='text/css'>
+<div id="chat"></div>
+<script>
+    window.wingbotChatCmds=window.wingbotChatCmds||[];
+    window.wingbotChat=window.wingbotChat||function(){wingbotChatCmds.push(arguments)}
+    wingbotChat('init', {
+        pageId: '<put your page-id here>',
+        contextUserAgentProp: 'ua',
+		contextScreenResolutionProp: 'sr'
+    }, document.getElementById('chat'));
+</script>
+<script async src="https://orchestrator.wingbot.ai/wingbotChat.js"></script>
+```
+
+<br />
+<br />
+
+##### We can split this example code to the 4 main parts:
+
+- **CSS styles**
+    - link with the basic webchat theme, working out of the box
+    - feel free to create your own and replace it
+- **Physical representation**
+    - `<div id="chat"></div>` is physical representation of the webchat
+    - it can be placed anywhere in your website
+- **Webchat configuration**
+    - this part is mostly for configuration the webchat configuration
+    - `pageId` is mandatory and unique, if you don't know your `pageId` feel free to contact Wingbot support
+    - `document.getElementById` can be set to any existing element in the website
+- **Source to the webchat code**
+    - the last line of the example is link to the actual webchat app
+    - please do not download it and/or cache it somewhere in your infrastructure if you want to have the latest and the most secure version of Wingbot webchat
+
+
+## Dig more deeply into the configuration
+
+As we saw in the example above, webchat is configurable with 3 parameters.
+
+Lets have a look little bit deeply about the configuration right now:
+
+### Webchat commands and parameters:
+
+
+```Javascript
+webchat (
+    'init',    // `'init'` command should be always called to start a chat
+    element,   // is for the DOM element which is representation of the chat on the page
+    config     // object with webchat configurations
+);
+```
+<br />
+<br />
+
+There are supported parameters for the config object:
+
+
+| Parameter |  Default value | Description | Example |
+|:-----------|------------|-------------|---------|
+|`pageId`|**required**|Identifier of page|`'134271f0-1d1c-42a3-9191-6288fd1a263b'`|
+|`api`|`null`|Override an API URL of orchestrator (on-premise solutions only)||
+|`websocket`|`null`|Override an websocket URL of the widget (on-premise solutions only)||
+|`token`|`null`|Conversation token to continue in already existing conversation||
+|`refreshInterval`|`15000`|Interval in miliseconds to refresh the credentials||
+|`startAction`|`start`|Postback payload to send a non-visual chat event for start the conversation||
+|`lang`|`null`|Force the widget to use specified language||
+|`fallbackLang`|`'en'`|Use this language if it cannot be detected automatically||
+|`reduxEnhancer`|`null`|Redux plugin to be used within chat||
+|`onInit`|`() => {}`|Will be called when chat has been successfuly initialized||
+|`headerText`|`null`|Set a static text to be used as a header||
+|`context`|`{}`|Thread context variables - will be pushed to the bot||
+|`uploadEnabled`|`false`|On/off for a file upload (boolean)|
+|`uploadSizeLimit`|`1048576 * 6`|Hard limit for the file upload, bigger file cannot be uploaded|
+|`uploadSoftLimitForResize`|`1048576 * 2.5`|Soft limit for the file upload, bigger file will be shrunk, `0` means no shrinking|
+|`contextUserAgentProp`|null|Context prop to store user agent|`'ua'`|
+|`contextScreenResolutionProp`|null|Context prop to store screen resolution|`'sr'`|
