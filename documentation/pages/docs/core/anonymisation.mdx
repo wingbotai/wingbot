@@ -1,0 +1,64 @@
+---
+title: Anonymisation # Title of your page
+section: UNDERSTANDING THE CORE # Sidebar navigation group title
+order: 11 # Order in the sidebar navigation group
+---
+
+# Anonymisation
+
+There a three tiers of anonymisation
+
+- **pattern anonymisation** (enabled by default)
+- **expected input anonymisation** (when bot asks for something sensitive)
+- **confident inputs (passwords)**
+
+## Pattern anonymisation
+
+**Every** user input is anonymized with a pattern replacement.
+
+Every chatbot built with `wingbot-cli` has a file (`bot/anonymize.js`) with predefined regular expressions:
+
+- `@EMAIL` - email addresses
+- `@PHONE` - phone numbers
+- `@CODE` - alphanumeric codes (numbers combined with letters)
+
+All these patters are used when storing:
+
+- **conversation history** (`textFilter` option at `BotApp` class)
+- **reporting**
+    - Google Analytics (`onAction.js`)
+    - Table Storage
+
+> If it's necessary, it's possible to disable the pattern anonymisation, but it's not recommended.
+## Expected input anonymisation
+
+It's possible to anonymize a user input, which follows after an interaction
+
+- disables the NLP on user input
+- replaces text content of incoming request before
+storing it at ChatLogStorage using a `confidentInputFilter`
+- `req.isConfidentInput()` will return true
+
+After processing the user input, next requests will be processed as usual,
+
+```javascript
+const { Router } = require('wingbot');
+const bot = new Router();
+bot.use('start', (req, res) => {
+    // evil question
+    res.text('Give me your CARD NUMBER :D')
+        .expected('received-card-number')
+        .expectedConfidentInput();
+});
+bot.use('received-card-number', (req, res) => {
+    const cardNumber = req.text();
+    // raw card number
+    req.isConfidentInput(); // true
+    res.text('got it')
+        .setState({ cardNumber });
+```
+## Confidential inputs (password)
+When using the chatbot with the Wingbot's web chat, it's possible to use a special input type, which **hides inserted content immediately after it is submitted**
+```javascript
+res.expectedInput(res.ExpectedInputTypes.TYPE_PASSWORD);
+```

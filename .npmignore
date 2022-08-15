@@ -24,3 +24,5 @@ plugins/**/*.md
 plugins/**/*.gif
 
 .DS_Store
+
+documentation

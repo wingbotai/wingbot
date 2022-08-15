@@ -44,7 +44,7 @@ const srcDir = path.resolve(process.cwd(), 'src');
 if (fs.existsSync(tempDir)) fs.rmdirSync(tempDir, { recursive: true });
 createDirectoryIfNotExists(tempDir, true);
 
-docs.forEach((doc) => {
+docs.forEach((doc, index) => {
     if (Array.isArray(doc)) {
         [srcFile] = doc;
         files = doc;
@@ -53,8 +53,8 @@ docs.forEach((doc) => {
         files = [doc];
     }
 
-    docFile = path.join(process.cwd(), 'doc', 'api', srcFile
-        .replace(/jsx?$/, 'md')
+    docFile = path.join(process.cwd(), 'documentation', 'pages', 'docs', 'api', srcFile
+        .replace(/jsx?$/, 'mdx')
         .replace(/^src\/(templates\/|mongodb\/|tools\/|utils\/|middlewares\/|notifications\/|graphApi\/)?/, ''));
 
     files = files
@@ -68,7 +68,7 @@ docs.forEach((doc) => {
                 // imports
                 .replace(/\/\*\*\s+@typedef\s+\{import[^*]+\*\//g, '')
                 // unions
-                .replace(/@typedef\s+\{[a-zA-Z0-9]+\s*&\s*[a-zA-Z0-9]+\}/g, (o) => o.replace('&', '|'));
+                .replace(/@typedef\s+\{[a-zA-Z0-9]+\s*&\s*[a-zA-Z0-9]+(\s*&\s*[a-zA-Z0-9]+)*\}/g, (o) => o.replace(/&/g, '|'));
 
             createDirectoryIfNotExists(targetFile);
             fs.writeFileSync(targetFile, source);
@@ -83,6 +83,20 @@ docs.forEach((doc) => {
         .replace(/<a\sname="([^"]+)"><\/a>/g, (a, r) => `<div id="${r.replace(/[+.]/g, '_')}">&nbsp;</div>`)
         .replace(/<a\shref="#([^"]+)">/g, (a, r) => `<a href="#${r.replace(/[+.]/g, '_')}">`)
         .replace(/]\(#([a-z+0-9_.]+)\)/ig, (a, r) => `](#${r.replace(/[+.]/g, '_')})`);
+
+    const expresions = apiDoc.match(/\{([a-zA-Z]+?)\}/g);
+    if (expresions) {
+        [...new Set(expresions)].forEach((expresion) => {
+            apiDoc = `export const ${expresion.slice(1, -1)} = "${expresion}";\n\n${apiDoc}`;
+        });
+    }
+
+    const title = path.basename(docFile).replace(/\.[^/.]+$/, '');
+    apiDoc = `---\n\
+title: ${title} # Title of your page\n\
+section: API # Sidebar navigation group title\n\
+order: ${index} # Order in the sidebar navigation group\n\
+---\n\n${apiDoc}`;
 
     fs.writeFileSync(docFile, apiDoc);
 });

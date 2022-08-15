@@ -1,0 +1,122 @@
+---
+title: Orchestrator Configuration # Title of your page
+section: ORCHESTRATOR # Sidebar navigation group title
+order: 2 # Order in the sidebar navigation group
+---
+
+# Orchestrator configuration
+
+## Environmental variables at Docker
+
+### Application configuration
+
+| ENV Variable | Default value | Type | Description | Note/Example |
+|:-------------|---------------|------|-------------|--------------|
+|`PAGE_URL`|**required**|string|Deployment url without training slash|`https://foo.bar.com`|
+|`APP_SECRET`|**required**|string|Random string used as a JWT secret||
+|`COOKIE_DOMAIN`|**required**|string|Domain to set cookies||
+|`MONGODB_CONNECTION_STRING`|**required** when using MongoDB|string|DB connection string||
+|`MONGODB_DB`|*extracted from connection string*|Override MongoDB database name||
+|`COSMOSDB_CONNECTION_STRING`|**required** when using CosmosDB|string|DB connection string||
+|`COSMOSDB_DB`|**required** when using CosmosDB|string|DB database name||
+|`HSTS_MAX_AGE`|`2592000`|number|Max age header for HSTS||
+|`X_FRAME_OPTIONS`|`DENY`|string|Allow using chat from an iframe|`SAMEORIGIN`|
+|`SENTRY_BACKEND_DSN`||string|Sentry DSN to report exceptions on backend||
+|`SENTRY_FRONTEND_DSN`||string|Sentry DSN to report exceptions on frontend||
+|`APPINSIGHTS_INSTRUMENTATIONKEY`||string|Enables Azure Application Insights error reporting||
+|`VERBOSE_REQUEST_LOG`|`false`|boolean|Enables logging of request contents and responses|*has performance impacts*|
+|`HIDE_VERBOSE_ERRORS`|`true`|string|Replaces user friendly error responses with generic "API Error" message|*stack traces are always hidden*|
+|`JSON_CONFIGURATION`|`{}`|string|Static orchestrator configuration JSON|*described below*|
+|`ALLOW_CORS_ORIGINS`|`*`|string[]|List of allowed CORS origins|*use , as separator*|
+
+### Default orchestrator configuration
+
+Following configuration is used, when no/empty `JSON_CONFIGURATION` is provided.
+
+```json
+{
+    "pages": [
+        { "id": "web", "primaryAppId": "bot" }
+    ],
+    "apps": [
+        { "id": "bot" }
+    ],
+    "appToPage": [
+        { "appId": "bot", "pageId": "web" }
+    ]
+}
+```
+
+### Page Configuration
+
+> names of pages are transformed according to following example: `fooBar--name0` to `FOO_BAR_NAME0` (camel case to snake case except numbers, all foreign characters to single underscores)
+
+**Common options**
+
+
+| ENV Variable | Default value | Type | Description | Configuration property | Note/Example |
+|:-------------|---------------|------|-------------|------------------------|--------------|
+|`PAGE_{page.id}_PRIMARY_APP_ID`||string|Default application to dispatch a thread|`primaryAppId`||
+|`PAGE_{page.id}_CHANNEL_NAME`|`wbaichat`|string|Channel type|`channelName`|`wbaichat`, `botservice`, `facebook`, `api`, `vocalls`|
+|`PAGE_{page.id}_CLIENT_ID`||string|Client identification, when the channel is connected behind messaging service|`clientId`||
+|`PAGE_{page.id}_CLIENT_SECRET`||string|Client secret, when the channel is connected behind messaging service|`clientSecret`||
+|`PAGE_{page.id}_START_ACTION_PAYLOAD`||string|Postback payload|`startActionPayload`|*supported by botservice, and vocalls (inbound call)*|
+|`PAGE_{page.id}_LOAD_USER_TO_CONTEXT_PROP`||string|If chanel provides user data, it's loaded into this prop|`loadUserToContextProp`|*supported by botservice, and vocalls*|
+|`PAGE_{page.id}_API_URL`||string|API url for services like vocalls, facebook etc.|`apiUrl`|`https://vocalls.cz/calls`|
+|`PAGE_{page.id}_TOKEN`||string|Token for API|`token`||
+|`PAGE_{page.id}_DEFAULT_VOICE_CONTROL_LANGUAGE`|`cs-CZ`|string|Voice language|`defaultVoiceControl.language`||
+|`PAGE_{page.id}_DEFAULT_VOICE_CONTROL_VOICE`||string|Voice type|`defaultVoiceControl.voice`|`cs-CZ-AntoninNeural`|
+|`PAGE_{page.id}_DEFAULT_VOICE_CONTROL_SPEED`|`1`|number|Voice speed|`defaultVoiceControl.speed`|`0-2` ! Google TTS doesn't support values lower than 0.5|
+|`PAGE_{page.id}_DEFAULT_VOICE_CONTROL_PITCH`|`1`|number|Voice pitch|`defaultVoiceControl.pitch`|`0-2` ! Google TTS doesn't support values lower than 0.5|
+|`PAGE_{page.id}_DEFAULT_VOICE_CONTROL_VOLUME`|`1`|number|Voice volume|`defaultVoiceControl.volume`|`0-2` ! Google TTS doesn't support values lower than 0.5|
+|`PAGE_{page.id}_CALL_ACTION_PAYLOADS_OUTBOUND`||string|Outbound call payload|`callActionPayloads.outbound`|Bot is calling to someone|
+|`PAGE_{page.id}_CALL_ACTION_PAYLOADS_DECLINED`||string|Declined call payload|`callActionPayloads.declined`|User didn't accept the call|
+|`PAGE_{page.id}_CALL_ACTION_PAYLOADS_HUNGUP`||string|Call hungup payload|`callActionPayloads.hungup`|User hung up the call|
+|`PAGE_{page.id}_CALL_ACTION_PAYLOADS_DIAL`||string|Dial payload **action**|`callActionPayloads.dial`|`dial` needs payload data `data.to = PHONE_NUMBER`|
+|`PAGE_{page.id}_CALL_ACTION_PAYLOADS_HANGUP`||string|Hangup payload|`callActionPayloads.hangup`|Will hangup the call|
+
+**Web chat options**
+
+| ENV Variable | Default value | Type | Description | Configuration property | Note/Example |
+|:-------------|---------------|------|-------------|------------------------|--------------|
+|`PAGE_{page.id}_ALLOW_DOMAINS`|`null`|string|Default application to dispatch a thread|`allowDomains`|`"wingbot.ai, skoda-auto.cz"`|
+|`PAGE_{page.id}_ALLOW_WEAK_AUTH`|`true`|boolean|Disables server-side cookie check|`allowWeakAuth`||
+|`PAGE_{page.id}_SESSION_EXPIRATION_SECONDS`|`7 * 24 * 3600`|number|Sets expiration of frontend token, so it resets the conversation then.|`sessionExpirationSeconds`||
+|`PAGE_{page.id}_PUBLIC_CONTEXT_PROPS`||string|List of thread context variables published to frontend|`publicContextProps`|`"foo, bar"`|
+|`PAGE_{page.id}_RESET_ON_CONTEXT_CHANGE_PROPS`||string|When contents of any provided variable changes, the chat will start over. (`null` or `undefined` to *any* is not a change)|`resetOnContextChangeProps`||
+|`PAGE_{page.id}_OAUTH_CLIENT_ID`||string|OAuth client ID|`oauth.clientId`||
+|`PAGE_{page.id}_OAUTH_CLIENT_SECRET`||string|OAuth client secret|`oauth.clientSecret`||
+|`PAGE_{page.id}_OAUTH_AUTHORIZATION_ENDPOINT`||string|OAuth client authorization endpoint|`oauth.authorizationEndpoint`||
+|`PAGE_{page.id}_OAUTH_TOKEN_ENDPOINT`||string|OAuth token endpoint|`oauth.tokenEndpoint`||
+|`PAGE_{page.id}_OAUTH_SCOPE`|`openid`|string|OAuth requested scope|`oauth.scope`||
+|`PAGE_{page.id}_OAUTH_RESPONSE_TYPE`|`code`|string|OAuth requested scope|`oauth.responseType`||
+|`PAGE_{page.id}_OAUTH_STORE_USER_ID_AT_CONTEXT_PROP`|`userId`|string|OAuth - stores user ID after successful authorization at a thread context variable|`oauth.storeUserIdAtContextProp`||
+|`PAGE_{page.id}_OAUTH_STORE_AUTH_RESULT_AT_CONTEXT_PROP`|`auth`|string|OAuth - stores contents of ID token at a thread context variable|`oauth.storeAuthResultAtContextProp`||
+|`PAGE_{page.id}_OAUTH_BIND_THREAD_TO_SUBJECT`||boolean|OAuth - each user ID will have a single conversation|`oauth.bindThreadToSubject`||
+
+
+### App Configuration
+
+> names of pages are transformed according to following example: `fooBar--name0` to `FOO_BAR_NAME0` (camel case to snake case except numbers, all foreign characters to single underscores)
+
+| ENV Variable | Default value | Type | Description | Configuration property | Note/Example |
+|:-------------|---------------|------|-------------|------------------------|--------------|
+|`APP_{app.id}_CHANNEL_NAME`|`api`|string|Channel type|`channelName`|`api`|
+|`APP_{app.id}_OPTIONS_URL`|**required**|string|Chatbot application endpoint address|`options.url`||
+|`APP_{app.id}_OPTIONS_SECRET`|**required**|string|Chatbot application secret|`options.secret`||
+|`APP_{app.id}_OPTIONS_TLS_KEY`||string|Use client certificate private key|`options.tls.key`||
+|`APP_{app.id}_OPTIONS_TLS_CERT`||string|Use client certificate|`options.tls.cert`||
+|`APP_{app.id}_OPTIONS_TLS_CA`||string|Verify client certificate with root certificate|`options.tls.ca`|pem format|
+|`APP_{app.id}_OPTIONS_TLS_FINGER_PRINT`||string|Verify client certificate finger print|`options.tls.fingerPrint`|comma separated|
+|`APP_{app.id}_OPTIONS_TLS_SUBJECT_CN`||string|Verify client certificate subject CN|`options.tls.subjectCN`|comma separated|
+|`APP_{app.id}_OPTIONS_TLS_SUBJECT_O`||string|Verify client certificate subject O|`options.tls.subjectO`|comma separated|
+|`APP_{app.id}_OPTIONS_TLS_ISSUER_CN`||string|Verify client certificate issuer CN|`options.tls.issuerCN`|comma separated|
+|`APP_{app.id}_OPTIONS_TLS_ISSUER_O`||string|Verify client certificate issyer O|`options.tls.issuerO`|comma separated|
+|`APP_{app.id}_SUBSCRIPTIONS_MESSAGES`|`true`|boolean|Send messages to application's webhook|`subscriptions.messages`||
+|`APP_{app.id}_SUBSCRIPTIONS_POSTBACKS`|`true`|boolean|Send postbacks to application's webhook|`subscriptions.postbacks`||
+|`APP_{app.id}_SUBSCRIPTIONS_HANDOVERS`|`true`|boolean|Send handovers to application's webhook|`subscriptions.handovers`||
+|`APP_{app.id}_SUBSCRIPTIONS_CONTEXT_UPDATES`|`true`|boolean|Send thread context updates to application's webhook|`subscriptions.contextUpdates`||
+|`APP_{app.id}_SUBSCRIPTIONS_SENDER_ACTIONS`|`false`|boolean|Send sender actions to application's webhook|`subscriptions.senderActions`||
+|`APP_{app.id}_SUBSCRIPTIONS_STANDBY_INCOMING`|`false`|boolean|Send all communication from channel to application's webhook|`subscriptions.standbyIncoming`|*when the application is not a thread owner*|
+|`APP_{app.id}_SUBSCRIPTIONS_SENDER_ACTIONS`|`false`|boolean|Send all communication from other applications to application's webhook|`subscriptions.standbyOutgoing`|*when the application is not a thread owner*|
+|`APP_{app.id}_SUBSCRIPTIONS_SENDER_ACTIONS`|`false`|boolean|Send tracking events to application's webhook|`subscriptions.tracking`||
