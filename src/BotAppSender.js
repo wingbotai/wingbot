@@ -117,7 +117,7 @@ class BotAppSender extends ReturnSender {
 
         headers.set('Authorization', token);
 
-        const response = await this._fetch(this._apiUrl, {
+        const response = await this._fetch(`${this._apiUrl}/${this._pageId}`, {
             headers, body: formData, agent, method: 'POST'
         })
             .then((r) => r.json());

@@ -205,6 +205,10 @@ class Ai {
         return model;
     }
 
+    get localEnhancement () {
+        return (1 - this.confidence) / 2;
+    }
+
     async processSetStateEntities (req, setState) {
         const keys = Object.keys(setState);
 

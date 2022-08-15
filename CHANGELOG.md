@@ -5,19 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.36.0] - 2022-7-12
+## [3.36.1-2] - 2022-08-11
+
+### Fixed
+
+- allow the NLP to beat local context entity
+- added a bypass of webapp bug on Azure App Service
+
+## [3.36.0] - 2022-07-12
 
 ### Added
 
 - Entities are accessible with an array `{{[@].number.[0]}}`
 
-## [3.35.1] - 2022-7-12
+## [3.35.1] - 2022-07-12
 
 ### Fixed
 
 - BotApp does not pass appId
 
-## [3.35.0] - 2022-7-12
+## [3.35.0] - 2022-07-12
 
 ### Added
 

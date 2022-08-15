@@ -132,6 +132,12 @@ class AiMatching {
          * @type {number}
          */
         this.multiMatchGain = 1.2;
+
+        /**
+         * Score of a context entity within a conversation state
+         * (1 by default)
+         */
+        this.stateEntityScore = 1;
     }
 
     get redundantHandicap () {
@@ -480,6 +486,10 @@ class AiMatching {
         return winningIntent;
     }
 
+    _getMultiMatchGain (entitiesScore, matchedCount, fromState = 0) {
+        return (this.multiMatchGain * entitiesScore) ** (matchedCount - fromState);
+    }
+
     /**
      *
      * @private
@@ -505,7 +515,7 @@ class AiMatching {
         }
 
         const {
-            score: entitiesScore, handicap, matched, minScore
+            score: entitiesScore, handicap, matched, minScore, fromState
         } = this
             ._entityMatching(
                 wantedEntities,
@@ -516,13 +526,20 @@ class AiMatching {
                     : (x) => x
             );
 
+        // console.log({ entitiesScore, handicap, matched, minScore, requestIntent })
+
         const allOptional = wantedEntities.every((e) => e.optional);
         if (entitiesScore === 0 && !allOptional) {
             return { score: 0, entities: [] };
         }
 
-        const score = (Math.min(minScore + (handicap / 2), requestIntent.score) - handicap)
-            * ((this.multiMatchGain * entitiesScore) ** matched.length);
+        const normalizedScore = Math.min(minScore + (handicap / 2), requestIntent.score);
+        const scoreWithHandicap = normalizedScore - handicap;
+        const multiMatchGain = this._getMultiMatchGain(entitiesScore, matched.length, fromState);
+
+        const score = scoreWithHandicap * multiMatchGain;
+
+        // console.log({ IMS: score, normalizedScore, scoreWithHandicap, multiMatchGain });
 
         return {
             score,
@@ -537,7 +554,7 @@ class AiMatching {
      * @param {Entity[]} requestEntities
      * @param {object} [requestState]
      * @param {Function} [scoreFn]
-     * @returns {{score: number, handicap: number, matched: Entity[], minScore: number }}
+     * @returns {{score:number,handicap:number, matched:Entity[],minScore:number,fromState:number}}
      */
     _entityMatching (wantedEntities, requestEntities = [], requestState = {}, scoreFn = (x) => x) {
         const occurences = new Map();
@@ -546,6 +563,7 @@ class AiMatching {
         let handicap = 0;
         let sum = 0;
         let minScore = 1;
+        let fromState = 0;
 
         for (const wanted of wantedEntities) {
             const usedIndexes = occurences.has(wanted.entity)
@@ -579,8 +597,10 @@ class AiMatching {
                     requestEntity = {
                         value: requestState[`@${wanted.entity}`],
                         entity: wanted.entity,
-                        score: 1
+                        score: this.stateEntityScore
                     };
+
+                    fromState += 1;
 
                     matching = this._entityIsMatching(
                         wanted.op,
@@ -596,7 +616,7 @@ class AiMatching {
 
             if (!matching && !wanted.optional) {
                 return {
-                    score: 0, handicap: 0, matched: [], minScore
+                    score: 0, handicap: 0, matched: [], minScore, fromState
                 };
             }
 
@@ -636,11 +656,15 @@ class AiMatching {
             }
         }
 
-        handicap += (requestEntities.length - matched.length) * this.redundantEntityHandicap;
+        // console.log({ sum, handicap, rl: requestEntities.length, ml: matched.length });
+
+        // @todo - neni mozne, by doslo k negativnimu handicapu
+        handicap += (requestEntities.length + fromState - matched.length)
+            * this.redundantEntityHandicap;
         const score = matched.length === 0 ? 0 : sum / matched.length;
 
         return {
-            score, handicap, matched, minScore
+            score, handicap, matched, minScore, fromState
         };
     }
 

@@ -1227,7 +1227,6 @@ class Request {
         // to match the local context intent
         const localRegexToMatch = this._getLocalPathRegexp();
 
-        const localEnhancement = (1 - Ai.ai.confidence) / 2;
         for (const gi of this.globalIntents.values()) {
             const pathMatches = localRegexToMatch && localRegexToMatch.exec(gi.action);
             if (gi.local && !pathMatches) {
@@ -1235,7 +1234,9 @@ class Request {
             }
             const intent = gi.matcher(this, null, true);
             if (intent !== null) {
-                const sort = intent.score + (pathMatches ? localEnhancement : 0);
+                const sort = intent.score + (pathMatches
+                    ? Ai.ai.localEnhancement
+                    : 0);
                 // console.log(sort, wi.intent);
                 aiActions.push({
                     ...gi,

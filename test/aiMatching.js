@@ -5,6 +5,7 @@
 
 const assert = require('assert');
 const AiMatching = require('../src/AiMatching');
+const Ai = require('../src/Ai');
 
 const SCORE = 0.95;
 const MULTI_SCORE = 0.95 * 1.2;
@@ -538,7 +539,7 @@ describe('<AiMatching>', () => {
             assert.deepEqual(res, winningIntent);
         });
 
-        it('should cope with low score entities but retains OK@0.8', () => {
+        it('should cope with low score entities but retains OK@0.8 I.', () => {
             const rule = ai.preprocessRule(['intent', '@foo']);
 
             // @ts-ignore
@@ -550,7 +551,7 @@ describe('<AiMatching>', () => {
             assert.ok(res.score > 0.8, 'it should match');
         });
 
-        it('should cope with low score entities but retains OK@0.85', () => {
+        it('should cope with low score entities but retains OK@0.85 II.', () => {
             const rule = ai.preprocessRule(['intent', '@foo']);
 
             // @ts-ignore
@@ -562,7 +563,7 @@ describe('<AiMatching>', () => {
             assert.ok(res.score > 0.85, 'it should match');
         });
 
-        it('should cope with low score entities @0.85', () => {
+        it('should cope with low score entities not@0.85', () => {
             const rule = ai.preprocessRule(['intent', '@foo']);
 
             // @ts-ignore
@@ -574,7 +575,7 @@ describe('<AiMatching>', () => {
             assert.ok(res.score < 0.85, 'it should match');
         });
 
-        it('should cope with low score entities and intents @0.85', () => {
+        it('should cope with low score entities and intents OK@0.85 III.', () => {
             const rule = ai.preprocessRule(['intent', '@foo']);
 
             // @ts-ignore
@@ -586,7 +587,7 @@ describe('<AiMatching>', () => {
             assert.ok(res.score >= 0.85, 'it should match');
         });
 
-        it('should cope with bad entities and intents @0.79', () => {
+        it('should cope with bad entities and intents OK@0.79', () => {
             const rule = ai.preprocessRule(['intent', '@foo']);
 
             // @ts-ignore
@@ -598,7 +599,7 @@ describe('<AiMatching>', () => {
             assert.ok(res.score >= 0.79, 'it should match');
         });
 
-        it('should cope with bad entities and intents @0.79', () => {
+        it('should cope with bad entities and intents not@0.79 ', () => {
             const rule = ai.preprocessRule(['intent', '@foo']);
 
             // @ts-ignore
@@ -608,6 +609,93 @@ describe('<AiMatching>', () => {
             const res = ai.match(goodReq, rule);
             assert.ok(res, 'it should match');
             assert.ok(res.score < 0.79, 'it should match');
+        });
+
+        it('allow the NLP to beat local context entity 2', () => {
+            const uznatelnyMena = ai.preprocessRule(['@meny=hotovost', 'int_uznatelny']);
+            const dokumentacePojmy = ai.preprocessRule(['int_dokumentace', '@pojmy=předschválený příjem']);
+
+            const req = fakeReq([
+                {
+                    intent: 'int_dokumentace',
+                    score: 0.9983229239781698,
+                    entities: [
+                        {
+                            entity: 'pojmy',
+                            score: 1,
+                            value: 'předschválený příjem'
+                        }
+                    ]
+                },
+                {
+                    intent: 'int_uznatelny',
+                    score: 0.9865056872367859,
+                    entities: []
+                }
+            ], [
+                {
+                    entity: 'pojmy',
+                    score: 1,
+                    value: 'předschválený příjem'
+                }
+            ], 'sasa lele', {
+                '@meny': 'hotovost'
+            });
+
+            const dokumetaceMenaRes = ai.match(req, dokumentacePojmy);
+            const uznatelnyMenaRes = ai.match(req, uznatelnyMena); // 1.183806824684143
+
+            assert.ok(dokumetaceMenaRes);
+            assert.ok(uznatelnyMenaRes);
+            assert.ok(dokumetaceMenaRes.score > (uznatelnyMenaRes.score + Ai.ai.localEnhancement));
+
+            // console.log({ dokumetaceMenaRes, uznatelnyMenaRes });
+        });
+
+        it('allow the NLP to beat local context entity', () => {
+            const uznatelnyMena = ai.preprocessRule(['@meny=hotovost', 'int_uznatelny']);
+            const uznatelnyPojmy = ai.preprocessRule(['int_uznatelny', '@pojmy=předschválený příjem']);
+
+            const req = fakeReq([
+                {
+                    intent: 'int_uznatelny',
+                    score: 0.999998927116394,
+                    entities: [
+                        {
+                            entity: 'pojmy',
+                            score: 0.9995,
+                            value: 'předschválený příjem'
+                        }
+                    ]
+                }
+                // {
+                //     intent: 'int_uznatelny',
+                //     score: 0.8934060611724854,
+                //     entities: [
+                //         {
+                //             entity: 'pojmy',
+                //             score: 0.9995,
+                //             value: 'předschválený příjem'
+                //         }
+                //     ]
+                // }
+            ], [
+                {
+                    entity: 'pojmy',
+                    score: 0.9995,
+                    value: 'předschválený příjem'
+                }
+            ], 'sasa lele', {
+                '@meny': 'hotovost'
+            });
+
+            const uznatelnyMenaRes = ai.match(req, uznatelnyMena);
+            const uznatelnyPojmyRes = ai.match(req, uznatelnyPojmy);
+
+            assert.ok(uznatelnyPojmyRes);
+            assert.ok(uznatelnyMenaRes);
+
+            assert.ok(uznatelnyPojmyRes.score > (uznatelnyMenaRes.score + Ai.ai.localEnhancement));
         });
 
     });
