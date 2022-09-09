@@ -65,8 +65,10 @@ docs.forEach((doc, index) => {
 
             // filter source files
             source = source
+                // generics
+                .replace(/(Middleware|Resolver|Router|Request)<[a-zA-Z,\s]+>/g, '$1')
                 // imports
-                .replace(/\/\*\*\s+@typedef\s+\{import[^*]+\*\//g, '')
+                .replace(/\/\*\*[^/]+@typedef\s+\{import[^*]+\*\//gm, '')
                 // unions
                 .replace(/@typedef\s+\{[a-zA-Z0-9]+\s*&\s*[a-zA-Z0-9]+(\s*&\s*[a-zA-Z0-9]+)*\}/g, (o) => o.replace(/&/g, '|'));
 
