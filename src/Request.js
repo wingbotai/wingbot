@@ -116,18 +116,29 @@ function makeTimestamp () {
 /**
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
- * @class
+ * @template {object} [S=object]
+ * @template {object} [C=object]
+ * @class Request
  */
 class Request {
 
     /**
      * @param {*} event
-     * @param {*} state
+     * @param {S} state
      * @param {string} pageId
      * @param {Map} globalIntents
      * @param {RequestOrchestratorOptions} [orchestratorOptions]
+     * @param {C} [configuration]
      */
-    constructor (event, state, pageId, globalIntents = new Map(), orchestratorOptions = {}) {
+    constructor (
+        event,
+        state,
+        pageId,
+        globalIntents = new Map(),
+        orchestratorOptions = {},
+        // @ts-ignore
+        configuration = {}
+    ) {
         this.campaign = event.campaign || null;
 
         this.taskId = event.taskId || null;
@@ -188,7 +199,7 @@ class Request {
         this.pageId = pageId;
 
         /**
-         * @prop {object} state current state of the conversation
+         * @type {S} current state of the conversation
          */
         this.state = state;
 
@@ -265,8 +276,8 @@ class Request {
          */
         this.FEATURE_TRACKING = FEATURE_TRACKING;
 
-        /** @type {object} */
-        this.configuration = Object.freeze({});
+        /** @type {C} */
+        this.configuration = configuration;
     }
 
     get data () {

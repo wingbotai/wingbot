@@ -499,6 +499,11 @@ class Processor extends EventEmitter {
 
             // prepare request and responder
             let { state } = stateObject;
+            let configuration = {};
+            if ('getConfiguration' in this.reducer) {
+                configuration = this.reducer.getConfiguration();
+            }
+
             // @ts-ignore
             req = new Request(
                 message,
@@ -511,7 +516,8 @@ class Processor extends EventEmitter {
                     secret: this.options.secret,
                     fetch: this.options.fetch,
                     appId: responderData.appId
-                }
+                },
+                configuration
             );
 
             const features = [
@@ -547,11 +553,6 @@ class Processor extends EventEmitter {
             const aByAi = req.actionByAi();
             if (aByAi && aByAi !== req.action()) {
                 res.setBookmark(aByAi);
-            }
-
-            if ('getConfiguration' in this.reducer) {
-                const configuration = this.reducer.getConfiguration(state._lastAction);
-                req.configuration = Object.freeze(configuration);
             }
 
             // process setState

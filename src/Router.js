@@ -15,8 +15,11 @@ function defaultPathContext () {
 }
 
 /**
+ *
+ * @template {object} [S=object]
+ * @template {object} [C=object]
  * @callback Resolver processing function
- * @param {Request} [req]
+ * @param {Request<S,C>} [req]
  * @param {Responder} [res]
  * @param {Function} [postBack]
  */
@@ -32,12 +35,21 @@ function defaultPathContext () {
  */
 
 /**
- * @typedef {Resolver|string|RegExp|IRouter|BotPath} Middleware flow control statement or function
+ * @typedef {string|RegExp|BotPath} RouteExp
+ */
+
+/**
+ *
+ * @template {object} [S=object]
+ * @template {object} [C=object]
+ * @typedef {Resolver<S,C>|RouteExp|IRouter} Middleware flow control statement or function
  */
 
 /**
  * Cascading router
  *
+ * @template {object} [S=object]
+ * @template {object} [C=object]
  * @class Router
  * @extends {ReducerWrapper}
  */
@@ -67,7 +79,7 @@ class Router extends ReducerWrapper {
     /**
      * Appends middleware, action handler or another router
      *
-     * @param {...Middleware|Middleware[]} resolvers - list of resolvers
+     * @param {...Middleware<S,C>|Middleware<S,C>[]} resolvers - list of resolvers
      * @returns {this}
      *
      * @example

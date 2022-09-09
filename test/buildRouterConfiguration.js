@@ -24,17 +24,19 @@ describe('<buildRouterConfiguration>', () => {
         plugins.register('routerBlock', (req, res) => {
             res.text('routerBlock');
         });
+
+        // @ts-ignore
         const bot = BuildRouter.fromData(configurationbot.data, plugins, {
             allowForbiddenSnippetWords: true,
             configuration: { foo: 'root value' },
             routeConfigs: [
                 {
                     path: 'subblock-include',
-                    enabled: true,
-                    configuration: {
-                        foo: 'sub value',
-                        bar: 'sasa lele'
-                    }
+                    enabled: true
+                },
+                {
+                    path: 'disabled',
+                    enabled: false
                 }
             ]
         });
@@ -57,7 +59,7 @@ describe('<buildRouterConfiguration>', () => {
             await t.quickReplyText('Go To Subblock');
 
             t.any()
-                .contains('Want continue sub value');
+                .contains('Want continue root value');
 
             assert.deepEqual(
                 t.res(0).response.message.attachment.payload.buttons,
@@ -71,7 +73,7 @@ describe('<buildRouterConfiguration>', () => {
             await t.quickReply('back');
 
             t.any()
-                .contains('Deeper sasa lele here');
+                .contains('Deeper  here');
 
             await t.intent('globalIntent');
 

@@ -11,8 +11,17 @@ const RouterWrap = require('./RouterWrap');
 const wrapPluginFunction = require('./utils/wrapPluginFunction');
 
 /**
+ * @template {object} [S=object]
+ * @template {object} [C=object]
+ * @typedef {import('./Router').Middleware<S,C>} Middleware
+ */
+
+/**
+ *
+ * @template {object} [S=object]
+ * @template {object} [C=object]
  * @callback Plugin
- * @param {Request} req
+ * @param {Request<S,C>} req
  * @param {Responder} res
  * @param {Function} [postBack]
  * @param {{isLastIndex:boolean,path:string,expectedPath:string}} [context]
@@ -20,7 +29,21 @@ const wrapPluginFunction = require('./utils/wrapPluginFunction');
  */
 
 /**
+ *
+ * @template {object} [S=object]
+ * @template {object} [C=object]
+ * @callback PluginFactory
+ * @param {object} params
+ * @param {C} configuration
+ * @returns {Router<S,C>|Middleware<S,C>}
+ */
+
+/**
  * Custom code plugins for BuildRouter and wingbot.ai
+ *
+ * @template {object} [S=object]
+ * @template {object} C=Object
+ * @class Plugins
  */
 class Plugins {
 
@@ -28,7 +51,7 @@ class Plugins {
         this._plugins = new Map();
     }
 
-    getPluginFactory (name, paramsData = {}) {
+    getPluginFactory (name, paramsData = {}, configuration = {}) {
         let plugin;
         if (plugins.has(name)) {
             plugin = plugins.get(name);
@@ -38,7 +61,7 @@ class Plugins {
             plugin = this._plugins.get(name);
         }
         if (plugin && plugin.pluginFactory) {
-            return plugin.pluginFactory(paramsData);
+            return plugin.pluginFactory(paramsData, configuration);
         }
         return plugin;
     }
@@ -115,8 +138,8 @@ class Plugins {
     /**
      * Register plugin
      *
-     * @param {string|Plugins} name - plugin name or plugins object to include
-     * @param {Plugin|Router} [plugin] - plugin - optional when including plugin object
+     * @param {string|Plugins<S,C>} name - plugin name or plugins object to include
+     * @param {Plugin<S,C>|Router<S,C>} [plugin] - plugin - optional when including plugin object
      */
     register (name, plugin) {
         if (typeof name === 'string') {
@@ -137,7 +160,7 @@ class Plugins {
      * Register plugin factory
      *
      * @param {string} name - plugin name or plugins object to include
-     * @param {Function} pluginFactory - function, which returns a plugin
+     * @param {PluginFactory<S,C>} pluginFactory - function, which returns a plugin
      */
     registerFactory (name, pluginFactory) {
         if (typeof pluginFactory !== 'function') {

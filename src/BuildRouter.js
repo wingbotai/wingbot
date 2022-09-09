@@ -17,7 +17,12 @@ const { shouldExecuteResolver } = require('./resolvers/resolverTags');
 
 const MESSAGE_RESOLVER_NAME = 'botbuild.message';
 
-/** @typedef {import('./Router').Middleware} Middleware */
+/**
+ *
+ * @template {object} [S=object]
+ * @template {object} [C=object]
+ * @typedef {import('./Router').Middleware<S,C>} Middleware
+ */
 
 /**
  * @typedef {object} Resolver
@@ -89,8 +94,7 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
 /**
  * @typedef {object} RouteConfig
  * @prop {string} path
- * @prop {boolean} enabled
- * @prop {object} configuration
+ * @prop {boolean} [enabled]
  */
 
 /**
@@ -104,12 +108,13 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  */
 
 /**
+ * @template {object} [C=object]
  * @typedef {object} BotContext
  * @prop {LinkTranslator} [linksTranslator] - function, that translates links globally
  * @prop {ConfigStorage} [configStorage] - function, that translates links globally
  * @prop {boolean} [allowForbiddenSnippetWords] - disable security rule
  * @prop {RouteConfig[]} [routeConfigs] - list of disabled routes
- * @prop {object} [configuration] - context data
+ * @prop {C} [configuration] - context data
  * @prop {LinksMap} [linksMap]
  * @prop {boolean} [isLastIndex]
  * @prop {boolean} [isLastMessage]
@@ -127,24 +132,13 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  * @prop {object} [BuildRouter]
  */
 
-function deepFreeze (object) {
-    const propNames = Object.getOwnPropertyNames(object);
-
-    for (const name of propNames) {
-        const value = object[name];
-
-        if (value && typeof value === 'object') {
-            deepFreeze(value);
-        }
-    }
-
-    return Object.freeze(object);
-}
-
 /**
  * Build bot from Wingbot configuration file or snapshot url
  *
+ * @template {object} [S=object]
+ * @template {object} [C=object]
  * @class BuildRouter
+ * @extends {Router<S,C>}
  */
 class BuildRouter extends Router {
 
@@ -159,7 +153,7 @@ class BuildRouter extends Router {
      * @param {ConfigStorage} [context.configStorage] - function, that translates links globally
      * @param {boolean} [context.allowForbiddenSnippetWords] - disable security rule
      * @param {RouteConfig[]} [context.routeConfigs] - list of disabled routes
-     * @param {object} [context.configuration]
+     * @param {C} [context.configuration]
      * @param {fetch} [fetchFn] - override a request function
      * @example
      *
@@ -190,8 +184,12 @@ class BuildRouter extends Router {
 
         this._plugins = plugins;
 
-        /** @type {BotContext} */
+        /** @type {BotContext<C>} */
         this._context = context;
+
+        /** @type {C} */
+        // @ts-ignore
+        this._configuration = context.configuration || {};
 
         /** @type {LinksMap} */
         this._linksMap = new Map();
@@ -237,6 +235,13 @@ class BuildRouter extends Router {
             this._botId = block.botId;
             this._loadBotUrl = `https://api.wingbot.ai/bots/${this._botId}/snapshots/${this._snapshot}/blocks`;
         }
+    }
+
+    /**
+     * @returns {C}
+     */
+    get configuration () {
+        return this._configuration;
     }
 
     _validateBlock (block, action = 'build') {
@@ -554,7 +559,7 @@ class BuildRouter extends Router {
      * @param {RouteConfig} routeConfig
      */
     _enabledByRouteConfig (routeConfig) {
-        return !this._context.routeConfigs || (routeConfig && routeConfig.enabled);
+        return !this._context.routeConfigs || !routeConfig || routeConfig.enabled !== false;
     }
 
     _joinPaths (...args) {
@@ -567,7 +572,8 @@ class BuildRouter extends Router {
             : routePath;
 
         return joined
-            .replace(/^\/?|(_responder)?\/?$/g, '/');
+            .replace(/^\/?|(_responder)?\/?$/g, '/')
+            .replace(/\/\/+$/, '/');
     }
 
     /**
@@ -624,6 +630,7 @@ class BuildRouter extends Router {
         }
 
         const routePath = this._normalizeConfigPath(rPath, ctxPath);
+
         return routeConfigs.find((config) => {
             const configPath = this._normalizeConfigPath(config.path);
 
@@ -633,27 +640,10 @@ class BuildRouter extends Router {
 
     /**
      *
-     * @param {string} routePath
      * @returns {object}
      */
-    getConfiguration (routePath) {
-        const { path: ctxPath, routeConfigs, configuration = {} } = this._context;
-        if (!routeConfigs || !routePath) {
-            return deepFreeze(configuration);
-        }
-        const normalized = this._normalizeConfigPath(routePath, ctxPath);
-
-        const configs = routeConfigs
-            .filter((config) => {
-                const configPath = this._normalizeConfigPath(config.path);
-                return normalized.startsWith(configPath);
-            })
-            .sort((a, z) => a.path.length - z.path.length);
-
-        return deepFreeze(configs.reduce((cfg, config) => ({
-            ...cfg,
-            ...config.configuration
-        }), configuration));
+    getConfiguration () {
+        return this._configuration;
     }
 
     /**
@@ -683,7 +673,7 @@ class BuildRouter extends Router {
      *
      * @param {TransformedRoute} route
      * @param {boolean} nextRouteIsSameResponder
-     * @returns {Middleware[]}
+     * @returns {Middleware<S,C>[]}
      */
     _buildRouteHead (route, nextRouteIsSameResponder) {
         const resolvers = [];
@@ -798,24 +788,17 @@ class BuildRouter extends Router {
      * @param {Resolver[]} resolvers
      * @param {TransformedRoute} route
      * @param {*} buildInfo
-     * @returns {Middleware[]}
+     * @returns {Middleware<S,C>[]}
      */
     buildResolvers (resolvers, route = DUMMY_ROUTE, buildInfo = {}) {
         const {
             path: ctxPath, isFallback, isResponder, expectedPath, id
         } = route;
 
-        const routeConfig = this._getRouteConfig(route);
-        const routeConfigData = routeConfig && routeConfig.configuration;
-
         const lastMessageIndex = this._lastMessageIndex(resolvers);
         const lastIndex = resolvers.length - 1;
 
         return resolvers.map((resolver, i) => {
-            const configuration = deepFreeze({
-                ...this._context.configuration,
-                ...routeConfigData
-            });
 
             const context = {
                 ...this._context,
@@ -828,13 +811,16 @@ class BuildRouter extends Router {
                 isResponder,
                 expectedPath,
                 routeId: id,
-                configuration
+                configuration: this._configuration
             };
 
             const resFn = this._resolverFactory(resolver, context, buildInfo);
 
             // @ts-ignore
-            resFn.configuration = configuration;
+            if (typeof resFn.configuration === 'undefined') {
+                // @ts-ignore
+                resFn.configuration = this._configuration;
+            }
             return resFn;
         });
     }
@@ -842,9 +828,9 @@ class BuildRouter extends Router {
     /**
      *
      * @param {Resolver} resolver
-     * @param {BotContext} context
+     * @param {BotContext<C>} context
      * @param {*} buildInfo
-     * @returns {Middleware}
+     * @returns {Middleware<S,C>}
      */
     _resolverFactory (resolver, context, buildInfo) {
         const { type } = resolver;
@@ -906,9 +892,10 @@ class BuildRouter extends Router {
 }
 
 /**
+ * @template {object} [C=object]
  * @param {Block[]} blocks - blocks list
  * @param {Plugins} [plugins]
- * @param {BotContext} [context]
+ * @param {BotContext<C>} [context]
  */
 BuildRouter.fromData = function fromData (blocks, plugins = new Plugins(), context = {}) {
 
