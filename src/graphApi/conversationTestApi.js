@@ -11,6 +11,8 @@ const ConversationTester = require('../ConversationTester');
  * @prop {Function} getTestCases
  */
 
+/** @typedef {import('../ConversationTester').Logger} Logger */
+
 /**
  * Returns API for conversations testing
  *
@@ -26,6 +28,8 @@ const ConversationTester = require('../ConversationTester');
  * @param {number} [options.textCasesPerStep]
  * @param {number} [options.textCaseParallel]
  * @param {boolean} [options.allowEmptyResponse]
+ * @param {Logger} [options.log]
+ *
  * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
  */
 function conversationTestApi (testsSource, botFactory, options, acl) {

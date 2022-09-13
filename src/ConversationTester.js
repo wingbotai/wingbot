@@ -69,11 +69,15 @@ const DEFAULT_TEXT_THRESHOLD = 0.8;
  * @prop {List[]} lists
  */
 
+/** @typedef {import('./ReducerWrapper')} ReducerWrapper */
+/** @typedef {import('./Router')} Router */
+/** @typedef {import('./BuildRouter')} BuildRouter */
+
 /**
  * Callback for getting a tester
  *
  * @callback testerFactory
- * @param {Router|ReducerWrapper} bot - the chatbot itself
+ * @param {Router|ReducerWrapper|BuildRouter} bot - the chatbot itself
  * @param {TestsGroup} test - the chatbot itself
  * @returns {Tester}
  */
@@ -88,6 +92,12 @@ const DEFAULT_TEXT_THRESHOLD = 0.8;
  * @prop {string} summaryOutput
  * @prop {number} step
  * @prop {number} stepCount
+ */
+
+/**
+ * @typedef {object} Logger
+ * @prop {Function} log
+ * @prop {Function} error
  */
 
 /**
@@ -109,6 +119,7 @@ class ConversationTester {
      * @param {number} [options.textCasesPerStep]
      * @param {number} [options.textCaseParallel]
      * @param {boolean} [options.allowEmptyResponse]
+     * @param {Logger} [options.log]
      * @param {testerFactory} [options.testerFactory]
      */
     constructor (testsSource, botFactory, options = {}) {
@@ -122,6 +133,7 @@ class ConversationTester {
         };
         this._output = '';
         this._cachedBot = null;
+        this._log = options.log || console;
     }
 
     /**
@@ -159,18 +171,21 @@ class ConversationTester {
             this._cachedBot = null;
         }
         this._output = '';
-        const testCases = await this._getTestCases(lang);
-        const groups = this._getGroups(testCases);
-        const testsGroups = this._getTestsGroups(groups, step);
-        const stepCount = Number.isInteger(step) ? groups.length : 1;
 
         const botconfig = validationRequestBody;
         let failed = 0;
         let passed = 0;
         let skipped = 0;
         let summaryOutput = '';
+        let stepCount = 0;
+        let testsGroups = [];
 
         try {
+            const testCases = await this._getTestCases(lang);
+            const groups = this._getGroups(testCases);
+            testsGroups = this._getTestsGroups(groups, step);
+            stepCount = Number.isInteger(step) ? groups.length : 1;
+
             const results = [];
             for (const testsGroup of testsGroups) {
                 let stepResult;
@@ -224,6 +239,7 @@ class ConversationTester {
             }
 
         } catch (e) {
+            this._log.error('#Tester failed', e, { output: this._output, passed });
             this._output += `\nBot test failed: ${e.message}\n`;
         }
         return {
