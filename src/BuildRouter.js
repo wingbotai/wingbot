@@ -559,7 +559,7 @@ class BuildRouter extends Router {
      * @param {RouteConfig} routeConfig
      */
     _enabledByRouteConfig (routeConfig) {
-        return !this._context.routeConfigs || !routeConfig || routeConfig.enabled !== false;
+        return !routeConfig || routeConfig.enabled !== false;
     }
 
     _joinPaths (...args) {

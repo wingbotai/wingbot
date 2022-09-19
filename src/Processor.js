@@ -323,12 +323,14 @@ class Processor extends EventEmitter {
             return { status: 304 };
         }
 
-        const result = await this._dispatch(message, pageId, messageSender, responderData);
+        const result = await this
+            ._dispatch(message, pageId, messageSender, responderData, preloadPromise);
+
         await preloadPromise;
         return result;
     }
 
-    async _dispatch (message, pageId, messageSender, responderData) {
+    async _dispatch (message, pageId, messageSender, responderData, preloadPromise) {
         let req;
         let res;
         let state;
@@ -338,7 +340,7 @@ class Processor extends EventEmitter {
             ({
                 req, res, data, state
             } = await this
-                ._processMessage(message, pageId, messageSender, responderData, true));
+                ._processMessage(message, pageId, messageSender, responderData, preloadPromise));
 
             await this._emitInteractionEvent(req, messageSender, state, data);
 
@@ -447,8 +449,9 @@ class Processor extends EventEmitter {
         }
     }
 
-    async _processMessage (message, pageId, messageSender, responderData, fromEvent = false) {
+    async _processMessage (message, pageId, messageSender, responderData, preloadPromise = null) {
         let senderId = message.sender && message.sender.id;
+        const fromEvent = !!preloadPromise;
 
         // prevent infinite cycles
         let { _actionCount: actionCount = 0 } = responderData;
@@ -547,7 +550,10 @@ class Processor extends EventEmitter {
                 }
             }
 
-            await Ai.ai.preloadAi(req, res);
+            await Promise.all([
+                preloadPromise,
+                Ai.ai.preloadAi(req, res)
+            ]);
 
             // @deprecated backward compatibility
             const aByAi = req.actionByAi();
