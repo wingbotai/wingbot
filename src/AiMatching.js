@@ -92,13 +92,22 @@ const COMPARE = {
  */
 
 /**
+ * @typedef {object} ConfidenceProvider
+ * @prop {number} confidence
+ */
+
+/**
  * @class {AiMatching}
  *
  * Class responsible for NLP Routing by score
  */
 class AiMatching {
 
-    constructor () {
+    /**
+     *
+     * @param {ConfidenceProvider} ai
+     */
+    constructor (ai = { confidence: 0.8 }) {
         /**
          * When the entity is optional, the final score should be little bit lower
          * (0.001 by default)
@@ -138,6 +147,8 @@ class AiMatching {
          * (1 by default)
          */
         this.stateEntityScore = 1;
+
+        this._ai = ai;
     }
 
     get redundantHandicap () {
@@ -447,11 +458,29 @@ class AiMatching {
                 ? score - noIntentHandicap
                 : (regexpScore + score) / 2;
 
+            const matchedEntitiesTextLength = matched.reduce((tot, entity) => (
+                typeof entity.end === 'number' && typeof entity.start === 'number' && tot !== null
+                    ? (tot + (entity.end - entity.start))
+                    : null
+            ), 0);
+
+            let finalScore = (baseScore - handicap)
+                * (this.multiMatchGain ** countOfAdditionalItems);
+
+            const textLength = req.text().length;
+
+            if (matchedEntitiesTextLength && textLength) {
+                const remainingScore = Math.max(0, Math.min(1, finalScore) - (
+                    this._ai.confidence + this.redundantEntityHandicap
+                ));
+
+                finalScore -= (matchedEntitiesTextLength / textLength) * remainingScore;
+            }
+
             return {
                 intent: null,
                 entities: matched,
-                score: (baseScore - handicap)
-                    * (this.multiMatchGain ** countOfAdditionalItems)
+                score: finalScore
             };
         }
 

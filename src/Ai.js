@@ -49,7 +49,7 @@ let uq = 1;
  */
 class Ai {
 
-    constructor (matcher = new AiMatching()) {
+    constructor () {
         this._keyworders = new Map();
 
         /**
@@ -111,7 +111,7 @@ class Ai {
          *
          * @type {AiMatching}
          */
-        this.matcher = matcher;
+        this.matcher = new AiMatching(this);
     }
 
     /**

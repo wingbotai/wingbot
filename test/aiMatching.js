@@ -10,8 +10,13 @@ const Ai = require('../src/Ai');
 const SCORE = 0.95;
 const MULTI_SCORE = 0.95 * 1.2;
 
-function entity (e, value = 'val', score = SCORE) {
-    return { entity: e, value, score };
+function entity (e, value = 'val', score = SCORE, start = undefined, end = undefined) {
+    return {
+        entity: e,
+        value,
+        score,
+        ...(end && { start, end })
+    };
 }
 
 function intent (i, entities = [], score = SCORE) {
@@ -609,6 +614,29 @@ describe('<AiMatching>', () => {
             const res = ai.match(goodReq, rule);
             assert.ok(res, 'it should match');
             assert.ok(res.score < 0.79, 'it should match');
+        });
+
+        it('lowers the entity score according to the text length', () => {
+            const rule = ai.preprocessRule(['@foo']);
+            const intentRule = ai.preprocessRule(['intent', '@foo']);
+
+            // @ts-ignore
+            const fooEntity = entity('foo', 'value', 1, 0, 10);
+            const goodReq = fakeReq([], [fooEntity], '12345678901234567890');
+
+            const intentGoodReq = fakeReq([intent('intent', [fooEntity], 1)], [fooEntity], '12345678901234567890');
+
+            const res = ai.match(goodReq, rule);
+            assert.ok(res, 'it should match');
+
+            const threshold = (1 - (ai._ai.confidence + ai.redundantHandicap)) / 2;
+
+            assert.strictEqual(res.score, (1 - threshold), 'it should match');
+
+            const intentRes = ai.match(intentGoodReq, intentRule);
+
+            assert.ok(intentRes, 'it should match');
+            assert.strictEqual(intentRes.score, ai.multiMatchGain, 'it should match');
         });
 
         it('allow the NLP to beat local context entity 2', () => {
