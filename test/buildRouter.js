@@ -447,4 +447,32 @@ describe('<BuildRouter>', function () {
             .contains('first second third');
     });
 
+    it('works with {{$text}} and {{$this}}', async () => {
+        const plugins = new Plugins();
+
+        plugins.register('exampleBlock', async (req, res) => {
+            await res.run('responseBlockName');
+        });
+
+        plugins.register('routerBlock', new Router());
+
+        const bot = BuildRouter.fromData(testbot.data, plugins);
+
+        const t = new Tester(bot);
+
+        t.setExpandRandomTexts();
+
+        t.setState({ a: 5 });
+
+        await t.postBack('/start');
+
+        await t.quickReplyText('Go To Subblock');
+
+        t.stateContains({
+            inputs: ['Go To Subblock'],
+            thises: ['Go To Subblock'],
+            complicated: ['Go To Subblock']
+        });
+    });
+
 });

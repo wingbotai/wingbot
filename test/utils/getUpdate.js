@@ -12,7 +12,7 @@ describe('getSetState()', () => {
         assert.deepEqual(getSetState({
             k: { _$inc: 2 }
         }, {
-            state: {}
+            state: {}, text: () => '', actionData: () => {}
         }), {
             k: 2
         });
@@ -20,7 +20,7 @@ describe('getSetState()', () => {
         assert.deepEqual(getSetState({
             k: { _$inc: '2' }
         }, {
-            state: { k: 2, j: 3 }
+            state: { k: 2, j: 3 }, text: () => '', actionData: () => {}
         }), {
             k: 4
         });
@@ -30,7 +30,7 @@ describe('getSetState()', () => {
             'a.b': 2,
             'n.p': null
         }, {
-            state: { k: NaN, j: 3, n: { o: null, p: {} } }
+            state: { k: NaN, j: 3, n: { o: null, p: {} } }, text: () => '', actionData: () => {}
         }), {
             k: -2,
             a: {
@@ -48,7 +48,8 @@ describe('getSetState()', () => {
             k: { _$push: 2 }
         }, {
             state: {},
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: [2]
         });
@@ -59,7 +60,8 @@ describe('getSetState()', () => {
             state: {
                 k: 'x'
             },
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['x', 'a']
         });
@@ -70,7 +72,8 @@ describe('getSetState()', () => {
             state: {
                 k: ['x', 'y']
             },
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['x', 'y']
         });
@@ -81,7 +84,8 @@ describe('getSetState()', () => {
             state: {
                 k: ['x', 'y']
             },
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['y']
         });
@@ -92,7 +96,8 @@ describe('getSetState()', () => {
             state: {
                 k: ['x', 'y']
             },
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['x']
         });
@@ -103,7 +108,8 @@ describe('getSetState()', () => {
             state: {
                 k: ['x', 'y']
             },
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['y']
         });
@@ -115,9 +121,10 @@ describe('getSetState()', () => {
                 k: ['x', 'y'],
                 l: ['a', 'b']
             },
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
-            k: ['x', 'y', 'a', 'b', 'm', 'n']
+            k: ['x', 'y', 'a,b', 'm', 'n']
         });
     });
 
@@ -133,7 +140,8 @@ describe('getSetState()', () => {
                 { entity: 'entity', value: 'lele' },
                 { entity: 'foo', value: 'bar' }
             ],
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['sasa', 'lele']
         });
@@ -149,7 +157,8 @@ describe('getSetState()', () => {
                 { entity: 'entity', value: 'lele' },
                 { entity: 'foo', value: 'bar' }
             ],
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['bar']
         });
@@ -166,7 +175,8 @@ describe('getSetState()', () => {
                 { entity: 'entity', value: 'lele' },
                 { entity: 'foo', value: 'bar' }
             ],
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: []
         });
@@ -183,7 +193,8 @@ describe('getSetState()', () => {
                 { entity: 'entity', value: 'lele' },
                 { entity: 'foo', value: 'bar' }
             ],
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['sasalele']
         });
@@ -201,7 +212,8 @@ describe('getSetState()', () => {
                 { entity: 'entity', value: 'lele' },
                 { entity: 'foo', value: 'bar' }
             ],
-            actionData: () => {}
+            actionData: () => {},
+            text: () => ''
         }), {
             k: ['X']
         });

@@ -11,17 +11,23 @@
  * @param {Request} req
  * @param {Responder} res
  * @param {object} configuration
+ * @param {object} [stateOverride]
  * @returns {object}
  */
-module.exports = function stateData (req, res = null, configuration = null) {
+module.exports = function stateData (req, res = null, configuration = null, stateOverride = {}) {
     const c = configuration || req.configuration;
 
+    const $this = req.text();
+
     return {
+        c,
+        configuration: c,
         ...req.state,
         ...(res ? res.newState : {}),
+        ...stateOverride,
+        $this,
         ...req.actionData(),
         ...(res ? res.data : {}),
-        c,
-        configuration: c
+        $input: $this
     };
 };

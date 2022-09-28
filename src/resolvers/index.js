@@ -16,6 +16,7 @@ const button = require('./button');
 const subscribtions = require('./subscribtions');
 const setState = require('./setState');
 const expectedInput = require('./expectedInput');
+const skip = require('./skip');
 
 module.exports = {
     path,
@@ -30,5 +31,6 @@ module.exports = {
     button,
     subscribtions,
     setState,
-    expectedInput
+    expectedInput,
+    skip
 };

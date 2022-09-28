@@ -108,6 +108,7 @@ describe('<Conditions>', function () {
 
         it('==', () => {
             assert(compare('x', ConditionOperators['=='], 'x'));
+            assert(compare(['a', 'b'], ConditionOperators['=='], '2'));
             assert(compare(1, ConditionOperators['=='], '1'));
             assert(compare('1', ConditionOperators['=='], '1'));
             assert(compare([1, 2], ConditionOperators['>='], '2'));
@@ -116,6 +117,9 @@ describe('<Conditions>', function () {
         });
 
         it('!==', () => {
+            assert(compare(undefined, ConditionOperators['!='], '3'));
+            assert(!compare(['a', 'b', 'c'], ConditionOperators['!='], '3'));
+            assert(!compare(undefined, ConditionOperators['!='], '0'));
             assert(compare('x', ConditionOperators['!='], 'yx'));
             assert(compare(1, ConditionOperators['!='], '2'));
             assert(compare('2', ConditionOperators['!='], '1'));
@@ -188,7 +192,7 @@ describe('<Conditions>', function () {
             assert(compare([0, 0, 0, 1], ConditionOperators['is true']));
             assert(compare([0, 0, 0, 0], ConditionOperators['is false']));
             assert(compare([0, 0, 0, 0], ConditionOperators.contains, '0'));
-            assert(compare([0, 0, 'efe', 0], ConditionOperators.contains, 'f'));
+            assert(compare([0, 0, 'efe', 0], ConditionOperators.contains, 'efe'));
             assert(compare([{ isThisTrue: true, thisisFalse: false }, 0, 0, 0], ConditionOperators['is true']));
             assert(compare([{ isThisTrue: false, thisisFalse: false }, 0, 0, 0], ConditionOperators['is false']));
             assert(compare([{ isThisTrue: false, thisisFalse: false, moreNested: { val: true } }, 0, 0, 0], ConditionOperators['is true']));
@@ -201,7 +205,7 @@ describe('<Conditions>', function () {
             assert(compare({ t: [0, 0, 0, 'false'], x: false }, ConditionOperators['is false']));
             assert(compare({ t: [0, 0, 0, 'true'], x: false }, ConditionOperators['is true']));
             assert(!compare({ t: { y: [0, 0, 0, 'true'] }, x: false }, ConditionOperators.contains, '1'));
-            assert(compare({ t: [0, 'efefex', 0, 'false'], x: false }, ConditionOperators.contains, 'x'));
+            assert(compare({ t: [0, 'efefex', 0, 'false'], x: false }, ConditionOperators.contains, 'efefex'));
         });
 
         it('handles undefined', () => {

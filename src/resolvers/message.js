@@ -195,9 +195,6 @@ function message (params, context = {}) {
      * @param {Responder} res
      */
     return (req, res) => {
-        if (condition && !condition(req, res)) {
-            return ret;
-        }
         const data = stateData(req, res, configuration);
 
         // filter supported messages
@@ -216,30 +213,51 @@ function message (params, context = {}) {
         const text = textTemplate(data)
             .trim();
 
+        res.setData({ $this: text });
+        if (condition && !condition(req, res)) {
+            res.setData({ $this: null });
+            return ret;
+        }
+        res.setData({ $this: null });
+
         let sendReplies;
         if (quickReplies) {
-            const okQuickReplies = quickReplies
-                .filter((reply) => reply.condition(req, res));
-
-            sendReplies = okQuickReplies
+            sendReplies = quickReplies
                 .filter((reply) => reply.title
                     || reply.isLocation
                     || reply.isEmail
                     || reply.isPhone)
                 .map((reply) => {
-                    const rep = (reply.isLocation || reply.isEmail || reply.isPhone)
-                        ? ({ ...reply })
-                        : ({ ...reply, title: reply.title(data) });
+                    let $this = null;
+                    let rep;
 
-                    if (typeof rep.condition === 'function') {
-                        delete rep.condition;
+                    if (reply.isLocation || reply.isEmail || reply.isPhone) {
+                        rep = { ...reply };
+                    } else {
+                        const title = reply.title(data);
+                        $this = title;
+                        rep = { ...reply, title };
                     }
 
-                    return rep;
-                });
+                    if (typeof rep.condition !== 'function') {
+                        return rep;
+                    }
 
-            okQuickReplies
-                .filter((reply) => !reply.title && reply.match)
+                    res.setData({ $this });
+                    if (!rep.condition(req, res)) {
+                        res.setData({ $this: null });
+                        return null;
+                    }
+                    res.setData({ $this: null });
+
+                    delete rep.condition;
+
+                    return rep;
+                })
+                .filter((rep) => rep !== null);
+
+            quickReplies
+                .filter((reply) => !reply.title && reply.match && reply.condition(req, res))
                 .forEach(({
                     match, action, data: replyData, setState, aiTitle
                 }) => {

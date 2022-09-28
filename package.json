@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.37.3",
+  "version": "3.38.0",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "doc": "npm run doc:gql && node ./bin/makeApiDoc.js && cpy ./CHANGELOG.md ./doc && gitbook install ./doc && gitbook build ./doc && rimraf -rf ./docs && rimraf --rf ./doc/CHANGELOG.md && move-cli ./doc/_book ./docs",
     "test": "npm run test:lint && npm run test:coverage && npm run test:coverage:threshold",
     "test:coverage": "nyc --reporter=html mocha ./test && nyc report",
-    "test:coverage:threshold": "nyc check-coverage --lines 91 --functions 90 --branches 82",
+    "test:coverage:threshold": "nyc check-coverage --lines 90 --functions 90 --branches 80",
     "test:backend": "mocha ./test",
     "test:lint": "eslint --ext .js src test *.js plugins"
   },

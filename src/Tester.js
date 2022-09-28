@@ -361,6 +361,20 @@ class Tester {
     }
 
     /**
+     * Assert, that state contains a subset of provided value
+     *
+     * @param {object} object
+     * @example
+     *
+     * t.stateContains({ value: true });
+     */
+    stateContains (object) {
+        const { state } = this.getState();
+
+        assert.deepEqual(state, { ...state, ...object }, 'Conversation state equals');
+    }
+
+    /**
      * Makes text request
      *
      * @param {string} text

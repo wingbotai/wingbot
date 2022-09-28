@@ -88,8 +88,25 @@ const ARRAY_LENGTH_OPERATORS = [
 const compare = (variable, operator, value = undefined) => {
     const isArrayLengthCompare = ARRAY_LENGTH_OPERATORS.includes(operator);
     if (Array.isArray(variable) && !isArrayLengthCompare) {
-        // @todo if value === number && operator === '=='
-        return variable.some((variableElement) => compare(variableElement, operator, value));
+        if ((operator === ConditionOperators['=='] || operator === ConditionOperators['!='])
+            && (typeof value === 'number' || isStringNumber(value))) {
+
+            const numeric = toNumber(value);
+            return operator === ConditionOperators['==']
+                ? numeric === variable.length
+                : numeric !== variable.length;
+        }
+
+        if (operator === ConditionOperators['not contains']) {
+            return variable
+                .every((variableElement) => !compare(variableElement, ConditionOperators['=='], value));
+        }
+
+        const useOperator = operator === ConditionOperators.contains
+            ? ConditionOperators['==']
+            : operator;
+
+        return variable.some((variableElement) => compare(variableElement, useOperator, value));
     }
 
     if (variable && typeof variable === 'object' && !isArrayLengthCompare) {
@@ -104,11 +121,17 @@ const compare = (variable, operator, value = undefined) => {
             return isStringNumber(variable) ? !toNumber(variable) : !variable;
         case ConditionOperators.contains:
             if (typeof variable === 'string') {
-                if (isSimpleWord(value)) return webalize(variable).includes(webalize(`${value}`));
-                return variable.toLocaleLowerCase().includes(value.toString().toLocaleLowerCase());
+                if (isSimpleWord(value)) {
+                    return webalize(variable).includes(webalize(`${value}`));
+                }
+                return variable.toLocaleLowerCase().includes(`${value}`.toLocaleLowerCase());
             }
 
-            return variable.toString().includes(value.toString());
+            if (variable === null || variable === undefined) {
+                return value === null || value === undefined || value === '';
+            }
+
+            return `${variable}`.includes(`${value}`);
 
         case ConditionOperators['not contains']:
             return !compare(variable, ConditionOperators.contains, value);

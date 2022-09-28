@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.38.0] - 2022-09-28
+
+### Added
+
+- support for `{{$this}}` and `{{$input}}` in conditions
+- `lang` handlebars filter
+- `Tester.stateContains(object)` method for asserting contents of the state
+
+### Fixed
+
+- array matching of custom conditions
+
 ## [3.37.3] - 2022-09-13
 
 ### Fixed

@@ -69,6 +69,16 @@ function makeExpectedKeyword (
 
 /** @typedef {import('../Responder').QuickReply} QuickReply */
 
+const THIS_REGEX = /\{\{\$this\}\}/g;
+
+function hasThis (val) {
+    return typeof val === 'string' && val.match(THIS_REGEX);
+}
+
+function replaceThis (val, title) {
+    return val.replace(THIS_REGEX, title);
+}
+
 /**
  *
  * @ignore
@@ -208,6 +218,25 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
 
             const hasData = Object.keys(data).length !== 0;
             const hasSetState = setState && Object.keys(setState).length !== 0;
+            const translatedTitle = translate(title);
+
+            if (hasSetState) {
+                // replace {{this}}
+                Object.entries(setState)
+                    .forEach(([key, val]) => {
+                        if (typeof val === 'object' && val) {
+                            Object.entries(val)
+                                .forEach(([k, v]) => {
+                                    if (k.match(/^_\$/) && hasThis(v)) {
+                                        // eslint-disable-next-line no-param-reassign
+                                        val[k] = replaceThis(v, translatedTitle);
+                                    }
+                                });
+                        } else if (hasThis(val)) {
+                            setState[key] = replaceThis(val, translatedTitle);
+                        }
+                    });
+            }
 
             if (data._senderMeta
                 && data._senderMeta.flag === FLAG_DISAMBIGUATION_SELECTED) {
@@ -229,7 +258,6 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
                 payload = JSON.stringify(payload);
             }
 
-            const translatedTitle = translate(title);
             const translatedAiTitle = typeof aiTitle === 'string' ? translate(aiTitle) : aiTitle;
             const expect = makeExpectedKeyword(
                 absoluteAction,

@@ -86,7 +86,7 @@ function toArray (previousValue) {
 }
 
 const ENTITY_HBS_REGEXP = /^\s*\{\{\[?@([^@[\]{}\s]+)(\])?\}\}\s*$/;
-const VARIABLE_HBS_REGEXP = /^\s*\{\{\[?([^@[\]{}\s]+)\]?\}\}\s*$/;
+const VARIABLE_HBS_REGEXP = /^\s*\{\{\[?([^$@[\]{}\s]+)\]?\}\}\s*$/;
 
 function getSetState (setState, req, res = null, useState = null, configuration = null) {
     if (!setState) {
@@ -96,11 +96,7 @@ function getSetState (setState, req, res = null, useState = null, configuration 
         .filter((k) => k !== '_');
 
     let obj = {};
-    let state = {
-        ...req.state,
-        ...(res ? res.newState : {}),
-        ...(useState || {})
-    };
+    let state = stateData(req, res, configuration, useState);
 
     keys.forEach((k) => {
         const val = setState[k];
@@ -179,9 +175,9 @@ function getSetState (setState, req, res = null, useState = null, configuration 
                         values = [];
                     } else {
                         const useValue = typeof value === 'string'
-                            ? handlebars.compile(value)(stateData(req, res, configuration))
-                                .split(/(?<!\\),/g)
-                                .map((v) => v.replace(/\\,/g, ',').trim())
+                            ? handlebars.compile(value.replace(/(?<!\\),/g, '#-SpLiT--215315-@#').replace(/\\,/g, ','))(state)
+                                .split(/#-SpLiT--215315-@#/g)
+                                .map((v) => v.trim())
                             : value;
                         values = toArray(useValue);
                     }
@@ -205,7 +201,7 @@ function getSetState (setState, req, res = null, useState = null, configuration 
                 set = val;
             }
         } else if (typeof val === 'string') {
-            set = handlebars.compile(val)(stateData(req, res, configuration));
+            set = handlebars.compile(val)(state);
         } else if (val === null
             || SCALAR_TYPES.includes(typeof val)) {
             set = val;

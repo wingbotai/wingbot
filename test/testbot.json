@@ -436,6 +436,11 @@
                         { "t": "Go To Subblock", "l": "default" },
                         { "t": "Jdi do podbloku", "l": "cz" }
                       ],
+                      "setState": {
+                          "inputs": { "_$push": "{{$input}}" },
+                          "thises": { "_$push": "{{$this}}" },
+                          "complicated": { "_$push": "{{#if $this}}{{$this}}{{/if}}" }
+                      },
                       "targetRouteId": 1507122998196,
                       "hasCondition": true,
                       "conditionFn": "(req, res) => req.state.a > 0"
