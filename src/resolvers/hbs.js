@@ -13,6 +13,15 @@ try {
             return content;
         }
 
+        if (content.name === 'lang'
+            && typeof content.loc === 'object'
+            && typeof content.data === 'object'
+            && content.data
+            && typeof content.data.root === 'object') {
+
+            return this.lang || '';
+        }
+
         const { lang } = this;
 
         if (content[lang]) {
@@ -28,7 +37,11 @@ try {
             }
         }
 
-        return content[Object.keys(content)[0]];
+        const res = content[Object.keys(content)[0]];
+
+        return res && typeof res === 'object'
+            ? (res.text || res.t || '')
+            : (res || '');
     });
 } catch (er) {
     handlebars = { compile: (text) => () => text };
