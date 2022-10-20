@@ -290,6 +290,14 @@ class Tester {
             || (!botAction.match(/\*/) && actionMatches(botAction, path));
     }
 
+    _actionsDebug (matchRequestActions = false) {
+        const set = new Set();
+        return this.actions
+            .filter((a) => !a.isReqAction || matchRequestActions)
+            .map((a) => (a.doNotTrack ? `(system interaction) ${a.action}` : a.action))
+            .filter((a) => !set.has(a) && set.add(a));
+    }
+
     /**
      * Checks, that request passed an interaction
      *
@@ -305,11 +313,7 @@ class Tester {
                 && this._actionMatches(action.action, path));
         let actual;
         if (!ok) {
-            const set = new Set();
-            actual = this.actions
-                .filter((a) => !a.isReqAction || matchRequestActions)
-                .map((a) => (a.doNotTrack ? `(system interaction) ${a.action}` : a.action))
-                .filter((a) => !set.has(a) && set.add(a));
+            actual = this._actionsDebug(matchRequestActions);
             assert.fail(asserts.ex('Interaction was not passed', path, actual));
         }
         return this;
@@ -420,6 +424,22 @@ class Tester {
     }
 
     /**
+     * Makes recognised AI request with entity
+     *
+     * @param {string} entity
+     * @param {string} [value]
+     * @param {string} [text]
+     * @param {number} [score]
+     * @returns {Promise}
+     *
+     * @memberOf Tester
+     */
+    entity (entity, value = entity, text = value, score = 1) {
+        return this.processMessage(Request
+            .intentWithEntity(this.senderId, text, `random-${Date.now()}`, entity, value, score));
+    }
+
+    /**
      * Make optin call
      *
      * @param {string} action
@@ -521,6 +541,27 @@ class Tester {
     postBack (action, data = {}, refAction = null, refData = {}) {
         return this.processMessage(Request
             .postBack(this.senderId, action, data, refAction, refData, null));
+    }
+
+    /**
+     * Prints last conversation turnaround
+     *
+     * @param {boolean} [showPrivateKeys]
+     */
+    debug (showPrivateKeys = false) {
+        // eslint-disable-next-line no-console
+        console.log(
+            '\n===== actions =====\n',
+            this._actionsDebug(true),
+            '\n---- responses ----\n',
+            this.responses.map(({ messaging_type: m, recipient, ...o }) => o),
+            '\n------ state ------\n',
+            Object.fromEntries(
+                Object.entries(this.getState().state)
+                    .filter((e) => showPrivateKeys || !e[0].startsWith('_'))
+            ),
+            '\n===================\n'
+        );
     }
 
 }

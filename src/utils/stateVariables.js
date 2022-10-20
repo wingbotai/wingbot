@@ -26,15 +26,19 @@ const vars = {
      *
      * @param {string} key
      * @param {*} value
+     * @param {string|boolean} [path]
      * @returns {object}
      * @example
      * const { vars } = require('wingbot');
      * res.setState(vars.dialogContext('myKey', 'foovalue'))
      */
-    dialogContext (key, value) {
+    dialogContext (key, value, path = null) {
         return {
             [key]: value,
-            [`_~${key}`]: { t: DIALOG_CONTEXT }
+            [`_~${key}`]: {
+                t: DIALOG_CONTEXT,
+                ...(path && { p: path })
+            }
         };
     },
 
@@ -165,6 +169,17 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
         switch (value.t) {
             case DIALOG_CONTEXT: {
                 // compare state
+
+                if (!lastInTurnover || previousState._lastVisitedPath === undefined) {
+                    break;
+                }
+
+                if (value.p === true) {
+                    state[key].p = res.newState._lastVisitedPath;
+                } else if (value.p !== res.newState._lastVisitedPath) {
+                    delete state[key];
+                    delete state[referencedKey];
+                }
 
                 if (lastInTurnover
                     && previousState._lastVisitedPath !== undefined

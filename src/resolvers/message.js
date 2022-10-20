@@ -286,6 +286,10 @@ function message (params, context = {}) {
 
         res.text(text, sendReplies, voiceControl);
 
+        if (isLastMessage && !req.actionData()._resolverTag) {
+            res.finalMessageSent = true;
+        }
+
         return ret;
     };
 }

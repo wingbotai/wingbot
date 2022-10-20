@@ -6,9 +6,19 @@
 /** @typedef {import('../Request')} Request */
 /** @typedef {import('../Responder')} Responder */
 
+const { dateToISO8601String, zeroHourDate } = require('./datetime');
+
+/**
+ * @typedef {object} IStateRequest
+ * @prop {object} [state]
+ * @prop {object} [configuration]
+ * @prop {Function} text
+ * @prop {Function} [actionData]
+ */
+
 /**
  *
- * @param {Request} req
+ * @param {IStateRequest} req
  * @param {Responder} res
  * @param {object} configuration
  * @param {object} [stateOverride]
@@ -19,6 +29,15 @@ module.exports = function stateData (req, res = null, configuration = null, stat
 
     const $this = req.text();
 
+    const now = new Date();
+
+    const $now = dateToISO8601String(now, true);
+    const $today = dateToISO8601String(zeroHourDate(now), true);
+    now.setDate(now.getDate() + 1);
+    const $tomorrow = dateToISO8601String(zeroHourDate(now), true);
+    now.setDate(now.getDate() - 2);
+    const $yesterday = dateToISO8601String(zeroHourDate(now), true);
+
     return {
         c,
         configuration: c,
@@ -26,7 +45,12 @@ module.exports = function stateData (req, res = null, configuration = null, stat
         ...(res ? res.newState : {}),
         ...stateOverride,
         $this,
-        ...req.actionData(),
+        $now,
+        $today,
+        $tomorrow,
+        $yesterday,
+        // yes - res because of circular dependency
+        ...(res && req.actionData()),
         ...(res ? res.data : {}),
         $input: $this
     };

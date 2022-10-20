@@ -13,7 +13,7 @@ try {
     handlebars = { compile: (text) => () => text };
 }
 
-const ATTR_REGEX = /^([^.+]*)\.?(.+)?$/;
+const ATTR_REGEX = /^([^.]*)\.?(.+)?$/;
 const SCALAR_TYPES = ['string', 'number', 'boolean'];
 const SUBSCRIBE = '_$subscribe';
 const UNSUBSCRIBE = '_$unsubscribe';

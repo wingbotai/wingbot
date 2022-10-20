@@ -30,8 +30,8 @@ function m (text, actual = null, expected = null) {
 
 function ex (message, expected, actual) {
     const actuals = Array.isArray(actual) ? actual : [actual];
-    return `${message}\n  + expected: "${expected}"\n  - actual: ${actuals
-        .map((a) => `"${a}"`).join('\n            ')}`;
+    return `${message}\n  + expected: "${expected}"\n  - actual:   ${actuals
+        .map((a) => `"${a}"`).join('\n              ')}`;
 }
 
 function getText (response) {

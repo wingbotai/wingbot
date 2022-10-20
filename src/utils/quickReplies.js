@@ -208,6 +208,7 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
                                 }
                                 return o;
                             }, {});
+
                         setState = {
                             ...entitiesSetState,
                             ...setState

@@ -12,6 +12,8 @@ const Request = require('../src/Request');
 const { setState } = require('../src/resolvers');
 const { getSetState } = require('../src/utils/getUpdate');
 
+const { dateToISO8601String, zeroHourDate } = require('../src/utils/datetime');
+
 const { ai } = Ai;
 
 describe('<Ai> entity context', () => {
@@ -207,14 +209,15 @@ describe('<Ai> entity context', () => {
 
             bot.use('same-entities', (req, res) => {
                 res.text('test', [
-                    { action: 'a', match: ['@en=1'] },
-                    { action: 'b', match: ['@en', '@en'] }
+                    { action: 'a', match: ['@en=1'], title: null },
+                    { action: 'b', match: ['@en', '@en'], title: null }
                 ]);
             });
 
             bot.use('negative-entity', (req, res) => {
                 res.text('test', [
                     {
+                        title: null,
                         action: 'a',
                         match: ['@en!=1'],
                         setState: { A: { _$entity: 'en' } }
@@ -722,6 +725,65 @@ describe('<Ai> entity context', () => {
         await t.intentWithEntity('int', 'required', 'sasalele');
 
         t.any().contains('the content is sasalele');
+    });
+
+    it('supports dates', async () => {
+        const bot = new Router();
+
+        bot.use(ai.global('start', ['@date=$today']), (req, res) => {
+            res.text('good', [
+                { title: 'qr', match: ['@date=$tomorrow'], action: 'next' }
+            ]);
+        });
+
+        bot.use('next', (req, res) => { res.text('next'); });
+        bot.use((req, res) => { res.text('bad'); });
+
+        t = new Tester(bot);
+
+        const now = dateToISO8601String(zeroHourDate(new Date()), true);
+
+        await t.intentWithEntity('int', 'date', now);
+
+        t.any().contains('good');
+
+        await t.quickReplyText('qr');
+
+        t.any().contains('next');
+
+        const d = new Date();
+        d.setDate(d.getDate() + 1);
+        const tomorrow = dateToISO8601String(zeroHourDate(d), true);
+
+        t.stateContains({
+            '@date': tomorrow
+        });
+    });
+
+    it('supports date ranges', async () => {
+        const bot = new Router();
+
+        bot.use(ai.global('next', ['@date>=$today']), (req, res) => {
+            res.text('good');
+        });
+
+        bot.use(ai.global('low', ['@date<$today']), (req, res) => {
+            res.text('low');
+        });
+
+        bot.use((req, res) => { res.text('bad'); });
+
+        t = new Tester(bot);
+
+        const now = dateToISO8601String(new Date(), true);
+
+        await t.intentWithEntity('int', 'date', now);
+
+        t.any().contains('good');
+
+        await t.intentWithEntity('int', 'date', '2000-10-11T00:00:00.00Z');
+
+        t.any().contains('low');
     });
 
 });

@@ -1137,7 +1137,15 @@ class Request {
             let { setState = {} } = res;
             for (const gi of this.globalIntents.values()) {
                 if (gi.action === res.action) {
-                    ({ entitiesSetState } = gi);
+                    entitiesSetState = { ...gi.entitiesSetState };
+
+                    const values = Array.from(Object.values(entitiesSetState));
+
+                    for (const value of values) {
+                        if (typeof value === 'function') {
+                            Object.assign(entitiesSetState, value(stateData(this)));
+                        }
+                    }
                 }
             }
             const newState = {

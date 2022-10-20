@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.39.0] - 2022-10-19
+
+### Added
+
+- advanced slot filling plugin
+- support for handlebars in quick replies
+- `{{$today}}`, `{{$tomorrow}}`, `{{$now}}`, `{{$yesterday}}` variables
+- `Tester.debug()` method for showing details of last turnaround
+- `Tester.entity()` method for sending only entity
+
+### Fixed
+
+- variable parsing loop (in case of using `+`)
+
 ## [3.38.1] - 2022-09-29
 
 ### Fixed

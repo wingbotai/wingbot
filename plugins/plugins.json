@@ -375,6 +375,81 @@
                     "label": "Text to test (keep empty to use user input)"
                 }
             ]
+        },
+        {
+            "id": "ai.wingbot.slotsRegister",
+            "name": "Slot filling: register",
+            "description": "Sets up slot filling conversation for a list of entities",
+            "availableSince": 3.39,
+            "editable": false,
+            "isFactory": true,
+            "category": "conversation",
+            "inputs": [
+                {
+                    "type": "text",
+                    "name": "intents",
+                    "label": "Intent list (comma separated)",
+                    "validations": [
+                        { "type": "regexp", "value": "^[^\\s]+$", "message": "intent for slot filling should not be empty" }
+                    ]
+                },
+                {
+                    "type": "postback",
+                    "name": "doneAction",
+                    "label": "Continue here, when finished"
+                },
+                {
+                    "type": "array",
+                    "name": "steps",
+                    "label": "Slot",
+                    "keyPropertyName": "entity",
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "entity",
+                            "label": "Entity (with @)",
+                            "validations": [
+                                { "type": "regexp", "value": "^@[a-zA-Z0-9-]+$", "message": "the entity for the slot filling should be valid" }
+                            ]
+                        },
+                        {
+                            "type": "select",
+                            "name": "type",
+                            "label": "Question",
+                            "options": [
+                                { "label": "Required", "value": "req" },
+                                { "label": "Multi value", "value": "mul" },
+                                { "label": "Additional", "value": "add" }
+                            ]
+                        },
+                        {
+                            "type": "postback",
+                            "name": "askAction",
+                            "label": "Question"
+                        },
+                        {
+                            "type": "postback",
+                            "optional": true,
+                            "name": "validateAction",
+                            "label": "Validation"
+                        }
+                    ]
+                }
+            ],
+            "items": [
+            ]
+        },
+        {
+            "id": "ai.wingbot.slotsContinue",
+            "name": "Slot filling: continue",
+            "description": "move the slot filling to the next step",
+            "availableSince": 3.39,
+            "editable": false,
+            "isFactory": true,
+            "inputs": [
+            ],
+            "items": [
+            ]
         }
     ],
     "categories": [

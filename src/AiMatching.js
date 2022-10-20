@@ -5,6 +5,7 @@
 
 const { replaceDiacritics } = require('./utils/tokenizer');
 const { vars } = require('./utils/stateVariables');
+const stateData = require('./utils/stateData');
 
 /** @typedef {import('handlebars')} Handlebars */
 
@@ -21,6 +22,20 @@ try {
 const FULL_EMOJI_REGEX = /^#((?:[\u2600-\u27bf].?|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])+)$/;
 const HAS_CLOSING_HASH = /^#(.+)#$/;
 const ENTITY_REGEX = /^@([^=><!?]+)(\?)?([!=><]{1,2})?([^=><!]+)?$/i;
+
+/**
+ * RegExp to test a string for a ISO 8601 Date spec
+ *  YYYY
+ *  YYYY-MM
+ *  YYYY-MM-DD
+ *  YYYY-MM-DDThh:mmTZD
+ *  YYYY-MM-DDThh:mm:ssTZD
+ *  YYYY-MM-DDThh:mm:ss.sTZD
+ *
+ * @see https://www.w3.org/TR/NOTE-datetime
+ * @type {RegExp}
+ */
+const ISO_8601_REGEX = /^\d{4}-\d\d-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?$/i;
 
 /**
  * @typedef {string} Compare
@@ -88,7 +103,9 @@ const COMPARE = {
  * @prop {Function} text
  * @prop {Intent[]|null} intents
  * @prop {Entity[]} entities
+ * @prop {object} [configuration]
  * @prop {object} [state]
+ * @prop {Function} [actionData]
  */
 
 /**
@@ -162,6 +179,9 @@ class AiMatching {
 
     _normalizeToNumber (value, returnIfEmpty = null) {
         if (typeof value === 'string') {
+            if (value.match(ISO_8601_REGEX)) {
+                return value;
+            }
             const flt = parseFloat(value);
             return Number.isNaN(flt) ? returnIfEmpty : flt;
         }
@@ -171,15 +191,20 @@ class AiMatching {
         return returnIfEmpty;
     }
 
-    _hbsOrFn (value, cb) {
-        if (typeof value === 'string' && value.match(/\{\{.+\}\}/)) {
-            const compiler = handlebars.compile(value);
-            return (data) => {
-                const res = compiler(data);
-                return cb(res);
-            };
+    _hbsOrFn (value) {
+        if (typeof value === 'string') {
+            let useValue = value;
+            if (useValue.match(/^\$[a-zA-Z0-9_-]+$/)) {
+                useValue = `{{${useValue}}}`;
+            }
+            if (useValue.match(/\{\{.+\}\}/)) {
+                const compiler = handlebars.compile(useValue);
+                // @ts-ignore
+                compiler.template = useValue;
+                return compiler;
+            }
         }
-        return cb(value);
+        return value;
     }
 
     _normalizeComparisonArray (compare, op) {
@@ -194,7 +219,7 @@ class AiMatching {
             const [val] = arr;
 
             return [
-                this._hbsOrFn(val, (r) => this._normalizeToNumber(r, 0))
+                this._hbsOrFn(val)
             ];
         }
 
@@ -202,12 +227,12 @@ class AiMatching {
             const [min, max] = arr;
 
             return [
-                this._hbsOrFn(min, (r) => this._normalizeToNumber(r, -Infinity)),
-                this._hbsOrFn(max, (r) => this._normalizeToNumber(r, Infinity))
+                this._hbsOrFn(min),
+                this._hbsOrFn(max)
             ];
         }
 
-        return arr.map((cmp) => this._hbsOrFn(cmp, (r) => `${r}`));
+        return arr.map((cmp) => this._hbsOrFn(cmp));
     }
 
     _stringOpToOperation (op) {
@@ -259,6 +284,7 @@ class AiMatching {
      */
     getSetStateForEntityRules ({ entities }) {
         return entities.reduce((o, rule) => {
+
             if (rule instanceof RegExp) {
                 return o;
             }
@@ -271,13 +297,13 @@ class AiMatching {
 
             if (rule.op === COMPARE.EQUAL
                 && rule.compare
-                && rule.compare.length === 1
-                && typeof rule.compare[0] !== 'function') {
+                && rule.compare.length === 1) {
 
                 const key = `@${rule.entity}`;
                 const value = rule.compare[0];
 
-                return Object.assign(o, vars.dialogContext(key, value));
+                // @ts-ignore
+                return vars.dialogContext(key, value && (value.template || value));
             }
             return o;
         }, {});
@@ -427,7 +453,7 @@ class AiMatching {
 
             let useState;
             if (stateless || intents.length === 0) {
-                useState = Object.entries(req.state)
+                useState = Object.entries(stateData(req))
                     .reduce((o, [k, v]) => {
                         if (k.startsWith('@')) {
                             return o;
@@ -435,7 +461,7 @@ class AiMatching {
                         return Object.assign(o, { [k]: v });
                     }, {});
             } else {
-                useState = req.state;
+                useState = stateData(req);
             }
 
             const { score, handicap, matched } = this
@@ -706,9 +732,14 @@ class AiMatching {
                 : false;
         }
 
-        const useCmp = (compare || []).map((c) => (typeof c === 'function'
-            ? c(requestState)
-            : c));
+        let useCmp = (compare || [])
+            .map((c) => (typeof c === 'function'
+                ? c(requestState)
+                : c));
+
+        if ([COMPARE.EQUAL, COMPARE.NOT_EQUAL].includes(operation)) {
+            useCmp = useCmp.map((c) => (typeof c === 'string' ? c : `${c}`));
+        }
 
         switch (operation) {
             case COMPARE.EQUAL:
@@ -721,7 +752,8 @@ class AiMatching {
                 if (normalized === null) {
                     return false;
                 }
-                return normalized >= min && normalized <= max;
+                return normalized >= this._normalizeToNumber(min, -Infinity)
+                    && normalized <= this._normalizeToNumber(max, Infinity);
             }
             case COMPARE.GT:
             case COMPARE.LT:
@@ -732,7 +764,7 @@ class AiMatching {
                 if (normalized === null) {
                     return false;
                 }
-                return this._numberComparison(op, cmp, normalized);
+                return this._numberComparison(op, this._normalizeToNumber(cmp, 0), normalized);
             }
             default:
                 return true;
@@ -740,6 +772,9 @@ class AiMatching {
     }
 
     _numberComparison (op, cmp, normalized) {
+        if (typeof cmp !== typeof normalized) {
+            return false;
+        }
         switch (op) {
             case COMPARE.GT:
                 return normalized > cmp;

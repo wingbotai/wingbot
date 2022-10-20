@@ -1,4 +1,4 @@
-/*
+/**
  * @author David Menger
  */
 'use strict';
