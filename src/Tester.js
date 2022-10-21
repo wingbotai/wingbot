@@ -121,7 +121,9 @@ class Tester {
         /**
          * @prop {object} predefined test data to use
          */
-        this.testData = {};
+        this.testData = {
+            automatedTesting: true
+        };
 
         /**
          * @prop {boolean} allow tester to process empty responses
