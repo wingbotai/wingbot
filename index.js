@@ -52,6 +52,8 @@ const {
 } = require('./src/tools');
 const flags = require('./src/flags');
 
+const { version: wingbotVersion } = require('./package.json');
+
 module.exports = {
 
     // orchestrator
@@ -119,5 +121,7 @@ module.exports = {
     ConversationTester,
 
     // flags
-    ...flags
+    ...flags,
+
+    wingbotVersion
 };

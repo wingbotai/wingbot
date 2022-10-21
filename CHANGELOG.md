@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.39.1] - 2022-10-21
+
+### Fixed
+
+- exported `wingbotVersion` for
+
 ## [3.39.0] - 2022-10-19
 
 ### Added
@@ -214,6 +220,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - missing `templateData` within disambiguation actions
+
 ## [3.23.0] 2021-11-01
 
 ### Added
@@ -265,11 +272,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - conditions now support handlebars
+
 ### [3.21.0] 2021-09-24
 
 ### Added
 
 - support for local handlers disambiguation
+
 ## [3.20.0] 2021-09-21
 
 ### Added
@@ -279,9 +288,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - when using range comparison operators `>`, `<`, `>=`, `<=` against array, it's length is used
+
 ### Fixed
 
 - data param of `res.addQuickReply()` method
+
 ## [3.19.3] 2021-09-06
 
 ### Fixed
@@ -293,11 +304,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - AI Entity context when using quick replies
+
 ## [3.19.2] 2021-08-24
+
 ### Fixed
 
 - node modules problems
 - entity persistence when using remebered entities
+
 ## [3.19.0] 2021-08-24
 
 ### Changed
@@ -318,9 +332,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.17.0] 2021-07-28
 
 ### Added
+
 - regexp entities now can be treated without diacritics and with whole words matching
 
 ### Changed
+
 - published entity matching methods on CustomEntityDetectionModel
 
 
@@ -329,6 +345,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - nested plugins returned by "wrapPluginFunction"
+
 ## [3.16.0] 2021-06-21
 
 ### Added
@@ -344,18 +361,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - force the `BotApp` to send reponses synchronously
 
 ## [3.14.7] 2021-05-27
+
 ### Fixed
 
 - `Notifications` now passes through postbacks even with unsubscribtions
 ## [3.14.6] 2021-05-20
+
 ### Fixed
 
 - `ConversationTester` now caches chatbot configuration, so it makes test significantly faster
 
 ## [3.14.1] 2021-05-19
+
 ### Fixed
 
 - Input params treated with more care at `compileWithState()`
+
 ## [3.14.0] 2021-05-12
 
 ### Added
@@ -366,12 +387,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Notifications now works through postbacks
 - Recovery, when keys download fails
+
 ## [3.13.2] 2021-03-26
 
 ### Fixed
 
 - `Responder.isQuickReply()` now returns boolean
 - `Responder.text()` with added quick replis now works
+
 ## [3.13.0] 2021-03-26
 
 ### Added
@@ -386,6 +409,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `interaction` event at processor
+
 ## [3.11.0] 2021-03-25
 
 ### Added
@@ -394,7 +418,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
-- processor now waits for firing it's eventnpm
+- processor now waits for firing it's event
+
 ## [3.10.1] 2021-03-19
 
 ### Fixed
@@ -424,6 +449,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.9.0] 2021-01-13
 
 ### Added
+
 -  array of sent responses to the Responder class under `res.textResponses`
 
 ## [3.8.0] - 2020-12-14
@@ -436,11 +462,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - examples in docs
+
 ## [3.7.5] - 2020-12-01
 
 ### Fixed
 
 - keeps also limited score/life variables, when using `req.expectedContext()`
+
 ## [3.7.4] - 2020-11-26
 
 ### Changed
