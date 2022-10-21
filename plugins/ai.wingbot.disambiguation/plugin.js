@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
     if (req.hasAiActionsForDisambiguation(min, local)) {
         max = parseInt(max, 10) || 3;
         const actions = req.aiActionsForQuickReplies(max, req.aiActions(local));
-        actions.forEach((a) => res.addQuickReply(a, null, {}, false, true));
+        actions.forEach((a) => res.quickReply(a));
 
         res.setData({ actions });
 

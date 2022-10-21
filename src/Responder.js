@@ -22,6 +22,8 @@ const TYPE_UPDATE = 'UPDATE';
 const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
 const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 
+/** @typedef {import('./Request')} Request */
+
 /**
  * @enum {string}
  */
@@ -509,6 +511,7 @@ class Responder {
      * @param {object} [data] - additional data
      * @param {boolean} [prepend] - set true to add reply at the beginning
      * @param {boolean} [justToExisting] - add quick reply only to existing replies
+     * @deprecated use #quickReply instead
      * @example
      *
      * bot.use((req, res) => {
@@ -550,6 +553,37 @@ class Responder {
                 ...prep
             });
         }
+
+        return this;
+    }
+
+    /**
+     * Adds quick reply, to be sent by following text message
+     *
+     * @param {QuickReply} reply
+     * @param {boolean} [atStart]
+     * @param {boolean} [toLastMessage]
+     * @returns {this}
+     * @example
+     *
+     * bot.use((req, res) => {
+     *     res.quickReply({ action: 'barAction', title: 'last action' });
+     *
+     *     res.text('Text', {
+     *         fooAction: 'goto foo'
+     *     }); // will be merged and sent with previously added quick replies
+     * });
+     */
+    quickReply (reply, atStart = false, toLastMessage = true) {
+        const useCa = this.currentAction();
+
+        this._quickReplyCollector.push({
+            ...reply,
+            action: this.toAbsoluteAction(reply.action),
+            useCa,
+            ...(atStart && { _prepend: true }),
+            ...(toLastMessage && { _justToExisting: true })
+        });
 
         return this;
     }

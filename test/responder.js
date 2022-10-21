@@ -220,7 +220,7 @@ describe('Responder', function () {
             const { sendFn, opts, messageSender } = createAssets();
             const res = new Responder(SENDER_ID, messageSender, TOKEN, opts);
 
-            res.addQuickReply('x', 'Y', {}, false, true);
+            res.quickReply({ action: 'x', title: 'Y' });
 
             res.text('Hi');
 
@@ -479,7 +479,7 @@ describe('Responder', function () {
 
             res.text('text', [
                 {
-                    action: 'somewhere', match: ['@some']
+                    action: 'somewhere', match: ['@some'], title: 't'
                 }
             ], {
                 ssml: '<speak>a</speak>',
