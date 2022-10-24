@@ -230,6 +230,8 @@ class Tester {
             && !(res.status === 204 && this._pluginBlocksCollector.length > 0)
             && !(res.status === 204 && this.allowEmptyResponse)) {
 
+            this.debug();
+
             if (res.status === 204) {
                 throw Object.assign(new Error(`Bot did not respond (status ${res.status})`), { code: res.status });
             }

@@ -69,13 +69,19 @@ const StepState = {
 async function getNextStep (req, res, postBack) {
     let invalid = null;
     const {
-        _slotState: slotState, _slotSteps: steps, _slotDone: doneAction
+        _slotState: slotState, _slotSteps: steps, _slotDone: doneAction, ...rest
     } = { ...req.state, ...res.newState };
 
     for (const slot of slotState) {
         const step = steps.find((s) => s.entity === slot.e);
+        if (step && slot.s === StepState.INITIALIZED && (
+            (step.type !== StepType.MULTI && rest[slot.e])
+            || (step.type === StepType.MULTI && rest[slot.e.replace(/^@/, '+')] && rest[slot.e.replace(/^@/, '+')].length))) {
+
+            slot.s = StepState.FILLED;
+        }
+
         if (slot.s === StepState.FILLED && step && step.validateAction) {
-            // eslint-disable-next-line
             await postBack(step.validateAction, {}, true);
             if (res.finalMessageSent) {
                 invalid = step;

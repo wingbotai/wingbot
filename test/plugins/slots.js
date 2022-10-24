@@ -31,8 +31,17 @@ describe('<slots>', () => {
         }));
 
         bot.use('first', (req, res) => {
-            res.text('give first');
             res.expectedIntent(['@first'], 'continue');
+            res.text('give first', [
+                {
+                    title: 'two at once',
+                    action: 'continue',
+                    setState: {
+                        '@first': 'foo',
+                        '+second': { _$add: 'bar' }
+                    }
+                }
+            ]);
         });
 
         bot.use('valid-first', (req, res) => {
@@ -91,6 +100,22 @@ describe('<slots>', () => {
         t.passedAction('second');
 
         await t.entity('second', 'bar');
+
+        t.debug();
+        t.passedAction('done');
+
+        t.stateContains({
+            '@first': 'foo',
+            '+second': ['bar']
+        });
+    });
+
+    it('should work with an intent', async () => {
+        await t.intent('intent');
+
+        t.passedAction('first');
+
+        await t.quickReplyText('two at once');
 
         t.debug();
         t.passedAction('done');

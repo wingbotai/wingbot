@@ -25,7 +25,8 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 /** @typedef {import('./Request')} Request */
 
 /**
- * @enum {string}
+ * @enum {string} ExpectedInput
+ * @readonly
  */
 const ExpectedInput = {
     TYPE_PASSWORD: 'password'
@@ -95,7 +96,7 @@ class Responder {
         };
 
         /**
-         * @type {Object<string,ExpectedInput>}
+         * @prop {Object<keyof ExpectedInput,ExpectedInput>}
          */
         this.ExpectedInputTypes = ExpectedInput;
 

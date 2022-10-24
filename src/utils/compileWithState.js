@@ -21,6 +21,7 @@ const stateData = require('./stateData');
  * @param {Request} req
  * @param {Responder} res
  * @param {string} template
+ * @returns {string}
  * @example
  *
  * const { compileWithState } = require('wingbot');

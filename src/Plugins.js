@@ -42,7 +42,7 @@ const wrapPluginFunction = require('./utils/wrapPluginFunction');
  * Custom code plugins for BuildRouter and wingbot.ai
  *
  * @template {object} [S=object]
- * @template {object} C=Object
+ * @template {object} [C=Object]
  * @class Plugins
  */
 class Plugins {
@@ -72,7 +72,7 @@ class Plugins {
      *
      * @param {string} name
      * @param {object} [paramsData]
-     * @param {Map<string,Function[]>|Object<string,Function>} [items]
+     * @param {Map<string,Function[]>|Object<string,Middleware<S>>} [items]
      * @param {object} [context]
      * @param {boolean} [context.isLastIndex]
      * @param {Router} [context.router]
@@ -104,6 +104,7 @@ class Plugins {
         let useItems = items;
 
         if (!(items instanceof Map)) {
+            // @ts-ignore
             useItems = new Map(
                 Object.keys(items)
                     .map((key) => [
