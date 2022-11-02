@@ -1,4 +1,3 @@
-
 const { compileWithState } = require('../../src/utils');
 const { StepState, getNextStep } = require('../../src/utils/slots');
 
@@ -41,7 +40,7 @@ function slotsContinue ({
 
         slotState = slotState.map((s) => {
             if (skipEntities.includes(s.e)) {
-                return { ...s, s: StepState.INITIALIZED }
+                return { ...s, s: StepState.INITIALIZED };
             }
 
             return s.e === step.entity
