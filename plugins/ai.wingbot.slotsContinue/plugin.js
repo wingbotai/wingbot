@@ -1,3 +1,5 @@
+
+const { compileWithState } = require('../../src/utils');
 const { StepState, getNextStep } = require('../../src/utils/slots');
 
 /** @typedef {import('../../src/Router').Resolver} Resolver */
@@ -7,9 +9,13 @@ const { StepState, getNextStep } = require('../../src/utils/slots');
 /** @typedef {import('../../src/utils/slots').SlotsRequest} SlotsRequest */
 
 /**
+ * @param {object} params
+ * @param {string} [params.skip]
  * @returns {SlotsResolver}
  */
-function slotContinue () {
+function slotsContinue ({
+    skip
+}) {
 
     /**
      * @param {SlotsRequest} req
@@ -17,7 +23,7 @@ function slotContinue () {
      * @param {Function} postBack
      * @returns {Promise}
      */
-    async function slotContinuePlugin (req, res, postBack) {
+    async function slotsContinuePlugin (req, res, postBack) {
         const state = { ...req.state, ...res.newState };
 
         const { _slotStep: step } = state;
@@ -28,16 +34,27 @@ function slotContinue () {
             res.text(msg);
             throw new Error(msg);
         }
-        slotState = slotState.map((s) => (s.e === step.entity
-            ? { ...s, s: StepState.FILLED }
-            : s));
+
+        const skipEntities = compileWithState(req, res, skip)
+            .split(',')
+            .map((e) => e.trim());
+
+        slotState = slotState.map((s) => {
+            if (skipEntities.includes(s.e)) {
+                return { ...s, s: StepState.INITIALIZED }
+            }
+
+            return s.e === step.entity
+                ? { ...s, s: StepState.FILLED }
+                : s;
+        });
 
         res.setState({ _slotState: slotState });
 
         return getNextStep(req, res, postBack);
     }
 
-    return slotContinuePlugin;
+    return slotsContinuePlugin;
 }
 
-module.exports = slotContinue;
+module.exports = slotsContinue;

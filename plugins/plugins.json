@@ -442,11 +442,19 @@
         {
             "id": "ai.wingbot.slotsContinue",
             "name": "Slot filling: continue",
-            "description": "move the slot filling to the next step",
+            "description": "Move the slot filling to the next step",
             "availableSince": 3.39,
             "editable": false,
             "isFactory": true,
             "inputs": [
+                {
+                    "name": "skip",
+                    "label": "Skip back to entity (reset entities)",
+                    "type": "text",
+                    "validations": [
+                        { "type": "regexp", "value": "^\\s*@[a-zA-Z0-9-]+\\s*(,\\s*@[a-zA-Z0-9-]+\\s*)*$", "message": "the entity for the slot filling should be valid" }
+                    ]
+                }
             ],
             "items": [
             ]
