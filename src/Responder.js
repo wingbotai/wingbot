@@ -148,6 +148,11 @@ class Responder {
          */
         this.startedOutput = false;
 
+        /**
+         * @type {VoiceControl}
+         */
+        this.voiceControl = {};
+
         this._trackAsAction = null;
 
         // both vars are package protected
@@ -471,9 +476,12 @@ class Responder {
             }
         }
 
-        if (voice && this._features.includes(FEATURE_VOICE)) {
+        if (this._features.includes(FEATURE_VOICE)
+            && (voice || Object.keys(this.voiceControl).length)) {
+
             Object.assign(messageData.message, {
                 voice: {
+                    ...this.voiceControl,
                     ...voice
                 }
             });
