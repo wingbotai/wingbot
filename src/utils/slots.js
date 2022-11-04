@@ -40,6 +40,7 @@ const StepState = {
  * @typedef {object} SlotState
  * @prop {string} e
  * @prop {StepState} s
+ * @prop {StepType} t
  */
 
 /**

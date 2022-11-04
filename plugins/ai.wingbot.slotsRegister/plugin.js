@@ -40,6 +40,7 @@ function slotsRegister ({
 
             if (entities.length === 0) {
                 return {
+                    t: step.type,
                     e: step.entity,
                     s: step.type === StepType.ADDITIONAL
                         ? StepState.FILLED
@@ -54,6 +55,7 @@ function slotsRegister ({
             }
 
             return {
+                t: step.type,
                 e: step.entity,
                 s: step.validateAction ? StepState.FILLED : StepState.VALID
             };

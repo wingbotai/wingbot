@@ -14,9 +14,6 @@ const VAR_TYPES = {
     EXPIRES_AFTER
 };
 
-/**
- * @type {object} Helpers for `res.setState()` method
- */
 const vars = {
 
     /**

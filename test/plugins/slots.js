@@ -62,6 +62,10 @@ describe('<slots>', () => {
 
         bot.use('continue', plugins.getWrappedPlugin('ai.wingbot.slotsContinue'));
 
+        bot.use('back', plugins.getWrappedPlugin('ai.wingbot.slotsContinue', {
+            skip: '@first, @second'
+        }));
+
         bot.use('done', (req, res) => {
             res.text('done');
         });
@@ -71,6 +75,29 @@ describe('<slots>', () => {
         });
 
         t = new Tester(bot);
+    });
+
+    it('is able to go back', async () => {
+        await t.intentWithEntity('intent', 'first', 'foo');
+
+        t.passedAction('second');
+
+        await t.postBack('back');
+
+        t.passedAction('first');
+
+        await t.entity('first', 'foo');
+
+        t.passedAction('second');
+
+        await t.entity('second', 'bar');
+
+        t.passedAction('done');
+
+        t.stateContains({
+            '@first': 'foo',
+            '+second': ['bar']
+        });
     });
 
     it('should work with a single entity', async () => {

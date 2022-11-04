@@ -1,5 +1,6 @@
 const { compileWithState } = require('../../src/utils');
-const { StepState, getNextStep } = require('../../src/utils/slots');
+const { StepState, getNextStep, StepType } = require('../../src/utils/slots');
+const { vars } = require('../../src/utils/stateVariables');
 
 /** @typedef {import('../../src/Router').Resolver} Resolver */
 /** @typedef {import('../../src/Responder')} Responder */
@@ -38,8 +39,16 @@ function slotsContinue ({
             .split(',')
             .map((e) => e.trim());
 
+        const clear = {};
+
         slotState = slotState.map((s) => {
             if (skipEntities.includes(s.e)) {
+                if (s.t === StepType.MULTI) {
+                    const entity = step.entity.replace(/^@/, '+');
+                    Object.assign(clear, vars.dialogContext(entity, [], true));
+                } else {
+                    Object.assign(clear, vars.dialogContext(s.e, null, true));
+                }
                 return { ...s, s: StepState.INITIALIZED };
             }
 
@@ -48,7 +57,7 @@ function slotsContinue ({
                 : s;
         });
 
-        res.setState({ _slotState: slotState });
+        res.setState({ ...clear, _slotState: slotState });
 
         return getNextStep(req, res, postBack);
     }
