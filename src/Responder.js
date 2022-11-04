@@ -63,6 +63,12 @@ Object.freeze(ExpectedInput);
  * @prop {string} [voice]
  */
 
+/**
+ * @callback VoiceControlFactory
+ * @param {object} state
+ * @returns {VoiceControl}
+ */
+
 /** @typedef {import('./ReturnSender').UploadResult} UploadResult */
 
 /**
@@ -91,6 +97,7 @@ class Responder {
         this._bookmark = null;
 
         this.options = {
+            state: Object.freeze({}),
             translator: (w) => w,
             appUrl: ''
         };
@@ -149,9 +156,9 @@ class Responder {
         this.startedOutput = false;
 
         /**
-         * @type {VoiceControl}
+         * @type {VoiceControl|VoiceControlFactory}
          */
-        this.voiceControl = {};
+        this.voiceControl = null;
 
         this._trackAsAction = null;
 
@@ -477,11 +484,15 @@ class Responder {
         }
 
         if (this._features.includes(FEATURE_VOICE)
-            && (voice || Object.keys(this.voiceControl).length)) {
+            && (voice || this.voiceControl)) {
 
             Object.assign(messageData.message, {
                 voice: {
-                    ...this.voiceControl,
+                    ...(typeof this.voiceControl === 'function'
+                        ? this.voiceControl(Object.freeze({
+                            ...this.options.state, ...this.newState
+                        }))
+                        : this.voiceControl),
                     ...voice
                 }
             });

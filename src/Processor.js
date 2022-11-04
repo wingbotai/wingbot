@@ -529,6 +529,7 @@ class Processor extends EventEmitter {
             ];
             const options = {
                 ...this.options,
+                state: Object.freeze({ ...state }),
                 features
             };
 
