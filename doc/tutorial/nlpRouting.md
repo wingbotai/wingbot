@@ -267,8 +267,7 @@ tickets.use('email-response', async (req, res, postBack) => {
 Simple RegExp entities can be detected by registering an own entity detector.
 
 ```javascript
-ai.getModel()
-    .setEntityDetector('number', /[0-9]+/);
+ai.registerEntityDetector('number', /[0-9]+/);
 ```
 
 The value will be accessible between all detected entities in a NLP result.
@@ -286,8 +285,7 @@ bot.use(ai.match('@number'), (req, res) => {
 RegExp detector returns the whole detected string as a value. To normalize the value, you can use `extractValue` option.
 
 ```javascript
-ai.getModel()
-    .setEntityDetector('number', /[0-9][0-9\s]*/, {
+ai.registerEntityDetector('number', /[0-9][0-9\s]*/, {
       extractValue: (match) => parseInt(
         match[0].replace(/[^0-9]+/g, ''),
         10
@@ -302,8 +300,7 @@ Now the detector returns a numeric value.
 To keep a sensitive value inside a bot, you can mark your custom entity with an `anonymize` flag.
 
 ```javascript
-ai.getModel()
-    .setEntityDetector('number', /[0-9][0-9\s]*/, {
+ai.registerEntityDetector('number', /[0-9][0-9\s]*/, {
       extractValue: (match) => parseInt(
         match[0].replace(/[^0-9]+/g, ''),
         10
@@ -323,8 +320,7 @@ my number is @NUMBER
 Just put an **uppercase name of the entitty starting with @** to your regexp.
 
 ```javascript
-ai.getModel()
-    .setEntityDetector('dollars', /\$\s?@NUMBER/);
+ai.registerEntityDetector('dollars', /\$\s?@NUMBER/);
 ```
 
 When there is only one nested entity, the value will contain it's value. When there will be two or more entities, the value will be an object with a prop for every nested entity (`{entityName:123,...}`).
@@ -336,8 +332,7 @@ When there is only one nested entity, the value will contain it's value. When th
 Just put a function as an entity detector. You can also use **async function** as an entity detector.
 
 ```javascript
-ai.getModel()
-    .setEntityDetector('number', (text) => {
+ai.registerEntityDetector('number', (text) => {
       const match = text.match(/[0-9]+/);
 
       if (!match) {

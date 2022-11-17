@@ -7,11 +7,14 @@ const { WingbotModel } = require('./wingbot');
 const AiMatching = require('./AiMatching');
 const { vars } = require('./utils/stateVariables');
 const { deepEqual } = require('./utils/deepMapTools');
+const systemEntities = require('./systemEntities');
 const CustomEntityDetectionModel = require('./wingbot/CustomEntityDetectionModel');
 
 const DEFAULT_PREFIX = 'default';
 
 let uq = 1;
+
+/** @typedef {import('./AiMatching').Compare} Compare */
 
 /**
  * @typedef {object} EntityExpression
@@ -43,6 +46,8 @@ let uq = 1;
 /** @typedef {import('./Responder')} Responder */
 /** @typedef {import('./wingbot/CachedModel').Result} Result */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Phrases} Phrases */
+/** @typedef {import('./wingbot/CustomEntityDetectionModel').EntityDetector} EntityDetector */
+/** @typedef {import('./wingbot/CustomEntityDetectionModel').DetectorOptions} DetectorOptions */
 
 /**
  * @class Ai
@@ -50,7 +55,19 @@ let uq = 1;
 class Ai {
 
     constructor () {
+        /**
+         * @private
+         * @type {Map<string,CustomEntityDetectionModel>}
+         */
         this._keyworders = new Map();
+
+        /**
+         * @private
+         * @type {Map<string,[string,EntityDetector|RegExp,DetectorOptions]>}
+         */
+        this._detectors = new Map(
+            systemEntities.map((a) => [a[0], a])
+        );
 
         /**
          * Upper threshold - for match method and for navigate method
@@ -157,27 +174,84 @@ class Ai {
     /**
      * Registers Wingbot AI model
      *
-     * @template T
+     * @template {CustomEntityDetectionModel} T
      * @param {string|WingbotModel|T} model - wingbot model name or AI plugin
      * @param {string} prefix - model prefix
      *
-     * @returns {WingbotModel|T}
+     * @returns {T}
      * @memberOf Ai
      */
     register (model, prefix = 'default') {
+        /** @type {T} */
         let modelObj;
 
         if (typeof model === 'string') {
+            // @ts-ignore
             modelObj = new WingbotModel({
                 model
             }, this.logger);
         } else {
+            // @ts-ignore
             modelObj = model;
         }
 
         this._keyworders.set(prefix, modelObj);
 
+        for (const entityArgs of this._detectors.values()) {
+            modelObj.setEntityDetector(...entityArgs);
+        }
+
         return modelObj;
+    }
+
+    /**
+     *
+     * @param {string} name
+     * @param {EntityDetector|RegExp} detector
+     * @param {object} [options]
+     * @param {boolean} [options.anonymize] - if true, value will not be sent to NLP
+     * @param {Function|string} [options.extractValue] - entity extractor
+     * @param {boolean} [options.matchWholeWords] - match whole words at regular expression
+     * @param {boolean} [options.replaceDiacritics] - keep diacritics when matching regexp
+     * @param {string[]} [options.dependencies] - array of dependent entities
+     * @param {boolean} [options.clearOverlaps] - let longer entities from NLP to replace entity
+     * @returns {this}
+     */
+    registerEntityDetector (name, detector, options = {}) {
+        const useOptions = { clearOverlaps: true, ...options };
+
+        this._detectors.set(name, [name, detector, useOptions]);
+
+        for (const model of this._keyworders.values()) {
+            model.setEntityDetector(name, detector, useOptions);
+        }
+
+        return this;
+    }
+
+    /**
+     * Sets options to entity detector.
+     * Useful for disabling anonymization of local system entities.
+     *
+     * @param {string} name
+     * @param {object} options
+     * @param {boolean} [options.anonymize]
+     * @returns {this}
+     * @example
+     *
+     * ai.register('wingbot-model-name')
+     *     .setDetectorOptions('phone', { anonymize: false })
+     *     .setDetectorOptions('email', { anonymize: false })
+     */
+    configureEntityDetector (name, options) {
+        if (!this._detectors.has(name)) {
+            throw new Error(`Can't set entity detector options. Entity "${name}" does not exist.`);
+        }
+        Object.assign(this._detectors.get(name)[2], options);
+        for (const model of this._keyworders.values()) {
+            model.setDetectorOptions(name, options);
+        }
+        return this;
     }
 
     /**
@@ -194,7 +268,7 @@ class Ai {
      *
      * @param {string} prefix - model prefix
      *
-     * @returns {WingbotModel}
+     * @returns {CustomEntityDetectionModel}
      * @memberOf Ai
      */
     getModel (prefix = 'default') {

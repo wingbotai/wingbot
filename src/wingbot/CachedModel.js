@@ -35,7 +35,7 @@ class CachedModel extends CustomEntityDetectionModel {
      * @param {object} options
      * @param {number} [options.cacheSize]
      * @param {number} [options.cachePhrasesTime]
-     * @param {{ warn: Function, error: Function }} [log]
+     * @param {{ warn: Function, error: Function, log: Function }} [log]
      */
     constructor (options, log = console) {
         super(options, log);
@@ -88,17 +88,45 @@ class CachedModel extends CustomEntityDetectionModel {
         const res = await promise;
         let { intents = [], entities = [] } = Array.isArray(res) ? { intents: res } : res;
 
-        entities = [...entities, ...local.entities];
-        intents = intents.map((i) => ({
-            ...i,
-            entities: [...(i.entities || []), ...local.entities]
-        }));
+        const expectedEntities = req ? req.expectedEntities() : [];
+
+        const before = local.entities
+            .filter((e) => this._entityDetectors.has(e.entity)
+                && this._entityDetectors.get(e.entity).clearOverlaps);
+
+        [intents, entities] = this._attachEntities(intents, entities, before, expectedEntities);
+
+        const after = local.entities
+            .filter((e) => !this._entityDetectors.has(e.entity)
+                || !this._entityDetectors.get(e.entity).clearOverlaps);
+
+        [intents, entities] = this._attachEntities(intents, entities, after);
 
         return {
             text: local.text,
             intents,
             entities
         };
+    }
+
+    _attachEntities (intents, entities, attachEntities, expectedEntities = null) {
+        const retEntities = [...entities, ...attachEntities];
+        const retIntents = intents
+            .map((i) => {
+                const ents = [...(i.entities || []), ...attachEntities];
+
+                return {
+                    ...i,
+                    entities: expectedEntities
+                        ? this.nonOverlapping(ents, expectedEntities)
+                        : ents
+                };
+            });
+
+        return [
+            retIntents,
+            expectedEntities ? this.nonOverlapping(retEntities, expectedEntities) : retEntities
+        ];
     }
 
     async getPhrases () {

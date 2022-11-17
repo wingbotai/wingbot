@@ -52,6 +52,16 @@ const { replaceDiacritics } = require('../utils');
  */
 
 /**
+ * @typedef {object} DetectorOptions
+ * @prop {boolean} [anonymize] - if true, value will not be sent to NLP
+ * @prop {Function|string} [extractValue] - entity extractor
+ * @prop {boolean} [matchWholeWords] - match whole words at regular expression
+ * @prop {boolean} [replaceDiacritics] - keep diacritics when matching regexp
+ * @prop {string[]} [dependencies] - array of dependent entities
+ * @prop {boolean} [clearOverlaps] - let longer entities from NLP to replace entity
+ */
+
+/**
  * @typedef {object} Phrases
  * @prop {Map<string,string[]>} phrases
  */
@@ -70,7 +80,7 @@ class CustomEntityDetectionModel {
 
     /**
      * @param {object} options
-     * @param {{ warn: Function, error: Function }} [log]
+     * @param {{ warn: Function, error: Function, log: Function }} [log]
      */
     constructor (options, log = console) {
         this._options = options;
@@ -582,12 +592,7 @@ class CustomEntityDetectionModel {
      *
      * @param {string} name
      * @param {EntityDetector|RegExp} detector
-     * @param {object} [options]
-     * @param {boolean} [options.anonymize] - if true, value will not be sent to NLP
-     * @param {Function|string} [options.extractValue] - entity extractor
-     * @param {boolean} [options.matchWholeWords] - match whole words at regular expression
-     * @param {boolean} [options.replaceDiacritics] - keep diacritics when matching regexp
-     * @param {string[]} [options.dependencies] - array of dependent entities
+     * @param {DetectorOptions} [options]
      * @returns {this}
      */
     setEntityDetector (name, detector, options = {}) {
@@ -610,7 +615,8 @@ class CustomEntityDetectionModel {
             entityDetector,
             detector,
             dependencies,
-            anonymize: !!options.anonymize
+            anonymize: !!options.anonymize,
+            clearOverlaps: !!options.clearOverlaps
         });
 
         return this;
@@ -623,6 +629,7 @@ class CustomEntityDetectionModel {
      * @param {string} name
      * @param {object} options
      * @param {boolean} [options.anonymize]
+     * @param {boolean} [options.clearOverlaps]
      * @returns {this}
      * @example
      *
@@ -632,7 +639,7 @@ class CustomEntityDetectionModel {
      */
     setDetectorOptions (name, options) {
         if (!this._entityDetectors.has(name)) {
-            throw new Error('Can\'t set entity detector options. Entity "name" does not exist.');
+            throw new Error(`Can't set entity detector options. Entity "${name}" does not exist.`);
         }
         Object.assign(this._entityDetectors.get(name), options);
         return this;

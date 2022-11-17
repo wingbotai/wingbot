@@ -3,7 +3,6 @@
 const { default: fetch } = require('node-fetch');
 const assert = require('assert');
 const CachedModel = require('./CachedModel');
-const systemEntities = require('../systemEntities');
 
 const DEFAULT_MATCHES = 3;
 const SERVICE_URL = 'https://model.wingbot.ai';
@@ -42,7 +41,7 @@ class WingbotModel extends CachedModel {
      * @param {number} [options.cacheSize]
      * @param {number} [options.matches]
      * @param {Function} [options.fetch]
-     * @param {{ warn: Function, log: Function }} [log]
+     * @param {{ warn: Function, log: Function, error: Function }} [log]
      */
     constructor (options, log = console) {
         super(options, log);
@@ -60,11 +59,6 @@ class WingbotModel extends CachedModel {
         this._serviceUrl = options.serviceUrl || SERVICE_URL;
         this._trainingUrl = options.trainingUrl || TRAINING_URL;
         this._model = options.model;
-
-        // apply default entities
-        systemEntities
-            // @ts-ignore
-            .forEach(([name, d, opts = {}]) => this.setEntityDetector(name, d, opts));
     }
 
     async _getPhrases () {

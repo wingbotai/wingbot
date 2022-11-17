@@ -415,7 +415,7 @@
                         {
                             "type": "select",
                             "name": "type",
-                            "label": "Question",
+                            "label": "Type",
                             "options": [
                                 { "label": "Required", "value": "req" },
                                 { "label": "Multi value", "value": "mul" },
@@ -453,6 +453,18 @@
                     "type": "text",
                     "validations": [
                         { "type": "regexp", "value": "^\\s*@[a-zA-Z0-9-]+\\s*(,\\s*@[a-zA-Z0-9-]+\\s*)*$", "message": "the entity for the slot filling should be valid" }
+                    ]
+                },
+                {
+                    "name": "fill",
+                    "label": "Skip entity (mark as filled)",
+                    "type": "text",
+                    "validations": [
+                        {
+                            "type": "regexp",
+                            "value": "^(\\s*@[a-zA-Z0-9-]+\\s*,?)*$",
+                            "message": "the entity to skip should be valid"
+                        }
                     ]
                 }
             ],

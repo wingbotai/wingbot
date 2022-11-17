@@ -11,10 +11,12 @@ const { vars } = require('../../src/utils/stateVariables');
 /**
  * @param {object} params
  * @param {string} [params.skip]
+ * @param {string} [params.fill]
  * @returns {SlotsResolver}
  */
 function slotsContinue ({
-    skip
+    skip,
+    fill
 }) {
 
     /**
@@ -39,6 +41,10 @@ function slotsContinue ({
             .split(',')
             .map((e) => e.trim());
 
+        const fillEntities = compileWithState(req, res, fill)
+            .split(',')
+            .map((e) => e.trim());
+
         const clear = {};
 
         slotState = slotState.map((s) => {
@@ -52,7 +58,7 @@ function slotsContinue ({
                 return { ...s, s: StepState.INITIALIZED };
             }
 
-            return s.e === step.entity
+            return s.e === step.entity || fillEntities.includes(s.e)
                 ? { ...s, s: StepState.FILLED }
                 : s;
         });
