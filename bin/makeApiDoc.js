@@ -69,6 +69,8 @@ docs.forEach((doc, index) => {
                 .replace(/(Middleware|Resolver|Router|Request)<[a-zA-Z,\s]+>/g, '$1')
                 // imports
                 .replace(/\/\*\*[^/]+@typedef\s+\{import[^*]+\*\//gm, '')
+                // tuples
+                .replace(/\/\*\*[^/]+@typedef\s+\{[[^*]+\*\//gm, '')
                 // keyof
                 .replace(/(\/\*\*[^/]+\{[^}]+(<|,\s))keyof/gm, '$1')
                 // unions
