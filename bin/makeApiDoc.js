@@ -70,7 +70,7 @@ docs.forEach((doc, index) => {
                 // imports
                 .replace(/\/\*\*[^/]+@typedef\s+\{import[^*]+\*\//gm, '')
                 // tuples
-                .replace(/\/\*\*[^/]+@typedef\s+\{[[^*]+\*\//gm, '')
+                .replace(/\/\*\*[^/]+@typedef\s+\{\[[^*]+\*\//gm, '')
                 // keyof
                 .replace(/(\/\*\*[^/]+\{[^}]+(<|,\s))keyof/gm, '$1')
                 // unions
