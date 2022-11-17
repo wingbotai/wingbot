@@ -40,6 +40,13 @@ function getVoiceControlFromParams (params, lang = null) {
         }
     });
 
+    // remove empty values ("")
+    Object.keys(voiceControl).forEach((key) => {
+        if (voiceControl[key] === '') {
+            delete voiceControl[key];
+        }
+    });
+
     // if voiceControl is empty, return null
     return Object.keys(voiceControl).length > 0 ? voiceControl : null;
 }
