@@ -49,6 +49,8 @@ let uq = 1;
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').EntityDetector} EntityDetector */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').DetectorOptions} DetectorOptions */
 
+/** @typedef {[string,EntityDetector|RegExp,DetectorOptions]} DetectorArgs */
+
 /**
  * @class Ai
  */
@@ -63,7 +65,7 @@ class Ai {
 
         /**
          * @private
-         * @type {Map<string,[string,EntityDetector|RegExp,DetectorOptions]>}
+         * @type {Map<string,DetectorArgs>}
          */
         this._detectors = new Map(
             systemEntities.map((a) => [a[0], a])
