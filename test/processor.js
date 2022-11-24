@@ -14,7 +14,7 @@ const { ReturnSender } = require('..');
 
 const EMPTY_STATE = { user: {} };
 
-function createStateStorage (state = EMPTY_STATE, simulateError = true) {
+function createStateStorage (state = { user: {} }, simulateError = true) {
     const storage = {
         model: {
             state
@@ -132,7 +132,11 @@ describe('Processor', function () {
                     final: 1,
                     user: {},
                     _expected: null,
-                    _expectedKeywords: null
+                    _expectedKeywords: null,
+                    _snew: true,
+                    _sct: 1,
+                    _segStamp: stateStorage.model.state._segStamp,
+                    _sid: stateStorage.model.state._sid
                 });
 
                 assert(stateStorage.saveState.called);
@@ -178,7 +182,11 @@ describe('Processor', function () {
                     _lastAction: 'action',
                     beforeLastInteraction: null,
                     lastAction: 'action',
-                    lastInteraction: 'action'
+                    lastInteraction: 'action',
+                    _snew: true,
+                    _sct: 1,
+                    _segStamp: stateStorage.model.state._segStamp,
+                    _sid: stateStorage.model.state._sid
                 });
             });
         });
@@ -222,7 +230,11 @@ describe('Processor', function () {
                     _lastAction: 'hello',
                     beforeLastInteraction: null,
                     lastAction: 'hello',
-                    lastInteraction: 'action'
+                    lastInteraction: 'action',
+                    _snew: true,
+                    _sct: 1,
+                    _segStamp: stateStorage.model.state._segStamp,
+                    _sid: stateStorage.model.state._sid
                 });
             });
         });
@@ -508,7 +520,11 @@ describe('Processor', function () {
                         final: 1,
                         user: {},
                         _expected: null,
-                        _expectedKeywords: null
+                        _expectedKeywords: null,
+                        _snew: true,
+                        _sct: 1,
+                        _segStamp: stateStorage.model.state._segStamp,
+                        _sid: stateStorage.model.state._sid
                     });
 
                     assert(stateStorage.saveState.called);

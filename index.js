@@ -45,6 +45,8 @@ const { disambiguationQuickReply, quickReplyAction } = require('./src/utils/quic
 const { getUpdate, getValue, getSetState } = require('./src/utils/getUpdate');
 const { vars } = require('./src/utils/stateVariables');
 const compileWithState = require('./src/utils/compileWithState');
+const onInteractionHandler = require('./src/analytics/onInteractionHandler');
+const GA4 = require('./src/analytics/GA4');
 const plugins = require('./plugins/plugins.json');
 const {
     bufferloader,
@@ -123,5 +125,9 @@ module.exports = {
     // flags
     ...flags,
 
-    wingbotVersion
+    wingbotVersion,
+
+    // ANALYTICS
+    onInteractionHandler,
+    GA4
 };

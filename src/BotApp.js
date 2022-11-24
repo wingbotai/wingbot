@@ -10,6 +10,7 @@ const BotAppSender = require('./BotAppSender');
 const Processor = require('./Processor');
 const ReturnSender = require('./ReturnSender');
 const headersToAuditMeta = require('./utils/headersToAuditMeta');
+const onInteractionHandler = require('./analytics/onInteractionHandler');
 
 const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 
@@ -24,6 +25,9 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 /** @typedef {import('./CallbackAuditLog')} AuditLog */
 /** @typedef {import('./BotAppSender').TlsOptions} TlsOptions */
 /** @typedef {import('./ReturnSender').ReturnSenderOptions} ReturnSenderOptions */
+
+/** @typedef {import('./analytics/onInteractionHandler').IAnalyticsStorage} IAnalyticsStorage */
+/** @typedef {import('./analytics/onInteractionHandler').HandlerConfig} HandlerConfig */
 
 /**
  * @typedef {object} BotAppOptions
@@ -95,6 +99,8 @@ class BotApp {
         this._appId = appId;
         this._auditLog = auditLog;
         this._tls = tls;
+        this._logger = options.log || console;
+        this._textFilter = options.textFilter;
 
         let { apiUrl } = options;
 
@@ -169,6 +175,34 @@ class BotApp {
      */
     get processor () {
         return this._processor;
+    }
+
+    /**
+     *
+     * @param {IAnalyticsStorage} analyticsStorage
+     * @param {HandlerConfig} [options]
+     * @returns {this}
+     * @example
+     * const { GA4 } = require('wingbot');
+     *
+     * botApp.registerAnalyticsStorage(new GA4({
+     *     measurementId: 'G-123456,
+     *     apiSecret: 'apisecret'
+     * }))
+     */
+    registerAnalyticsStorage (analyticsStorage, options = {}) {
+        const log = this._logger || options.log;
+
+        analyticsStorage.setDefaultLogger(log);
+
+        const handler = onInteractionHandler({
+            log,
+            anonymize: this._textFilter,
+            ...options
+        }, analyticsStorage);
+
+        this.processor.on('interaction', handler);
+        return this;
     }
 
     _errorResponse (message, status) {

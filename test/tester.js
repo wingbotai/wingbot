@@ -210,7 +210,9 @@ describe('Tester', function () {
 
         await t.postBack('/start');
 
-        assert.deepEqual(t.getState().state, {
+        let { state } = t.getState();
+
+        assert.deepEqual(state, {
             i: 2,
             _expected: null,
             _lastAction: '/postBack',
@@ -218,7 +220,11 @@ describe('Tester', function () {
             _lastVisitedPath: null,
             beforeLastInteraction: null,
             lastAction: '/postBack',
-            lastInteraction: '/start'
+            lastInteraction: '/start',
+            _snew: false,
+            _sct: 1,
+            _segStamp: state._segStamp,
+            _sid: state._sid
         });
 
         t.any()
@@ -229,7 +235,9 @@ describe('Tester', function () {
 
         await t.optin('/start');
 
-        assert.deepEqual(t.getState().state, {
+        ({ state } = t.getState());
+
+        assert.deepEqual(state, {
             i: 4,
             _expected: null,
             _expectedKeywords: null,
@@ -237,7 +245,11 @@ describe('Tester', function () {
             _lastVisitedPath: null,
             beforeLastInteraction: null,
             lastAction: '/postBack',
-            lastInteraction: '/start'
+            lastInteraction: '/start',
+            _snew: false,
+            _sct: 1,
+            _segStamp: state._segStamp,
+            _sid: state._sid
         });
 
         t.any()
