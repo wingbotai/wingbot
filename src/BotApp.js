@@ -28,6 +28,8 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 
 /** @typedef {import('./analytics/onInteractionHandler').IAnalyticsStorage} IAnalyticsStorage */
 /** @typedef {import('./analytics/onInteractionHandler').HandlerConfig} HandlerConfig */
+/** @typedef {import('./analytics/onInteractionHandler').OnEventHandler} OnEventHandler */
+/** @typedef {import('./analytics/onInteractionHandler').Event} Event */
 
 /**
  * @typedef {object} BotAppOptions
@@ -123,6 +125,9 @@ class BotApp {
 
         this._processor.plugin(BotApp.plugin());
         this._preferSynchronousResponse = preferSynchronousResponse;
+
+        /** @type {OnEventHandler[]} */
+        this._eventHandlers = [];
     }
 
     /**
@@ -195,14 +200,41 @@ class BotApp {
 
         analyticsStorage.setDefaultLogger(log);
 
-        const handler = onInteractionHandler({
+        const { onInteraction, onEvent } = onInteractionHandler({
             log,
             anonymize: this._textFilter,
             ...options
         }, analyticsStorage);
 
-        this.processor.on('interaction', handler);
+        this._eventHandlers.push(onEvent);
+        this.processor.on('interaction', onInteraction);
         return this;
+    }
+
+    /**
+     * Method for tracking special events
+     *
+     * @param {string} pageId
+     * @param {string} senderId
+     * @param {Event} event
+     * @param {number} [ts]
+     * @param {boolean} [nonInteractive]
+     */
+    async trackEvent (pageId, senderId, event, ts = Date.now(), nonInteractive = false) {
+        const state = this._processor.stateStorage.getState(senderId, pageId);
+
+        if (!state) {
+            throw new Error(`State ${pageId}:${senderId} not found. Ensure the #trackEvent() method was called after the conversation has started`);
+        }
+
+        await Promise.all(this._eventHandlers.map((handler) => handler(
+            pageId,
+            senderId,
+            state.state,
+            event,
+            ts,
+            nonInteractive
+        )));
     }
 
     _errorResponse (message, status) {

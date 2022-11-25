@@ -75,7 +75,7 @@ const Ai = require('../Ai');
 
 /**
  * @callback UserExtractor
- * @param {Request} req
+ * @param {object} state
  * @returns {object & GAUser}
  */
 
@@ -111,11 +111,28 @@ const Ai = require('../Ai');
  */
 
 /**
+ * @typedef {object} Handlers
+ * @prop {IInteractionHandler} onInteraction
+ * @prop {OnEventHandler} onEvent
+ */
+
+/**
+ * @callback OnEventHandler
+ * @param {string} pageId
+ * @param {string} senderId
+ * @param {object} state
+ * @param {Event} event
+ * @param {number} [timestamp]
+ * @param {boolean} [nonInteractive]
+ * @returns {Promise}
+ */
+
+/**
  *
  * @param {HandlerConfig} config
  * @param {IAnalyticsStorage} analyticsStorage
  * @param {IConfidenceProvider} [ai]
- * @returns {IInteractionHandler}
+ * @returns {Handlers}
  */
 function onInteractionHandler (
     {
@@ -123,7 +140,7 @@ function onInteractionHandler (
         throwException = false,
         log = console,
         anonymize = (x) => x,
-        userExtractor = (req) => null // eslint-disable-line no-unused-vars
+        userExtractor = (state) => null // eslint-disable-line no-unused-vars
     },
     analyticsStorage,
     ai = Ai.ai
@@ -366,7 +383,7 @@ function onInteractionHandler (
                 });
             }
 
-            const user = userExtractor(req);
+            const user = userExtractor(req.state);
 
             await analyticsStorage.storeEvents(
                 pageId,
@@ -387,7 +404,61 @@ function onInteractionHandler (
         }
     }
 
-    return onInteraction;
+    /**
+     *
+     * @param {string} pageId
+     * @param {string} senderId
+     * @param {object} state
+     * @param {Event} event
+     * @param {number} [timestamp]
+     * @param {boolean} [nonInteractive]
+     */
+    const onEvent = async (
+        pageId,
+        senderId,
+        state,
+        event,
+        timestamp = Date.now(),
+        nonInteractive = false
+    ) => {
+        try {
+            const {
+                _sid: sessionId,
+                lang,
+                lastAction
+            } = state;
+
+            const user = userExtractor(state);
+
+            await analyticsStorage.storeEvents(
+                pageId,
+                senderId,
+                sessionId,
+                [{
+                    // @ts-ignore
+                    lastAction,
+                    ...(analyticsStorage.hasExtendedEvents
+                        ? { lang }
+                        : { cd1: lang }),
+                    ...event
+                }],
+                user,
+                timestamp,
+                nonInteractive,
+                false
+            );
+        } catch (e) {
+            if (throwException) {
+                throw e;
+            }
+            log.error('failed sending logs', e);
+        }
+    };
+
+    return {
+        onInteraction,
+        onEvent
+    };
 }
 
 module.exports = onInteractionHandler;
