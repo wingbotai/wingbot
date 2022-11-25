@@ -4,9 +4,73 @@ section: ORCHESTRATOR # Sidebar navigation group title
 order: 1 # Order in the sidebar navigation group
 ---
 
-# How to connect Wingbot Webchat to any website
+## How to connect Wingbot Webchat to any website
 
-## Basic setup
+The chat widget can be deployed by following methods:
+
+- React component
+- Append to HTML element
+- CDN Hosted - HTML snippet method
+
+### React component
+
+UI component within a JSX component
+
+```jsx
+
+import { WingbotChat } from 'wingbot-chat-ui';
+
+export default function MyChatComponent (props) {
+
+    return (
+        <WingbotChat
+            pageId="<put your page-id here>"
+            contextUserAgentProp="ua"
+            contextScreenResolutionProp="sr"
+        />
+    );
+}
+```
+
+**SCSS style**
+
+Include following CSS style for deploying a default chat style
+
+```scss
+$ff: BlinkMacSystemFont, -apple-system, "Segoe UI", Rubik, Helvetica, Arial, sans-serif;
+
+@use '~wingbot-chat-ui/scss/fontRubik' with (
+    $wb-font-path: '~wingbot-chat-ui/scss/fonts'
+);
+@use '~wingbot-chat-ui/scss/general' with (
+    $chat-font-family: $ff,
+    $chat-square-btn: true
+);
+
+```
+
+### Append to HTML element
+
+Just in case if your project is not built on React
+
+```javascript
+import 'regenerator-runtime/runtime';
+import { createWingbotChat } from 'wingbot-chat-ui';
+
+const wingbotChat = createWingbotChat();
+
+// replace with an immutable DIV element
+const element = document.getElementById('chat');
+
+wingbotChat('init', {
+    pageId: '<put your page-id here>',
+    contextUserAgentProp: 'ua',
+    contextScreenResolutionProp: 'sr'
+}, element);
+
+```
+
+### CDN Hosted - HTML snippet method
 
 On the example below you can see the minimal setup for connecting the Wingbot webchat to a website.
 
@@ -16,6 +80,7 @@ On the example below you can see the minimal setup for connecting the Wingbot we
 <script>
     window.wingbotChatCmds=window.wingbotChatCmds||[];
     window.wingbotChat=window.wingbotChat||function(){wingbotChatCmds.push(arguments)}
+
     wingbotChat('init', {
         pageId: '<put your page-id here>',
         contextUserAgentProp: 'ua',
@@ -25,10 +90,7 @@ On the example below you can see the minimal setup for connecting the Wingbot we
 <script async src="https://orchestrator.wingbot.ai/wingbotChat.js"></script>
 ```
 
-<br />
-<br />
-
-##### We can split this example code to the 4 main parts:
+#### We can split this example code to the 4 main parts:
 
 - **CSS styles**
     - link with the basic webchat theme, working out of the box
@@ -54,21 +116,22 @@ Lets have a look little bit deeply about the configuration right now:
 ### Webchat commands and parameters:
 
 
-```Javascript
+```javascript
 webchat (
     'init',    // `'init'` command should be always called to start a chat
-    element,   // is for the DOM element which is representation of the chat on the page
+    element,   // DOM element which is representation of the chat on the page
     config     // object with webchat configurations
 );
+
 ```
-<br />
-<br />
 
 There are supported parameters for the config object:
 
 
 | Parameter |  Default value | Description | Example |
-|:-----------|------------|-------------|---------|
+|:-----------|------------|-------------|------------|
+|`disableComposer`|`false`|Disables user input - makes chat read only||
+|`resetOnClose`|`false`|Starts a new conversation when reopening chat after it's close||
 |`pageId`|**required**|Identifier of page|`'134271f0-1d1c-42a3-9191-6288fd1a263b'`|
 |`api`|`null`|Override an API URL of orchestrator (on-premise solutions only)||
 |`websocket`|`null`|Override an websocket URL of the widget (on-premise solutions only)||
@@ -84,5 +147,43 @@ There are supported parameters for the config object:
 |`uploadEnabled`|`false`|On/off for a file upload (boolean)|
 |`uploadSizeLimit`|`1048576 * 6`|Hard limit for the file upload, bigger file cannot be uploaded|
 |`uploadSoftLimitForResize`|`1048576 * 2.5`|Soft limit for the file upload, bigger file will be shrunk, `0` means no shrinking|
-|`contextUserAgentProp`|null|Context prop to store user agent|`'ua'`|
-|`contextScreenResolutionProp`|null|Context prop to store screen resolution|`'sr'`|
+|`contextUserAgentProp`|`null`|Context prop to store user agent|`'ua'`|
+|`contextScreenResolutionProp`|`null`|Context prop to store screen resolution|`'sr'`|
+|`contextLangProp`|`null`|Context prop to store chat language|`'lang'`|
+|`contextPathProp`|`null`|Context prop to store window path|`'path'`|
+|`oauthMode`|`'iframe'`|Method for OAUTH authentication|`'xhr' | 'iframe' | 'redirect'`|
+|`homeAction`|`undefined`|If `homeAction` is `true|string` home button will be enabled in the chat header. If `homeAction` is `string` home button sends a postback to `homeAction`. If `homeAction` is `true` home button sends a postback to `startAction` |`true`|
+|`langFromUrl`|`undefined`|If `langFromUrl` is `true` language will be set based on url query parameter `lang`. If `langFromUrl` is `string` language will be set to `langFromUrl`|`true`|
+
+
+
+## Development
+
+Because the frontend is in a separate repository, you must first link the frontend to the backend during development, and then run auto build.
+
+Linking can be done via the utility link: https://docs.npmjs.com/cli/link, like this:
+
+```
+cd ~/<local_repo_path>/wingbot-chat-ui
+npm link
+cd ~/<local_repo_path>/wingbot-ai-orchestrator
+npm link wingbot-chat-ui
+```
+
+Also, to have working React hooks, you need to link React library from chat to orchestrator
+```
+cd ~/<local_repo_path>/wingbot-chat-ui
+npm link <orchestrator_path>/node_modules/react
+```
+
+Next, you need to run the command in the root of the wingbot-chat-ui project:
+
+```
+npm run develop
+```
+
+Furthermore, it is normally possible to continue the webchat project with the command:
+
+```
+npm run start
+```
