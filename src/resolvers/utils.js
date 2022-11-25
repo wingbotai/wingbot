@@ -61,11 +61,10 @@ function isTextObjectEmpty (text) {
 /**
  * @param {Translations} translations
  * @param {string} [lang]
- * @param {boolean} [defaultToOtherLang] - if true and translation for language is not found,
- * it will try to find translation for other language
+ * @param {boolean} [disableDefaulting] - it will try to find translation for other language
  * @returns {null|string}
  */
-function getLanguageText (translations, lang = null, defaultToOtherLang = true) {
+function getLanguageText (translations, lang = null, disableDefaulting = false) {
     let foundText;
 
     if (isArrayOfObjects(translations)) {
@@ -73,7 +72,7 @@ function getLanguageText (translations, lang = null, defaultToOtherLang = true) 
             // @ts-ignore
             foundText = translations.find((t) => t.l === lang);
         }
-        if (isTextObjectEmpty(foundText) && defaultToOtherLang) {
+        if (isTextObjectEmpty(foundText) && !disableDefaulting) {
             // @ts-ignore
             foundText = translations.find((t) => !isTextObjectEmpty(t));
         }
