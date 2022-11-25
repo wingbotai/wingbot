@@ -36,7 +36,8 @@ function getVoiceControlFromParams (params, lang = null) {
 
     voiceControlProps.forEach((prop) => {
         if (params[prop]) {
-            voiceControl[prop] = getLanguageText(params[prop], lang);
+            // for voice control do not default to other languages
+            voiceControl[prop] = getLanguageText(params[prop], lang, false);
         }
     });
 

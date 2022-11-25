@@ -112,6 +112,7 @@ describe('Message voice control', () => {
 
             t = new Tester(bot);
         });
+
         it('should return only SSML', async () => {
             t.setFeatures([FEATURE_SSML, FEATURE_VOICE]);
             await t.postBack('messageResolver', null, null, null);
@@ -188,6 +189,7 @@ describe('Message voice control', () => {
 
             t = new Tester(bot);
         });
+
         it('should return only SSML', async () => {
             t.setFeatures([FEATURE_SSML, FEATURE_VOICE]);
             await t.postBack('messageResolver', null, null, null);
@@ -234,5 +236,90 @@ describe('Message voice control', () => {
             assert(text.includes('voice') || text.includes('text'));
         });
 
+    });
+
+    // messages are correct based on selected language
+    describe('correct multilingual messages', () => {
+        /** @type {Tester} */
+        let t;
+        beforeEach(() => {
+            const bot = new Router();
+            const plugins = new Plugins();
+            plugins.registerFactory('messageResolver', message);
+            bot.use(
+                'messageResolver',
+                plugins.getWrappedPlugin(
+                    'messageResolver',
+                    {
+                        text: [
+                            {
+                                l: 'cs',
+                                t: [
+                                    'czech message'
+                                ]
+                            },
+                            {
+                                l: 'en',
+                                t: [
+                                    'english message'
+                                ]
+                            }
+                        ],
+                        hasCondition: false,
+                        conditionFn: '(req, res) => {\n    return true;\n}',
+                        replies: [],
+                        speed: [
+                            {
+                                l: 'cs',
+                                t: 1.01
+                            },
+                            {
+                                l: 'en',
+                                t: 1.05
+                            }
+                        ],
+                        pitch: [
+                            {
+                                l: 'en',
+                                t: 12
+                            }
+                        ],
+                        volume: [
+                            {
+                                l: 'cs',
+                                t: null
+                            }
+                        ]
+                    },
+                    {},
+                    { isLastIndex: true }
+                )
+            );
+
+            t = new Tester(bot);
+        });
+
+        it('should get proper control for czech', async () => {
+            t.setState({ lang: 'cs' });
+            t.setFeatures([FEATURE_TEXT, FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
+            const { text, voice } = t.lastRes().response.message;
+            assert(text.includes('czech message'));
+            assert.deepEqual(voice, {
+                speed: 1.01
+            });
+        });
+
+        it('should get proper control for english', async () => {
+            t.setState({ lang: 'en' });
+            t.setFeatures([FEATURE_TEXT, FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
+            const { text, voice } = t.lastRes().response.message;
+            assert(text.includes('english message'));
+            assert.deepEqual(voice, {
+                speed: 1.05,
+                pitch: 12
+            });
+        });
     });
 });
