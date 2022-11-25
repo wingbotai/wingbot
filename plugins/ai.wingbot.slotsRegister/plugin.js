@@ -61,16 +61,28 @@ function slotsRegister ({
             };
         });
 
-        res.setState({
-            _slotState: slotState,
-            _slotSteps: steps,
-            _slotDone: doneAction,
+        const setStateEntities = {
             ...Object.fromEntries(
                 steps.map(({ entity, type }) => (type === StepType.MULTI
                     ? [entity.replace(/^@/, '+'), []]
                     : [entity, null]))
             ),
             ...setEntities.reduce((o, r) => Object.assign(o, r), {})
+        };
+
+        Object.assign(
+            req.state,
+            Object.fromEntries(
+                Object.entries(setStateEntities)
+                    .filter(([k]) => !k.startsWith('_'))
+            )
+        );
+
+        res.setState({
+            _slotState: slotState,
+            _slotSteps: steps,
+            _slotDone: doneAction,
+            ...setStateEntities
         });
 
         return getNextStep(req, res, postBack);
