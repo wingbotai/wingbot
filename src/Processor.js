@@ -4,12 +4,13 @@
 'use strict';
 
 const EventEmitter = require('events');
+const crypto = require('crypto');
 const { MemoryStateStorage } = require('./tools');
 const Responder = require('./Responder');
 const Request = require('./Request');
 const Ai = require('./Ai');
 const ReturnSender = require('./ReturnSender');
-const { mergeState } = require('./utils/stateVariables');
+const { mergeState, isUserInteraction } = require('./utils/stateVariables');
 
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Intent} Intent */
 /** @typedef {import('./ReducerWrapper')} ReducerWrapper */
@@ -65,10 +66,17 @@ const { mergeState } = require('./utils/stateVariables');
  */
 
 /**
+ * @typedef {object} ILogger
+ * @prop {Function} log
+ * @prop {Function} warn
+ * @prop {Function} error
+ */
+
+/**
  *
  * @typedef {object} ProcessorOptions
  * @prop {string} [appUrl] - url basepath for relative links
- * @prop {object} [stateStorage] - chatbot state storage
+ * @prop {IStateStorage} [stateStorage] - chatbot state storage
  * @prop {object} [tokenStorage] - frontend token storage
  * @prop {Function} [translator] - text translate function
  * @prop {number} [timeout] - chat sesstion lock duration (30000)
@@ -77,13 +85,14 @@ const { mergeState } = require('./utils/stateVariables');
  * @prop {number} [retriesWhenWaiting] - number of attampts (6)
  * @prop {Function} [nameFromState] - override the name translator
  * @prop {boolean|AutoTypingConfig} [autoTyping] - enable or disable automatic typing
- * @prop {Function} [log] - console like error logger
+ * @prop {ILogger} [log] - console like error logger
  * @prop {object} [defaultState] - default chat state
  * @prop {boolean} [autoSeen] - send seen automatically
  * @prop {number} [redirectLimit] - maximum number of redirects at single request
  * @prop {string} [secret] - Secret for calling orchestrator API
  * @prop {string} [apiUrl] - Url for calling orchestrator API
  * @prop {Function} [fetch] - Fetch function for calling orchestrator API
+ * @prop {number} [sessionDuration] - Session duration for analytic purposes
  */
 
 /**
@@ -101,6 +110,13 @@ const { mergeState } = require('./utils/stateVariables');
  * @prop {string|null} [meta.targetAction]
  */
 
+/**
+ * @typedef {object} IStateStorage
+ * @prop {Function} saveState
+ * @prop {Function} getState
+ * @prop {Function} getOrCreateAndLock
+ */
+
 function NAME_FROM_STATE (state) {
     if (state.user && state.user.firstName) {
         return `${state.user.firstName} ${state.user.lastName}`;
@@ -110,6 +126,8 @@ function NAME_FROM_STATE (state) {
     }
     return null;
 }
+
+const MAX_TS = 9999999999999;
 
 /**
  * Messaging event processor
@@ -144,7 +162,8 @@ class Processor extends EventEmitter {
             autoTyping: false,
             autoSeen: false,
             redirectLimit: 20,
-            nameFromState: NAME_FROM_STATE
+            nameFromState: NAME_FROM_STATE,
+            sessionDuration: 1800000 // 30 minutes
         };
 
         Object.assign(this.options, options);
@@ -152,7 +171,7 @@ class Processor extends EventEmitter {
         this.reducer = reducer;
 
         /**
-         * @type {StateStorage}
+         * @type {IStateStorage}
          */
         this.stateStorage = this.options.stateStorage;
 
@@ -231,7 +250,7 @@ class Processor extends EventEmitter {
 
     async _reportError (pageId, err, event, senderId = null) {
         if (err.code === 204) {
-            this.options.log.info(`nothing sent: ${err.message}`, event);
+            this.options.log.log(`nothing sent: ${err.message}`, event);
             return;
         }
         if (err.code !== 403) {
@@ -483,9 +502,10 @@ class Processor extends EventEmitter {
 
         try {
             // ensure the request was not processed
+            const timestamp = message.timestamp || Date.now();
             if (fromEvent
                     && stateObject.lastTimestamps && message.timestamp
-                    && stateObject.lastTimestamps.indexOf(message.timestamp) !== -1) {
+                    && stateObject.lastTimestamps.indexOf(timestamp) !== -1) {
                 throw Object.assign(new Error('Message has been already processed'), { code: 204 });
             }
 
@@ -522,6 +542,40 @@ class Processor extends EventEmitter {
                 },
                 configuration
             );
+
+            // process session
+            if (fromEvent) {
+                let {
+                    _sct: sessionCount = 0,
+                    _sid: sessionId = null,
+                    _segStamp: ts = 0,
+                    _snew: sessionCreated
+                } = state;
+
+                if ((isUserInteraction(req)
+                    && (ts + this.options.sessionDuration) < Date.now())
+                        || !sessionId) {
+
+                    sessionId = Processor._createSessionId(req.pageId, req.senderId, timestamp);
+                    sessionCount++;
+                    sessionCreated = true;
+                } else {
+                    sessionCreated = false;
+                }
+
+                ts = timestamp;
+
+                Object.assign(state, {
+                    _sct: sessionCount,
+                    _sid: sessionId,
+                    _segStamp: ts,
+                    _snew: sessionCreated
+                });
+            } else {
+                Object.assign(state, {
+                    _snew: false
+                });
+            }
 
             const features = [
                 ...(this.options.features || []),
@@ -650,7 +704,7 @@ class Processor extends EventEmitter {
             let lastTimestamps = stateObject.lastTimestamps || [];
             if (message.timestamp) {
                 lastTimestamps = lastTimestamps.slice(-9);
-                lastTimestamps.push(message.timestamp);
+                lastTimestamps.push(timestamp);
             }
 
             Object.assign(stateObject, {
@@ -696,6 +750,27 @@ class Processor extends EventEmitter {
             Object.assign(e, { req, res });
             throw e;
         }
+    }
+
+    static _createSessionId (pageId, senderId, timestamp = Date.now()) {
+        const senderHash = crypto.createHash('shake256', { outputLength: 6 })
+            .update(`${senderId}|${pageId}`)
+            .digest('hex');
+
+        const senderShort = parseInt(senderHash, 16).toString(36);
+
+        const rand = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+            .toString(36);
+
+        const randTS = Math.floor(Date.now() % 1000)
+            .toString(36);
+
+        const ts = Math.floor(MAX_TS - timestamp)
+            .toString(36);
+
+        return `${ts}.${senderShort}`
+            .padEnd(21, randTS)
+            .padEnd(28, rand);
     }
 
     /**
@@ -839,5 +914,7 @@ class Processor extends EventEmitter {
     }
 
 }
+
+Processor._createSessionId('p', 's');
 
 module.exports = Processor;

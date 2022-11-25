@@ -9,6 +9,7 @@ const BotAppSender = require('../src/BotAppSender');
 const BotApp = require('../src/BotApp');
 const Router = require('../src/Router');
 const { CallbackAuditLog } = require('..');
+const GA4 = require('../src/analytics/GA4');
 
 const SECRET = 'a';
 const APP_ID = 'b';
@@ -62,6 +63,16 @@ describe('BotApp', () => {
         app = new BotApp(bot, {
             autoTyping: true, secret: SECRET, apiUrl: 'b', fetch
         });
+
+        app.registerAnalyticsStorage(new GA4({
+            apiSecret: 's',
+            measurementId: 'id',
+            debug: true,
+            fetch: async () => ({
+                status: 200,
+                json: async () => ({})
+            })
+        }));
     });
 
     it('should not pass through authorization without the token', async () => {

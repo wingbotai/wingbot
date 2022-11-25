@@ -10,6 +10,7 @@ const BotAppSender = require('./BotAppSender');
 const Processor = require('./Processor');
 const ReturnSender = require('./ReturnSender');
 const headersToAuditMeta = require('./utils/headersToAuditMeta');
+const onInteractionHandler = require('./analytics/onInteractionHandler');
 
 const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 
@@ -24,6 +25,11 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 /** @typedef {import('./CallbackAuditLog')} AuditLog */
 /** @typedef {import('./BotAppSender').TlsOptions} TlsOptions */
 /** @typedef {import('./ReturnSender').ReturnSenderOptions} ReturnSenderOptions */
+
+/** @typedef {import('./analytics/onInteractionHandler').IAnalyticsStorage} IAnalyticsStorage */
+/** @typedef {import('./analytics/onInteractionHandler').HandlerConfig} HandlerConfig */
+/** @typedef {import('./analytics/onInteractionHandler').OnEventHandler} OnEventHandler */
+/** @typedef {import('./analytics/onInteractionHandler').Event} Event */
 
 /**
  * @typedef {object} BotAppOptions
@@ -95,6 +101,8 @@ class BotApp {
         this._appId = appId;
         this._auditLog = auditLog;
         this._tls = tls;
+        this._logger = options.log || console;
+        this._textFilter = options.textFilter;
 
         let { apiUrl } = options;
 
@@ -117,6 +125,9 @@ class BotApp {
 
         this._processor.plugin(BotApp.plugin());
         this._preferSynchronousResponse = preferSynchronousResponse;
+
+        /** @type {OnEventHandler[]} */
+        this._eventHandlers = [];
     }
 
     /**
@@ -169,6 +180,61 @@ class BotApp {
      */
     get processor () {
         return this._processor;
+    }
+
+    /**
+     *
+     * @param {IAnalyticsStorage} analyticsStorage
+     * @param {HandlerConfig} [options]
+     * @returns {this}
+     * @example
+     * const { GA4 } = require('wingbot');
+     *
+     * botApp.registerAnalyticsStorage(new GA4({
+     *     measurementId: 'G-123456,
+     *     apiSecret: 'apisecret'
+     * }))
+     */
+    registerAnalyticsStorage (analyticsStorage, options = {}) {
+        const log = this._logger || options.log;
+
+        analyticsStorage.setDefaultLogger(log);
+
+        const { onInteraction, onEvent } = onInteractionHandler({
+            log,
+            anonymize: this._textFilter,
+            ...options
+        }, analyticsStorage);
+
+        this._eventHandlers.push(onEvent);
+        this.processor.on('interaction', onInteraction);
+        return this;
+    }
+
+    /**
+     * Method for tracking special events
+     *
+     * @param {string} pageId
+     * @param {string} senderId
+     * @param {Event} event
+     * @param {number} [ts]
+     * @param {boolean} [nonInteractive]
+     */
+    async trackEvent (pageId, senderId, event, ts = Date.now(), nonInteractive = false) {
+        const state = this._processor.stateStorage.getState(senderId, pageId);
+
+        if (!state) {
+            throw new Error(`State ${pageId}:${senderId} not found. Ensure the #trackEvent() method was called after the conversation has started`);
+        }
+
+        await Promise.all(this._eventHandlers.map((handler) => handler(
+            pageId,
+            senderId,
+            state.state,
+            event,
+            ts,
+            nonInteractive
+        )));
     }
 
     _errorResponse (message, status) {

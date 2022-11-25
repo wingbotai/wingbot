@@ -104,6 +104,17 @@ function checkSetState (setState, newState) {
 
 /**
  *
+ * @param {Request} req
+ * @returns {boolean}
+ */
+function isUserInteraction (req) {
+    return req.isMessage() || req.isPostBack()
+        || req.isReferral() || req.isAttachment()
+        || req.isTextOrIntent();
+}
+
+/**
+ *
  * @private
  * @param {object} previousState
  * @param {Request} req
@@ -115,9 +126,7 @@ function checkSetState (setState, newState) {
 function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover, lastInTurnover) {
     const state = { ...previousState, ...res.newState };
 
-    const isUserEvent = req.isMessage() || req.isPostBack()
-        || req.isReferral() || req.isAttachment()
-        || req.isTextOrIntent();
+    const isUserEvent = isUserInteraction(req);
 
     // reset expectations
     if (isUserEvent && !res.newState._expected) {
@@ -224,5 +233,6 @@ module.exports = {
     VAR_TYPES,
     mergeState,
     vars,
-    checkSetState
+    checkSetState,
+    isUserInteraction
 };

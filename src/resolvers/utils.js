@@ -206,7 +206,7 @@ function getText (text, state) {
 }
 
 // eslint-disable-next-line no-unused-vars
-const DEFAULT_LINK_TRANSLATOR = (senderId, defaultText, urlText, isExtUrl, reqState) => urlText;
+const DEFAULT_LINK_TRANSLATOR = (senderId, text, url, isExtUrl, state, pageId) => url;
 
 /** @typedef {import('../BuildRouter').BotContext} BotContext */
 
@@ -259,7 +259,14 @@ function processButtons (
             case TYPE_URL_WITH_EXT: {
                 const hasExtention = type === TYPE_URL_WITH_EXT;
                 let urlText = getText(url, state);
-                urlText = translateLinks(senderId, defaultText, urlText, isExtUrl, state);
+                urlText = translateLinks(
+                    senderId,
+                    defaultText,
+                    urlText,
+                    isExtUrl,
+                    state,
+                    req.pageId
+                );
                 elem.urlButton(btnTitleText, urlText, hasExtention, webviewHeight);
                 break;
             }
