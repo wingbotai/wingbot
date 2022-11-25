@@ -102,8 +102,9 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  * @param {string} senderId
  * @param {string} textLabel
  * @param {string} urlText
- * @param {boolean} [isExtUrl]
- * @param {object} [state]
+ * @param {boolean} isExtUrl
+ * @param {object} state
+ * @param {string} pageId
  * @returns {string}
  */
 

@@ -72,7 +72,14 @@ function carousel (params, context) {
                         const hasExtension = type === TYPE_URL_WITH_EXT;
                         const textLabel = titleText || subtitleText;
                         let urlText = getText(url, state);
-                        urlText = linksTranslator(senderId, textLabel, urlText, isExtUrl, state);
+                        urlText = linksTranslator(
+                            senderId,
+                            textLabel,
+                            urlText,
+                            isExtUrl,
+                            state,
+                            req.pageId
+                        );
                         elem.setElementAction(urlText, hasExtension, webviewHeight);
                         break;
                     }
