@@ -29,7 +29,9 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
  * @readonly
  */
 const ExpectedInput = {
-    TYPE_PASSWORD: 'password'
+    TYPE_PASSWORD: 'password',
+    TYPE_NONE: 'none',
+    TYPE_UPLOAD: 'upload'
 };
 
 Object.freeze(ExpectedInput);

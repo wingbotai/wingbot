@@ -185,6 +185,32 @@ describe('customEntityDetectionModel', () => {
             ]);
         });
 
+        it.only('should resolve compound entities simply', async () => {
+            m.setEntityDetector('eur', /€/, {
+                matchWholeWords: true
+            });
+            m.setEntityDetector('x', /[$€]?@NUMBER\s?@EUR?/, {
+                matchWholeWords: true
+            });
+
+            const { entities, text } = await m.resolve('1€');
+
+            // console.log({ entities, text });
+
+            // @ts-ignore
+            assert.strictEqual(text, '1€');
+            assert.deepEqual(entities, [
+                {
+                    entity: 'x',
+                    value: 1,
+                    text: '1€',
+                    score: 1,
+                    start: 0,
+                    end: 2
+                }
+            ]);
+        });
+
         it('copes with subword information', async () => {
             assert.strictEqual((await m.resolve('=sasalele')).entities.length, 0);
             assert.strictEqual((await m.resolve('=')).entities.length, 1);

@@ -10,6 +10,7 @@ const { makeAbsolute } = require('../utils');
  * @typedef MarkdownPayload
  * @prop {"text/markdown"} contentType
  * @prop {string} content
+ * @prop {string} [className]
  */
 
 /**
@@ -22,6 +23,7 @@ const { makeAbsolute } = require('../utils');
  * @typedef EncodedPayload
  * @prop {string} content
  * @prop {"text/markdown"} content_type
+ * @prop {string} [class_name]
  */
 
 /**
@@ -31,10 +33,11 @@ const { makeAbsolute } = require('../utils');
  * @param {Payload} payload
  * @returns {EncodedPayload}
  */
-function encodePayload ({ content, contentType }) {
+function encodePayload ({ content, contentType, className }) {
     return {
         content: Buffer.from(content).toString('base64'),
-        content_type: contentType
+        content_type: contentType,
+        class_name: className
     };
 }
 
