@@ -185,7 +185,7 @@ describe('customEntityDetectionModel', () => {
             ]);
         });
 
-        it.only('should resolve compound entities simply', async () => {
+        it('should resolve compound entities simply', async () => {
             m.setEntityDetector('eur', /€/, {
                 matchWholeWords: true
             });
