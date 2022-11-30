@@ -37,7 +37,7 @@ function encodePayload ({ content, contentType, className }) {
     return {
         content: Buffer.from(content).toString('base64'),
         content_type: contentType,
-        class_name: className
+        ...(className && { class_name: className })
     };
 }
 
