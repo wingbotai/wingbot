@@ -284,9 +284,14 @@ function processButtons (
             case TYPE_SHARE:
                 elem.shareButton(btnTitleText);
                 break;
-            case TYPE_ATTACHMENT:
-                elem.attachmentButton(btnTitleText, payload);
+            case TYPE_ATTACHMENT: {
+                const translatedPayloadContent = getText(payload.content, state);
+                elem.attachmentButton(btnTitleText, {
+                    ...payload,
+                    content: translatedPayloadContent
+                });
                 break;
+            }
             default:
         }
     });

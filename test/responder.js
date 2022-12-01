@@ -319,7 +319,8 @@ describe('Responder', function () {
             res.button('Hello')
                 .attachmentButton('title', {
                     content: '# Heading',
-                    contentType: 'text/markdown'
+                    contentType: 'text/markdown',
+                    className: 'test-class-name'
                 })
                 .send();
 
@@ -337,6 +338,7 @@ describe('Responder', function () {
             assert.equal(payload.buttons[0].type, 'attachment');
             assert.equal(payload.buttons[0].payload.content, Buffer.from('# Heading').toString('base64'));
             assert.equal(payload.buttons[0].payload.content_type, 'text/markdown');
+            assert.equal(payload.buttons[0].payload.class_name, 'test-class-name');
         });
 
         it('should compile bot snapshot to button', async () => {
@@ -397,6 +399,92 @@ describe('Responder', function () {
             });
         });
 
+    });
+
+    it('should compile bot snapshot to button multilingual', async () => {
+        const resolver = {
+            id: '123',
+            type: 'botbuild.button',
+            params: {
+                text: 'button text',
+                hasCondition: false,
+                conditionFn: '(req,res)=>{return true;}',
+                buttons: [
+                    {
+                        id: 1234,
+                        action: {
+                            payload: {
+                                content: [{
+                                    l: 'cs',
+                                    t: 'Ahoj'
+                                },
+                                {
+                                    l: 'en',
+                                    t: 'Hi!'
+                                }],
+                                contentType: 'text/markdown',
+                                className: 'test-class'
+                            },
+                            type: 'attachment'
+                        },
+                        title: 'title'
+                    }
+                ],
+                setVars: [],
+                interactionId: 'xxx',
+                errors: [],
+                tag: null
+            }
+        };
+
+        const context = {
+            isLastIndex: false
+        };
+
+        const buttonResolver = button(resolver.params, context);
+
+        const router = new Router();
+        router.use('/test', buttonResolver);
+        const tester = new Tester(router);
+
+        async function testLanguage (lang, expectedPayload) {
+            // test czech
+            tester.setState({ lang });
+
+            (await tester.postBack('/test'));
+            const result = tester.res().response.message.attachment;
+            assert(result.type === 'template');
+            assert.deepEqual(result.payload, {
+                buttons: [
+                    {
+                        payload: expectedPayload,
+                        // template_type: 'button',
+                        title: 'title',
+                        type: 'attachment'
+                    }
+                ],
+                template_type: 'button',
+                text: 'button text'
+            });
+        }
+
+        await testLanguage('cs', {
+            content: Buffer.from('Ahoj').toString('base64'),
+            content_type: 'text/markdown',
+            class_name: 'test-class'
+        });
+
+        await testLanguage('en', {
+            content: Buffer.from('Hi!').toString('base64'),
+            content_type: 'text/markdown',
+            class_name: 'test-class'
+        });
+
+        await testLanguage(undefined, {
+            content: Buffer.from('Ahoj').toString('base64'),
+            content_type: 'text/markdown',
+            class_name: 'test-class'
+        });
     });
 
     describe('#receipt()', function () {
