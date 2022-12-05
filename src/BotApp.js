@@ -207,7 +207,7 @@ class BotApp {
         }, analyticsStorage);
 
         this._eventHandlers.push(onEvent);
-        this.processor.on('interaction', onInteraction);
+        this.processor.onInteraction(onInteraction);
         return this;
     }
 

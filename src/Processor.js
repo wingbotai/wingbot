@@ -59,6 +59,12 @@ const { mergeState, isUserInteraction } = require('./utils/stateVariables');
  */
 
 /**
+ * @callback IInteractionHandler
+ * @param {InteractionEvent} params
+ * @returns {Promise|void}
+ */
+
+/**
  * Interaction event fired after every interaction
  *
  * @event Processor#interaction
@@ -183,6 +189,20 @@ class Processor extends EventEmitter {
          */
         this._plugins = [];
         this._middlewares = [];
+
+        /** @type {IInteractionHandler[]} */
+        this._onInteractionHandlers = [];
+    }
+
+    /**
+     * Register asynchronous interaction handler function
+     *
+     * @param {IInteractionHandler} handler
+     * @returns {this}
+     */
+    onInteraction (handler) {
+        this._onInteractionHandlers.push(handler);
+        return this;
     }
 
     /**
@@ -400,16 +420,23 @@ class Processor extends EventEmitter {
             tracking: messageSender.tracking
         };
 
-        return new Promise((resolve) => {
-            process.nextTick(() => {
-                try {
-                    this.emit('interaction', event);
-                } catch (e) {
-                    this.options.log.error('Firing Processor interaction event failed', e);
-                }
-                resolve();
-            });
-        });
+        return Promise.allSettled([
+            ...this._onInteractionHandlers
+                .map((handler) => Promise.resolve(handler(event))
+                    .catch((e) => {
+                        this.options.log.error('Executing Processor interaction event failed', e);
+                    })),
+            new Promise((resolve) => {
+                process.nextTick(() => {
+                    try {
+                        this.emit('interaction', event);
+                    } catch (e) {
+                        this.options.log.error('Firing Processor interaction event failed', e);
+                    }
+                    resolve();
+                });
+            })
+        ]);
     }
 
     /**
@@ -752,12 +779,18 @@ class Processor extends EventEmitter {
         }
     }
 
-    static _createSessionId (pageId, senderId, timestamp = Date.now()) {
-        const senderHash = crypto.createHash('shake256', { outputLength: 6 })
-            .update(`${senderId}|${pageId}`)
+    static _shakeShort (str, outputLength) {
+        const senderHash = crypto.createHash('shake256', { outputLength })
+            .update(str)
             .digest('hex');
 
-        const senderShort = parseInt(senderHash, 16).toString(36);
+        return senderHash.match(/[a-f0-9]{1,13}/g)
+            .map((v) => parseInt(v, 16).toString(36))
+            .join('');
+    }
+
+    static _createSessionId (pageId, senderId, timestamp = Date.now()) {
+        const senderShort = Processor._shakeShort(`${senderId}|${pageId}}`, 9);
 
         const rand = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
             .toString(36);
@@ -768,9 +801,18 @@ class Processor extends EventEmitter {
         const ts = Math.floor(MAX_TS - timestamp)
             .toString(36);
 
+        // console.log({
+        //     base: `${ts}.${senderShort}`.length,
+        //     ts,
+        //     senderShort,
+        //     randTS,
+        //     rand,
+        //     randL: rand.length
+        // });
+
         return `${ts}.${senderShort}`
-            .padEnd(21, randTS)
-            .padEnd(28, rand);
+            .padEnd(26, randTS)
+            .padEnd(32, rand);
     }
 
     /**
@@ -915,6 +957,6 @@ class Processor extends EventEmitter {
 
 }
 
-Processor._createSessionId('p', 's');
+// console.log(Processor._createSessionId('p', 's'));
 
 module.exports = Processor;

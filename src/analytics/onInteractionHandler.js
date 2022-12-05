@@ -7,6 +7,7 @@ const { replaceDiacritics } = require('webalize');
 const Ai = require('../Ai');
 
 /** @typedef {import('../Processor').InteractionEvent} InteractionEvent */
+/** @typedef {import('../Processor').IInteractionHandler} IInteractionHandler */
 /** @typedef {import('../Request')} Request */
 
 /**
@@ -102,12 +103,6 @@ const Ai = require('../Ai');
  * @prop {IGALogger} [log] - console like logger
  * @prop {Anonymizer} [anonymize] - text anonymization function
  * @prop {UserExtractor} [userExtractor] - text anonymization function
- */
-
-/**
- * @callback IInteractionHandler
- * @param {InteractionEvent} params
- * @returns {Promise}
  */
 
 /**
