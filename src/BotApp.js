@@ -116,6 +116,8 @@ class BotApp {
         this._senderLogger = chatLogStorage;
         this._verify = promisify(jwt.verify);
 
+        this._bot = bot;
+
         this._processor = new Processor(bot, {
             ...processorOptions,
             secret,
@@ -198,11 +200,18 @@ class BotApp {
     registerAnalyticsStorage (analyticsStorage, options = {}) {
         const log = this._logger || options.log;
 
-        analyticsStorage.setDefaultLogger(log);
+        if (typeof analyticsStorage.setDefaultLogger === 'function') {
+            analyticsStorage.setDefaultLogger(log);
+        }
+
+        // @ts-ignore
+        const { snapshot = null, botId = null } = this._bot;
 
         const { onInteraction, onEvent } = onInteractionHandler({
             log,
             anonymize: this._textFilter,
+            snapshot,
+            botId,
             ...options
         }, analyticsStorage);
 
@@ -221,7 +230,7 @@ class BotApp {
      * @param {boolean} [nonInteractive]
      */
     async trackEvent (pageId, senderId, event, ts = Date.now(), nonInteractive = false) {
-        const state = this._processor.stateStorage.getState(senderId, pageId);
+        const state = await this._processor.stateStorage.getState(senderId, pageId);
 
         if (!state) {
             throw new Error(`State ${pageId}:${senderId} not found. Ensure the #trackEvent() method was called after the conversation has started`);

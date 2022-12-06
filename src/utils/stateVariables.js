@@ -108,9 +108,12 @@ function checkSetState (setState, newState) {
  * @returns {boolean}
  */
 function isUserInteraction (req) {
-    return req.isMessage() || req.isPostBack()
-        || req.isReferral() || req.isAttachment()
-        || req.isTextOrIntent();
+    return !req.campaign
+        && !req.event.pass_thread_control
+        && !req.isSetContext()
+        && (req.isMessage() || req.isPostBack()
+            || req.isReferral() || req.isAttachment()
+            || req.isTextOrIntent());
 }
 
 /**

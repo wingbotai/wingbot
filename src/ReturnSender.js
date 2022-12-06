@@ -5,10 +5,11 @@
 
 const ai = require('./Ai');
 const { FEATURE_PHRASES, FEATURE_TRACKING } = require('./features');
-const { FLAG_DO_NOT_LOG } = require('./flags');
+const { ResponseFlag } = require('./analytics/consts');
 
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder')} Responder */
+/** @typedef {import('./Processor').TrackingObject} TrackingObject */
 
 /**
  * @typedef {object} ChatLogStorage
@@ -155,6 +156,9 @@ class ReturnSender {
         });
     }
 
+    /**
+     * @returns {TrackingObject}
+     */
     get tracking () {
         return this._tracking;
     }
@@ -531,7 +535,7 @@ class ReturnSender {
                 };
             }
 
-            if (!this._logger || meta.flag === FLAG_DO_NOT_LOG) {
+            if (!this._logger || meta.flag === ResponseFlag.DO_NOT_LOG) {
                 // noop
             } else if (error) {
                 await Promise.resolve(this._logger

@@ -5,7 +5,7 @@
 
 const { makeAbsolute } = require('./pathUtils');
 const { tokenize } = require('./tokenizer');
-const { FLAG_DISAMBIGUATION_SELECTED } = require('../flags');
+const { ResponseFlag } = require('../analytics/consts');
 const { checkSetState } = require('./stateVariables');
 
 /** @typedef {import('../Request')} Request */
@@ -240,7 +240,7 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
             }
 
             if (data._senderMeta
-                && data._senderMeta.flag === FLAG_DISAMBIGUATION_SELECTED) {
+                && data._senderMeta.flag === ResponseFlag.DISAMBIGUATION_SELECTED) {
 
                 const { likelyIntent } = data._senderMeta;
                 disambiguationIntents.push(likelyIntent);
@@ -411,7 +411,7 @@ function disambiguationQuickReply (title, likelyIntent, disambText, action, data
         data: {
             ...data,
             _senderMeta: {
-                flag: FLAG_DISAMBIGUATION_SELECTED,
+                flag: ResponseFlag.DISAMBIGUATION_SELECTED,
                 likelyIntent,
                 disambText
             }

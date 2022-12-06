@@ -52,7 +52,11 @@ const {
     bufferloader,
     MemoryStateStorage
 } = require('./src/tools');
-const flags = require('./src/flags');
+const {
+    TrackingCategory,
+    TrackingType,
+    ResponseFlag
+} = require('./src/analytics/consts');
 
 const { version: wingbotVersion } = require('./package.json');
 
@@ -122,8 +126,10 @@ module.exports = {
     // tests
     ConversationTester,
 
-    // flags
-    ...flags,
+    // flags & tracking
+    TrackingCategory,
+    TrackingType,
+    ResponseFlag,
 
     wingbotVersion,
 

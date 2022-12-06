@@ -39,6 +39,7 @@ const MESSAGE_RESOLVER_NAME = 'botbuild.message';
  * @typedef {object} Route
  * @prop {number} id
  * @prop {string|null} path
+ * @prop {string|null} [skill]
  * @prop {Resolver[]} resolvers
  * @prop {boolean} [isFallback]
  * @prop {string[]} [aiTags]
@@ -236,6 +237,14 @@ class BuildRouter extends Router {
             this._botId = block.botId;
             this._loadBotUrl = `https://api.wingbot.ai/bots/${this._botId}/snapshots/${this._snapshot}/blocks`;
         }
+    }
+
+    get snapshot () {
+        return this._snapshot;
+    }
+
+    get botId () {
+        return this._botId;
     }
 
     /**
@@ -674,9 +683,10 @@ class BuildRouter extends Router {
      *
      * @param {TransformedRoute} route
      * @param {boolean} nextRouteIsSameResponder
+     * @param {string} includedBlockId
      * @returns {Middleware<S,C>[]}
      */
-    _buildRouteHead (route, nextRouteIsSameResponder) {
+    _buildRouteHead (route, nextRouteIsSameResponder, includedBlockId) {
         const resolvers = [];
 
         if (!route.isFallback) {
@@ -712,6 +722,11 @@ class BuildRouter extends Router {
                 if (bounceResolver) {
                     resolvers.push(bounceResolver);
                 }
+            } else if (!includedBlockId && route.skill) {
+                resolvers.push((req, res) => {
+                    res.trackAsSkill(route.skill);
+                    return Router.CONTINUE;
+                });
             }
         }
 
@@ -752,7 +767,7 @@ class BuildRouter extends Router {
             };
 
             const resolvers = [
-                ...this._buildRouteHead(route, nextRouteIsSameResponder),
+                ...this._buildRouteHead(route, nextRouteIsSameResponder, includedBlockId),
                 ...this.buildResolvers(route.resolvers, route, buildInfo)
             ];
 

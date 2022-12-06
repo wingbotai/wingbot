@@ -7,7 +7,7 @@ const assert = require('assert');
 const Tester = require('../src/Tester');
 const Router = require('../src/Router');
 const { disambiguationQuickReply } = require('../src/utils/quickReplies');
-const { FLAG_DISAMBIGUATION_OFFERED, FLAG_DISAMBIGUATION_SELECTED } = require('../src/flags');
+const { ResponseFlag } = require('../src/analytics/consts');
 
 function wait (ms) {
     return new Promise((r) => setTimeout(r, ms));
@@ -43,7 +43,7 @@ describe('senderMeta', () => {
             await wait(5); // there is a next tick
 
             assert.deepEqual(trackedMeta, {
-                flag: FLAG_DISAMBIGUATION_OFFERED,
+                flag: ResponseFlag.DISAMBIGUATION_OFFERED,
                 disambiguationIntents: ['likely']
             });
 
@@ -52,7 +52,7 @@ describe('senderMeta', () => {
             await wait(5); // there is a next tick
 
             assert.deepEqual(trackedMeta, {
-                flag: FLAG_DISAMBIGUATION_SELECTED,
+                flag: ResponseFlag.DISAMBIGUATION_SELECTED,
                 disambText: 'disambiguate',
                 likelyIntent: 'likely'
             });
