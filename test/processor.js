@@ -135,7 +135,8 @@ describe('Processor', function () {
                     _expectedKeywords: null,
                     _snew: true,
                     _sct: 1,
-                    _segStamp: stateStorage.model.state._segStamp,
+                    _sts: stateStorage.model.state._sts,
+                    _sst: stateStorage.model.state._sst,
                     _sid: stateStorage.model.state._sid
                 });
 
@@ -185,7 +186,8 @@ describe('Processor', function () {
                     lastInteraction: 'action',
                     _snew: true,
                     _sct: 1,
-                    _segStamp: stateStorage.model.state._segStamp,
+                    _sts: stateStorage.model.state._sts,
+                    _sst: stateStorage.model.state._sst,
                     _sid: stateStorage.model.state._sid
                 });
             });
@@ -233,7 +235,8 @@ describe('Processor', function () {
                     lastInteraction: 'action',
                     _snew: true,
                     _sct: 1,
-                    _segStamp: stateStorage.model.state._segStamp,
+                    _sst: stateStorage.model.state._sst,
+                    _sts: stateStorage.model.state._sts,
                     _sid: stateStorage.model.state._sid
                 });
             });
@@ -523,7 +526,8 @@ describe('Processor', function () {
                         _expectedKeywords: null,
                         _snew: true,
                         _sct: 1,
-                        _segStamp: stateStorage.model.state._segStamp,
+                        _sst: stateStorage.model.state._sst,
+                        _sts: stateStorage.model.state._sts,
                         _sid: stateStorage.model.state._sid
                     });
 

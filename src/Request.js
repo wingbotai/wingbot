@@ -6,7 +6,7 @@
 const Ai = require('./Ai');
 const { tokenize, parseActionPayload } = require('./utils');
 const { quickReplyAction } = require('./utils/quickReplies');
-const { FLAG_DISAMBIGUATION_SELECTED } = require('./flags');
+const { ResponseFlag } = require('./analytics/consts');
 const { getSetState } = require('./utils/getUpdate');
 const { vars, checkSetState } = require('./utils/stateVariables');
 const OrchestratorClient = require('./OrchestratorClient');
@@ -391,7 +391,7 @@ class Request {
                     data: {
                         ...data,
                         _senderMeta: {
-                            flag: FLAG_DISAMBIGUATION_SELECTED,
+                            flag: ResponseFlag.DISAMBIGUATION_SELECTED,
                             likelyIntent: intent.intent,
                             disambText: text
                         }
@@ -801,6 +801,7 @@ class Request {
      * @returns {Action|null}
      */
     expected () {
+        // @ts-ignore
         return this.state._expected || null;
     }
 
@@ -816,6 +817,7 @@ class Request {
      */
     expectedKeywords (justOnce = false) {
         const {
+            // @ts-ignore
             _expectedKeywords: exKeywords
         } = this.state;
 
@@ -855,7 +857,9 @@ class Request {
      */
     expectedContext (justOnce = false, includeKeywords = false) {
         const ad = this.actionData();
+        // @ts-ignore
         const expected = ad._useExpected || this.state._expected;
+        // @ts-ignore
         const confident = this.state._expectedConfidentInput;
 
         const ret = {};
@@ -1097,6 +1101,7 @@ class Request {
      * @returns {boolean}
      */
     isConfidentInput () {
+        // @ts-ignore
         return this.state._expectedConfidentInput === true;
     }
 
@@ -1123,11 +1128,15 @@ class Request {
             res = parseActionPayload(this.message.quick_reply);
         }
 
+        // @ts-ignore
         if (!res && this.state._expectedKeywords) {
+            // @ts-ignore
             res = this._actionByExpectedKeywords(this.state._expected);
         }
 
+        // @ts-ignore
         if (!res && this.state._expected) {
+            // @ts-ignore
             res = parseActionPayload(this.state._expected);
         }
 
@@ -1215,7 +1224,9 @@ class Request {
     }
 
     _getLocalPathRegexp () {
+        // @ts-ignore
         if (this.state._lastVisitedPath) {
+            // @ts-ignore
             return new RegExp(`^${this.state._lastVisitedPath}/[^/]+`);
         }
         let expected = this.expected();
@@ -1295,6 +1306,7 @@ class Request {
     }
 
     _actionByExpectedKeywords (expected) {
+        // @ts-ignore
         if (!this.state._expectedKeywords) {
             return null;
         }
@@ -1315,8 +1327,10 @@ class Request {
 
     _resolveQuickReplyActions () {
         if (this._quickReplyActions === null) {
+            // @ts-ignore
             if (this.state._expectedKeywords) {
                 this._quickReplyActions = quickReplyAction(
+                    // @ts-ignore
                     this.state._expectedKeywords,
                     this,
                     Ai.ai
@@ -1377,6 +1391,7 @@ class Request {
      */
     expectedEntities () {
         const {
+            // @ts-ignore
             _expectedKeywords: exKeywords
         } = this.state;
 

@@ -104,6 +104,14 @@ class BotApp {
         this._logger = options.log || console;
         this._textFilter = options.textFilter;
 
+        this._preHeatCalled = false;
+        this._preHeat = [
+            this._logger,
+            chatLogStorage,
+            processorOptions.stateStorage,
+            processorOptions.tokenStorage
+        ].filter((s) => s && typeof s.preHeat === 'function');
+
         let { apiUrl } = options;
 
         if (!apiUrl) apiUrl = DEFAULT_API_URL;
@@ -115,6 +123,8 @@ class BotApp {
 
         this._senderLogger = chatLogStorage;
         this._verify = promisify(jwt.verify);
+
+        this._bot = bot;
 
         this._processor = new Processor(bot, {
             ...processorOptions,
@@ -198,16 +208,27 @@ class BotApp {
     registerAnalyticsStorage (analyticsStorage, options = {}) {
         const log = this._logger || options.log;
 
-        analyticsStorage.setDefaultLogger(log);
+        if (typeof analyticsStorage.setDefaultLogger === 'function') {
+            analyticsStorage.setDefaultLogger(log);
+        }
+
+        if (typeof analyticsStorage.preHeat === 'function') {
+            this._preHeat.push(analyticsStorage);
+        }
+
+        // @ts-ignore
+        const { snapshot = null, botId = null } = this._bot;
 
         const { onInteraction, onEvent } = onInteractionHandler({
             log,
             anonymize: this._textFilter,
+            snapshot,
+            botId,
             ...options
         }, analyticsStorage);
 
         this._eventHandlers.push(onEvent);
-        this.processor.on('interaction', onInteraction);
+        this.processor.onInteraction(onInteraction);
         return this;
     }
 
@@ -221,7 +242,7 @@ class BotApp {
      * @param {boolean} [nonInteractive]
      */
     async trackEvent (pageId, senderId, event, ts = Date.now(), nonInteractive = false) {
-        const state = this._processor.stateStorage.getState(senderId, pageId);
+        const state = await this._processor.stateStorage.getState(senderId, pageId);
 
         if (!state) {
             throw new Error(`State ${pageId}:${senderId} not found. Ensure the #trackEvent() method was called after the conversation has started`);
@@ -431,6 +452,15 @@ class BotApp {
             return this._errorResponse('Missing authentication header', 401);
         }
 
+        let preHeatPromise = null;
+        if (!this._preHeatCalled) {
+            preHeatPromise = Promise.all(
+                this._preHeat.map((p) => Promise.resolve(p.preHeat())
+                    .catch((e) => this._logger.error('BotApp: preHeat failed', e)))
+            );
+            this._preHeatCalled = true;
+        }
+
         let sha1;
         let appId;
         let secret;
@@ -440,6 +470,7 @@ class BotApp {
             // @ts-ignore
             ({ sha1, appId } = await this._verify(token, secret));
         } catch (e) {
+            await Promise.resolve(preHeatPromise);
             return this._errorResponse(`Failed to verify token: ${e.message}`, 403);
         }
 
@@ -448,22 +479,28 @@ class BotApp {
             .digest('hex');
 
         if (sha1 !== bodySha1) {
+            await Promise.resolve(preHeatPromise);
             return this._errorResponse(`SHA1 does not match. Got in token: '${sha1}'`, 403);
         }
 
-        const body = JSON.parse(rawBody);
+        try {
+            const body = JSON.parse(rawBody);
 
-        const entry = await this._processEntries(appId, secret, body.entry, rawHeaders);
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                entry
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
+            const entry = await this._processEntries(appId, secret, body.entry, rawHeaders);
+            await Promise.resolve(preHeatPromise);
+            return {
+                statusCode: 200,
+                body: JSON.stringify({
+                    entry
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+        } catch (e) {
+            await Promise.resolve(preHeatPromise);
+            throw e;
+        }
     }
 
     async _processEntries (appId, secret, entry = [], headers = {}) {
