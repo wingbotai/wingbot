@@ -9,7 +9,7 @@ const ButtonTemplate = require('./templates/ButtonTemplate');
 const GenericTemplate = require('./templates/GenericTemplate');
 const ListTemplate = require('./templates/ListTemplate');
 const { makeAbsolute, makeQuickReplies } = require('./utils');
-const { FLAG_DISAMBIGUATION_OFFERED, FLAG_DO_NOT_LOG } = require('./flags');
+const { ResponseFlag } = require('./analytics/consts');
 const { checkSetState } = require('./utils/stateVariables');
 const {
     FEATURE_VOICE,
@@ -23,6 +23,9 @@ const TYPE_MESSAGE_TAG = 'MESSAGE_TAG';
 const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 
 /** @typedef {import('./Request')} Request */
+/** @typedef {import('./ReturnSender').UploadResult} UploadResult */
+/** @typedef {import('./analytics/consts').TrackingCategory} TrackingCategory */
+/** @typedef {import('./analytics/consts').TrackingType} TrackingType */
 
 /**
  * @enum {string} ExpectedInput
@@ -48,7 +51,7 @@ Object.freeze(ExpectedInput);
 
 /**
  * @typedef {object} SenderMeta
- * @prop {string|null} flag
+ * @prop {ResponseFlag|null} flag
  * @prop {string} [likelyIntent]
  * @prop {string} [disambText]
  * @prop {string[]} [disambiguationIntents]
@@ -70,8 +73,6 @@ Object.freeze(ExpectedInput);
  * @param {object} state
  * @returns {VoiceControl}
  */
-
-/** @typedef {import('./ReturnSender').UploadResult} UploadResult */
 
 /**
  * Instance of responder is passed as second parameter of handler (res)
@@ -200,7 +201,7 @@ class Responder {
      * @returns {this}
      */
     doNotLogTheEvent () {
-        this._senderMeta = { flag: FLAG_DO_NOT_LOG };
+        this._senderMeta = { flag: ResponseFlag.DO_NOT_LOG };
         return this;
     }
 
@@ -209,8 +210,8 @@ class Responder {
      * Events are aggregated within ReturnSender and can be caught
      * within Processor's `interaction` event (event.tracking.events)
      *
-     * @param {string} type - (log,report,conversation,audit,user)
-     * @param {string} category
+     * @param {TrackingType} type - (log,report,conversation,audit,user,training)
+     * @param {TrackingCategory} category
      * @param {string} [action]
      * @param {string} [label]
      * @param {number} [value]
@@ -471,7 +472,7 @@ class Responder {
 
             if (disambiguationIntents.length > 0) {
                 this._senderMeta = {
-                    flag: FLAG_DISAMBIGUATION_OFFERED,
+                    flag: ResponseFlag.DISAMBIGUATION_OFFERED,
                     disambiguationIntents
                 };
             }
@@ -1014,6 +1015,8 @@ class Responder {
         } else {
             $hopCount++;
         }
+
+        this._senderMeta = { flag: ResponseFlag.HANDOVER };
 
         if (data === null) {
             metadata = JSON.stringify({

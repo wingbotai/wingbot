@@ -223,7 +223,8 @@ describe('Tester', function () {
             lastInteraction: '/start',
             _snew: false,
             _sct: 1,
-            _segStamp: state._segStamp,
+            _sst: state._sst,
+            _sts: state._sts,
             _sid: state._sid
         });
 
@@ -248,7 +249,8 @@ describe('Tester', function () {
             lastInteraction: '/start',
             _snew: false,
             _sct: 1,
-            _segStamp: state._segStamp,
+            _sst: state._sst,
+            _sts: state._sts,
             _sid: state._sid
         });
 

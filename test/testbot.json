@@ -41,6 +41,7 @@
           {
             "name": "Included block entry point",
             "path": "/",
+            "skill": "subblock",
             "resolvers": [
               {
                 "type": "botbuild.button",

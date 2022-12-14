@@ -11,12 +11,13 @@ const docs = [
     ['src/templates/ButtonTemplate.js', 'src/templates/GenericTemplate.js', 'src/templates/ReceiptTemplate.js'],
     ['src/Router.js', 'src/ReducerWrapper.js'],
     ['src/Tester.js', 'src/testTools/ResponseAssert.js', 'src/testTools/AnyResponseAssert.js', 'src/ConversationTester.js'],
-    ['src/tools/bufferloader.js', 'src/utils/compileWithState.js', 'src/utils/quickReplies.js', 'src/flags.js', 'src/tools/MemoryStateStorage.js', 'src/ReturnSender.js'],
+    ['src/tools/bufferloader.js', 'src/utils/compileWithState.js', 'src/utils/quickReplies.js', 'src/tools/MemoryStateStorage.js', 'src/ReturnSender.js'],
     ['src/utils/stateVariables.js'],
     ['src/Ai.js', 'src/wingbot/CustomEntityDetectionModel.js', 'src/wingbot/WingbotModel.js', 'src/wingbot/CachedModel.js', 'src/AiMatching.js'],
     ['src/BuildRouter.js', 'src/Plugins.js'],
     ['src/notifications/Notifications.js', 'src/notifications/NotificationsStorage.js'],
-    ['src/graphApi/GraphApi.js', 'src/graphApi/postBackApi.js', 'src/graphApi/validateBotApi.js', 'src/graphApi/conversationsApi.js', 'src/graphApi/apiAuthorizer.js', 'src/graphApi/conversationsApi.js']
+    ['src/graphApi/GraphApi.js', 'src/graphApi/postBackApi.js', 'src/graphApi/validateBotApi.js', 'src/graphApi/conversationsApi.js', 'src/graphApi/apiAuthorizer.js', 'src/graphApi/conversationsApi.js'],
+    ['src/analytics/GA4.js', 'src/analytics/consts.js'],
 ];
 
 let srcFile;

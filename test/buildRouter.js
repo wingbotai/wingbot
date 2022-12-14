@@ -93,6 +93,31 @@ describe('<BuildRouter>', function () {
         );
     });
 
+    it('track skills', async () => {
+        const plugins = new Plugins();
+
+        plugins.registerFactory('exampleBlock', () => async (req, res) => {
+            await res.run('responseBlockName');
+        });
+
+        plugins.register('routerBlock', new Router());
+
+        const bot = BuildRouter.fromData(testbot.data, plugins);
+
+        const t = new Tester(bot);
+
+        const s = sinon.spy();
+
+        t.processor.onInteraction((s));
+
+        await t.postBack('subblock-include');
+
+        const [params] = s.firstCall.args;
+
+        // console.log(params);
+        assert.strictEqual(params.skill, 'subblock');
+    });
+
     it('should behave as router', async () => {
         const plugins = new Plugins();
 

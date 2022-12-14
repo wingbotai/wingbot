@@ -18,8 +18,14 @@ const FLAG_DISAMBIGUATION_OFFERED = 'o';
  */
 const FLAG_DO_NOT_LOG = '!';
 
+/**
+ * Handover occurred
+ */
+const FLAG_HANDOVER = 'h';
+
 module.exports = {
     FLAG_DISAMBIGUATION_SELECTED,
     FLAG_DISAMBIGUATION_OFFERED,
-    FLAG_DO_NOT_LOG
+    FLAG_DO_NOT_LOG,
+    FLAG_HANDOVER
 };

@@ -3,8 +3,11 @@
  */
 'use strict';
 
-const { replaceDiacritics } = require('webalize');
+const { replaceDiacritics, webalize } = require('webalize');
 const Ai = require('../Ai');
+const {
+    TrackingType, TrackingCategory, CATEGORY_LABELS, ResponseFlag
+} = require('./consts');
 
 /** @typedef {import('../Processor').InteractionEvent} InteractionEvent */
 /** @typedef {import('../Processor').IInteractionHandler} IInteractionHandler */
@@ -23,11 +26,61 @@ const Ai = require('../Ai');
 
 /**
  * @typedef {object} Event
- * @prop {'conversation'|'page_view'|string} type
- * @prop {string} [category]
+ * @prop {TrackingType} type
+ * @prop {TrackingCategory} [category]
  * @prop {string} [action]
  * @prop {string} [label]
  * @prop {number} [value]
+ * @prop {string} [lang]
+ */
+
+/**
+ * @typedef {object} ConversationEventExtension
+ * @prop {string} [lastAction]
+ * @prop {string} [skill]
+ * @prop {string} [text]
+ * @prop {string} [expected]
+ * @prop {boolean} expectedTaken
+ * @prop {boolean} isContextUpdate
+ * @prop {boolean} isAttachment
+ * @prop {boolean} isNotification
+ * @prop {boolean} isQuickReply
+ * @prop {boolean} isPassThread
+ * @prop {boolean} isPostback
+ * @prop {boolean} isText
+ * @prop {boolean} didHandover
+ * @prop {boolean} withUser
+ * @prop {string} [userId]
+ * @prop {number} [feedback]
+ * @prop {string} [winnerAction]
+ * @prop {string} [winnerIntent]
+ * @prop {string[]|string} [winnerEntities]
+ * @prop {number} [winnerScore]
+ * @prop {boolean} [winnerTaken]
+ * @prop {string} [intent]
+ * @prop {number} [intentScore]
+ * @prop {string[]|string} [entities]
+ * @prop {string[]|string} allActions
+ * @prop {boolean} nonInteractive
+ *
+ * @typedef {Event & ConversationEventExtension} ConversationEvent
+ */
+
+/**
+ * @typedef {object} PageViewEventExtension
+ * @prop {string} [lastAction]
+ * @prop {string} [prevAction]
+ * @prop {string} [skill]
+ * @prop {string[]|string} allActions
+ * @prop {boolean} nonInteractive
+ * @prop {boolean} isGoto
+ * @prop {boolean} withUser
+ *
+ * @typedef {Event & PageViewEventExtension} PageViewEvent
+ */
+
+/**
+ * @typedef {ConversationEvent | Event | PageViewEvent} TrackingEvent
  */
 
 /**
@@ -35,6 +88,14 @@ const Ai = require('../Ai');
  * @prop {number} [sessionCount]
  * @prop {string} [lang]
  * @prop {string} [action]
+ * @prop {string} [snapshot]
+ * @prop {string} [botId]
+ * @prop {boolean} [didHandover]
+ * @prop {number|null} [feedback]
+ * @prop {string} [timeZone]
+ * @prop {number} [sessionStart]
+ * @prop {number} [sessionDuration]
+ * @prop {string[]} [responseTexts]
  */
 
 /**
@@ -53,11 +114,12 @@ const Ai = require('../Ai');
  * @param {string} pageId
  * @param {string} senderId
  * @param {string} sessionId
- * @param {Event[]} events
+ * @param {TrackingEvent[]} events
  * @param {GAUser} [user]
  * @param {number} [ts]
  * @param {boolean} [nonInteractive]
  * @param {boolean} [sessionStarted]
+ * @param {SessionMetadata} [metadata]
  * @returns {Promise}
  */
 
@@ -72,6 +134,11 @@ const Ai = require('../Ai');
  * @prop {StoreEvents} storeEvents
  * @prop {CreateUserSession} createUserSession
  * @prop {boolean} [hasExtendedEvents]
+ * @prop {boolean} [supportsArrays]
+ * @prop {boolean} [useDescriptiveCategories]
+ * @prop {boolean} [useExtendedScalars]
+ * @prop {boolean} [parallelSessionInsert]
+ * @prop {Function} [preHeat]
  */
 
 /**
@@ -88,7 +155,7 @@ const Ai = require('../Ai');
 
 /**
  * @typedef {object} TrackingEvents
- * @prop {Event[]} events
+ * @prop {TrackingEvent[]} events
  */
 
 /**
@@ -98,6 +165,9 @@ const Ai = require('../Ai');
 
 /**
  * @typedef {object} HandlerConfig
+ * @prop {string} [snapshot]
+ * @prop {string} [botId]
+ * @prop {string} [timeZone] - default UTC
  * @prop {boolean} [enabled] - default true
  * @prop {boolean} [throwException] - default false
  * @prop {IGALogger} [log] - console like logger
@@ -134,12 +204,27 @@ function onInteractionHandler (
         enabled = true,
         throwException = false,
         log = console,
+        snapshot,
+        botId,
+        timeZone = 'UTC',
         anonymize = (x) => x,
         userExtractor = (state) => null // eslint-disable-line no-unused-vars
     },
     analyticsStorage,
     ai = Ai.ai
 ) {
+    const {
+        supportsArrays = false,
+        useExtendedScalars = false,
+        hasExtendedEvents = false,
+        useDescriptiveCategories = true,
+        parallelSessionInsert = false
+    } = analyticsStorage;
+
+    const asArray = (data = []) => (supportsArrays ? data : data.join(','));
+    const asCategory = (cat) => (useDescriptiveCategories && CATEGORY_LABELS[cat]) || cat;
+    const noneAction = useExtendedScalars ? null : '(none)';
+    const noneValue = useExtendedScalars ? null : 0;
 
     /**
      * @param {InteractionEvent} params
@@ -151,13 +236,15 @@ function onInteractionHandler (
         // state,
         // data,
         skill,
-        tracking
+        events,
+        flag,
+        nonInteractive,
+        responseTexts
     }) {
         if (!enabled) {
             return;
         }
         try {
-            const nonInteractive = !!req.campaign;
             const {
                 pageId,
                 senderId,
@@ -168,19 +255,53 @@ function onInteractionHandler (
                 _snew: createSession,
                 _sct: sessionCount,
                 _sid: sessionId,
+                _sst: sessionStart,
+                _sts: sessionTs,
                 lang
             } = req.state;
 
-            const [action = '(none)', ...otherActions] = actions;
+            const trackEvents = [];
 
+            const [action = noneAction, ...otherActions] = actions;
+
+            const feedbackEvent = events.find((e) => e.type === TrackingType.REPORT
+                && e.category === TrackingCategory.REPORT_FEEDBACK);
+            const feedback = feedbackEvent
+                ? feedbackEvent.value
+                : noneValue;
+            let didHandover = flag === ResponseFlag.HANDOVER;
+            const hasHandoverEvent = events
+                .some((e) => e.category === TrackingCategory.HANDOVER_OCCURRED);
+
+            if (didHandover && !hasHandoverEvent) {
+                trackEvents.push({
+                    type: TrackingType.REPORT,
+                    category: asCategory(TrackingCategory.HANDOVER_OCCURRED),
+                    action: null,
+                    label: null,
+                    value: noneValue
+                });
+            } else if (hasHandoverEvent) {
+                didHandover = true;
+            }
+
+            const metadata = {
+                sessionCount,
+                lang,
+                action,
+                snapshot,
+                botId,
+                didHandover,
+                feedback,
+                timeZone,
+                sessionStart,
+                responseTexts,
+                sessionDuration: sessionTs - sessionStart
+            };
+
+            let sessionPromise;
             if (createSession) {
-                const metadata = {
-                    sessionCount,
-                    lang,
-                    action
-                };
-
-                await analyticsStorage.createUserSession(
+                sessionPromise = analyticsStorage.createUserSession(
                     pageId,
                     senderId,
                     sessionId,
@@ -188,6 +309,11 @@ function onInteractionHandler (
                     timestamp,
                     nonInteractive
                 );
+
+                if (!parallelSessionInsert) {
+                    await sessionPromise;
+                    sessionPromise = null;
+                }
             }
 
             const [{
@@ -200,6 +326,7 @@ function onInteractionHandler (
                 : anonymize(
                     replaceDiacritics(req.text()).replace(/\s+/g, ' ').toLowerCase().trim()
                 );
+            const useSkill = (skill && webalize(skill)) || noneAction;
 
             let winnerAction = '';
             let winnerScore = 0;
@@ -211,7 +338,7 @@ function onInteractionHandler (
 
             if (winners.length > 0) {
                 [{
-                    action: winnerAction = '(none)',
+                    action: winnerAction = noneAction,
                     sort: winnerScore = 0,
                     intent: { intent: winnerIntent, entities: winnerEntities = [] }
                 }] = winners;
@@ -220,6 +347,7 @@ function onInteractionHandler (
             }
 
             const expected = req.expected() ? req.expected().action : '';
+            const user = userExtractor(req.state);
 
             const isContextUpdate = req.isSetContext();
             const isNotification = !!req.campaign;
@@ -229,13 +357,17 @@ function onInteractionHandler (
             const isText = !isQuickReply && req.isText();
             const isPostback = req.isPostBack();
 
-            const allActions = actions.join(',');
+            const allActions = asArray(actions);
             const requestAction = req.action();
 
-            const events = [];
+            const langsExtension = hasExtendedEvents
+                ? { lang }
+                : { cd1: lang };
+
+            const withUser = user !== null && !!user.id;
 
             const actionMeta = {
-                requestAction: req.action() || '(none)',
+                requestAction: req.action() || noneAction,
                 expected,
                 expectedTaken: requestAction === expected,
                 isContextUpdate,
@@ -245,47 +377,60 @@ function onInteractionHandler (
                 isPassThread,
                 isText,
                 isPostback,
+                didHandover,
+                withUser,
+                feedback,
+                skill: useSkill,
                 winnerAction,
                 winnerIntent,
-                winnerEntities: winnerEntities.map((e) => e.entity).join(','),
+                winnerEntities: asArray(winnerEntities.map((e) => e.entity)),
                 winnerScore,
                 winnerTaken,
                 intent,
                 intentScore: score,
-                entities: req.entities.map((e) => e.entity).join(','),
+                entities: asArray(req.entities.map((e) => e.entity)),
                 text,
                 allActions
             };
 
-            events.push({
-                type: 'page_view',
+            const notHandled = actions.some((a) => a.match(/\*$/)) && !req.isQuickReply();
+            const value = notHandled ? 1 : 0;
+
+            trackEvents.push({
+                type: TrackingType.PAGE_VIEW,
+                category: asCategory(TrackingCategory.PAGE_VIEW_FIRST),
                 action,
+                label: (isText || isQuickReply ? text : null),
+                value,
                 allActions,
                 nonInteractive,
                 lastAction,
+                // @ts-ignore
                 prevAction: lastAction,
-                skill,
-                lang,
-                cd1: req.state.lang,
-                ...(analyticsStorage.hasExtendedEvents ? {} : actionMeta)
+                skill: useSkill,
+                isGoto: false,
+                withUser,
+                ...langsExtension,
+                ...(hasExtendedEvents ? {} : actionMeta)
             });
 
             let prevAction = action;
 
-            events.push(
+            trackEvents.push(
                 ...otherActions.map((a) => {
                     const r = {
-                        type: 'page_view',
+                        type: TrackingType.PAGE_VIEW,
+                        category: asCategory(TrackingCategory.PAGE_VIEW_SUBSEQUENT),
                         action: a,
+                        value: 0,
                         allActions,
                         nonInteractive: false,
                         lastAction,
                         prevAction,
-                        skill,
+                        skill: useSkill,
                         isGoto: true,
-                        ...(analyticsStorage.hasExtendedEvents
-                            ? { lang }
-                            : { cd1: lang })
+                        withUser,
+                        ...langsExtension
                     };
 
                     prevAction = a;
@@ -293,104 +438,98 @@ function onInteractionHandler (
                 })
             );
 
-            events.push(
-                ...tracking.events.map(({
-                    type, category, action: eventAction, label, value
+            trackEvents.push(
+                ...events.map(({
+                    type, category, action: eventAction, label, value: eVal
                 }) => ({
                     lastAction,
                     type,
-                    category,
+                    category: asCategory(category),
                     action: eventAction,
                     label,
-                    value,
-                    ...(analyticsStorage.hasExtendedEvents
-                        ? { lang }
-                        : { cd1: lang })
+                    value: eVal,
+                    ...langsExtension
                 }))
             );
 
             if (!nonInteractive) {
 
                 if (req.isText()) {
-                    events.push({
-                        type: 'ai',
+                    trackEvents.push({
+                        type: TrackingType.TRAINING,
                         // @ts-ignore
                         lastAction,
-                        category: 'Intent: Detection',
+                        category: asCategory(TrackingCategory.INTENT_DETECTION),
                         intent,
                         action,
                         label: text,
                         value: score >= ai.confidence ? 0 : 1,
-                        ...(analyticsStorage.hasExtendedEvents
-                            ? { lang }
-                            : { cd1: lang })
+                        ...langsExtension
                     });
                 }
 
-                const notHandled = actions.some((a) => a.match(/\*$/)) && !req.isQuickReply();
+                let actionCategory;
+                let label = noneAction;
 
-                let actionCategory = 'User: ';
-                let label = '(none)';
-                const value = notHandled ? 1 : 0;
-
-                if (req.isSticker()) {
-                    actionCategory += 'Sticker';
+                if (isPassThread) {
+                    actionCategory = TrackingCategory.HANDOVER_TO_BOT;
+                } else if (req.isSticker()) {
+                    actionCategory = TrackingCategory.STICKER;
                     label = req.attachmentUrl(0);
                 } else if (req.isImage()) {
-                    actionCategory += 'Image';
+                    actionCategory = TrackingCategory.IMAGE;
                     label = req.attachmentUrl(0);
                 } else if (req.hasLocation()) {
-                    actionCategory += 'Location';
+                    actionCategory = TrackingCategory.LOCATION;
                     const { lat, long } = req.getLocation();
                     label = `${lat}, ${long}`;
                 } else if (isAttachment) {
-                    actionCategory += 'Attachement';
+                    actionCategory = TrackingCategory.ATTACHMENT;
                     label = req.attachment(0).type;
                 } else if (isText) {
-                    actionCategory += 'Text';
+                    actionCategory = TrackingCategory.TEXT;
                     label = text;
                 } else if (isQuickReply) {
-                    actionCategory += 'Quick reply';
+                    actionCategory = TrackingCategory.QUICK_REPLY;
                     label = text;
-                } else if (req.isReferral() || req.isOptin()) {
-                    actionCategory = req.isOptin()
-                        ? 'Entry: Optin'
-                        : 'Entry: Referral';
+                } else if (req.isOptin()) {
+                    actionCategory = TrackingCategory.OPT_IN;
+                } else if (req.isReferral()) {
+                    actionCategory = TrackingCategory.REFERRAL;
                 } else if (isPostback) {
-                    actionCategory += 'Button - bot';
-                    label = req.data.postback.title || '(unknown)';
+                    actionCategory = TrackingCategory.POSTBACK_BUTTON;
+                    label = req.event.postback.title || (useExtendedScalars ? null : '(unknown)');
                 } else {
-                    actionCategory += 'Other';
+                    actionCategory = TrackingCategory.OTHER;
                 }
 
-                events.push({
+                trackEvents.push({
                     ...(analyticsStorage.hasExtendedEvents ? actionMeta : {}),
-                    type: 'conversation',
-                    // @ts-ignore
+                    type: TrackingType.CONVERSATION_EVENT,
                     lastAction,
-                    category: actionCategory,
+                    category: asCategory(actionCategory),
                     action,
                     label,
                     value,
-                    ...(analyticsStorage.hasExtendedEvents
-                        ? { lang }
-                        : { cd1: lang })
+                    ...langsExtension
                 });
             }
 
-            const user = userExtractor(req.state);
-
-            await analyticsStorage.storeEvents(
-                pageId,
-                senderId,
-                sessionId,
-                // @ts-ignore
-                events,
-                user,
-                timestamp,
-                nonInteractive,
-                createSession
-            );
+            await Promise.all([
+                analyticsStorage.storeEvents(
+                    pageId,
+                    senderId,
+                    sessionId,
+                    // @ts-ignore
+                    trackEvents,
+                    user,
+                    timestamp,
+                    nonInteractive,
+                    createSession,
+                    metadata
+                ),
+                sessionPromise
+            ]);
         } catch (e) {
             if (throwException) {
                 throw e;
@@ -432,7 +571,7 @@ function onInteractionHandler (
                 [{
                     // @ts-ignore
                     lastAction,
-                    ...(analyticsStorage.hasExtendedEvents
+                    ...(hasExtendedEvents
                         ? { lang }
                         : { cd1: lang }),
                     ...event

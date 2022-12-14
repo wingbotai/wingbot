@@ -16,6 +16,9 @@ const { mergeState, isUserInteraction } = require('./utils/stateVariables');
 /** @typedef {import('./ReducerWrapper')} ReducerWrapper */
 /** @typedef {import('./Router')} Router */
 /** @typedef {import('./BuildRouter')} BuildRouter */
+/** @typedef {import('./analytics/consts').TrackingCategory} TrackingCategory */
+/** @typedef {import('./analytics/consts').TrackingType} TrackingType */
+/** @typedef {import('./analytics/consts').ResponseFlag} ResponseFlag */
 
 /**
  * @typedef {object} AutoTypingConfig
@@ -35,8 +38,8 @@ const { mergeState, isUserInteraction } = require('./utils/stateVariables');
 
 /**
  * @typedef {object} TrackingEvent
- * @prop {string} type
- * @prop {string} category
+ * @prop {TrackingType} type
+ * @prop {TrackingCategory} category
  * @prop {string} action
  * @prop {string} label
  * @prop {number} value
@@ -55,7 +58,11 @@ const { mergeState, isUserInteraction } = require('./utils/stateVariables');
  * @prop {object} state
  * @prop {object} data
  * @prop {string|null} skill
- * @prop {TrackingObject} tracking
+ * @prop {TrackingObject} tracking - deprecated
+ * @prop {TrackingEvent[]} events
+ * @prop {ResponseFlag|null} flag
+ * @prop {boolean} nonInteractive
+ * @prop {string[]} responseTexts
  */
 
 /**
@@ -134,6 +141,19 @@ function NAME_FROM_STATE (state) {
 }
 
 const MAX_TS = 9999999999999;
+const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+function toBase (number) {
+    let result = '';
+    let integer = number;
+
+    do {
+        result = CHARS[integer % 62] + result;
+        integer = Math.floor(integer / 62);
+    } while (integer > 0);
+
+    return result;
+}
 
 /**
  * Messaging event processor
@@ -381,7 +401,7 @@ class Processor extends EventEmitter {
             } = await this
                 ._processMessage(message, pageId, messageSender, responderData, preloadPromise));
 
-            await this._emitInteractionEvent(req, messageSender, state, data);
+            await this._emitInteractionEvent(req, res, messageSender, state, data);
 
             return messageSender.finished(req, res, null, errorHandler);
         } catch (e) {
@@ -394,12 +414,13 @@ class Processor extends EventEmitter {
     /**
      *
      * @param {Request} req
+     * @param {Responder} res
      * @param {ReturnSender} messageSender
      * @param {object} state
      * @param {object} data
      * @returns {Promise}
      */
-    _emitInteractionEvent (req, messageSender, state, data) {
+    _emitInteractionEvent (req, res, messageSender, state, data) {
         const shouldNotTrack = data._initialEventShouldNotBeTracked === true;
 
         if (shouldNotTrack) {
@@ -408,16 +429,23 @@ class Processor extends EventEmitter {
 
         const { _lastAction: lastAction = null } = req.state;
         const actions = messageSender.visitedInteractions;
-        const skill = state._trackAsSkill || null;
+        const skill = typeof res.newState._trackAsSkill === 'undefined'
+            ? (req.state._trackAsSkill || null)
+            : res.newState._trackAsSkill;
+        const { events = [] } = messageSender.tracking;
 
         const event = {
+            responseTexts: messageSender.responseTexts,
             req,
             actions,
             lastAction,
             state,
             data,
             skill,
-            tracking: messageSender.tracking
+            tracking: messageSender.tracking,
+            events,
+            flag: res.senderMeta.flag,
+            nonInteractive: !isUserInteraction(req)
         };
 
         return Promise.allSettled([
@@ -575,27 +603,35 @@ class Processor extends EventEmitter {
                 let {
                     _sct: sessionCount = 0,
                     _sid: sessionId = null,
-                    _segStamp: ts = 0,
+                    _sst: sessionStart = 0,
+                    _sts: sessionTs = (state._segStamp || 0),
                     _snew: sessionCreated
                 } = state;
 
+                const interactive = isUserInteraction(req);
+
                 if ((isUserInteraction(req)
-                    && (ts + this.options.sessionDuration) < Date.now())
+                    && (sessionTs + this.options.sessionDuration) < Date.now())
                         || !sessionId) {
 
+                    sessionStart = timestamp;
+                    sessionTs = timestamp;
                     sessionId = Processor._createSessionId(req.pageId, req.senderId, timestamp);
                     sessionCount++;
                     sessionCreated = true;
                 } else {
                     sessionCreated = false;
-                }
 
-                ts = timestamp;
+                    if (interactive) {
+                        sessionTs = timestamp;
+                    }
+                }
 
                 Object.assign(state, {
                     _sct: sessionCount,
                     _sid: sessionId,
-                    _segStamp: ts,
+                    _sst: sessionStart,
+                    _sts: sessionTs,
                     _snew: sessionCreated
                 });
             } else {
@@ -785,21 +821,18 @@ class Processor extends EventEmitter {
             .digest('hex');
 
         return senderHash.match(/[a-f0-9]{1,13}/g)
-            .map((v) => parseInt(v, 16).toString(36))
+            .map((v) => toBase(parseInt(v, 16)))
             .join('');
     }
 
     static _createSessionId (pageId, senderId, timestamp = Date.now()) {
-        const senderShort = Processor._shakeShort(`${senderId}|${pageId}}`, 9);
+        const senderShort = Processor._shakeShort(`${senderId}|${pageId}}`, 12);
 
-        const rand = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
-            .toString(36);
+        const rand = toBase(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
 
-        const randTS = Math.floor(Date.now() % 1000)
-            .toString(36);
+        const randTS = toBase(Math.floor(Date.now() % 10000));
 
-        const ts = Math.floor(MAX_TS - timestamp)
-            .toString(36);
+        const ts = toBase(Math.floor(MAX_TS - timestamp));
 
         // console.log({
         //     base: `${ts}.${senderShort}`.length,
@@ -811,7 +844,7 @@ class Processor extends EventEmitter {
         // });
 
         return `${ts}.${senderShort}`
-            .padEnd(26, randTS)
+            .padEnd(28, randTS)
             .padEnd(32, rand);
     }
 
