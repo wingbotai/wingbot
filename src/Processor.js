@@ -62,6 +62,7 @@ const { mergeState, isUserInteraction } = require('./utils/stateVariables');
  * @prop {TrackingEvent[]} events
  * @prop {ResponseFlag|null} flag
  * @prop {boolean} nonInteractive
+ * @prop {string[]} responseTexts
  */
 
 /**
@@ -434,6 +435,7 @@ class Processor extends EventEmitter {
         const { events = [] } = messageSender.tracking;
 
         const event = {
+            responseTexts: messageSender.responseTexts,
             req,
             actions,
             lastAction,

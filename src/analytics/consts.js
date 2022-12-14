@@ -62,12 +62,12 @@ const TrackingCategory = { // max length 3
 
     // TRAINING: 'train'
     INTENT_DETECTION: 'int',
-    HANDOVER_OCCURRED: 'hum',
     DISAMBIGUATION_SELECTED: 'dis',
     DISAMBIGUATION_OFFERED: 'dio',
 
     // REPORT: 'report'
-    REPORT_FEEDBACK: 'fdb'
+    REPORT_FEEDBACK: 'fdb',
+    HANDOVER_OCCURRED: 'hum'
 };
 
 /**
@@ -94,12 +94,12 @@ const CATEGORY_LABELS = {
 
     // TRAINING: 'train'
     [TrackingCategory.INTENT_DETECTION]: 'Intent: Detection',
-    [TrackingCategory.HANDOVER_OCCURRED]: 'Bot: Handover out',
     [TrackingCategory.DISAMBIGUATION_SELECTED]: 'Disambiguation: selected',
     [TrackingCategory.DISAMBIGUATION_OFFERED]: 'Disambiguation: offered',
 
     // REPORT: 'report'
-    [TrackingCategory.REPORT_FEEDBACK]: 'User: Feedback'
+    [TrackingCategory.REPORT_FEEDBACK]: 'User: Feedback',
+    [TrackingCategory.HANDOVER_OCCURRED]: 'Bot: Handover out'
 };
 
 module.exports = {

@@ -48,6 +48,10 @@ const compileWithState = require('./src/utils/compileWithState');
 const onInteractionHandler = require('./src/analytics/onInteractionHandler');
 const GA4 = require('./src/analytics/GA4');
 const plugins = require('./plugins/plugins.json');
+const extractText = require('./src/transcript/extractText');
+const htmlBodyFromTranscript = require('./src/transcript/htmlBodyFromTranscript');
+const textBodyFromTranscript = require('./src/transcript/textBodyFromTranscript');
+const transcriptFromHistory = require('./src/transcript/transcriptFromHistory');
 const {
     bufferloader,
     MemoryStateStorage
@@ -135,5 +139,11 @@ module.exports = {
 
     // ANALYTICS
     onInteractionHandler,
-    GA4
+    GA4,
+
+    // TRANSCRIPTS
+    extractText,
+    htmlBodyFromTranscript,
+    textBodyFromTranscript,
+    transcriptFromHistory
 };

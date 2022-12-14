@@ -104,6 +104,14 @@ class BotApp {
         this._logger = options.log || console;
         this._textFilter = options.textFilter;
 
+        this._preHeatCalled = false;
+        this._preHeat = [
+            this._logger,
+            chatLogStorage,
+            processorOptions.stateStorage,
+            processorOptions.tokenStorage
+        ].filter((s) => s && typeof s.preHeat === 'function');
+
         let { apiUrl } = options;
 
         if (!apiUrl) apiUrl = DEFAULT_API_URL;
@@ -202,6 +210,10 @@ class BotApp {
 
         if (typeof analyticsStorage.setDefaultLogger === 'function') {
             analyticsStorage.setDefaultLogger(log);
+        }
+
+        if (typeof analyticsStorage.preHeat === 'function') {
+            this._preHeat.push(analyticsStorage);
         }
 
         // @ts-ignore
@@ -440,6 +452,15 @@ class BotApp {
             return this._errorResponse('Missing authentication header', 401);
         }
 
+        let preHeatPromise = null;
+        if (!this._preHeatCalled) {
+            preHeatPromise = Promise.all(
+                this._preHeat.map((p) => Promise.resolve(p.preHeat())
+                    .catch((e) => this._logger.error('BotApp: preHeat failed', e)))
+            );
+            this._preHeatCalled = true;
+        }
+
         let sha1;
         let appId;
         let secret;
@@ -449,6 +470,7 @@ class BotApp {
             // @ts-ignore
             ({ sha1, appId } = await this._verify(token, secret));
         } catch (e) {
+            await Promise.resolve(preHeatPromise);
             return this._errorResponse(`Failed to verify token: ${e.message}`, 403);
         }
 
@@ -457,22 +479,28 @@ class BotApp {
             .digest('hex');
 
         if (sha1 !== bodySha1) {
+            await Promise.resolve(preHeatPromise);
             return this._errorResponse(`SHA1 does not match. Got in token: '${sha1}'`, 403);
         }
 
-        const body = JSON.parse(rawBody);
+        try {
+            const body = JSON.parse(rawBody);
 
-        const entry = await this._processEntries(appId, secret, body.entry, rawHeaders);
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                entry
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
+            const entry = await this._processEntries(appId, secret, body.entry, rawHeaders);
+            await Promise.resolve(preHeatPromise);
+            return {
+                statusCode: 200,
+                body: JSON.stringify({
+                    entry
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+        } catch (e) {
+            await Promise.resolve(preHeatPromise);
+            throw e;
+        }
     }
 
     async _processEntries (appId, secret, entry = [], headers = {}) {

@@ -36,6 +36,7 @@ const {
 
 /**
  * @typedef {object} ConversationEventExtension
+ * @prop {string} [lastAction]
  * @prop {string} [skill]
  * @prop {string} [text]
  * @prop {string} [expected]
@@ -51,8 +52,6 @@ const {
  * @prop {boolean} withUser
  * @prop {string} [userId]
  * @prop {number} [feedback]
- * @prop {number} sessionStart
- * @prop {number} sessionDuration
  * @prop {string} [winnerAction]
  * @prop {string} [winnerIntent]
  * @prop {string[]|string} [winnerEntities]
@@ -63,14 +62,25 @@ const {
  * @prop {string[]|string} [entities]
  * @prop {string[]|string} allActions
  * @prop {boolean} nonInteractive
- * @prop {string} [snapshot]
- * @prop {string} [botId]
  *
  * @typedef {Event & ConversationEventExtension} ConversationEvent
  */
 
 /**
- * @typedef {ConversationEvent | Event} TrackingEvent
+ * @typedef {object} PageViewEventExtension
+ * @prop {string} [lastAction]
+ * @prop {string} [prevAction]
+ * @prop {string} [skill]
+ * @prop {string[]|string} allActions
+ * @prop {boolean} nonInteractive
+ * @prop {boolean} isGoto
+ * @prop {boolean} withUser
+ *
+ * @typedef {Event & PageViewEventExtension} PageViewEvent
+ */
+
+/**
+ * @typedef {ConversationEvent | Event | PageViewEvent} TrackingEvent
  */
 
 /**
@@ -80,6 +90,12 @@ const {
  * @prop {string} [action]
  * @prop {string} [snapshot]
  * @prop {string} [botId]
+ * @prop {boolean} [didHandover]
+ * @prop {number|null} [feedback]
+ * @prop {string} [timeZone]
+ * @prop {number} [sessionStart]
+ * @prop {number} [sessionDuration]
+ * @prop {string[]} [responseTexts]
  */
 
 /**
@@ -90,7 +106,6 @@ const {
  * @param {SessionMetadata} [metadata]
  * @param {number} [ts]
  * @param {boolean} [nonInteractive]
- * @param {string} [timeZone]
  * @returns {Promise}
  */
 
@@ -104,7 +119,7 @@ const {
  * @param {number} [ts]
  * @param {boolean} [nonInteractive]
  * @param {boolean} [sessionStarted]
- * @param {string} [timeZone]
+ * @param {SessionMetadata} [metadata]
  * @returns {Promise}
  */
 
@@ -123,6 +138,7 @@ const {
  * @prop {boolean} [useDescriptiveCategories]
  * @prop {boolean} [useExtendedScalars]
  * @prop {boolean} [parallelSessionInsert]
+ * @prop {Function} [preHeat]
  */
 
 /**
@@ -208,7 +224,7 @@ function onInteractionHandler (
     const asArray = (data = []) => (supportsArrays ? data : data.join(','));
     const asCategory = (cat) => (useDescriptiveCategories && CATEGORY_LABELS[cat]) || cat;
     const noneAction = useExtendedScalars ? null : '(none)';
-    const noneValue = useExtendedScalars ? -1 : 0;
+    const noneValue = useExtendedScalars ? null : 0;
 
     /**
      * @param {InteractionEvent} params
@@ -222,7 +238,8 @@ function onInteractionHandler (
         skill,
         events,
         flag,
-        nonInteractive
+        nonInteractive,
+        responseTexts
     }) {
         if (!enabled) {
             return;
@@ -243,26 +260,54 @@ function onInteractionHandler (
                 lang
             } = req.state;
 
+            const trackEvents = [];
+
             const [action = noneAction, ...otherActions] = actions;
+
+            const feedbackEvent = events.find((e) => e.type === TrackingType.REPORT
+                && e.category === TrackingCategory.REPORT_FEEDBACK);
+            const feedback = feedbackEvent
+                ? feedbackEvent.value
+                : noneValue;
+            let didHandover = flag === ResponseFlag.HANDOVER;
+            const hasHandoverEvent = events
+                .some((e) => e.category === TrackingCategory.HANDOVER_OCCURRED);
+
+            if (didHandover && !hasHandoverEvent) {
+                trackEvents.push({
+                    type: TrackingType.REPORT,
+                    category: asCategory(TrackingCategory.HANDOVER_OCCURRED),
+                    action: null,
+                    label: null,
+                    value: noneValue
+                });
+            } else if (hasHandoverEvent) {
+                didHandover = true;
+            }
+
+            const metadata = {
+                sessionCount,
+                lang,
+                action,
+                snapshot,
+                botId,
+                didHandover,
+                feedback,
+                timeZone,
+                sessionStart,
+                responseTexts,
+                sessionDuration: sessionTs - sessionStart
+            };
 
             let sessionPromise;
             if (createSession) {
-                const metadata = {
-                    sessionCount,
-                    lang,
-                    action,
-                    snapshot,
-                    botId
-                };
-
                 sessionPromise = analyticsStorage.createUserSession(
                     pageId,
                     senderId,
                     sessionId,
                     metadata,
                     timestamp,
-                    nonInteractive,
-                    timeZone
+                    nonInteractive
                 );
 
                 if (!parallelSessionInsert) {
@@ -281,6 +326,7 @@ function onInteractionHandler (
                 : anonymize(
                     replaceDiacritics(req.text()).replace(/\s+/g, ' ').toLowerCase().trim()
                 );
+            const useSkill = (skill && webalize(skill)) || noneAction;
 
             let winnerAction = '';
             let winnerScore = 0;
@@ -301,14 +347,6 @@ function onInteractionHandler (
             }
 
             const expected = req.expected() ? req.expected().action : '';
-
-            const feedbackEvent = events.find((e) => e.type === TrackingType.REPORT
-                && e.category === TrackingCategory.REPORT_FEEDBACK);
-            const feedback = feedbackEvent
-                ? feedbackEvent.value
-                : noneValue;
-            const didHandover = flag === ResponseFlag.HANDOVER;
-
             const user = userExtractor(req.state);
 
             const isContextUpdate = req.isSetContext();
@@ -322,11 +360,11 @@ function onInteractionHandler (
             const allActions = asArray(actions);
             const requestAction = req.action();
 
-            const trackEvents = [];
-
             const langsExtension = hasExtendedEvents
                 ? { lang }
                 : { cd1: lang };
+
+            const withUser = user !== null && !!user.id;
 
             const actionMeta = {
                 requestAction: req.action() || noneAction,
@@ -340,13 +378,9 @@ function onInteractionHandler (
                 isText,
                 isPostback,
                 didHandover,
-                withUser: user !== null && !!user.id,
-                sessionStart,
-                sessionDuration: sessionTs - sessionStart,
+                withUser,
                 feedback,
-                skill: webalize(skill),
-                snapshot,
-                botId,
+                skill: useSkill,
                 winnerAction,
                 winnerIntent,
                 winnerEntities: asArray(winnerEntities.map((e) => e.entity)),
@@ -371,10 +405,12 @@ function onInteractionHandler (
                 allActions,
                 nonInteractive,
                 lastAction,
+                // @ts-ignore
                 prevAction: lastAction,
-                skill,
-                lang,
-                cd1: req.state.lang,
+                skill: useSkill,
+                isGoto: false,
+                withUser,
+                ...langsExtension,
                 ...(hasExtendedEvents ? {} : actionMeta)
             });
 
@@ -391,8 +427,9 @@ function onInteractionHandler (
                         nonInteractive: false,
                         lastAction,
                         prevAction,
-                        skill,
+                        skill: useSkill,
                         isGoto: true,
+                        withUser,
                         ...langsExtension
                     };
 
@@ -407,7 +444,7 @@ function onInteractionHandler (
                 }) => ({
                     lastAction,
                     type,
-                    category,
+                    category: asCategory(category),
                     action: eventAction,
                     label,
                     value: eVal,
@@ -469,7 +506,6 @@ function onInteractionHandler (
                 trackEvents.push({
                     ...(analyticsStorage.hasExtendedEvents ? actionMeta : {}),
                     type: TrackingType.CONVERSATION_EVENT,
-                    // @ts-ignore
                     lastAction,
                     category: asCategory(actionCategory),
                     action,
@@ -490,7 +526,7 @@ function onInteractionHandler (
                     timestamp,
                     nonInteractive,
                     createSession,
-                    timeZone
+                    metadata
                 ),
                 sessionPromise
             ]);

@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New fields in interaction tracking
 - Stronger sessionId
 - Support for BigQuery tracking
+- `preLoad()` support for storages wired into the BotApp
+- `extractText()`, `htmlBodyFromTranscript()`, `textBodyFromTranscript()`, `transcriptFromHistory()` methods
 
 ## [3.45.1] - 2022-11-30
 

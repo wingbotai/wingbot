@@ -6,6 +6,7 @@
 const ai = require('./Ai');
 const { FEATURE_PHRASES, FEATURE_TRACKING } = require('./features');
 const { ResponseFlag } = require('./analytics/consts');
+const extractText = require('./transcript/extractText');
 
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder')} Responder */
@@ -122,7 +123,11 @@ class ReturnSender {
             events: []
         };
 
+        this._responseTexts = [];
+
         this._intentsAndEntities = [];
+
+        this._confidentInput = false;
 
         /**
          * @type {Function}
@@ -145,6 +150,19 @@ class ReturnSender {
 
     get simulatesOptIn () {
         return this._simulatesOptIn;
+    }
+
+    /**
+     * @returns {string[]}
+     */
+    get responseTexts () {
+        const filter = this._confidentInput
+            ? this.confidentInputFilter
+            : this.textFilter;
+
+        return this._responseTexts
+            .map((t) => filter(t))
+            .filter((t) => t && `${t}`.trim());
     }
 
     _gotAnotherEvent () {
@@ -379,6 +397,10 @@ class ReturnSender {
             return;
         }
 
+        const text = extractText(payload);
+        if (text) {
+            this._responseTexts.push(text);
+        }
         this._queue.push(payload);
         this._gotAnotherEvent();
 
@@ -509,7 +531,7 @@ class ReturnSender {
     async finished (req = null, res = null, err = null, reportError = console.error) {
         this._finish(req);
         const meta = this._createMeta(req, res);
-        const confidentInput = req && req.isConfidentInput();
+        this._confidentInput = !!req && req.isConfidentInput();
         let error = err;
         try {
             await this._promise;
@@ -526,7 +548,7 @@ class ReturnSender {
             const processedEvent = req
                 ? req.event
                 : this._incommingMessage;
-            let incomming = this._filterMessage(processedEvent, confidentInput, req);
+            let incomming = this._filterMessage(processedEvent, this._confidentInput, req);
 
             if (processedEvent !== this._incommingMessage) {
                 incomming = {
