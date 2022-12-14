@@ -17,7 +17,7 @@ const docs = [
     ['src/BuildRouter.js', 'src/Plugins.js'],
     ['src/notifications/Notifications.js', 'src/notifications/NotificationsStorage.js'],
     ['src/graphApi/GraphApi.js', 'src/graphApi/postBackApi.js', 'src/graphApi/validateBotApi.js', 'src/graphApi/conversationsApi.js', 'src/graphApi/apiAuthorizer.js', 'src/graphApi/conversationsApi.js'],
-    ['src/analytics/GA4.js', 'src/analytics/consts.js'],
+    ['src/analytics/GA4.js', 'src/analytics/consts.js']
 ];
 
 let srcFile;
@@ -56,7 +56,7 @@ docs.forEach((doc, index) => {
 
     docFile = path.join(process.cwd(), 'documentation', 'pages', 'docs', 'api', srcFile
         .replace(/jsx?$/, 'mdx')
-        .replace(/^src\/(templates\/|mongodb\/|tools\/|utils\/|middlewares\/|notifications\/|graphApi\/)?/, ''));
+        .replace(/^src\/(templates\/|mongodb\/|tools\/|utils\/|middlewares\/|notifications\/|graphApi\/|analytics\/)?/, ''));
 
     files = files
         .map((file) => {
