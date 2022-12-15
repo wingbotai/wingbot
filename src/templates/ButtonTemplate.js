@@ -138,7 +138,8 @@ class ButtonTemplate extends BaseTemplate {
      * res.button('text')
      *  .attachmentButton('button title', {
      *      content: '# Heading 1',
-     *      contentType: 'text/markdown'
+     *      contentType: 'text/markdown',
+     *      className: 'my-class-for-markdown'
      *   })
      *  .send();
      *
