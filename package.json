@@ -55,7 +55,7 @@
   "dependencies": {
     "form-data": "^4.0.0",
     "graphql": "^15.8.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "node-fetch": "^2.6.7",
     "path-to-regexp": "^6.2.1",
     "uuid": "^8.3.2",
