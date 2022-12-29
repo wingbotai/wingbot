@@ -63,6 +63,7 @@ const { mergeState, isUserInteraction } = require('./utils/stateVariables');
  * @prop {ResponseFlag|null} flag
  * @prop {boolean} nonInteractive
  * @prop {string[]} responseTexts
+ * @prop {boolean} doNotTrack
  */
 
 /**
@@ -421,12 +422,7 @@ class Processor extends EventEmitter {
      * @returns {Promise}
      */
     _emitInteractionEvent (req, res, messageSender, state, data) {
-        const shouldNotTrack = data._initialEventShouldNotBeTracked === true;
-
-        if (shouldNotTrack) {
-            return Promise.resolve();
-        }
-
+        const doNotTrack = data._initialEventShouldNotBeTracked === true;
         const { _lastAction: lastAction = null } = req.state;
         const actions = messageSender.visitedInteractions;
         const skill = typeof res.newState._trackAsSkill === 'undefined'
@@ -435,6 +431,7 @@ class Processor extends EventEmitter {
         const { events = [] } = messageSender.tracking;
 
         const event = {
+            doNotTrack,
             responseTexts: messageSender.responseTexts,
             req,
             actions,
@@ -445,7 +442,7 @@ class Processor extends EventEmitter {
             tracking: messageSender.tracking,
             events,
             flag: res.senderMeta.flag,
-            nonInteractive: !isUserInteraction(req)
+            nonInteractive: !isUserInteraction(req) || doNotTrack
         };
 
         return Promise.allSettled([
@@ -610,10 +607,10 @@ class Processor extends EventEmitter {
 
                 const interactive = isUserInteraction(req);
 
-                if ((isUserInteraction(req)
-                    && (sessionTs + this.options.sessionDuration) < Date.now())
-                        || !sessionId) {
+                const sessionExpired = interactive
+                    && (sessionTs + this.options.sessionDuration) < Date.now();
 
+                if (sessionExpired || !sessionId) {
                     sessionStart = timestamp;
                     sessionTs = timestamp;
                     sessionId = Processor._createSessionId(req.pageId, req.senderId, timestamp);

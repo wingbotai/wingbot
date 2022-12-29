@@ -239,7 +239,8 @@ function onInteractionHandler (
         events,
         flag,
         nonInteractive,
-        responseTexts
+        responseTexts,
+        doNotTrack = false
     }) {
         if (!enabled) {
             return;
@@ -321,7 +322,7 @@ function onInteractionHandler (
                 score = 0
             } = {}] = req.intents;
 
-            const text = req.isConfidentInput()
+            const text = req.isConfidentInput() || doNotTrack
                 ? '*****'
                 : anonymize(
                     replaceDiacritics(req.text()).replace(/\s+/g, ' ').toLowerCase().trim()
@@ -396,47 +397,49 @@ function onInteractionHandler (
             const notHandled = actions.some((a) => a.match(/\*$/)) && !req.isQuickReply();
             const value = notHandled ? 1 : 0;
 
-            trackEvents.push({
-                type: TrackingType.PAGE_VIEW,
-                category: asCategory(TrackingCategory.PAGE_VIEW_FIRST),
-                action,
-                label: (isText || isQuickReply ? text : null),
-                value,
-                allActions,
-                nonInteractive,
-                lastAction,
-                // @ts-ignore
-                prevAction: lastAction,
-                skill: useSkill,
-                isGoto: false,
-                withUser,
-                ...langsExtension,
-                ...(hasExtendedEvents ? {} : actionMeta)
-            });
+            if (!doNotTrack) {
+                trackEvents.push({
+                    type: TrackingType.PAGE_VIEW,
+                    category: asCategory(TrackingCategory.PAGE_VIEW_FIRST),
+                    action,
+                    label: (isText || isQuickReply ? text : null),
+                    value,
+                    allActions,
+                    nonInteractive,
+                    lastAction,
+                    // @ts-ignore
+                    prevAction: lastAction,
+                    skill: useSkill,
+                    isGoto: false,
+                    withUser,
+                    ...langsExtension,
+                    ...(hasExtendedEvents ? {} : actionMeta)
+                });
 
-            let prevAction = action;
+                let prevAction = action;
 
-            trackEvents.push(
-                ...otherActions.map((a) => {
-                    const r = {
-                        type: TrackingType.PAGE_VIEW,
-                        category: asCategory(TrackingCategory.PAGE_VIEW_SUBSEQUENT),
-                        action: a,
-                        value: 0,
-                        allActions,
-                        nonInteractive: false,
-                        lastAction,
-                        prevAction,
-                        skill: useSkill,
-                        isGoto: true,
-                        withUser,
-                        ...langsExtension
-                    };
+                trackEvents.push(
+                    ...otherActions.map((a) => {
+                        const r = {
+                            type: TrackingType.PAGE_VIEW,
+                            category: asCategory(TrackingCategory.PAGE_VIEW_SUBSEQUENT),
+                            action: a,
+                            value: 0,
+                            allActions,
+                            nonInteractive: false,
+                            lastAction,
+                            prevAction,
+                            skill: useSkill,
+                            isGoto: true,
+                            withUser,
+                            ...langsExtension
+                        };
 
-                    prevAction = a;
-                    return r;
-                })
-            );
+                        prevAction = a;
+                        return r;
+                    })
+                );
+            }
 
             trackEvents.push(
                 ...events.map(({
@@ -453,7 +456,6 @@ function onInteractionHandler (
             );
 
             if (!nonInteractive) {
-
                 if (req.isText()) {
                     trackEvents.push({
                         type: TrackingType.TRAINING,
