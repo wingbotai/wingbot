@@ -162,6 +162,7 @@ describe('<Conditions>', function () {
             assert(compare('474', ConditionOperators['<'], 500));
             assert(compare(474, ConditionOperators['<'], '500'));
             assert(compare('474', ConditionOperators['<'], '500'));
+            assert(compare(null, ConditionOperators['<'], '500'));
         });
 
         it('>', () => {

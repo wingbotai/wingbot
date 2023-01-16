@@ -35,6 +35,7 @@ const DEFAULT_TEXT_THRESHOLD = 0.8;
  * @prop {string} text
  * @prop {string} action
  * @prop {string} intent
+ * @prop {number} [rowNum]
  */
 
 /**
@@ -562,10 +563,36 @@ class ConversationTester {
             score: 0, intent: { intent: '-', score: 0 }, aboveConfidence: false, meta: null, action: null
         }] = actions;
 
-        const report = (error = '', ok = false) => ({
-            ok,
-            o: `${textCase.text.padEnd(longestText, ' ')}\t${(winner.intent ? winner.intent.score : 0).toFixed(2)}\t${winner.intent ? winner.intent.intent : '-'} | ${error}`
-        });
+        // textCase.rowNum?
+
+        const report = (error, ok = false) => {
+            let o = [
+                textCase.text.padEnd(longestText, ' '),
+                (winner.intent ? winner.intent.score : 0).toFixed(2),
+                winner.intent ? winner.intent.intent : '-'
+            ].join('\t');
+
+            if (ok || !error) {
+                if (error) {
+                    o += ` | ${error}`;
+                }
+                return { ok, o };
+            }
+
+            let err = error;
+
+            const prefix = typeof textCase.rowNum === 'number'
+                ? `    > FAILED on row ${textCase.rowNum}: `.padEnd(23, ' ')
+                : '    > FAILED: ';
+
+            if (Array.isArray(err)) {
+                err = err.join('\n        ');
+            }
+
+            o += `\n${prefix}${err}\n`;
+
+            return { ok, o };
+        };
 
         if (actions.length === 0) {
             return report('no NLP result');
@@ -576,25 +603,40 @@ class ConversationTester {
         }
 
         if (textCase.intent && winner.intent.intent !== textCase.intent) {
-            return report(`expected intent "${textCase.intent}"`);
+            return report([
+                'intent mismatch',
+                `✓ expected: ${textCase.intent}`,
+                `✗ actual:   ${winner.intent.intent || '-'}`
+            ]);
         }
 
         if (textCase.appId) {
-
             if (!winner.meta || `${winner.meta.targetAppId}` !== `${textCase.appId}`) {
-                return report(`expected handover to "${textCase.appId}" - actual "${(winner.meta && winner.meta.targetAppId) || `action: ${winner.action || '*'}`}"`);
+                return report([
+                    'target appId mismatch',
+                    `✓ expected: ${textCase.appId}`,
+                    `✗ actual:   ${(winner.meta && winner.meta.targetAppId) || `action[ ${winner.action || '*'} ]`}`
+                ]);
             }
 
             if (textCase.action && !actionMatches(`${winner.meta.targetAction}`, `${textCase.action}`)) {
-                return report(`expected action "${textCase.action}" - actual "${winner.meta.targetAction || '-'}"`);
+                return report([
+                    'target action mismatch',
+                    `✓ expected: ${textCase.action}`,
+                    `✗ actual:   ${winner.meta.targetAction || '-'}`
+                ]);
             }
 
         } else if (textCase.action && !actionMatches(`${winner.action}`, `${textCase.action}`)) {
-            return report(`expected action "${textCase.action}" - actual "${winner.action || '-'}"`);
+            return report([
+                'action mismatch',
+                `✓ expected: ${textCase.action}`,
+                `✗ actual:   ${winner.action || '-'}`
+            ]);
         }
 
         if (!textCase.action && !textCase.appId && !textCase.intent) {
-            return report(`${textCase.action}`, true);
+            return report(winner.action, true);
         }
 
         return { ok: true, o: null };

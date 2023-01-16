@@ -64,7 +64,7 @@ const stringToNumber = (string) => {
 };
 
 const toNumber = (value) => {
-    if (value === undefined) return 0;
+    if (value === undefined || value === null) return 0;
     if (typeof value === 'number') return value;
     if (Array.isArray(value)) return value.length;
     return (isStringNumber(value) ? stringToNumber(value) : Number.parseFloat(value));
