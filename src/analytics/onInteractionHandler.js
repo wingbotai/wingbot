@@ -32,7 +32,7 @@ const {
  * @prop {string} [label]
  * @prop {number} [value]
  * @prop {string} [lang]
- * @prop {string|null} [pagePath]
+ * @prop {string|null} [pageCategory]
  */
 
 /**
@@ -62,6 +62,7 @@ const {
  * @prop {number} [intentScore]
  * @prop {string[]|string} [entities]
  * @prop {string|null} [pagePath]
+ * @prop {string|null} [pageCategory]
  * @prop {string[]|string} allActions
  * @prop {boolean} nonInteractive
  *
@@ -99,6 +100,7 @@ const {
  * @prop {number} [sessionDuration]
  * @prop {string[]} [responseTexts]
  * @prop {string|null} [pagePath]
+ * @prop {string|null} [pageCategory]
  */
 
 /**
@@ -157,6 +159,12 @@ const {
  */
 
 /**
+ * @callback PathCategoryExtractor
+ * @param {string} pathName
+ * @returns {string}
+ */
+
+/**
  * @typedef {object} TrackingEvents
  * @prop {TrackingEvent[]} events
  */
@@ -177,6 +185,7 @@ const {
  * @prop {IGALogger} [log] - console like logger
  * @prop {Anonymizer} [anonymize] - text anonymization function
  * @prop {UserExtractor} [userExtractor] - text anonymization function
+ * @prop {PathCategoryExtractor} [pathCategoryExtractor]
  */
 
 /**
@@ -196,6 +205,17 @@ const {
  * @returns {Promise}
  */
 
+function defaultPathExtractor (pathName) {
+    if (!pathName) {
+        return null;
+    }
+
+    const [firstElem] = pathName.split('/')
+        .filter((e) => !!e);
+
+    return firstElem || '/';
+}
+
 /**
  *
  * @param {HandlerConfig} config
@@ -212,6 +232,7 @@ function onInteractionHandler (
         botId,
         timeZone = 'UTC',
         pagePathVar = '§pathname',
+        pathCategoryExtractor = defaultPathExtractor,
         anonymize = (x) => x,
         userExtractor = (state) => null // eslint-disable-line no-unused-vars
     },
@@ -267,6 +288,8 @@ function onInteractionHandler (
                 [pagePathVar]: pagePath
             } = state;
 
+            const pageCategory = pathCategoryExtractor(pagePath);
+
             const trackEvents = [];
 
             const [action = noneAction, ...otherActions] = actions;
@@ -304,7 +327,8 @@ function onInteractionHandler (
                 sessionStart,
                 responseTexts,
                 sessionDuration: sessionTs - sessionStart,
-                pagePath
+                pagePath,
+                pageCategory
             };
 
             let sessionPromise;
@@ -399,7 +423,8 @@ function onInteractionHandler (
                 entities: asArray(req.entities.map((e) => e.entity)),
                 text,
                 allActions,
-                pagePath
+                pagePath,
+                pageCategory
             };
 
             const notHandled = actions.some((a) => a.match(/\*$/)) && !req.isQuickReply();
@@ -521,7 +546,7 @@ function onInteractionHandler (
                     action,
                     label,
                     value,
-                    pagePath,
+                    pageCategory,
                     ...langsExtension
                 });
             }
