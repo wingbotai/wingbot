@@ -32,6 +32,7 @@ const {
  * @prop {string} [label]
  * @prop {number} [value]
  * @prop {string} [lang]
+ * @prop {string|null} [pagePath]
  */
 
 /**
@@ -60,6 +61,7 @@ const {
  * @prop {string} [intent]
  * @prop {number} [intentScore]
  * @prop {string[]|string} [entities]
+ * @prop {string|null} [pagePath]
  * @prop {string[]|string} allActions
  * @prop {boolean} nonInteractive
  *
@@ -96,6 +98,7 @@ const {
  * @prop {number} [sessionStart]
  * @prop {number} [sessionDuration]
  * @prop {string[]} [responseTexts]
+ * @prop {string|null} [pagePath]
  */
 
 /**
@@ -165,6 +168,7 @@ const {
 
 /**
  * @typedef {object} HandlerConfig
+ * @prop {string} [pagePathVar]
  * @prop {string} [snapshot]
  * @prop {string} [botId]
  * @prop {string} [timeZone] - default UTC
@@ -207,6 +211,7 @@ function onInteractionHandler (
         snapshot,
         botId,
         timeZone = 'UTC',
+        pagePathVar = '§pathname',
         anonymize = (x) => x,
         userExtractor = (state) => null // eslint-disable-line no-unused-vars
     },
@@ -233,7 +238,7 @@ function onInteractionHandler (
         req,
         actions,
         lastAction,
-        // state,
+        state,
         // data,
         skill,
         events,
@@ -258,8 +263,9 @@ function onInteractionHandler (
                 _sid: sessionId,
                 _sst: sessionStart,
                 _sts: sessionTs,
-                lang
-            } = req.state;
+                lang,
+                [pagePathVar]: pagePath
+            } = state;
 
             const trackEvents = [];
 
@@ -297,7 +303,8 @@ function onInteractionHandler (
                 timeZone,
                 sessionStart,
                 responseTexts,
-                sessionDuration: sessionTs - sessionStart
+                sessionDuration: sessionTs - sessionStart,
+                pagePath
             };
 
             let sessionPromise;
@@ -391,7 +398,8 @@ function onInteractionHandler (
                 intentScore: score,
                 entities: asArray(req.entities.map((e) => e.entity)),
                 text,
-                allActions
+                allActions,
+                pagePath
             };
 
             const notHandled = actions.some((a) => a.match(/\*$/)) && !req.isQuickReply();
@@ -513,6 +521,7 @@ function onInteractionHandler (
                     action,
                     label,
                     value,
+                    pagePath,
                     ...langsExtension
                 });
             }
