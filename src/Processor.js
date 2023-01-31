@@ -608,7 +608,7 @@ class Processor extends EventEmitter {
                 const interactive = isUserInteraction(req);
 
                 const sessionExpired = interactive
-                    && (sessionTs + this.options.sessionDuration) < Date.now();
+                    && (sessionTs + this.options.sessionDuration) < timestamp;
 
                 if (sessionExpired || !sessionId) {
                     sessionStart = timestamp;

@@ -71,6 +71,9 @@ function getLanguageText (translations, lang = null, disableDefaulting = false) 
         if (lang) {
             // @ts-ignore
             foundText = translations.find((t) => t.l === lang);
+        } else if (disableDefaulting) {
+            // @ts-ignore
+            [foundText] = translations;
         }
         if (isTextObjectEmpty(foundText) && !disableDefaulting) {
             // @ts-ignore

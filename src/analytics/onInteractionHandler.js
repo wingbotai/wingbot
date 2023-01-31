@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const uaParserJs = require('@amplitude/ua-parser-js');
 const { replaceDiacritics, webalize } = require('webalize');
 const Ai = require('../Ai');
 const {
@@ -101,6 +102,9 @@ const {
  * @prop {string[]} [responseTexts]
  * @prop {string|null} [pagePath]
  * @prop {string|null} [pageCategory]
+ * @prop {string} [browserName]
+ * @prop {string} [deviceType]
+ * @prop {string} [osName]
  */
 
 /**
@@ -177,6 +181,7 @@ const {
 /**
  * @typedef {object} HandlerConfig
  * @prop {string} [pagePathVar]
+ * @prop {string} [userAgentVar]
  * @prop {string} [snapshot]
  * @prop {string} [botId]
  * @prop {string} [timeZone] - default UTC
@@ -232,6 +237,7 @@ function onInteractionHandler (
         botId,
         timeZone = 'UTC',
         pagePathVar = '§pathname',
+        userAgentVar = '§ua',
         pathCategoryExtractor = defaultPathExtractor,
         anonymize = (x) => x,
         userExtractor = (state) => null // eslint-disable-line no-unused-vars
@@ -285,8 +291,11 @@ function onInteractionHandler (
                 _sst: sessionStart,
                 _sts: sessionTs,
                 lang,
-                [pagePathVar]: pagePath
+                [pagePathVar]: pagePath,
+                [userAgentVar]: userAgent
             } = state;
+
+            const ua = uaParserJs(userAgent);
 
             const pageCategory = pathCategoryExtractor(pagePath);
 
@@ -328,7 +337,10 @@ function onInteractionHandler (
                 responseTexts,
                 sessionDuration: sessionTs - sessionStart,
                 pagePath,
-                pageCategory
+                pageCategory,
+                browserName: ua.browser.name || null,
+                deviceType: ua.device.type || null,
+                osName: ua.os.name || null
             };
 
             let sessionPromise;
