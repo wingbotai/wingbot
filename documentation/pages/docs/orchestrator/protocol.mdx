@@ -1,0 +1,879 @@
+---
+title: Messaging protocol # Title of your page
+section: ORCHESTRATOR # Sidebar navigation group title
+order: 4 # Order in the sidebar navigation group
+---
+
+# Messaging protocol & Bot side API's
+
+## Synchronous and asynchronous channels
+
+Depending on channel specifics, some of them requires to gather all responses synchronously. The good example is Google assistant.
+
+- **synchronous channels** - requires replies in a webhook's response body and has limited or none support for asynchronous replies
+- **asynchronous channels** - allows replies in a webhook's response body and supports asynchronous replies
+
+## Bot Applications webhook
+
+### Application's webhook API
+
+* POST `/bot` - **bot application webhook**
+
+  Orchestrator uses this API to notify bot about new messaging events
+
+### Webhook data
+
+The request can contain more messaging events because of optimization of execution - it lowers a number of sent requests.
+
+- `entry`: (object[]) - list of messaging event groups
+- `entry.id`: (string) - ID of messaging group
+- `[entry.requires_response]`: (boolean) - if true, there's no way to respond the conversation asynchronously using the /send API
+- `entry.app_id`: (string) - application to which events are sent to
+- `entry.messaging`: (object[]) - list of messaging events direcly passed to application
+- `entry.standby`: (object[]) - list of messaging events passed to application in standby mode
+
+There are either `messaging` or `standby` events. Never both in same time.
+
+```json
+{
+  "entry":[
+    {
+      "id":"<CHANNEL_ID>",
+      "requires_response": true, // optional
+      "app_id": "1234",
+      "messaging": [ // or "standby"
+        ...list of messaging events at specific channel
+      ]
+    }
+  ]
+}
+```
+
+### Event sent to a bot application
+
+- `sender.id`: (string) - identification of the sender
+- `recipient.id`: (string) - identifies a channel
+- `timestamp`: (number) - when the event was emitted (taken from the original event)
+- `mid`: (string) - unique identification of the event (given by the orchestrator)
+- `features`: (string[]) - supported channel features (`text`, `ssml`, `voice`, `phrases`, `tracking`)
+
+```json
+{
+  "sender": {
+    "id": "<USER_ID>"
+  },
+  "recipient": {
+    "id": "<CHANNEL_ID>"
+  },
+  "timestamp": 1458692752478,
+  "mid": "<unique event identification>",
+  "features": ["text"]
+  ...event contents
+}
+```
+
+### Responding to webhook's event
+
+If the channel requires to respond synchronously (the `requires_response` is set to `true`), the bot's webhook
+has to send responses back to the orchestrator immediatelly.
+
+- for each `entry` object from webhook there should be a corresponding object in response
+- each messaging event could have corresponding response object between responses
+- **messaging events in a single response are processed sequentionally** - so this makes able to insert delays between each response
+
+```json
+{
+  "entry": [
+    {
+      "id": "<CHANNEL_ID>",
+      "responses": [
+        {
+          "response_to_mid": "<original message id>",
+          "messaging": [
+            ...list of responses
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Sending responses to Orchestrator's API
+
+At channels, that supports asynchronous communication, there's possibility to send responses also after dispatching the webhook's event.
+
+* POST `/webhook/api` - **when acting as an application**
+* POST `/webhook/api/<CHANNEL_ID>` - **when acting as a channel**
+
+### Event sent by bot as a response
+
+- `response_to_mid`: (string) - identifies the source messaging event for aggregation purposes
+- `expected`: (object) - optional channel guidace for expected user response
+- `expected.input`: (object) - input type guidance
+- `expected.input.type`: (string) - type of the inpupt (`password`, `none`, `upload`)
+- `expected.phrases`: (string[]) - list of expected phrases (when supported by voice channel)
+- `expected.entities`: (string[]) - list of expected entities (when supported by voice channel)
+
+```json
+{
+  "recipient":{
+    "id":"<USER_ID>"
+  },
+  "sender":{
+    "id":"<CHANNEL_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "expected": { // optional
+    "input": {
+      "type": "password"
+    }
+  }
+  ...response contents
+}
+```
+
+# Messaging event types
+
+## Text message
+
+- `message.text`: (string) - required text message
+
+**incomming event**
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "timestamp":1458692752478,
+  "mid": "<unique event identification>",
+  "message":{
+    "text":"hello, world!"
+  }
+}
+```
+
+**responding to user**
+
+```json
+{
+  "recipient":{
+    "id":"<USER_ID>"
+  },
+  "sender":{
+    "id":"<CHANNEL_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "message":{
+    "text":"hello, world!"
+  }
+}
+```
+
+## Responding with an alternative content for voice
+
+**incomming event: not available**
+
+**responding to user**
+
+- `message.voice`: (object) - optinal alternative for voice interface
+- `[message.voice.voice]`: (string) - voice name
+- `[message.voice.language]`: (string) - voice language
+- `[message.voice.ssml]`: (string) - optional SSML for providing better voice experience
+
+Speech object can be attached to any `message` response type.
+
+```json
+{
+  "recipient":{
+    "id":"<USER_ID>"
+  },
+  "sender":{
+    "id":"<CHANNEL_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "message":{
+    "text":"hello, world!",
+    "voice": {
+      "ssml": "SSML alternative", // optional
+      "voice": "cs-CZ-AntoninNeural"
+    }
+  }
+}
+```
+
+## Quick reply suggestions
+
+- `message.text`: (string) - required text message
+
+**incomming event**
+
+- `text` (string) - the text of selected quick reply suggestion
+- `quick_reply.payload` (string) - the content of quick reply
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "timestamp":1458692752478,
+  "mid": "<unique event identification>",
+  "message":{
+    "text":"hello, world!",
+	 "quick_reply": {
+	   "payload": "<DEVELOPER DEFINED PAYLOAD>"
+	 }
+  }
+}
+```
+
+**responding to user**
+
+- `text` (string) - text message the suggestions are bound to
+- `quick_replies` (object[]) - list of quick replies
+- `quick_replies[].content_type` (enum) - place for alternative suggestion types
+	- `text` - textual quick reply types
+- `quick_replies[].title` (string) - suggestion title
+- `quick_replies[].payload` (string) - bot payload helps to identify the chosen suggestion
+
+
+```json
+{
+  "sender":{
+    "id":"<CHANNEL_ID>"
+  },
+  "responder":{
+    "id":"<USER_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "message":{
+    "text":"hello, world!",
+	 "quick_replies": [
+	   {
+	      "content_type": "text",
+		  "title": "<SUGGESTION CAPTION>",
+		  "payload": "<DEVELOPER_DEFINED_PAYLOAD>"
+	   }
+	 ]
+  }
+}
+```
+
+## Incomming intent
+
+- `message.intent`: (object) - required
+- `message.intent.intent`: (string|string[]) - the intent
+- `[message.intent.score]`: (number) - detected intent score (0.0 - 1.0)
+- `[message.intent.entities]`: (object[]) - optional array of entities
+- `message.intent.entities.entity`: (string) - detected entity name
+- `message.intent.entities.value`: (string) - detected entity value
+- `[message.intent.entities.score]`: (number) - detected entity score (0.0 - 1.0)
+- `[message.text]`: (string) - optional text uterance
+
+**incomming event**
+
+```json
+{
+  "sender": {
+    "id":"<USER_ID>"
+  },
+  "recipient": {
+    "id":"<CHANNEL_ID>"
+  },
+  "timestamp":1458692752478,
+  "mid": "<unique event identification>",
+  "message": {
+    "intent": {
+        "intent": "detected-intent",
+        "entities": [ // optional
+            { "entity": "entity-name", "value": "entity-value" }
+        ]
+    },
+    "text":"hello, world!" // optional
+  }
+}
+```
+
+**responding to user: not available**
+
+## Postback event
+
+- `postback.payload` (string) - required
+- `postback.title` (string) - optional button title, or call to action
+- `postback.target_app_id` (string,enum) - event is targetted for a special app
+    - `PRIMARY` - the primary application of a channel
+    - `OWNER` - thread owner (default)
+
+**incomming event**
+
+The postback is a background event. It could be visible, if there is a `title` attribute.
+
+```json
+{
+  "sender": {
+    "id": "<USER_ID>"
+  },
+  "recipient":{
+    "id": "<CHANNEL_ID>"
+  },
+  "timestamp": 1458692752478,
+  "mid": "<unique event identification>",
+  "postback":{
+    "payload": "<USER_DEFINED_PAYLOAD>",
+	"title": "<OPTIONAL_CTA_TITLE>",
+	"target_app_id": "<OPTIONAL_TARGET_APP>"
+  }
+}
+```
+
+
+**responding to user**
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "postback":{
+    "payload": "<USER_DEFINED_PAYLOAD>",
+  }
+}
+```
+
+# Attachments
+
+## Attachment: media (audio, video, image, file)
+
+**incomming event**
+
+- `message.attachments` (object[]) - attachment type
+- `message.attachments[].type` (enum) - attachment type
+	- `audio`
+	- `video`
+	- `image`
+	- `file`
+- `message.attachments[].payload.url` (string) - url of media content
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "timestamp":1458692752478,
+  "mid": "<unique event identification>",
+  "message":{
+    "attachments": [
+		{
+		  "type":"image",
+		  "payload":{
+			 "url": "<MEDIA URL>"
+		  }
+		}
+	 ]
+  }
+}
+```
+
+**responding to user**
+
+- `message.attachment.type` (enum) - attachment type
+	- `audio`
+	- `video`
+	- `image`
+	- `file`
+	- `template` - has different format of properties
+- `message.attachment.payload.url` (string) - url to media content
+- `message.attachment.payload.is_reusable` (string) - optionally tells the channel adapter to cache the content
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "message":{
+    "attachment":{
+      "type":"image",
+      "payload":{
+        "url":"<MEDIA URL>",
+        "is_reusable":true // optional
+      }
+    }
+  }
+}
+```
+
+## Button (element description)
+
+- `type` (enum) - button type
+    - `postback`
+    - `web_url`
+- `url` (string) - link for `web_url` button
+- `payload` (string) - developer defined payload for `postback` button
+
+**URL button**
+
+Opens a web page.
+
+```json
+{
+  "type": "web_url",
+  "url": "<TARGET URL>",
+  "title": "<VISIBLE CAPTION>"
+}
+```
+
+**Postback button**
+
+Sends a postback to the bot, that created the button regardless who's the current thread owner.
+
+```json
+{
+  "type": "postback",
+  "payload": "<DEVELOPER DEFINED PAYLOAD>",
+  "title": "<VISIBLE CAPTION>"
+}
+```
+
+## Attachment: template
+
+- `message.attachment.type` (enum) - attachment type
+	- `template`
+- `message.attachment.payload.template_type` (enum)
+	- `button` - for the button template
+	- `generic` - for the carousel of cards
+
+**incomming event: not available**
+
+**sending a button template**
+
+- `message.attachment.payload.text` (string) - text above buttons
+- `message.attachment.payload.buttons` (Button[]) - list of buttons (1-3)
+
+```json
+{
+  "recipient":{
+    "id":"<ID>"
+  },
+  "message":{
+    "attachment":{
+      "type":"template",
+      "payload":{
+        "template_type":"button",
+        "text":"<TEXT ABOVE BUTTONS>",
+        "buttons":[
+          {
+  				"type": "postback",
+  				"payload": "<DEVELOPER DEFINED PAYLOAD>",
+  				"title": "<VISIBLE CAPTION>"
+		    }
+        ]
+      }
+    }
+  }
+}
+```
+
+**sending a carousel of cards (generic template)**
+
+- `message.attachment.payload.elements` (object[]) - list of cards
+- `message.attachment.payload.elements[].title` (string) - card title
+- `message.attachment.payload.elements[].subtitle` (string) - optional card subtitle
+- `message.attachment.payload.elements[].buttons` (Button[]) - optional buttons (0-3)
+
+```json
+{
+  "recipient":{
+    "id":"<ID>"
+  },
+  "message":{
+    "attachment":{
+      "type":"template",
+      "payload":{
+        "template_type":"generic",
+        "elements":[
+           {
+            "title":"<REQUIRED CARD TITLE>",
+            "image_url":"<IMAGE URL>", // optional
+            "subtitle":"<SUBTITLE TEXT>", // optional
+            "buttons":[ // optional
+              {
+                "type": "postback",
+                "payload": "<DEVELOPER DEFINED PAYLOAD>",
+                "title": "<VISIBLE CAPTION>"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+# Handover protocol
+
+The protocol allows do orchestrate the conversation and makes bot able to decide, which skill should handle the conversation.
+
+## Pass thread - transfering the context to another application
+
+**passing a thread**
+
+
+- `target_app_id` (string,enum) - application to pass the thread to
+    - `PRIMARY` - the primary application of a channel
+- `metadata` (string) - optional metadata to pass within the pass thread event
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "target_app_id": "<TARGET_APP>",
+  "metadata": "<OPTIONAL_STRING_PAYLOAD>"
+}
+```
+
+**incomming event**
+
+The postback is a background event. It could be visible, if there is a `title` attribute.
+
+- `pass_thread_control.new_owner_app_id` (string) - identifier of the target app
+- `pass_thread_control.previous_owner_app_id` (string) - id of the last thread owner app
+- `pass_thread_control.metadata` (string) - optional metadata from the original event
+- `context` (object) - shared context if the app is subscribed to it's updates
+- `context.timestamp` (number) - unix timestamp of the last modification of shared context
+
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "timestamp":1458692752478,
+  "mid": "<unique event identification>",
+  "pass_thread_control":{
+    "new_owner_app_id": "<TARGET_APP_ID>",
+    "previous_owner_app_id": "<PREVIOUS_APP_ID>",
+	"metadata": "<OPTIONAL_STRING_PAYLOAD>"
+  },
+  "context": {
+    "timestamp": 129392434398
+     // if the app is subscribed to shared context updates
+  }
+}
+```
+
+## Passing thread with text
+
+To make the target application able to answer the incomming event it's possible to include a previous text event from the user.
+
+- `message.text`: (string) - text uterance
+
+**passing a thread**
+
+```json
+{
+    ...
+    "target_app_id": "<TARGET_APP>",
+    "message":{
+        "text": "<TEXT_TO_BE_PROCESSED_WITH_TARGET_APP>"
+    }
+}
+```
+
+**incomming event**
+
+```json
+{
+    ...
+    "pass_thread_control":{
+        "new_owner_app_id": "<TARGET_APP_ID>",
+        "previous_owner_app_id": "<PREVIOUS_APP_ID>"
+    },
+    "message":{
+        "text": "<TEXT_TO_BE_PROCESSED_WITH_TARGET_APP>"
+    }
+}
+```
+
+## Passing thead with an intent
+
+It's also possible to to pass the thread with an intent
+
+- `message.intent`: (string) - required
+- `[message.entities]`: (object[]) - optional array of entities
+- `message.entities.entity`: (string) - detected entity name
+- `message.entities.value`: (string) - detected entity value
+- `[message.entities.score]`: (number) - detected entity confidence (0.0 - 1.0)
+- `[message.text]`: (string) - optional text uterance
+
+**passing a thread**
+
+```json
+{
+    ...
+    "target_app_id": "<TARGET_APP>",
+    "message":{
+	    "intent":"received-intent",
+        "entities": [ // optional
+            { "entity": "entity-name", "value": "entity-value" }
+        ],
+        "text":"hello, world!" // optional
+    }
+}
+```
+
+**incomming event**
+
+```json
+{
+  ...
+  "pass_thread_control":{
+    "new_owner_app_id": "<TARGET_APP_ID>",
+    "previous_owner_app_id": "<PREVIOUS_APP_ID>"
+  },
+  "message":{
+	 "intent":"received-intent",
+    "entities": [
+      { "entity": "entity-name", "value": "entity-value" }
+    ],
+    "text":"hello, world!"
+  }
+}
+```
+
+## Passing the thread to trigger the specific action or dialogue
+
+To be able to pass the thread to a specific dialogue of a specific bot, a postback can be bundled in pass thread event. For example, it's useful when passing a thread to human agent.
+
+- `postback.payload` (string) - required - will be passed to target application
+
+**incomming event**
+
+The postback is a background event. It could be visible, if there is a `title` attribute.
+
+```json
+{
+  ...
+  "target_app_id": "<TARGET_APP>",
+  "postback":{
+    "payload": "<USER_DEFINED_PAYLOAD>"
+  }
+}
+```
+
+**incomming event**
+
+```json
+{
+  ...
+  "pass_thread_control":{
+    "new_owner_app_id": "<TARGET_APP_ID>",
+    "previous_owner_app_id": "<PREVIOUS_APP_ID>"
+  },
+  "postback":{
+    "payload": "<USER_DEFINED_PAYLOAD>"
+  }
+}
+```
+
+# Sharing the conversation context between skills
+
+## Setting the context and listening to updates
+
+Each conversation has an own key-value store of shared data.
+
+**setting a shared context**
+
+The shared context is changed just when the following request is received by orchestrator.
+
+- `set_context` (object) - keys and values to be changed
+- `set_context.<KEY>` (any) - the changed value
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "set_context": {
+    "<KEY>": "<VALUE>"
+  }
+}
+```
+
+**getting notified**
+
+The application will get notified, if
+
+- a prop, the app is subrcibed to, has been changed
+- the app is not an emmiter of the change
+
+There's only one object to be received
+
+- `set_context` (object) - new context of the conversation
+
+```json
+{
+  "sender":{
+    "id":"<USER_ID>"
+  },
+  "recipient":{
+    "id":"<CHANNEL_ID>"
+  },
+  "set_context": {
+     "<KEY>": "<VALUE>"
+  }
+}
+```
+
+> When handover event occurs, the target application will receive the whole context wihin a `context` object
+
+# Tracking protocol
+
+The protocol allows to attach usefull informations from dialogue platform to source conversation.
+
+## Attaching tracking events to the bot response
+
+In ideal case, a tracking event should be sent after all conversation response events.
+
+- `tracking` (object) - tracking object container
+- `tracking.events[].type` (enum:log,report,conversation,audit,user) - category of the tracking event
+- `tracking.events[].category` (string) - category of the tracking event
+- `tracking.events[].label` (string) - optional label of the tracking event
+- `tracking.events[].value` (number) - optional numeric value of the tracking event - 0 by default
+- `tracking.events[].payload` (object) - optional unstructured data related to tracking event
+- `tracking.meta` (object) - optional metadata related to response events
+- `tracking.meta.actions` (string[]) - list of dispatched actions
+- `tracking.meta.intent` (string) - detected intent
+- `tracking.meta.confidence` (number) - used confidence threshold
+- `tracking.meta.intents` ({ intent: string, score number }) - detailed intent detection breakdown
+- `tracking.meta.entities` ({ entity: string, value: any, score number }) - detected entities
+
+```json
+{
+  ...
+  "response_to_mid": "abc123",
+  "tracking": {
+        "events": [ // optional
+            {
+                "type": "",
+                "category": "<TRACKING_CATEGORY>",
+                "label": "<TRACKING_LABEL>", // optional
+                "value": 1, // optional
+                "payload": {} // optional
+            }
+        ],
+        "meta": {
+            "actions": ["start"],
+            "intent": null,
+            "confidence": 0.86
+        }
+  }
+}
+```
+
+# Other events
+
+## Sender action event (typing)
+
+This event enhances a text channel conversation.
+
+- `sender_action`: (enum) - optinal alternative for voice interface
+	- `typing_on` - show typing indicator
+	- `typing_off` - hide a typing indicator
+
+**incomming event**
+
+```json
+{
+  "recipient": {
+    "id": "<CHANNEL_ID>"
+  },
+  "sender": {
+    "id": "<USER_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "sender_action": "typing_off"
+}
+```
+
+**responding to user**
+
+```json
+{
+  "recipient": {
+    "id": "<USER_ID>"
+  },
+  "sender": {
+    "id": "<CHANNEL_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "sender_action": "typing_on"
+}
+```
+
+## Wait event - for synchronous responses
+
+This event helps to make a pause between visual messaging events at synchronous response mode.
+
+**incomming event: not available**
+
+**responding to user**
+
+the event is ignored in asynchronous communication
+
+- `wait`: (number) - number of milisecods to wait
+
+```json
+{
+  "recipient": {
+    "id": "<USER_ID>"
+  },
+  "sender": {
+    "id": "<CHANNEL_ID>"
+  },
+  "response_to_mid": "source event identification",
+  "wait": 1000
+}
+```
+
+# Application subscribtion
+
+Each app can be subscribed to following events
+
+- `messages` (boolean) - text messages and quick replies
+- `handovers` (boolean) - handover events
+- `postbacks` (boolean) - postbacks
+- `senderActions` (boolean) - client side sender actions
+- `contextUpdates` (boolean) - subscribe to context updates
+- `standbyIncoming` (boolean) - the app will receive all standby messages from page
+- `standbyOutgoing` (boolean) - the app will receive all standby messages from applications
+- `tracking` (boolean) - the app will receive all tracking events sent to orchestrator even if it's not a thread owner
