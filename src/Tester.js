@@ -4,6 +4,7 @@
 'use strict';
 
 const assert = require('assert');
+const deepExtend = require('deep-extend');
 const Processor = require('./Processor');
 const Request = require('./Request');
 const { MemoryStateStorage } = require('./tools');
@@ -372,14 +373,19 @@ class Tester {
      * Assert, that state contains a subset of provided value
      *
      * @param {object} object
+     * @param {boolean} deep
      * @example
      *
      * t.stateContains({ value: true });
      */
-    stateContains (object) {
+    stateContains (object, deep = false) {
         const { state } = this.getState();
 
-        assert.deepEqual(state, { ...state, ...object }, 'Conversation state equals');
+        assert.deepEqual(
+            state,
+            deep ? deepExtend({}, state, object) : { ...state, ...object },
+            'Conversation state equals'
+        );
     }
 
     /**
