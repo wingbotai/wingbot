@@ -265,7 +265,7 @@ function onInteractionHandler (
         req,
         actions,
         lastAction,
-        state,
+        // state,
         // data,
         skill,
         events,
@@ -293,7 +293,7 @@ function onInteractionHandler (
                 lang,
                 [pagePathVar]: pagePath,
                 [userAgentVar]: userAgent
-            } = state;
+            } = req.state;
 
             const ua = uaParserJs(userAgent);
 
