@@ -32,7 +32,20 @@ const {
 function getVoiceControlFromParams (params, lang = null) {
     const voiceControl = {};
 
-    const voiceControlProps = ['speed', 'pitch', 'volume', 'voice', 'style', 'language', 'timeout'];
+    // @see VoiceControl src/Responder.js
+    const voiceControlProps = [
+        'voice',
+        'language',
+        'style',
+        'speed',
+        'pitch',
+        'volume',
+        'timeout',
+        'minTimeout',
+        'endTimeout',
+        'recognitionLanguage',
+        'recognitionEngine'
+    ];
 
     voiceControlProps.forEach((prop) => {
         if (params[prop]) {

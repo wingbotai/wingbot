@@ -322,4 +322,96 @@ describe('Message voice control', () => {
             });
         });
     });
+
+    describe('Recognition control', () => {
+        it('should pass recognition in voice control', async () => {
+            const bot = new Router();
+            const plugins = new Plugins();
+            plugins.registerFactory('messageResolver', message);
+            bot.use(
+                'messageResolver',
+                plugins.getWrappedPlugin(
+                    'messageResolver',
+                    {
+                        text: [
+                            {
+                                l: 'cs',
+                                t: [
+                                    'czech message'
+                                ]
+                            },
+                            {
+                                l: 'en',
+                                t: [
+                                    'english message'
+                                ]
+                            }
+                        ],
+                        hasCondition: false,
+                        conditionFn: '(req, res) => {\n    return true;\n}',
+                        replies: [],
+                        speed: [
+                            {
+                                l: 'cs',
+                                t: 1.01
+                            },
+                            {
+                                l: 'en',
+                                t: 1.05
+                            }
+                        ],
+                        pitch: [
+                            {
+                                l: 'en',
+                                t: 12
+                            }
+                        ],
+                        volume: [
+                            {
+                                l: 'cs',
+                                t: null
+                            }
+                        ],
+                        recognitionEngine: [
+                            {
+                                l: 'cs',
+                                t: 'Microsoft'
+                            },
+                            {
+                                l: 'en',
+                                t: 'Google'
+                            }
+                        ]
+                    },
+                    {},
+                    { isLastIndex: true }
+                )
+            );
+
+            const t = new Tester(bot);
+
+            // get czech recognition
+            t.setState({ lang: 'cs' });
+            t.setFeatures([FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
+
+            const { voice } = t.lastRes().response.message;
+            assert.deepEqual(voice, {
+                speed: 1.01,
+                recognitionEngine: 'Microsoft'
+            });
+
+            // get english recognition
+            t.setState({ lang: 'en' });
+            t.setFeatures([FEATURE_VOICE]);
+            await t.postBack('messageResolver', null, null, null);
+
+            const { voice: voice2 } = t.lastRes().response.message;
+            assert.deepEqual(voice2, {
+                speed: 1.05,
+                pitch: 12,
+                recognitionEngine: 'Google'
+            });
+        });
+    });
 });

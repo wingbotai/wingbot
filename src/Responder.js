@@ -67,6 +67,10 @@ Object.freeze(ExpectedInput);
  * @prop {string} [language]
  * @prop {string} [voice]
  * @prop {number} [timeout]
+ * @prop {number} [minTimeout]
+ * @prop {number} [endTimeout]
+ * @prop {string} [recognitionLanguage]
+ * @prop {string} [recognitionEngine]
  */
 
 /**
