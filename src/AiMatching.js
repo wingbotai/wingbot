@@ -352,6 +352,11 @@ class AiMatching {
             });
     }
 
+    _escapeRegExp (string) {
+        return string
+            .replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+    }
+
     /**
      * Create a rule to be cached inside a routing structure
      *
@@ -402,7 +407,7 @@ class AiMatching {
                 } else {
                     regexText = exp.replace(/^#/, '')
                         .split('|')
-                        .map((s) => `^${s}$`.toLowerCase())
+                        .map((s) => `^${this._escapeRegExp(s)}$`.toLowerCase())
                         .join('|');
                 }
 

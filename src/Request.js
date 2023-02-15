@@ -688,7 +688,7 @@ class Request {
         return (this._postback === null
             && this.message !== null
             && !this.message.quick_reply
-            && !!this.message.text)
+            && typeof this.message.text === 'string')
             || this._stickerToSmile() !== '';
     }
 
@@ -746,11 +746,13 @@ class Request {
             return '';
         }
 
-        if (tokenized && this.message.text) {
-            return tokenize(this.message.text);
+        const { text } = this.message;
+
+        if (tokenized && text) {
+            return tokenize(text) || text.trim();
         }
 
-        return this.message.text || this._stickerToSmile() || '';
+        return text || this._stickerToSmile() || '';
     }
 
     /**

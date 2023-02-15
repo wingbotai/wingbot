@@ -44,6 +44,7 @@ let uq = 1;
 /** @typedef {import('./Request').IntentAction} IntentAction */
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder')} Responder */
+/** @typedef {import('./Router').Resolver} Resolver */
 /** @typedef {import('./wingbot/CachedModel').Result} Result */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Phrases} Phrases */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').EntityDetector} EntityDetector */
@@ -412,7 +413,7 @@ class Ai {
      * - emojis (`'#😄🙃😛'`)
      *
      * @param {IntentRule|IntentRule[]} intent
-     * @returns {Function} - the middleware
+     * @returns {Resolver} - the middleware
      * @memberOf Ai
      * @example
      * const { Router, ai } = require('wingbot');

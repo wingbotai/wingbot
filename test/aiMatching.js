@@ -304,6 +304,22 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
+        it('should compare optional equality', () => {
+            const rule = ai.preprocessRule([{
+                entity: 'foo', op: 'eq', compare: ['yes yes č'], optional: true
+            }]);
+            const stringRule = ai.preprocessRule(['@foo?=yes yes č']);
+
+            const goodFoo = entity('foo', 'yes yes č');
+
+            const goodReq = fakeReq([], [goodFoo]);
+
+            const winningIntent = intent(null, [goodFoo], 0.949);
+
+            assert.deepEqual(ai.match(goodReq, rule), winningIntent);
+            assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+        });
+
         it('should compare inequality', () => {
             const rule = ai.preprocessRule([{ entity: 'foo', op: 'ne', compare: ['yes'] }]);
             const stringRule = ai.preprocessRule(['@foo!=yes']);

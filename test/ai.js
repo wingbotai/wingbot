@@ -274,7 +274,7 @@ describe('<Ai>', function () {
             });
 
             // @ts-ignore
-            bot.use(ai.match('#f[au]n[ck]y|bar'), (req, res) => {
+            bot.use(ai.match('#fancy|funky|bar'), (req, res) => {
                 res.text('Fancy funky match');
             });
 
