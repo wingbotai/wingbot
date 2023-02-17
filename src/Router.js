@@ -15,18 +15,48 @@ function defaultPathContext () {
 }
 
 /**
- *
+ * @typedef {true|false|null|undefined|-1|void} RoutingInstruction
+ */
+
+/**
+ * @callback PostBackDataCallback
+ * @returns {object|Promise<object>}
+ */
+
+/**
+ * @callback PostBack postback function
+ * @param {string} [action]
+ * @param {object|PostBackDataCallback} [data]
+ * @param {boolean} [dispatchSync]
+ * @returns {Promise<RoutingInstruction>}
+ */
+
+/**
  * @template {object} [S=object]
  * @template {object} [C=object]
  * @callback Resolver processing function
  * @param {Request<S,C>} [req]
  * @param {Responder} [res]
- * @param {Function} [postBack]
+ * @param {PostBack} [postBack]
+ * @returns {RoutingInstruction|Promise<RoutingInstruction>}
  */
 
 /**
+ * @template {object} [S=object]
+ * @template {object} [C=object]
+ * @callback Reduce processing function
+ * @param {Request<S,C>} [req]
+ * @param {Responder} [res]
+ * @param {PostBack} [postBack]
+ * @param {string} [path]
+ * @returns {Promise<RoutingInstruction>}
+ */
+
+/**
+ * @template {object} [S=object]
+ * @template {object} [C=object]
  * @typedef {object} IRouter
- * @prop {Function} reduce
+ * @prop {Reduce<S,C>} reduce
  */
 
 /**

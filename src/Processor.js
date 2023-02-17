@@ -241,14 +241,14 @@ class Processor extends EventEmitter {
     }
 
     _createPostBack (postbackAcumulator, req, res, features) {
-        const postBack = (action, inputData = {}, dontWaitTillEndOfLoop = false) => {
+        const postBack = (action, inputData = {}, dispatchSync = false) => {
             let data = inputData;
             if (typeof data === 'function') {
                 // @ts-ignore
                 data = data();
             }
 
-            if (dontWaitTillEndOfLoop) {
+            if (dispatchSync) {
                 let previousAction;
                 return Promise.resolve(data)
                     .then((resolvedData) => {
@@ -283,7 +283,7 @@ class Processor extends EventEmitter {
                 postbackAcumulator.push({ action, data, features });
             }
 
-            return Promise.resolve();
+            return Promise.resolve(undefined);
         };
 
         return postBack;

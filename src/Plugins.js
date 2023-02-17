@@ -76,6 +76,7 @@ class Plugins {
      * @param {object} [context]
      * @param {boolean} [context.isLastIndex]
      * @param {Router} [context.router]
+     * @param {object} [context.configuration]
      * @example
      *
      * const { Router } = require('wingbot');
@@ -99,7 +100,7 @@ class Plugins {
         name,
         paramsData = {},
         items = new Map(),
-        context = { isLastIndex: true }
+        context = { isLastIndex: true, configuration: {} }
     ) {
         let useItems = items;
 
@@ -119,7 +120,7 @@ class Plugins {
             .map(([k, e]) => ({ [k]: e }))
             .reduce(Object.assign, {});
 
-        const customFn = this.getPluginFactory(name, cleanParams);
+        const customFn = this.getPluginFactory(name, cleanParams, context.configuration);
         if (typeof customFn === 'object') {
             // this is an attached router
 
