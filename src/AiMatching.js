@@ -127,11 +127,19 @@ class AiMatching {
     constructor (ai = { confidence: 0.8 }) {
         /**
          * When the entity is optional, the final score should be little bit lower
+         * (0.002 by default)
+         *
+         * @type {number}
+         */
+        this.optionalHandicap = 0.002;
+
+        /**
+         * When the entity is equal-optional, the final score should be little bit lower
          * (0.001 by default)
          *
          * @type {number}
          */
-        this.optionalHandicap = 0.001;
+        this.optionalEqualityHandicap = 0.001;
 
         /**
          * When there are additional entities then required add a handicap for each unmatched entity
@@ -476,8 +484,10 @@ class AiMatching {
                     useState
                 );
 
-            const allOptional = entities.every((e) => e.optional);
-            if (score === 0 && !allOptional) {
+            const allOptional = entities.every((e) => e.optional
+                && (!e.op || reqEntities.every((n) => n.entity !== e.entity)));
+
+            if (score <= 0 && !allOptional) {
                 return null;
             }
             const countOfAdditionalItems = Math.max(
@@ -506,6 +516,13 @@ class AiMatching {
                 ));
 
                 finalScore -= (matchedEntitiesTextLength / textLength) * remainingScore;
+            }
+
+            // eslint-disable-next-line no-console,max-len,object-curly-newline
+            // console.log({ finalScore, rule, baseScore, score, allOptional, entities, reqEntities, matchedEntitiesTextLength, countOfAdditionalItems });
+
+            if (finalScore <= 0) {
+                return null;
             }
 
             return {
@@ -547,7 +564,7 @@ class AiMatching {
     }
 
     _getMultiMatchGain (entitiesScore, matchedCount, fromState = 0) {
-        return (this.multiMatchGain * entitiesScore) ** (matchedCount - fromState);
+        return (this.multiMatchGain * entitiesScore) ** Math.max(matchedCount - fromState, 0);
     }
 
     /**
@@ -586,10 +603,12 @@ class AiMatching {
                     : (x) => x
             );
 
-        // console.log({ entitiesScore, handicap, matched, minScore, requestIntent })
+        // eslint-disable-next-line no-console,max-len,object-curly-newline
+        // console.log({ wantedEntities, entitiesScore, handicap, matched, minScore, requestIntent });
 
-        const allOptional = wantedEntities.every((e) => e.optional);
-        if (entitiesScore === 0 && !allOptional) {
+        const allOptional = wantedEntities.every((e) => e.optional
+            && (!e.op || useEntities.every((n) => n.entity !== e.entity)));
+        if (entitiesScore <= 0 && !allOptional) {
             return { score: 0, entities: [] };
         }
 
@@ -597,9 +616,10 @@ class AiMatching {
         const scoreWithHandicap = normalizedScore - handicap;
         const multiMatchGain = this._getMultiMatchGain(entitiesScore, matched.length, fromState);
 
-        const score = scoreWithHandicap * multiMatchGain;
+        const score = Math.round((scoreWithHandicap * multiMatchGain) * 10000) / 10000;
 
-        // console.log({ IMS: score, normalizedScore, scoreWithHandicap, multiMatchGain });
+        // eslint-disable-next-line no-console,max-len,object-curly-newline
+        // console.log({ IMS: score, normalizedScore, scoreWithHandicap, multiMatchGain, wantedEntities });
 
         return {
             score,
@@ -674,19 +694,21 @@ class AiMatching {
                     ._entityIsMatching(wanted.op, wanted.compare, undefined, requestState);
             }
 
-            if (!matching && !wanted.optional) {
+            if (!matching && (!wanted.optional || entityExists)) {
                 return {
                     score: 0, handicap: 0, matched: [], minScore, fromState
                 };
             }
 
-            if (!matching) { // optional
+            if (!matching) { // && optional && !entityExists
                 handicap += this.redundantEntityHandicap;
                 continue;
             }
 
             if (wanted.optional) {
-                handicap += this.optionalHandicap;
+                handicap += wanted.op
+                    ? this.optionalEqualityHandicap
+                    : this.optionalHandicap;
             }
 
             if (wanted.op === COMPARE.NOT_EQUAL) {
@@ -716,7 +738,8 @@ class AiMatching {
             }
         }
 
-        // console.log({ sum, handicap, rl: requestEntities.length, ml: matched.length });
+        // eslint-disable-next-line no-console,max-len
+        // console.log({ wantedEntities, sum, handicap, rl: requestEntities.length, ml: matched.length });
 
         // @todo - neni mozne, by doslo k negativnimu handicapu
         handicap += (requestEntities.length + fromState - matched.length)

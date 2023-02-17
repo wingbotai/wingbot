@@ -568,6 +568,7 @@ class ReturnSender {
                     .log(this._senderId, sent, incomming, meta));
             }
         } catch (e) {
+            console.log('meta', meta); // eslint-disable-line no-console
             await Promise.resolve(reportError(e, this._incommingMessage, this._senderId));
         }
 

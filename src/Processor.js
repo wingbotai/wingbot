@@ -312,7 +312,7 @@ class Processor extends EventEmitter {
 
             await this.stateStorage.saveState(state);
         } catch (e) {
-            this.options.log.error(`failed to log error: ${err.message}`, e);
+            this.options.log.error(`failed to log error "${err.message}" because: ${e.message}`, e, err);
         }
     }
 

@@ -54,7 +54,7 @@ describe('<AiMatching>', () => {
             const req = fakeReq([i], [e], 't', { stateVar: 'v' });
             const badReq = fakeReq([i], [e], 't', { stateVar: 'x' });
 
-            assert.deepEqual(ai.match(req, rule), { ...i, score: 1.1189912204122 }, 'should match');
+            assert.deepEqual(ai.match(req, rule), { ...i, score: 1.119 }, 'should match');
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
@@ -137,8 +137,8 @@ describe('<AiMatching>', () => {
 
             const badReq = fakeReq([intent('bad')]);
 
-            assert.deepEqual(ai.match(fooReq, rule), { ...foo, score: 1.0932479999999998 });
-            assert.deepEqual(ai.match(barReq, rule), { ...bar, score: 1.0932479999999998 });
+            assert.deepEqual(ai.match(fooReq, rule), { ...foo, score: 1.0921 });
+            assert.deepEqual(ai.match(barReq, rule), { ...bar, score: 1.0921 });
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
         });
 
@@ -184,7 +184,7 @@ describe('<AiMatching>', () => {
             const winningIntent = intent(
                 null,
                 [foo, { ...foo2, score: 0.96, value: undefined }],
-                1.1447999999999998
+                1.1436
             );
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
@@ -304,20 +304,42 @@ describe('<AiMatching>', () => {
             assert.strictEqual(ai.match(badReq, stringRule), null, 'should not match');
         });
 
+        it('should cope with optional entities and empty requests', () => {
+            const stringRule = ai.preprocessRule(['@foo?=yes yes č']);
+            const optionalRule = ai.preprocessRule(['@foo?']);
+
+            const emptyIntentReq = fakeReq([{ intent: 'intent', score: 0.949 }], []);
+            const emptyReq = fakeReq([], []);
+
+            assert.deepStrictEqual(ai.match(emptyReq, optionalRule), null);
+            assert.deepStrictEqual(ai.match(emptyIntentReq, stringRule), null);
+            assert.deepStrictEqual(ai.match(emptyReq, stringRule), null);
+        });
+
         it('should compare optional equality', () => {
             const rule = ai.preprocessRule([{
                 entity: 'foo', op: 'eq', compare: ['yes yes č'], optional: true
             }]);
             const stringRule = ai.preprocessRule(['@foo?=yes yes č']);
+            const intentStringRule = ai.preprocessRule(['intent', '@foo?=yes yes č']);
 
             const goodFoo = entity('foo', 'yes yes č');
+            const badFoo = entity('foo', 'no');
 
             const goodReq = fakeReq([], [goodFoo]);
+            const emptyIntentReq = fakeReq([{ intent: 'intent', score: 0.949 }], []);
+            const badReq = fakeReq([], [badFoo]);
 
             const winningIntent = intent(null, [goodFoo], 0.949);
+            const winningEmptyIntent = intent('intent', [], 0.929);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.deepEqual(ai.match(goodReq, stringRule), winningIntent);
+
+            assert.deepEqual(ai.match(emptyIntentReq, intentStringRule), winningEmptyIntent);
+
+            assert.strictEqual(ai.match(badReq, rule), null);
+            assert.strictEqual(ai.match(badReq, stringRule), null);
         });
 
         it('should compare inequality', () => {
@@ -330,7 +352,7 @@ describe('<AiMatching>', () => {
             const goodReq = fakeReq([], [goodFoo]);
             const badReq = fakeReq([], [badFoo]);
 
-            const winningIntent = intent(null, [goodFoo], 0.949);
+            const winningIntent = intent(null, [goodFoo], 0.948);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
@@ -360,7 +382,7 @@ describe('<AiMatching>', () => {
             const goodReq = fakeReq([], [goodFoo]);
             const badReq = fakeReq([], [badFoo]);
 
-            const winningIntent = intent(null, [{ entity: 'foo', score: 0.96, value: undefined }], 0.939);
+            const winningIntent = intent(null, [{ entity: 'foo', score: 0.96, value: undefined }], 0.938);
 
             assert.deepEqual(ai.match(goodReq, rule), winningIntent);
             assert.strictEqual(ai.match(badReq, rule), null, 'should not match');
@@ -554,7 +576,7 @@ describe('<AiMatching>', () => {
 
             const fooIntent = intent('intent', [fooEntity], 0.9);
             const goodReq = fakeReq([fooIntent], [fooEntity]);
-            const winningIntent = intent('intent', [fooEntity], 0.42794152307218597);
+            const winningIntent = intent('intent', [fooEntity], 0.4279);
 
             const res = ai.match(goodReq, rule);
             assert.deepEqual(res, winningIntent);
