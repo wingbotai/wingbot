@@ -14,9 +14,7 @@ function defaultPathContext () {
     return { globalIntentsMeta: {}, path: '/*' };
 }
 
-/**
- * @typedef {true|false|null|undefined|-1|void} RoutingInstruction
- */
+/** @typedef {true|false|null|undefined|number|void} RoutingInstruction */
 
 /**
  * @callback PostBackDataCallback
