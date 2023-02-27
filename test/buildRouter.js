@@ -469,7 +469,7 @@ describe('<BuildRouter>', function () {
         await t.postBack('/start');
 
         t.any()
-            .contains('first second third');
+            .contains('first\nsecond\nthird');
     });
 
     it('works with {{$text}} and {{$this}}', async () => {

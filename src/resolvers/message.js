@@ -13,11 +13,13 @@ const {
     getLanguageText,
     getLanguageTextObjects,
     randomizedCompiler,
-    cachedTranslatedCompilator
+    cachedTranslatedCompilator,
+    renderMessageText
 } = require('./utils');
 const {
     FEATURE_SSML, FEATURE_TEXT, FEATURE_VOICE
 } = require('../features');
+const { vars, VAR_TYPES } = require('../utils/stateVariables');
 
 /** @typedef {import('../Responder').VoiceControl} VoiceControl */
 /** @typedef {import('./utils').Translations} Translations */
@@ -180,6 +182,94 @@ function findSupportedMessages (text, features, lang = null) {
     };
 }
 
+const MODE_RANDOM = 'r';
+const MODE_SEQUENCE = 's';
+const MODE_RANDOM_START_SEQUENCE = 'rs';
+
+const ALL_MODES = [MODE_RANDOM, MODE_SEQUENCE, MODE_RANDOM_START_SEQUENCE];
+
+function selectTranslation (resolverId, params, texts, data) {
+    const key = `_R_${resolverId}`;
+    let { lang, [key]: seqState } = data;
+
+    if (texts.length <= 1) {
+        return [
+            texts[0] ? renderMessageText(texts[0].t, data) : '',
+            seqState && resolverId
+                ? vars.expiresAfter(key, null, 1)
+                : {}
+        ];
+    }
+
+    const { mode, persist = null } = params;
+
+    if ((!mode || mode === MODE_RANDOM) && data._expandRandomTexts === true) {
+        return [
+            texts.map((x) => renderMessageText(x.t, data))
+                .join('\n'),
+            {}
+        ];
+    }
+
+    if (!lang) {
+        const [firstText = { l: null }] = getLanguageTextObjects(params.text);
+        lang = firstText.l || 'X';
+    }
+
+    if (mode === MODE_RANDOM || !ALL_MODES.includes(mode)) {
+        const index = data._expandRandomTexts
+            ? 1
+            : Math.floor(Math.random() * texts.length);
+
+        return [
+            renderMessageText(texts[index].t, data),
+            seqState
+                ? vars.expiresAfter(key, null, 1)
+                : {}
+        ];
+    }
+
+    if (!seqState
+        || seqState.l !== lang
+        || seqState.n > texts.length
+        || seqState.i >= texts.length) {
+
+        seqState = {
+            l: lang,
+            n: texts.length,
+            i: mode === MODE_SEQUENCE ? 0 : Math.floor(Math.random() * texts.length)
+        };
+
+        if (mode === MODE_RANDOM_START_SEQUENCE && data._expandRandomTexts) {
+            seqState.i = 1;
+        }
+    } else {
+        seqState = {
+            ...seqState,
+            i: (seqState.i + 1) % texts.length
+        };
+    }
+
+    let setState;
+
+    if (persist === VAR_TYPES.SESSION_CONTEXT) {
+        setState = vars.sessionContext(key, seqState);
+    } else if (persist === VAR_TYPES.SESSION_DIALOGUE_CONTEXT) {
+        setState = vars.sessionContext(key, seqState, null); // same as interaction
+    } else if (persist === VAR_TYPES.DIALOG_CONTEXT) {
+        setState = vars.dialogContext(key, seqState);
+    } else {
+        setState = {
+            [key]: seqState
+        };
+    }
+
+    return [
+        renderMessageText(texts[seqState.i].t, data),
+        setState
+    ];
+}
+
 /** @typedef {import('../BuildRouter').BotContext} BotContext */
 /** @typedef {import('../Router').Resolver} Resolver */
 
@@ -192,7 +282,7 @@ function findSupportedMessages (text, features, lang = null) {
 function message (params, context = {}) {
     const {
         // @ts-ignore
-        isLastIndex, isLastMessage, linksMap, configuration
+        isLastIndex, isLastMessage, linksMap, configuration, resolverId
     } = context;
     if (typeof params.text !== 'string' && !Array.isArray(params.text)) {
         throw new Error('Message should be a text!');
@@ -225,15 +315,14 @@ function message (params, context = {}) {
             data.lang
         );
 
-        // find random alternative
-        const textTemplate = randomizedCompiler([{
-            l: data.lang,
-            t: supportedText.translations.map((x) => x.t)
-        }]);
+        const [text, seqState] = selectTranslation(
+            resolverId,
+            params,
+            supportedText.translations,
+            data
+        );
 
-        const text = textTemplate(data)
-            .trim();
-
+        res.setState(seqState);
         res.setData({ $this: text });
         if (condition && !condition(req, res)) {
             res.setData({ $this: null });

@@ -127,4 +127,110 @@ describe('vars', () => {
 
     });
 
+    describe('vars.expiresAfter()', () => {
+
+        /** @type {Tester} */
+        let t;
+
+        function wait () {
+            return new Promise((r) => { setTimeout(r, 500); });
+        }
+
+        beforeEach(() => {
+            const root = new Router();
+
+            root.use('start', (req, res) => { res.text('start'); });
+
+            root.use('context', (req, res) => {
+                res.text('context')
+                    .setState(vars.sessionContext('c', 'foo', null));
+            });
+
+            root.use('target', (req, res, postBack) => {
+                res.text('target')
+                    .setState(vars.sessionContext('t', 'foo', true));
+                postBack('bot/hello');
+            });
+
+            const bot = new Router();
+
+            bot.use('hello', (req, res) => { res.text('hello'); });
+
+            bot.use('session', (req, res) => {
+                res.text('session')
+                    .setState(vars.sessionContext('s', 'foo'));
+            });
+
+            bot.use('context', (req, res) => {
+                res.text('context')
+                    .setState(vars.sessionContext('d', 'foo', null));
+            });
+
+            root.use('bot', bot);
+
+            t = new Tester(root, undefined, undefined, { sessionDuration: 400 });
+        });
+
+        it('cleans variable, when state ends', async () => {
+            await t.postBack('bot/session');
+
+            t.stateContains({ s: 'foo' });
+
+            await wait();
+
+            await t.postBack('start');
+
+            t.stateContains({ s: undefined });
+        });
+
+        it('cleans variable, when state ends', async () => {
+            await t.postBack('bot/context');
+
+            t.stateContains({ d: 'foo' });
+
+            await wait();
+
+            await t.postBack('bot/hello');
+
+            t.stateContains({ d: 'foo' });
+
+            await t.postBack('start');
+
+            t.stateContains({ s: undefined });
+        });
+
+        it('is able to use last dialogue path', async () => {
+            await t.postBack('target');
+
+            t.stateContains({ t: 'foo' });
+
+            await wait();
+
+            await t.postBack('bot/hello');
+
+            t.stateContains({ t: 'foo' });
+
+            await t.postBack('start');
+
+            t.stateContains({ s: undefined });
+        });
+
+        it('somehow works in root', async () => {
+            await t.postBack('context');
+
+            t.stateContains({ c: 'foo' });
+
+            await wait();
+
+            await t.postBack('start');
+
+            t.stateContains({ c: 'foo' });
+
+            await t.postBack('bot/hello');
+
+            t.stateContains({ c: undefined });
+        });
+
+    });
+
 });

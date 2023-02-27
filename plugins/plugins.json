@@ -446,6 +446,7 @@
             "availableSince": 3.39,
             "editable": false,
             "isFactory": true,
+            "category": "conversation",
             "inputs": [
                 {
                     "name": "skip",
@@ -467,6 +468,19 @@
                         }
                     ]
                 }
+            ],
+            "items": [
+            ]
+        },
+        {
+            "id": "ai.wingbot.clearMessageSequences",
+            "name": "Clear message sequences state",
+            "description": "Put it in a first interaction of the process, where would you like to have clear states of messages sequences",
+            "availableSince": 3.53,
+            "editable": true,
+            "isFactory": false,
+            "category": "conversation",
+            "inputs": [
             ],
             "items": [
             ]

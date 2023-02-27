@@ -10,7 +10,7 @@ const Responder = require('./Responder');
 const Request = require('./Request');
 const Ai = require('./Ai');
 const ReturnSender = require('./ReturnSender');
-const { mergeState, isUserInteraction } = require('./utils/stateVariables');
+const { prepareState, mergeState, isUserInteraction } = require('./utils/stateVariables');
 
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Intent} Intent */
 /** @typedef {import('./ReducerWrapper')} ReducerWrapper */
@@ -636,6 +636,8 @@ class Processor extends EventEmitter {
                     _snew: false
                 });
             }
+
+            prepareState(state, fromEvent, state._snew);
 
             const features = [
                 ...(this.options.features || []),

@@ -18,6 +18,8 @@ const Router = require('./Router'); // eslint-disable-line no-unused-vars
 const ReducerWrapper = require('./ReducerWrapper'); // eslint-disable-line no-unused-vars
 const { FEATURE_TEXT } = require('./features');
 
+/** @typedef {import('./Processor').ProcessorOptions} ProcessorOptions */
+
 /**
  * Utility for testing requests
  *
@@ -31,7 +33,7 @@ class Tester {
      * @param {Router|ReducerWrapper} reducer
      * @param {string} [senderId=null]
      * @param {string} [pageId=null]
-     * @param {object} [processorOptions={}] - options for Processor
+     * @param {ProcessorOptions} [processorOptions={}] - options for Processor
      * @param {MemoryStateStorage} [storage] - place to override the storage
      *
      * @memberOf Tester
@@ -95,6 +97,7 @@ class Tester {
         this.processor = new Processor(reducer, ({
             stateStorage: this.storage,
             log,
+            // @ts-ignore
             loadUsers: false,
             ...processorOptions
         }));
@@ -168,10 +171,12 @@ class Tester {
     /**
      * Enable tester to expand random texts
      * It joins them into a single sting
+     *
+     * @param {boolean} [fixedIndex]
      */
-    setExpandRandomTexts () {
+    setExpandRandomTexts (fixedIndex) {
         Object.assign(this.testData, {
-            _expandRandomTexts: true
+            _expandRandomTexts: fixedIndex ? 1 : true
         });
     }
 
@@ -381,9 +386,20 @@ class Tester {
     stateContains (object, deep = false) {
         const { state } = this.getState();
 
+        const clean = Object.fromEntries(
+            Object.entries(object)
+                .filter(([k, v]) => {
+                    if (v === null || v === undefined) {
+                        assert.ok(state[k] === null || state[k] === undefined, `Expected state key '${k}' to be empty. Actual: ${JSON.stringify(state[k])}'`);
+                        return false;
+                    }
+                    return true;
+                })
+        );
+
         assert.deepEqual(
             state,
-            deep ? deepExtend({}, state, object) : { ...state, ...object },
+            deep ? deepExtend({}, state, clean) : { ...state, ...clean },
             'Conversation state equals'
         );
     }

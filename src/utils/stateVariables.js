@@ -3,6 +3,8 @@
  */
 'use strict';
 
+const SESSION_DIALOGUE_CONTEXT = 'sd';
+const SESSION_CONTEXT = 's';
 const DIALOG_CONTEXT = 'd';
 const EXPIRES_AFTER = 't';
 
@@ -11,10 +13,26 @@ const EXPIRES_AFTER = 't';
 
 const VAR_TYPES = {
     DIALOG_CONTEXT,
-    EXPIRES_AFTER
+    EXPIRES_AFTER,
+    SESSION_DIALOGUE_CONTEXT,
+    SESSION_CONTEXT
 };
 
+const DIALOGUE_CONTEXT_TYPES = [DIALOG_CONTEXT, SESSION_DIALOGUE_CONTEXT];
+
 const vars = {
+
+    /**
+     * Clears variable with it's metadata
+     *
+     * @param {string} key
+     * @returns {object}
+     */
+    clear (key) {
+        return {
+            [key]: null
+        };
+    },
 
     /**
      * Sets variable, which will be removed, when user leaves the dialogue.
@@ -35,6 +53,29 @@ const vars = {
             [`_~${key}`]: {
                 t: DIALOG_CONTEXT,
                 ...(path && { p: path })
+            }
+        };
+    },
+
+    /**
+     * Sets variable, which will be removed, when new session is created.
+     * **When `dialoguePath` argument is provided, the variable will NOT expire,
+     * when the new session will continue in the same dialogue**
+     *
+     * @param {string} key
+     * @param {*} value
+     * @param {string|boolean} [dialoguePath] - keeps context also within a dialogue
+     * @returns {object}
+     * @example
+     * const { vars } = require('wingbot');
+     * res.setState(vars.sessionContext('myKey', 'foovalue'))
+     */
+    sessionContext (key, value, dialoguePath = false) {
+        return {
+            [key]: value,
+            [`_~${key}`]: {
+                t: dialoguePath === false ? SESSION_CONTEXT : SESSION_DIALOGUE_CONTEXT,
+                ...(dialoguePath && { p: dialoguePath })
             }
         };
     },
@@ -98,7 +139,6 @@ function checkSetState (setState, newState) {
                 delete newState[metaKey]; // eslint-disable-line no-param-reassign
             }
         }
-
     }
 }
 
@@ -114,6 +154,42 @@ function isUserInteraction (req) {
         && (req.isMessage() || req.isPostBack()
             || req.isReferral() || req.isAttachment()
             || req.isTextOrIntent());
+}
+
+function prepareState (state, firstInTurnover, sessionCreated) {
+    if (!sessionCreated) {
+        return;
+    }
+
+    // set right path, when path was set
+    // eslint-disable-next-line guard-for-in
+    for (const key in state) { // eslint-disable-line no-restricted-syntax
+        const match = key.match(/^_~(.+)$/);
+        if (!match) {
+            continue;
+        }
+        const value = state[key];
+        const [, referencedKey] = match;
+
+        if (value.t === SESSION_CONTEXT) {
+            delete state[key]; // eslint-disable-line no-param-reassign
+            delete state[referencedKey]; // eslint-disable-line no-param-reassign
+        }
+
+        if (value.t === SESSION_DIALOGUE_CONTEXT) {
+            if (value.p === state._lastVisitedPath && value.p !== undefined) {
+                // context still matches - make it just DIALOGUE_CONTEXT
+                state[key] = { // eslint-disable-line no-param-reassign
+                    t: DIALOG_CONTEXT,
+                    p: value.p
+                };
+            } else {
+                delete state[key]; // eslint-disable-line no-param-reassign
+                delete state[referencedKey]; // eslint-disable-line no-param-reassign
+            }
+        }
+    }
+
 }
 
 /**
@@ -149,7 +225,9 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
             continue;
         }
         const value = res.newState[key];
-        if (value.t === DIALOG_CONTEXT && typeof value.p === 'undefined') {
+        if (DIALOGUE_CONTEXT_TYPES.includes(value.t) && typeof value.p === 'undefined'
+            && res.newState._lastVisitedPath !== undefined) {
+
             Object.assign(value, { p: res.newState._lastVisitedPath });
         }
     }
@@ -176,6 +254,15 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
             continue;
         }
         switch (value.t) {
+            case SESSION_DIALOGUE_CONTEXT: {
+                if (!lastInTurnover || previousState._lastVisitedPath === undefined) {
+                    break;
+                }
+                if (value.p === true) {
+                    state[key].p = res.newState._lastVisitedPath;
+                }
+                break;
+            }
             case DIALOG_CONTEXT: {
                 // compare state
 
@@ -190,13 +277,13 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
                     delete state[referencedKey];
                 }
 
-                if (lastInTurnover
-                    && previousState._lastVisitedPath !== undefined
-                    && value.p !== res.newState._lastVisitedPath) {
+                // if (lastInTurnover
+                //     && previousState._lastVisitedPath !== undefined
+                //     && value.p !== res.newState._lastVisitedPath) {
 
-                    delete state[key];
-                    delete state[referencedKey];
-                }
+                //     delete state[key];
+                //     delete state[referencedKey];
+                // }
 
                 break;
             }
@@ -234,6 +321,7 @@ function mergeState (previousState, req, res, senderStateUpdate, firstInTurnover
 
 module.exports = {
     VAR_TYPES,
+    prepareState,
     mergeState,
     vars,
     checkSetState,

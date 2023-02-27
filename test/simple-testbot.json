@@ -135,6 +135,91 @@
             "isRoot": true
           },
           {
+            "name": "Random",
+            "path": "random",
+            "resolvers": [
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [],
+                  "text": [
+                    { "t": ["first", "second", "third"], "l": null }
+                  ],
+                  "mode": "r"
+                },
+                "id": "x1"
+              }
+            ],
+            "id": 150712360001,
+            "isFallback": false
+          },
+          {
+            "name": "Sequence",
+            "path": "sequence",
+            "resolvers": [
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [],
+                  "text": [
+                    { "t": ["first", "second", "third"], "l": null }
+                  ],
+                  "mode": "s"
+                },
+                "id": "x2"
+              }
+            ],
+            "id": 150712360002,
+            "isFallback": false
+          },
+          {
+            "name": "Random Sequence",
+            "path": "random-sequence",
+            "resolvers": [
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [],
+                  "text": [
+                    { "t": ["first", "second", "third"], "l": null }
+                  ],
+                  "mode": "rs"
+                },
+                "id": "x3"
+              }
+            ],
+            "id": 150712360003,
+            "isFallback": false
+          },
+          {
+            "name": "Router plugin test",
+            "path": "clear-sequences",
+            "resolvers": [
+              {
+                "type": "botbuild.customCode",
+                "params": {
+                  "items": {
+                  },
+                  "codeBlockId": "ai.wingbot.clearMessageSequences"
+                },
+                "id": 1507123468256
+              },
+              {
+                "type": "botbuild.message",
+                "params": {
+                  "replies": [],
+                  "text": [
+                    { "t": ["foo", "bar"], "l": null }
+                  ],
+                  "mode": "rs",
+                  "persist": "s"
+                },
+                "id": "x4"
+              }
+            ],
+            "id": 1507123695255
+          },
+          {
             "name": "Just a fallback",
             "path": "just-a-fallback",
             "resolvers": [

@@ -145,6 +145,11 @@ function getLanguageTextObjects (translations, lang = null) {
         }));
 }
 
+function renderMessageText (fn, data) {
+    const renderer = fn === 'function' ? fn : hbs.compile(fn);
+    return renderer(data).trim();
+}
+
 function randomizedCompiler (text, lang) {
     const texts = getLanguageText(text, lang);
 
@@ -307,6 +312,7 @@ module.exports = {
     randomizedCompiler,
     getText,
     stateData,
+    renderMessageText,
 
     ASPECT_SQUARE,
     ASPECT_HORISONTAL,

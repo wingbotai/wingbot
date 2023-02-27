@@ -26,6 +26,7 @@ const MESSAGE_RESOLVER_NAME = 'botbuild.message';
 
 /**
  * @typedef {object} Resolver
+ * @prop {string|number} [id] - only for text messages with random characters
  * @prop {string} type
  * @prop {object} params
  * @prop {string} [params.staticBlockId]
@@ -132,6 +133,7 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  * @prop {string} [staticBlockId]
  * @prop {Block[]} [blocks]
  * @prop {object} [BuildRouter]
+ * @prop {string} [resolverId] - only for text messages with random characters
  */
 
 /**
@@ -827,7 +829,8 @@ class BuildRouter extends Router {
                 isResponder,
                 expectedPath,
                 routeId: id,
-                configuration: this._configuration
+                configuration: this._configuration,
+                resolverId: resolver.id
             };
 
             const resFn = this._resolverFactory(resolver, context, buildInfo);
