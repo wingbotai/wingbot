@@ -766,4 +766,39 @@ describe('<AiMatching>', () => {
 
     });
 
+    describe('covering entities', () => {
+
+        it('does not use handicaps for covering entities', () => {
+            const coveringEntity = ai.preprocessRule(['@pojem=refinancování']);
+            const contextIntent = ai.preprocessRule(['int_uznatelny', '@koupe=koupe']);
+
+            const req = fakeReq([
+                {
+                    intent: 'int_uznatelny',
+                    score: 0.917823798730284,
+                    entities: []
+                }
+            ], [
+                {
+                    entity: 'pojem',
+                    score: 1,
+                    value: 'refinancování',
+                    start: 0,
+                    end: 13
+                }
+            ], 'refinancování', {
+                '@koupe': 'koupe'
+            });
+
+            const coveringEntityRes = ai.match(req, coveringEntity);
+            const contextIntentRes = ai.match(req, contextIntent);
+
+            assert.ok(coveringEntityRes);
+            assert.ok(contextIntentRes);
+
+            assert.ok(coveringEntityRes.score > contextIntentRes.score);
+        });
+
+    });
+
 });

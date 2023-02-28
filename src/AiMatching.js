@@ -515,11 +515,17 @@ class AiMatching {
                     this._ai.confidence + this.redundantEntityHandicap
                 ));
 
-                finalScore -= (matchedEntitiesTextLength / textLength) * remainingScore;
+                const remainingTextLen = (textLength - matchedEntitiesTextLength);
+                const minus = (remainingTextLen / textLength) * remainingScore;
+
+                // eslint-disable-next-line no-console,max-len,object-curly-newline
+                // console.log({ minus, matchedEntitiesTextLength, textLength, remainingScore })
+
+                finalScore -= minus;
             }
 
             // eslint-disable-next-line no-console,max-len,object-curly-newline
-            // console.log({ finalScore, rule, baseScore, score, allOptional, entities, reqEntities, matchedEntitiesTextLength, countOfAdditionalItems });
+            // console.log({ countOfAdditionalItems, multiMatch: this.multiMatchGain ** countOfAdditionalItems, handicap, finalScore, rule, baseScore, score, allOptional, entities, reqEntities, matchedEntitiesTextLength, countOfAdditionalItems });
 
             if (finalScore <= 0) {
                 return null;
