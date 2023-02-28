@@ -504,11 +504,14 @@ class AiMatching {
                     ? (tot + (entity.end - entity.start))
                     : null
             ), 0);
+            const textLength = req.text().trim().length;
 
-            let finalScore = (baseScore - handicap)
+            const useHandicap = textLength <= matchedEntitiesTextLength
+                ? Math.max(-this.redundantEntityHandicap, baseScore - 1)
+                : handicap;
+
+            let finalScore = (baseScore - useHandicap)
                 * (this.multiMatchGain ** countOfAdditionalItems);
-
-            const textLength = req.text().length;
 
             if (matchedEntitiesTextLength && textLength) {
                 const remainingScore = Math.max(0, Math.min(1, finalScore) - (
@@ -518,14 +521,14 @@ class AiMatching {
                 const remainingTextLen = (textLength - matchedEntitiesTextLength);
                 const minus = (remainingTextLen / textLength) * remainingScore;
 
-                // eslint-disable-next-line no-console,max-len,object-curly-newline
+                // eslint-disable-next-line max-len,object-curly-newline
                 // console.log({ minus, matchedEntitiesTextLength, textLength, remainingScore })
 
                 finalScore -= minus;
             }
 
-            // eslint-disable-next-line no-console,max-len,object-curly-newline
-            // console.log({ countOfAdditionalItems, multiMatch: this.multiMatchGain ** countOfAdditionalItems, handicap, finalScore, rule, baseScore, score, allOptional, entities, reqEntities, matchedEntitiesTextLength, countOfAdditionalItems });
+            // eslint-disable-next-line max-len,object-curly-newline
+            // console.log({ countOfAdditionalItems, multiMatch: this.multiMatchGain ** countOfAdditionalItems, handicap, useHandicap, finalScore, rule, baseScore, score, allOptional, entities, reqEntities, matchedEntitiesTextLength });
 
             if (finalScore <= 0) {
                 return null;
@@ -609,7 +612,7 @@ class AiMatching {
                     : (x) => x
             );
 
-        // eslint-disable-next-line no-console,max-len,object-curly-newline
+        // eslint-disable-next-line max-len,object-curly-newline
         // console.log({ wantedEntities, entitiesScore, handicap, matched, minScore, requestIntent });
 
         const allOptional = wantedEntities.every((e) => e.optional
@@ -624,7 +627,7 @@ class AiMatching {
 
         const score = Math.round((scoreWithHandicap * multiMatchGain) * 10000) / 10000;
 
-        // eslint-disable-next-line no-console,max-len,object-curly-newline
+        // eslint-disable-next-line max-len,object-curly-newline
         // console.log({ IMS: score, normalizedScore, scoreWithHandicap, multiMatchGain, wantedEntities });
 
         return {
@@ -744,7 +747,7 @@ class AiMatching {
             }
         }
 
-        // eslint-disable-next-line no-console,max-len
+        // eslint-disable-next-line max-len
         // console.log({ wantedEntities, sum, handicap, rl: requestEntities.length, ml: matched.length });
 
         // @todo - neni mozne, by doslo k negativnimu handicapu
