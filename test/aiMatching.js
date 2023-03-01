@@ -771,12 +771,26 @@ describe('<AiMatching>', () => {
         it('does not use handicaps for covering entities', () => {
             const coveringEntity = ai.preprocessRule(['@pojem=refinancování']);
             const contextIntent = ai.preprocessRule(['int_uznatelny', '@koupe=koupe']);
+            const both = ai.preprocessRule(['covered_int', '@pojem=refinancování']);
 
             const req = fakeReq([
                 {
                     intent: 'int_uznatelny',
-                    score: 0.917823798730284,
+                    score: 0.92,
                     entities: []
+                },
+                {
+                    intent: 'covered_int',
+                    score: 0.8133,
+                    entities: [
+                        {
+                            entity: 'pojem',
+                            score: 1,
+                            value: 'refinancování',
+                            start: 0,
+                            end: 13
+                        }
+                    ]
                 }
             ], [
                 {
@@ -792,11 +806,16 @@ describe('<AiMatching>', () => {
 
             const coveringEntityRes = ai.match(req, coveringEntity);
             const contextIntentRes = ai.match(req, contextIntent);
+            const bothRes = ai.match(req, both);
 
             assert.ok(coveringEntityRes);
             assert.ok(contextIntentRes);
+            assert.ok(bothRes);
 
             assert.ok(coveringEntityRes.score > contextIntentRes.score);
+            assert.strictEqual(coveringEntityRes.score, 1);
+            assert.strictEqual(contextIntentRes.score, 0.9);
+            assert.strictEqual(bothRes.score, 1);
         });
 
     });

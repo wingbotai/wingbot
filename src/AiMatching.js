@@ -24,6 +24,16 @@ const HAS_CLOSING_HASH = /^#(.+)#$/;
 const ENTITY_REGEX = /^@([^=><!?]+)(\?)?([!=><]{1,2})?([^=><!]+)?$/i;
 
 /**
+ * @typedef {object} EntityMatchingResult
+ * @prop {number} score
+ * @prop {number} handicap
+ * @prop {number} fromState
+ * @prop {number} minScore
+ * @prop {number} metl
+ * @prop {Entity[]} matched
+ */
+
+/**
  * RegExp to test a string for a ISO 8601 Date spec
  *  YYYY
  *  YYYY-MM
@@ -449,6 +459,7 @@ class AiMatching {
 
         const noIntentHandicap = req.intents.length === 0 ? 0 : this.redundantIntentHandicap;
         const regexpScore = this._matchRegexp(req, regexps, noIntentHandicap);
+        const textLength = req.text().trim().length;
 
         if (regexpScore !== 0 || (intents.length === 0 && regexps.length === 0)) {
 
@@ -477,8 +488,11 @@ class AiMatching {
                 useState = stateData(req);
             }
 
-            const { score, handicap, matched } = this
+            const {
+                score, handicap, matched, metl
+            } = this
                 ._entityMatching(
+                    textLength,
                     entities,
                     reqEntities,
                     useState
@@ -499,30 +513,19 @@ class AiMatching {
                 ? score - noIntentHandicap
                 : (regexpScore + score) / 2;
 
-            const matchedEntitiesTextLength = matched.reduce((tot, entity) => (
-                typeof entity.end === 'number' && typeof entity.start === 'number' && tot !== null
-                    ? (tot + (entity.end - entity.start))
-                    : null
-            ), 0);
-            const textLength = req.text().trim().length;
-
-            const useHandicap = textLength <= matchedEntitiesTextLength
-                ? Math.max(-this.redundantEntityHandicap, baseScore - 1)
-                : handicap;
-
-            let finalScore = (baseScore - useHandicap)
+            let finalScore = (baseScore - handicap)
                 * (this.multiMatchGain ** countOfAdditionalItems);
 
-            if (matchedEntitiesTextLength && textLength) {
+            if (metl && textLength) {
                 const remainingScore = Math.max(0, Math.min(1, finalScore) - (
                     this._ai.confidence + this.redundantEntityHandicap
                 ));
 
-                const remainingTextLen = (textLength - matchedEntitiesTextLength);
+                const remainingTextLen = (textLength - metl);
                 const minus = (remainingTextLen / textLength) * remainingScore;
 
                 // eslint-disable-next-line max-len,object-curly-newline
-                // console.log({ minus, matchedEntitiesTextLength, textLength, remainingScore })
+                // console.log({ minus, metl, textLength, remainingScore })
 
                 finalScore -= minus;
             }
@@ -552,7 +555,14 @@ class AiMatching {
                 let max = total;
                 for (const requestIntent of req.intents) {
                     const { score, entities: matchedEntities } = this
-                        ._intentMatchingScore(wanted, requestIntent, entities, req, stateless);
+                        ._intentMatchingScore(
+                            textLength,
+                            wanted,
+                            requestIntent,
+                            entities,
+                            req,
+                            stateless
+                        );
 
                     if (score > max) {
                         max = score;
@@ -579,6 +589,7 @@ class AiMatching {
     /**
      *
      * @private
+     * @param {number} textLength
      * @param {string} wantedIntent
      * @param {Intent} requestIntent
      * @param {EntityExpression[]} wantedEntities
@@ -586,7 +597,14 @@ class AiMatching {
      * @param {boolean} stateless
      * @returns {{score:number,entities:Entity[]}}
      */
-    _intentMatchingScore (wantedIntent, requestIntent, wantedEntities, req, stateless = false) {
+    _intentMatchingScore (
+        textLength,
+        wantedIntent,
+        requestIntent,
+        wantedEntities,
+        req,
+        stateless = false
+    ) {
         if (wantedIntent !== requestIntent.intent) {
             return { score: 0, entities: [] };
         }
@@ -604,12 +622,14 @@ class AiMatching {
             score: entitiesScore, handicap, matched, minScore, fromState
         } = this
             ._entityMatching(
+                textLength,
                 wantedEntities,
                 useEntities,
                 stateless ? {} : req.state,
                 requestIntent.entities
                     ? (x) => Math.atan((x - 0.76) * 40) / Math.atan((1 - 0.76) * 40)
-                    : (x) => x
+                    : (x) => x,
+                req.entities
             );
 
         // eslint-disable-next-line max-len,object-curly-newline
@@ -639,13 +659,23 @@ class AiMatching {
     /**
      *
      * @private
+     * @param {number} textLen
      * @param {EntityExpression[]} wantedEntities
      * @param {Entity[]} requestEntities
      * @param {object} [requestState]
      * @param {Function} [scoreFn]
-     * @returns {{score:number,handicap:number, matched:Entity[],minScore:number,fromState:number}}
+     * @param {Entity[]} allEntities
+     *
+     * @returns {EntityMatchingResult}
      */
-    _entityMatching (wantedEntities, requestEntities = [], requestState = {}, scoreFn = (x) => x) {
+    _entityMatching (
+        textLen,
+        wantedEntities,
+        requestEntities = [],
+        requestState = {},
+        scoreFn = (x) => x,
+        allEntities = requestEntities
+    ) {
         const occurences = new Map();
 
         const matched = [];
@@ -653,6 +683,7 @@ class AiMatching {
         let sum = 0;
         let minScore = 1;
         let fromState = 0;
+        let metl = 0;
 
         for (const wanted of wantedEntities) {
             const usedIndexes = occurences.has(wanted.entity)
@@ -705,7 +736,7 @@ class AiMatching {
 
             if (!matching && (!wanted.optional || entityExists)) {
                 return {
-                    score: 0, handicap: 0, matched: [], minScore, fromState
+                    score: 0, handicap: 0, matched: [], minScore, fromState, metl
                 };
             }
 
@@ -731,6 +762,10 @@ class AiMatching {
             }
 
             if (requestEntity) {
+                if (typeof requestEntity.end === 'number' && typeof requestEntity.start === 'number') {
+                    metl += requestEntity.end - requestEntity.start;
+                }
+
                 matched.push(requestEntity);
                 sum += scoreFn(requestEntity.score);
                 if (index !== -1) {
@@ -747,16 +782,37 @@ class AiMatching {
             }
         }
 
-        // eslint-disable-next-line max-len
-        // console.log({ wantedEntities, sum, handicap, rl: requestEntities.length, ml: matched.length });
+        const withCoveringEntity = textLen && textLen <= metl;
 
-        // @todo - neni mozne, by doslo k negativnimu handicapu
-        handicap += (requestEntities.length + fromState - matched.length)
-            * this.redundantEntityHandicap;
+        // eslint-disable-next-line max-len
+        // console.log({ metl, withCoveringEntity, wantedEntities, sum, handicap, rl: requestEntities.length, ml: matched.length });
+
+        if (withCoveringEntity) {
+            handicap -= this.redundantEntityHandicap;
+        } else {
+            const otherEntitiesTextLen = allEntities
+                .filter((re) => !matched.some((e) => e.entity === re.entity))
+                .reduce((tot, entity) => (
+                    typeof entity.end === 'number' && typeof entity.start === 'number'
+                        ? (tot + (entity.end - entity.start))
+                        : 0
+                ), 0);
+
+            const coveringHandicap = textLen && otherEntitiesTextLen >= textLen
+                ? 1
+                : 0;
+
+            handicap += (requestEntities.length + fromState - matched.length + coveringHandicap)
+                * this.redundantEntityHandicap;
+
+            // eslint-disable-next-line max-len
+            // console.log({ requestEntities, matched, handicap, coveringHandicap, otherEntitiesTextLen });
+
+        }
         const score = matched.length === 0 ? 0 : sum / matched.length;
 
         return {
-            score, handicap, matched, minScore, fromState
+            score, handicap, matched, minScore, fromState, metl
         };
     }
 

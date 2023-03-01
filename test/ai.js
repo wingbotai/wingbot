@@ -327,6 +327,7 @@ describe('<Ai>', function () {
             const match = testAi.match('testIntent');
 
             const req = {
+                text: () => '',
                 isTextOrIntent: () => true,
                 isQuickReply: () => false,
                 action: () => null,
@@ -352,7 +353,11 @@ describe('<Ai>', function () {
 
             const event = Request.intentWithText('any', 'hoho', 'testIntent');
             const req = {
-                isTextOrIntent: () => true, isQuickReply: () => false, event, action: () => null
+                text: () => '',
+                isTextOrIntent: () => true,
+                isQuickReply: () => false,
+                event,
+                action: () => null
             };
 
             return match(req, { bookmark () {}, setData () {} })
