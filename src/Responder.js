@@ -16,6 +16,7 @@ const {
     FEATURE_SSML,
     FEATURE_PHRASES
 } = require('./features');
+const transcriptFromHistory = require('./transcript/transcriptFromHistory');
 
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
@@ -26,6 +27,7 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 /** @typedef {import('./ReturnSender').UploadResult} UploadResult */
 /** @typedef {import('./analytics/consts').TrackingCategory} TrackingCategory */
 /** @typedef {import('./analytics/consts').TrackingType} TrackingType */
+/** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */
 
 /**
  * @enum {string} ExpectedInput
@@ -89,6 +91,7 @@ class Responder {
     constructor (senderId, messageSender, token = null, options = {}, data = {}) {
         this._messageSender = messageSender;
         this._senderId = senderId;
+        this._pageId = options.pageId;
         this.token = token;
 
         /**
@@ -178,6 +181,33 @@ class Responder {
         this._recipient = { id: senderId };
 
         this._textResponses = [];
+
+        this._typingSent = false;
+    }
+
+    /**
+     *
+     * Returns current conversation transcript
+     *
+     * @param {number} [limit]
+     * @returns {Promise<Transcript[]>}
+     */
+    async getTranscript (limit = 10) {
+        const { chatLogStorage } = this._messageSender;
+        if (!chatLogStorage) {
+            return [];
+        }
+        const transcript = await transcriptFromHistory(
+            chatLogStorage,
+            this._senderId,
+            this._pageId,
+            limit
+        );
+        const { responseTexts = [] } = chatLogStorage;
+        transcript.push(...responseTexts.map((text) => ({
+            fromBot: true, text
+        })));
+        return transcript;
     }
 
     /**
@@ -287,6 +317,7 @@ class Responder {
             });
         }
         this.startedOutput = true;
+        this._typingSent = data.sender_action === 'typing_on';
         this._messageSender.send(data);
         return this;
     }
@@ -979,10 +1010,11 @@ class Responder {
     /**
      * Sends "typing..." information
      *
+     * @param {boolean} [force] - send even if was recently sent
      * @returns {this}
      */
-    typingOn () {
-        return this._senderAction('typing_on');
+    typingOn (force = false) {
+        return this._senderAction('typing_on', force);
     }
 
     /**
@@ -1243,7 +1275,10 @@ class Responder {
         return this._textResponses;
     }
 
-    _senderAction (action) {
+    _senderAction (action, force = false) {
+        if (action === 'typing_on' && this._typingSent && !force) {
+            return this;
+        }
         const messageData = {
             sender_action: action
         };

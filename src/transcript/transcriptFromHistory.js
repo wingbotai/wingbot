@@ -33,6 +33,9 @@ const extractText = require('./extractText');
  * @returns {Promise<Transcript[]>}
  */
 async function transcriptFromHistory (chatLogStorage, senderId, pageId, limit = 20) {
+    if (typeof chatLogStorage.getInteractions !== 'function') {
+        return [];
+    }
     const data = await chatLogStorage.getInteractions(senderId, pageId, limit);
 
     return data

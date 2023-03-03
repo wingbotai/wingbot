@@ -646,7 +646,8 @@ class Processor extends EventEmitter {
             const options = {
                 ...this.options,
                 state: Object.freeze({ ...state }),
-                features
+                features,
+                pageId
             };
 
             res = new Responder(senderId, messageSender, token, options, responderData);

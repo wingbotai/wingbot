@@ -484,6 +484,86 @@
             ],
             "items": [
             ]
+        },
+        {
+            "id": "ai.wingbot.openai",
+            "name": "OpenAI - Chat",
+            "description": "Use within fallback to attach ChatGPT to your chatbot",
+            "availableSince": 3.54,
+            "editable": false,
+            "isFactory": true,
+            "category": "conversation",
+            "inputs": [
+                {
+                    "name": "token",
+                    "label": "API Key",
+                    "type": "text",
+                    "validations": [
+                        { "type": "regexp", "value": "^.+$", "message": "the token should be filled" }
+                    ]
+                },
+                {
+                    "type": "select",
+                    "name": "model",
+                    "label": "Chat GPT model",
+                    "options": [
+                        { "value": "gpt-3.5-turbo", "label": "gpt-3.5-turbo" },
+                        { "value": "gpt-3.5-turbo-0301", "label": "gpt-3.5-turbo-0301" }
+                    ]
+                },
+                {
+                    "type": "textarea",
+                    "name": "system",
+                    "label": "Initial preset message (system)"
+                },
+                {
+                    "type": "text",
+                    "name": "temperature",
+                    "label": "Temperature: 0.0 - 2.0 (1.0) - randomness of answers",
+                    "validations": [
+                        {
+                            "type": "regexp",
+                            "value": "^[0-9]*([.,][0-9]+)?$",
+                            "message": "Temperature should be a valid float number"
+                        }
+                    ]
+                },
+                {
+                    "type": "text",
+                    "name": "presence",
+                    "label": "Presence: -2.0 - 2.0 (0.0) - likelihood to talk about new topics",
+                    "validations": [
+                        {
+                            "type": "regexp",
+                            "value": "^-?[0-9]*([.,][0-9]+)?$",
+                            "message": "Presence should be a valid float number"
+                        }
+                    ]
+                },
+                {
+                    "type": "text",
+                    "name": "maxTokens",
+                    "label": "Max Tokens: 0 - 4096 (512) - max. number of returned tokens",
+                    "validations": [
+                        {
+                            "type": "regexp",
+                            "value": "^[0-9]*$",
+                            "message": "Max tokens should be a valid number"
+                        }
+                    ]
+                },
+                {
+                    "type": "textarea",
+                    "name": "systemAfter",
+                    "label": "Current message (system)"
+                }
+            ],
+            "items": [
+                {
+                    "id": "fallback",
+                    "description": "If API call fails"
+                }
+            ]
         }
     ],
     "categories": [

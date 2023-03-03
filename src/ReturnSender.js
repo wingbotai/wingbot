@@ -13,9 +13,20 @@ const extractText = require('./transcript/extractText');
 /** @typedef {import('./Processor').TrackingObject} TrackingObject */
 
 /**
+ * @callback GetInteractions
+ * @param {string} senderId
+ * @param {string} pageId
+ * @param {number} [limit]
+ * @param {number} [endAt] - iterate backwards to history
+ * @param {number} [startAt] - iterate forward to last interaction
+ * @returns {Promise<object[]>}
+ */
+
+/**
  * @typedef {object} ChatLogStorage
- * @property {Function} log
- * @property {Function} error
+ * @prop {Function} log
+ * @prop {Function} error
+ * @prop {GetInteractions} [getInteractions]
  */
 
 /**
@@ -163,6 +174,13 @@ class ReturnSender {
         return this._responseTexts
             .map((t) => filter(t))
             .filter((t) => t && `${t}`.trim());
+    }
+
+    /**
+     * @returns {ChatLogStorage}
+     */
+    get chatLogStorage () {
+        return this._logger;
     }
 
     _gotAnotherEvent () {
