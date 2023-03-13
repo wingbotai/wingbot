@@ -58,6 +58,8 @@ const { prepareState, mergeState, isUserInteraction } = require('./utils/stateVa
  * @prop {object} state
  * @prop {object} data
  * @prop {string|null} skill
+ * @prop {string|null} prevSkill
+ * @prop {string|null} pathname
  * @prop {TrackingObject} tracking - deprecated
  * @prop {TrackingEvent[]} events
  * @prop {ResponseFlag|null} flag
@@ -423,11 +425,14 @@ class Processor extends EventEmitter {
      */
     _emitInteractionEvent (req, res, messageSender, state, data) {
         const doNotTrack = data._initialEventShouldNotBeTracked === true;
-        const { _lastAction: lastAction = null } = req.state;
+        const { _lastAction: lastAction = null, '§pathname': pathname = null } = req.state;
         const actions = messageSender.visitedInteractions;
         const skill = typeof res.newState._trackAsSkill === 'undefined'
             ? (req.state._trackAsSkill || null)
             : res.newState._trackAsSkill;
+        const prevSkill = typeof res.newState._trackPrevSkill === 'undefined'
+            ? (req.state._trackPrevSkill || null)
+            : res.newState._trackPrevSkill;
         const { events = [] } = messageSender.tracking;
 
         const event = {
@@ -439,6 +444,8 @@ class Processor extends EventEmitter {
             state,
             data,
             skill,
+            prevSkill,
+            pathname,
             tracking: messageSender.tracking,
             events,
             flag: res.senderMeta.flag,

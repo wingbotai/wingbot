@@ -1262,7 +1262,15 @@ class Responder {
      * @returns {this}
      */
     trackAsSkill (skill) {
-        this.setState({ _trackAsSkill: skill });
+        // @ts-ignore
+        const { _trackAsSkill: currentSkill } = this.options.state;
+        const setState = { _trackAsSkill: skill };
+        if (currentSkill && currentSkill !== skill) {
+            Object.assign(setState, {
+                _trackPrevSkill: currentSkill
+            });
+        }
+        this.setState(setState);
         return this;
     }
 

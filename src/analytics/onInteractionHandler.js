@@ -40,6 +40,8 @@ const {
  * @typedef {object} ConversationEventExtension
  * @prop {string} [lastAction]
  * @prop {string} [skill]
+ * @prop {string} [prevSkill]
+ * @prop {string} [pathname]
  * @prop {string} [text]
  * @prop {string} [expected]
  * @prop {boolean} expectedTaken
@@ -268,6 +270,8 @@ function onInteractionHandler (
         // state,
         // data,
         skill,
+        prevSkill,
+        pathname,
         events,
         flag,
         nonInteractive,
@@ -371,6 +375,7 @@ function onInteractionHandler (
                     replaceDiacritics(req.text()).replace(/\s+/g, ' ').toLowerCase().trim()
                 );
             const useSkill = (skill && webalize(skill)) || noneAction;
+            const usePrevSkill = (prevSkill && webalize(prevSkill)) || noneAction;
 
             let winnerAction = '';
             let winnerScore = 0;
@@ -425,6 +430,8 @@ function onInteractionHandler (
                 withUser,
                 feedback,
                 skill: useSkill,
+                prevSkill: usePrevSkill,
+                pathname: pathname || noneAction,
                 winnerAction,
                 winnerIntent,
                 winnerEntities: asArray(winnerEntities.map((e) => e.entity)),
