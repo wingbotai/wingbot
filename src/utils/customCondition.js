@@ -110,8 +110,15 @@ const compare = (variable, operator, value = undefined) => {
     }
 
     if (variable && typeof variable === 'object' && !isArrayLengthCompare) {
-        return Object.values(variable)
-            .some((variableElement) => compare(variableElement, operator, value));
+        switch (operator) {
+            case ConditionOperators['is true']:
+                return Object.keys(variable).length !== 0;
+            case ConditionOperators['is false']:
+                return Object.keys(variable).length === 0;
+            default:
+                return Object.values(variable)
+                    .some((variableElement) => compare(variableElement, operator, value));
+        }
     }
 
     switch (operator) {

@@ -95,6 +95,7 @@ describe('<Conditions>', function () {
             assert(!compare(false, ConditionOperators['is true']));
             assert(compare('1', ConditionOperators['is true']));
             assert(compare('false', ConditionOperators['is true']));
+            assert(compare({ k: 1 }, ConditionOperators['is true']));
         });
 
         it('is false', () => {
@@ -104,6 +105,7 @@ describe('<Conditions>', function () {
             assert(compare(false, ConditionOperators['is false']));
             assert(!compare('1', ConditionOperators['is false']));
             assert(!compare('false', ConditionOperators['is false']));
+            assert(!compare({ k: 1 }, ConditionOperators['is false']));
         });
 
         it('==', () => {
@@ -202,9 +204,10 @@ describe('<Conditions>', function () {
 
         it('properly handles object as a variable', () => {
             assert(compare({ t: false, x: true }, ConditionOperators['is true']));
-            assert(compare({ t: false, x: false }, ConditionOperators['is false']));
-            assert(compare({ t: [0, 0, 0, 'false'], x: false }, ConditionOperators['is false']));
+            assert(!compare({ t: false, x: false }, ConditionOperators['is false']));
+            assert(!compare({ t: [0, 0, 0, 'false'], x: false }, ConditionOperators['is false']));
             assert(compare({ t: [0, 0, 0, 'true'], x: false }, ConditionOperators['is true']));
+            assert(compare([0, false, ''], ConditionOperators['is false']));
             assert(!compare({ t: { y: [0, 0, 0, 'true'] }, x: false }, ConditionOperators.contains, '1'));
             assert(compare({ t: [0, 'efefex', 0, 'false'], x: false }, ConditionOperators.contains, 'efefex'));
         });
@@ -271,6 +274,83 @@ describe('<Conditions>', function () {
 
         }
 
+    });
+
+    it('works with objects', () => {
+        const resolver = customCondition([[{
+            operator: ConditionOperators['is false'],
+            variable: '§auth',
+            value: null
+        }]]);
+
+        const ret = resolver({
+            text () { return ''; },
+            actionData () { return {}; },
+            state: {
+                '§auth': {
+                    some: 'data',
+                    bar: false
+                }
+            }
+        });
+
+        assert.strictEqual(ret, false);
+    });
+
+    it('works with objects', () => {
+        const resolver = customCondition([[{
+            operator: ConditionOperators['is false'],
+            variable: '§auth',
+            value: null
+        }]]);
+
+        const ret = resolver({
+            text () { return ''; },
+            actionData () { return {}; },
+            state: {
+                '§auth': {}
+            }
+        });
+
+        assert.strictEqual(ret, true);
+    });
+
+    it('works with objects', () => {
+        const resolver = customCondition([[{
+            operator: ConditionOperators['is true'],
+            variable: '§auth',
+            value: null
+        }]]);
+
+        const ret = resolver({
+            text () { return ''; },
+            actionData () { return {}; },
+            state: {
+                '§auth': {}
+            }
+        });
+
+        assert.strictEqual(ret, false);
+    });
+
+    it('works with objects', () => {
+        const resolver = customCondition([[{
+            operator: ConditionOperators['is true'],
+            variable: '§auth',
+            value: null
+        }]]);
+
+        const ret = resolver({
+            text () { return ''; },
+            actionData () { return {}; },
+            state: {
+                '§auth': {
+                    foo: 'bar'
+                }
+            }
+        });
+
+        assert.strictEqual(ret, true);
     });
 
     it('throws on invalid condition', async () => {
