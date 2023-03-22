@@ -76,6 +76,8 @@ function optionalWrap (l, r, content) {
     return `${l || ''}(${content})${r || ''}`;
 }
 
+const MULTI_ENTITY_CLEANER = /((?<!\\)\([^()]*[^()\\]\)|@[A-Z0-9-]+)\?/g;
+
 class CustomEntityDetectionModel {
 
     /**
@@ -485,11 +487,18 @@ class CustomEntityDetectionModel {
 
     /**
      *
-     * @param {RegExp} regexp
+     * @param {RegExp|string} regexp
      */
     _extractRegExpDependencies (regexp) {
-        const matches = regexp.source.match(/@[A-Z0-9-]+/g);
-        return Array.from(new Set(matches).values());
+        let str = typeof regexp === 'string' ? regexp : regexp.source;
+        const matches = str.match(/@[A-Z0-9-]+/g);
+        const known = Array.from(new Set(matches));
+        if (known.length <= 1 || !str.match(MULTI_ENTITY_CLEANER)) {
+            return known;
+        }
+        str = str.replace(MULTI_ENTITY_CLEANER, '');
+        const cleanDeps = this._extractRegExpDependencies(str);
+        return Array.from(new Set([...cleanDeps, ...matches]));
     }
 
     /**
