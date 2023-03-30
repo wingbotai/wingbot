@@ -107,6 +107,8 @@ const {
  * @prop {string} [browserName]
  * @prop {string} [deviceType]
  * @prop {string} [osName]
+ * @prop {string} [skill]
+ * @prop {string} [prevSkill]
  */
 
 /**
@@ -328,6 +330,9 @@ function onInteractionHandler (
                 didHandover = true;
             }
 
+            const useSkill = (skill && webalize(skill)) || noneAction;
+            const usePrevSkill = (prevSkill && webalize(prevSkill)) || noneAction;
+
             const metadata = {
                 sessionCount,
                 lang,
@@ -344,7 +349,9 @@ function onInteractionHandler (
                 pageCategory,
                 browserName: ua.browser.name || null,
                 deviceType: ua.device.type || null,
-                osName: ua.os.name || null
+                osName: ua.os.name || null,
+                skill: useSkill,
+                prevSkill: usePrevSkill
             };
 
             let sessionPromise;
@@ -374,8 +381,6 @@ function onInteractionHandler (
                 : anonymize(
                     replaceDiacritics(req.text()).replace(/\s+/g, ' ').toLowerCase().trim()
                 );
-            const useSkill = (skill && webalize(skill)) || noneAction;
-            const usePrevSkill = (prevSkill && webalize(prevSkill)) || noneAction;
 
             let winnerAction = '';
             let winnerScore = 0;

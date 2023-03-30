@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.55.2",
+  "version": "3.56.0",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -36,20 +36,20 @@
   },
   "homepage": "https://github.com/wingbot.ai/wingbot#readme",
   "devDependencies": {
-    "cpy-cli": "^4.1.0",
-    "eslint": "^8.11.0",
+    "cpy-cli": "^4.2.0",
+    "eslint": "^8.36.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsdoc": "^39.7.5",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-mocha": "^10.0.3",
-    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsdoc": "^40.1.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-mocha": "^10.1.0",
+    "eslint-plugin-react": "^7.32.2",
     "graphql-markdown": "^6.0.0",
     "jsdoc-to-markdown": "^8.0.0",
-    "mocha": "^10.0.0",
+    "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
-    "sinon": "^13.0.1",
+    "sinon": "^15.0.3",
     "tsd-jsdoc": "^2.5.0"
   },
   "dependencies": {
@@ -60,7 +60,7 @@
     "jsonwebtoken": "^9.0.0",
     "node-fetch": "^2.6.7",
     "path-to-regexp": "^6.2.1",
-    "uuid": "^8.3.2",
+    "uuid": "^9.0.0",
     "webalize": "^0.1.0"
   },
   "optionalDependencies": {
