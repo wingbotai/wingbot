@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.56.0",
+  "version": "3.57.0",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -53,7 +53,7 @@
     "tsd-jsdoc": "^2.5.0"
   },
   "dependencies": {
-    "@amplitude/ua-parser-js": "^0.7.31",
+    "@amplitude/ua-parser-js": "^0.7.33",
     "deep-extend": "^0.6.0",
     "form-data": "^4.0.0",
     "graphql": "^15.8.0",

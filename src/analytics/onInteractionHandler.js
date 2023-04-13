@@ -470,7 +470,7 @@ function onInteractionHandler (
                     isGoto: false,
                     withUser,
                     ...langsExtension,
-                    ...(hasExtendedEvents ? {} : actionMeta)
+                    ...actionMeta
                 });
 
                 let prevAction = action;

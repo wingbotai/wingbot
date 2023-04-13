@@ -31,7 +31,7 @@ function defaultPathContext () {
 
 /**
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @callback Resolver processing function
  * @param {Request<S,C>} [req]
  * @param {Responder} [res]
@@ -41,7 +41,7 @@ function defaultPathContext () {
 
 /**
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @callback Reduce processing function
  * @param {Request<S,C>} [req]
  * @param {Responder} [res]
@@ -52,7 +52,7 @@ function defaultPathContext () {
 
 /**
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @typedef {object} IRouter
  * @prop {Reduce<S,C>} reduce
  */
@@ -69,26 +69,61 @@ function defaultPathContext () {
 /**
  *
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @typedef {Resolver<S,C>|RouteExp|IRouter} Middleware flow control statement or function
+ */
+
+/**
+ * @typedef {import('./Responder').Persona} Persona
+ */
+
+/**
+ * @typedef {Object<string|'_default',PersonConfiguration>} PersonConfiguration
+ */
+
+/**
+ * @typedef {object} BaseConfiguration
+ * @prop {PersonConfiguration} [persona]
  */
 
 /**
  * Cascading router
  *
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @class Router
  * @extends {ReducerWrapper}
  */
 class Router extends ReducerWrapper {
 
-    constructor () {
+    /**
+     * @param {C} [configuration]
+     */
+    constructor (configuration = null) {
         super();
+
+        /** @type {C} */
+        // @ts-ignore
+        this._configuration = configuration || {};
 
         this._routes = [];
 
         this.globalIntents = new Map();
+    }
+
+    /**
+     * @returns {C}
+     */
+    get configuration () {
+        return this._configuration;
+    }
+
+    /**
+     *
+     * @returns {C}
+     */
+    getConfiguration () {
+        return this._configuration;
     }
 
     _normalizePath (path) {

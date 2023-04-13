@@ -38,6 +38,8 @@ function makeTimestamp () {
     return now;
 }
 
+/** @typedef {import('./Router').BaseConfiguration} BaseConfiguration */
+
 /**
  * @typedef {object} Entity
  * @prop {string} entity
@@ -117,7 +119,7 @@ function makeTimestamp () {
  * Instance of {Request} class is passed as first parameter of handler (req)
  *
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @class Request
  */
 class Request {

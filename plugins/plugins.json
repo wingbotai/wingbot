@@ -564,6 +564,29 @@
                     "description": "If API call fails"
                 }
             ]
+        },
+        {
+            "id": "ai.wingbot.persona",
+            "name": "Set persona",
+            "description": "Use this persona for following messages.",
+            "availableSince": 3.56,
+            "editable": false,
+            "isFactory": true,
+            "category": "conversation",
+            "inputs": [
+                {
+                    "name": "name",
+                    "label": "Persona name",
+                    "type": "text"
+                },
+                {
+                    "name": "img",
+                    "label": "Persona image",
+                    "type": "text"
+                }
+            ],
+            "items": [
+            ]
         }
     ],
     "categories": [

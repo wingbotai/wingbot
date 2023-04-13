@@ -38,8 +38,14 @@ function compileWithState (req, res, template) {
     if (!template) {
         return '';
     }
+    if (typeof template !== 'string') {
+        return `${template}`;
+    }
+    if (!template.includes('{{')) {
+        return template;
+    }
     const data = stateData(req, res);
-    return handlebars.compile(`${template}`)(data);
+    return handlebars.compile(template)(data);
 }
 
 module.exports = compileWithState;

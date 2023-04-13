@@ -8,7 +8,7 @@ const ReceiptTemplate = require('./templates/ReceiptTemplate');
 const ButtonTemplate = require('./templates/ButtonTemplate');
 const GenericTemplate = require('./templates/GenericTemplate');
 const ListTemplate = require('./templates/ListTemplate');
-const { makeAbsolute, makeQuickReplies } = require('./utils');
+const { makeAbsolute, makeQuickReplies, tokenize } = require('./utils');
 const { ResponseFlag } = require('./analytics/consts');
 const { checkSetState } = require('./utils/stateVariables');
 const {
@@ -82,17 +82,33 @@ Object.freeze(ExpectedInput);
  */
 
 /**
+ * @typedef {object} Persona
+ * @prop {string} [profile_pic_url]
+ * @prop {string} [name]
+ */
+
+const PERSONA_DEFAULT = '_default';
+
+/**
  * Instance of responder is passed as second parameter of handler (res)
  *
  * @class
  */
 class Responder {
 
-    constructor (senderId, messageSender, token = null, options = {}, data = {}) {
+    constructor (
+        senderId,
+        messageSender,
+        token = null,
+        options = {},
+        data = {},
+        configuration = {}
+    ) {
         this._messageSender = messageSender;
         this._senderId = senderId;
         this._pageId = options.pageId;
         this.token = token;
+        this._configuration = configuration;
 
         /**
          * The empty object, which is filled with res.setState() method
@@ -183,6 +199,21 @@ class Responder {
         this._textResponses = [];
 
         this._typingSent = false;
+    }
+
+    _findPersonaConfiguration (name) {
+        if (!name || !this._configuration.persona) {
+            return null;
+        }
+        if (!this._configuration._cachedPersonas) {
+            // eslint-disable-next-line no-param-reassign
+            this._configuration._cachedPersonas = new Map(
+                Object.entries(this._configuration.persona)
+                    .map(([k, v]) => [k === PERSONA_DEFAULT ? k : tokenize(k), v])
+            );
+        }
+        const nameKey = name === PERSONA_DEFAULT ? PERSONA_DEFAULT : tokenize(name);
+        return this._configuration._cachedPersonas.get(nameKey);
     }
 
     /**
@@ -283,6 +314,7 @@ class Responder {
         if (!data || typeof data !== 'object') {
             throw new Error('Send method requires an object as first param');
         }
+        this.setPersona(PERSONA_DEFAULT);
         if (!data.recipient) {
             Object.assign(data, {
                 recipient: {
@@ -414,10 +446,23 @@ class Responder {
     /**
      * Tets the persona for following requests
      *
-     * @param {object|string|null} personaId
+     * @param {Persona|string|null} personaId
      * @returns {this}
      */
     setPersona (personaId = null) {
+        if (personaId === PERSONA_DEFAULT && this._persona) {
+            return this;
+        }
+        if (typeof personaId === 'string') {
+            const persona = this._findPersonaConfiguration(personaId);
+            if (persona) {
+                this._persona = persona;
+                return this;
+            }
+            if (personaId === PERSONA_DEFAULT) {
+                return this;
+            }
+        }
         this._persona = personaId;
         return this;
     }
@@ -1344,5 +1389,7 @@ class Responder {
 Responder.TYPE_MESSAGE_TAG = TYPE_MESSAGE_TAG;
 Responder.TYPE_UPDATE = TYPE_UPDATE;
 Responder.TYPE_RESPONSE = TYPE_RESPONSE;
+
+Responder.PERSONA_DEFAULT = PERSONA_DEFAULT;
 
 module.exports = Responder;

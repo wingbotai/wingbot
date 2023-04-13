@@ -10,16 +10,18 @@ const plugins = require('../plugins');
 const RouterWrap = require('./RouterWrap');
 const wrapPluginFunction = require('./utils/wrapPluginFunction');
 
+/** @typedef {import('./Router').BaseConfiguration} BaseConfiguration */
+
 /**
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @typedef {import('./Router').Middleware<S,C>} Middleware
  */
 
 /**
  *
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @callback Plugin
  * @param {Request<S,C>} req
  * @param {Responder} res
@@ -31,7 +33,7 @@ const wrapPluginFunction = require('./utils/wrapPluginFunction');
 /**
  *
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @callback PluginFactory
  * @param {object} params
  * @param {C} configuration

@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.57.0] 2023-04-13
+
+### Added
+
+- `<Router>` now accepts configuration object in `constructor` and offers configuration with a getter
+- new Persona plugin
+- `persona` configuration property with `_default` option
+- Testers assert method `any().contains()` now supports objects to validate output messages
+
+## [3.56.1] 2023-04-11
+
+### Fixed
+
+- extended tracking
+
 ## [3.56.0] 2023-03-28
 
 ### Added

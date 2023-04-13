@@ -17,10 +17,12 @@ const { shouldExecuteResolver } = require('./resolvers/resolverTags');
 
 const MESSAGE_RESOLVER_NAME = 'botbuild.message';
 
+/** @typedef {import('./Router').BaseConfiguration} BaseConfiguration */
+
 /**
  *
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @typedef {import('./Router').Middleware<S,C>} Middleware
  */
 
@@ -111,7 +113,7 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  */
 
 /**
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @typedef {object} BotContext
  * @prop {LinkTranslator} [linksTranslator] - function, that translates links globally
  * @prop {ConfigStorage} [configStorage] - function, that translates links globally
@@ -133,14 +135,14 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  * @prop {string} [staticBlockId]
  * @prop {Block[]} [blocks]
  * @prop {object} [BuildRouter]
- * @prop {string} [resolverId] - only for text messages with random characters
+ * @prop {string|number} [resolverId] - only for text messages with random characters
  */
 
 /**
  * Build bot from Wingbot configuration file or snapshot url
  *
  * @template {object} [S=object]
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @class BuildRouter
  * @extends {Router<S,C>}
  */
@@ -182,7 +184,7 @@ class BuildRouter extends Router {
      * module.exports = bot;
      */
     constructor (block, plugins = new Plugins(), context = {}, fetchFn = fetch) {
-        super();
+        super(context.configuration);
 
         this._validateBlock(block);
 
@@ -190,10 +192,6 @@ class BuildRouter extends Router {
 
         /** @type {BotContext<C>} */
         this._context = context;
-
-        /** @type {C} */
-        // @ts-ignore
-        this._configuration = context.configuration || {};
 
         /** @type {LinksMap} */
         this._linksMap = new Map();
@@ -247,13 +245,6 @@ class BuildRouter extends Router {
 
     get botId () {
         return this._botId;
-    }
-
-    /**
-     * @returns {C}
-     */
-    get configuration () {
-        return this._configuration;
     }
 
     _validateBlock (block, action = 'build') {
@@ -652,14 +643,6 @@ class BuildRouter extends Router {
 
     /**
      *
-     * @returns {object}
-     */
-    getConfiguration () {
-        return this._configuration;
-    }
-
-    /**
-     *
      * @param {LinksMap} linksMap
      * @param {Block} includedBlock
      * @param {TransformedRoute} route
@@ -911,7 +894,7 @@ class BuildRouter extends Router {
 }
 
 /**
- * @template {object} [C=object]
+ * @template {BaseConfiguration} [C=object]
  * @param {Block[]} blocks - blocks list
  * @param {Plugins} [plugins]
  * @param {BotContext<C>} [context]

@@ -4,6 +4,7 @@
 'use strict';
 
 const assert = require('assert');
+const deepExtend = require('deep-extend');
 const { actionMatches, parseActionPayload } = require('../utils');
 
 /**
@@ -109,11 +110,26 @@ function searchMatchesText (search, text) {
  * Checks, that text contain a message
  *
  * @param {object} response
- * @param {string} search
+ * @param {string|object} search
  * @param {string|false} [message='Should contain a text'] - use false for no asserts
  * @returns {boolean}
  */
 function contains (response, search, message = 'Should contain a text') {
+    if (typeof search === 'object') {
+        try {
+            assert.deepEqual(
+                response,
+                deepExtend({}, response, search),
+                'Event contains'
+            );
+            return true;
+        } catch (e) {
+            if (message === false) {
+                return false;
+            }
+            throw e;
+        }
+    }
     const text = getText(response);
     const typeIsText = typeof text === 'string';
     if (message === false && !typeIsText) {
@@ -294,7 +310,7 @@ function buttonTemplate (response, search, count = null, message = 'Should conta
 
 /**
  *
- * @param {search} response
+ * @param {object} response
  * @param {string|false} message
  * @returns {false|object[]}
  */
@@ -315,7 +331,7 @@ function genericTemplateItems (response, message = 'Generic template should cont
 /**
  * Validates generic template
  *
- * @param {search} response
+ * @param {object} response
  * @param {number} [count]
  * @param {string|false} message
  * @returns {boolean}

@@ -22,7 +22,7 @@ class AnyResponseAssert {
     /**
      * Checks, that response contains a text
      *
-     * @param {string} search
+     * @param {string|object} search
      * @returns {this}
      *
      * @memberOf ResponseAssert

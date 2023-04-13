@@ -657,7 +657,14 @@ class Processor extends EventEmitter {
                 pageId
             };
 
-            res = new Responder(senderId, messageSender, token, options, responderData);
+            res = new Responder(
+                senderId,
+                messageSender,
+                token,
+                options,
+                responderData,
+                configuration
+            );
             const postBack = this._createPostBack(postbackAcumulator, req, res, features);
 
             let continueDispatching = true;
