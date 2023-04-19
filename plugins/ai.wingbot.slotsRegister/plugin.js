@@ -19,18 +19,15 @@ function slotsRegister ({
     doneAction,
     intents = ''
 }) {
-
     const useIntents = intents.split(',')
         .map((i) => i.trim());
 
     /** @type {Router<SlotBotState>} */
     const bot = new Router();
 
-    const setEntities = [];
-
     /** @type {SlotsResolver} */
     const handler = async (req, res, postBack) => {
-        // offer rooms or (does'nt matter)
+        const setEntities = [];
 
         /** @type {SlotState[]} */
         const slotState = steps.map((step) => {
@@ -80,7 +77,7 @@ function slotsRegister ({
 
         res.setState({
             _slotState: slotState,
-            _slotSteps: steps,
+            _slotSteps: steps.slice(),
             _slotDone: doneAction,
             ...setStateEntities
         });
