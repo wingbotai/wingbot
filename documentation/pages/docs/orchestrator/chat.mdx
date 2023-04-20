@@ -125,8 +125,7 @@ webchat (
 
 ```
 
-There are supported parameters for the config object:
-
+There are supported parameters for the configuration object:
 
 | Parameter |  Default value | Description | Example |
 |:-----------|------------|-------------|------------|
@@ -154,7 +153,39 @@ There are supported parameters for the config object:
 |`oauthMode`|`'iframe'`|Method for OAUTH authentication|`'xhr' | 'iframe' | 'redirect'`|
 |`homeAction`|`undefined`|If `homeAction` is `true` or `string` home button will be enabled in the chat header. If `homeAction` is `string` home button sends a postback to `homeAction`. If `homeAction` is `true` home button sends a postback to `startAction` |`true`|
 |`langFromUrl`|`undefined`|If `langFromUrl` is `true` language will be set based on url query parameter `lang`. If `langFromUrl` is `string` language will be set to `langFromUrl`|`true`|
+|`startAnimationSequence`|💬😉|Default animation sequence of the button
+|`hoverAnimationSequence`|👋😊|Hover animation sequence of the button
+|`loadingAnimationSequence`|😴🍳🤗💅👔|Hover animation sequence of the button
+|`onlineAnimationSequence`|`<svg>`|Hover animation sequence of the button
+|`offlineAnimationSequence`|`<svg>`|Hover animation sequence of the button
+|`persistentMenu`|`null`|Menu of the chat widget provided as a structure below
 
+**Animation sequence**
+
+list of animation frames with transitions
+
+`{i: string|ReactElement,animate?:string,timeout?:number}[]`
+
+- `i` - string (emoji) or react element
+- `animate` - name of transition effect from (animate.style)[https://animate.style]
+- `timeout` - time in ms (default: 2000)
+
+**Persistent menu**
+
+```javascript
+persistentMenu: [
+    {
+        locale: 'default',
+        call_to_actions: [
+            {
+                type: 'postback',
+                title: 'Button Title',
+                payload: 'address'
+            }
+        ]
+    }
+]
+```
 
 
 ## Development
