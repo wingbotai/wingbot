@@ -70,8 +70,8 @@ function chatgptPlugin (params, configuration = {}) {
             const useFetch = params.fetch || fetch;
 
             const apiUrl = openAiEndpoint
-                ? `${openAiEndpoint}`
-                : 'https://api.openai.com/v1';
+                ? `${openAiEndpoint}/chat/completions?api-version=2023-03-15-preview`
+                : 'https://api.openai.com/v1/chat/completions';
 
             const response = await useFetch(`${apiUrl}/chat/completions`, {
                 method: 'POST',
@@ -90,7 +90,9 @@ function chatgptPlugin (params, configuration = {}) {
                 || !Array.isArray(data.choices)) {
                 const { status, statusText } = response;
                 // eslint-disable-next-line no-console
-                console.log('chat gpt error', { status, statusText, data });
+                console.log('chat gpt error', {
+                    status, statusText, data, apiUrl
+                });
                 throw new Error(`Chat GPT ${status}`);
             }
 
