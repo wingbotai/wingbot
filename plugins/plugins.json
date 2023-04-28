@@ -488,7 +488,7 @@
         {
             "id": "ai.wingbot.openai",
             "name": "OpenAI - Chat",
-            "description": "Use within fallback to attach ChatGPT to your chatbot",
+            "description": "Use within fallback to attach ChatGPT to your chatbot\n\nYou can use {{message}} variable in a message annotation.",
             "availableSince": 3.54,
             "editable": false,
             "isFactory": true,
@@ -551,6 +551,16 @@
                             "message": "Max tokens should be a valid number"
                         }
                     ]
+                },
+                {
+                    "type": "text",
+                    "name": "persona",
+                    "label": "Message persona name"
+                },
+                {
+                    "type": "text",
+                    "name": "annotation",
+                    "label": "Message annotation"
                 },
                 {
                     "type": "textarea",

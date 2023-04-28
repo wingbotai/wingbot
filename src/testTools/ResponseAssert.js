@@ -24,7 +24,7 @@ class ResponseAssert {
     /**
      * Checks, that response contains text
      *
-     * @param {string} search
+     * @param {string|object} search
      * @returns {this}
      *
      * @memberOf ResponseAssert

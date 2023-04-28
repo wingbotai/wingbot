@@ -33,15 +33,15 @@ describe('openai plugin', () => {
             })
         }));
 
-        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', { fetch }));
+        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', { fetch, annotation: 'HI {{message}} HI' }));
 
         t = new Tester(bot);
 
         await t.text('cau');
 
         t.any()
-            .contains('hello')
-            .contains('welcome');
+            .contains('HI hello HI')
+            .contains('HI welcome HI');
 
         await t.text('ahoj');
 

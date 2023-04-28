@@ -378,7 +378,7 @@ class Tester {
      * Assert, that state contains a subset of provided value
      *
      * @param {object} object
-     * @param {boolean} deep
+     * @param {boolean} [deep]
      * @example
      *
      * t.stateContains({ value: true });

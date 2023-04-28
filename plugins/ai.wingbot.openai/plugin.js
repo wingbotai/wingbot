@@ -6,7 +6,13 @@
 const fetch = require('node-fetch').default;
 const compileWithState = require('../../src/utils/compileWithState');
 
-function chatgptPlugin (params) {
+const MSG_REPLACE = '#MSG-REPLACE#';
+
+function chatgptPlugin (params, configuration = {}) {
+    const {
+        openAiEndpoint = null,
+        openAiApiKey = null
+    } = configuration;
 
     async function chatgpt (req, res) {
         const content = req.text();
@@ -30,6 +36,11 @@ function chatgptPlugin (params) {
         const user = `${req.pageId}|${req.senderId}`;
 
         const systemAfter = compileWithState(req, res, params.systemAfter).trim();
+
+        const replacedAnnotation = `${params.annotation || ''}`.replace(/\{\{message\}\}/g, MSG_REPLACE);
+        const annotation = compileWithState(req, res, replacedAnnotation).trim();
+
+        const persona = compileWithState(req, res, params.persona).trim();
 
         let body;
 
@@ -58,11 +69,17 @@ function chatgptPlugin (params) {
 
             const useFetch = params.fetch || fetch;
 
-            const response = await useFetch('https://api.openai.com/v1/chat/completions', {
+            const apiUrl = openAiEndpoint
+                ? `${openAiEndpoint}`
+                : 'https://api.openai.com/v1';
+
+            const response = await useFetch(`${apiUrl}/chat/completions`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    ...(openAiEndpoint
+                        ? { 'api-key': token || openAiApiKey }
+                        : { Authorization: `Bearer ${token || openAiApiKey}` })
                 },
                 body: JSON.stringify(body)
             });
@@ -92,8 +109,26 @@ function chatgptPlugin (params) {
                         filtered = filtered.slice(0, filtered.length - 1);
                     }
 
+                    if (persona) {
+                        res.setPersona({ name: persona });
+                    }
+
                     filtered
-                        .forEach((t) => res.text(t.trim()));
+                        .forEach((t) => {
+                            let trim = t.trim();
+
+                            if (annotation && annotation.includes(MSG_REPLACE)) {
+                                trim = annotation.replace(MSG_REPLACE, trim);
+                            } else if (annotation) {
+                                trim = `${annotation} ${trim}`;
+                            }
+
+                            res.text(trim);
+                        });
+
+                    if (persona) {
+                        res.setPersona({ name: null });
+                    }
 
                     return ch;
                 });
