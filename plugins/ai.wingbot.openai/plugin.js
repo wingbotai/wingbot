@@ -73,7 +73,7 @@ function chatgptPlugin (params, configuration = {}) {
                 ? `${openAiEndpoint}/chat/completions?api-version=2023-03-15-preview`
                 : 'https://api.openai.com/v1/chat/completions';
 
-            const response = await useFetch(`${apiUrl}/chat/completions`, {
+            const response = await useFetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
