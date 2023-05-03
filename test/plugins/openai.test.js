@@ -27,22 +27,26 @@ describe('openai plugin', () => {
                     {
                         message: {
                             role: 'assistant',
-                            content: 'hello\nwelcome'
+                            content: 'HI hello HI\nwelcome H'
                         }
                     }
                 ]
             })
         }));
 
-        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', { fetch, annotation: 'HI {{message}} HI' }));
+        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', { fetch, annotation: 'HI {{message}} H' }));
 
         t = new Tester(bot);
 
         await t.text('cau');
 
         t.any()
-            .contains('HI hello HI')
-            .contains('HI welcome HI');
+            .contains('HI hello HI H')
+            .contains('HI welcome H');
+
+        t.any()
+            .notContains('HI HI hello')
+            .notContains('welcome H H');
 
         await t.text('ahoj');
 
@@ -66,7 +70,7 @@ describe('openai plugin', () => {
                     {
                         message: {
                             role: 'assistant',
-                            content: 'hello\nwelcome'
+                            content: 'hello\nH welcome'
                         }
                     }
                 ]
@@ -75,7 +79,7 @@ describe('openai plugin', () => {
 
         bot.use(/non-gpt/, (req, res) => { res.text('private'); });
 
-        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', { fetch, annotation: 'HI {{message}} HI', limit: '-10' }));
+        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', { fetch, annotation: 'H', limit: '-10' }));
 
         t = new Tester(bot);
 
@@ -86,8 +90,11 @@ describe('openai plugin', () => {
         await t.text('cau');
 
         t.any()
-            .contains('HI hello HI')
-            .contains('HI welcome HI');
+            .contains('H hello')
+            .contains('H welcome');
+
+        t.any()
+            .notContains('H H welcome');
 
         await t.text('ahoj');
 

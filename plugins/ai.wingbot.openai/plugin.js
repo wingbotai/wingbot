@@ -123,6 +123,28 @@ function chatgptPlugin (params, configuration = {}) {
                         .forEach((t) => {
                             let trim = t.trim();
 
+                            if (annotation) {
+                                // replace the annotation first
+
+                                const replacements = annotation.split(MSG_REPLACE);
+                                const last = replacements.length > 1
+                                    ? replacements.length - 1
+                                    : replacements.length;
+                                replacements.forEach((r, i) => {
+                                    const foundI = trim.indexOf(r.trim(), i === last
+                                        ? trim.length - r.trim().length
+                                        : 0);
+
+                                    if (foundI === -1
+                                        || (i === 0 && foundI > 0)
+                                        || (i === last && (trim.length - foundI - r.length) > 0)) {
+                                        return;
+                                    }
+
+                                    trim = trim.replace(r.trim(), '').trim();
+                                });
+                            }
+
                             if (annotation && annotation.includes(MSG_REPLACE)) {
                                 trim = annotation.replace(MSG_REPLACE, trim);
                             } else if (annotation) {
