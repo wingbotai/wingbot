@@ -8,6 +8,7 @@ const { spy } = require('sinon');
 const Tester = require('../../src/Tester');
 const Router = require('../../src/Router');
 const Plugins = require('../../src/Plugins');
+const MemoryChatLogStorage = require('../../src/tools/MemoryChatLogStorage');
 
 describe('openai plugin', () => {
 
@@ -51,6 +52,54 @@ describe('openai plugin', () => {
         const parsedBody = JSON.parse(body);
 
         assert.ok(parsedBody.messages.some((m) => m.role === 'user' && m.content === 'ahoj'));
+    });
+
+    it('filters gpt', async () => {
+        const plugins = new Plugins();
+
+        const bot = new Router();
+
+        const fetch = spy(() => ({
+            status: 200,
+            json: async () => ({
+                choices: [
+                    {
+                        message: {
+                            role: 'assistant',
+                            content: 'hello\nwelcome'
+                        }
+                    }
+                ]
+            })
+        }));
+
+        bot.use(/non-gpt/, (req, res) => { res.text('private'); });
+
+        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', { fetch, annotation: 'HI {{message}} HI', limit: '-10' }));
+
+        t = new Tester(bot);
+
+        t.senderLogger = new MemoryChatLogStorage();
+
+        await t.text('non-gpt');
+
+        await t.text('cau');
+
+        t.any()
+            .contains('HI hello HI')
+            .contains('HI welcome HI');
+
+        await t.text('ahoj');
+
+        // @ts-ignore
+        const { body } = fetch.secondCall.args[1];
+
+        const parsedBody = JSON.parse(body);
+
+        assert.ok(parsedBody.messages.some((m) => m.role === 'user' && m.content === 'ahoj'));
+        assert.ok(parsedBody.messages.some((m) => m.role === 'user' && m.content === 'cau'));
+        assert.ok(parsedBody.messages.every((m) => m.content !== 'non-gpt'));
+        assert.ok(parsedBody.messages.every((m) => m.content !== 'private'));
     });
 
 });

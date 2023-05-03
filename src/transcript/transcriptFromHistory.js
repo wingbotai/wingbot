@@ -29,14 +29,25 @@ const extractText = require('./extractText');
  * @param {IChatStorage} chatLogStorage
  * @param {string} senderId
  * @param {string} pageId
- * @param {number} limit
+ * @param {number} [limit]
+ * @param {string} [onlyFlag]
  * @returns {Promise<Transcript[]>}
  */
-async function transcriptFromHistory (chatLogStorage, senderId, pageId, limit = 20) {
+async function transcriptFromHistory (
+    chatLogStorage,
+    senderId,
+    pageId,
+    limit = 20,
+    onlyFlag = null
+) {
     if (typeof chatLogStorage.getInteractions !== 'function') {
         return [];
     }
-    const data = await chatLogStorage.getInteractions(senderId, pageId, limit);
+    let data = await chatLogStorage.getInteractions(senderId, pageId, limit);
+
+    if (onlyFlag) {
+        data = data.filter((h) => h.flag === onlyFlag);
+    }
 
     return data
         .map((turn) => {

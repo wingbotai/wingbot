@@ -218,12 +218,23 @@ class Responder {
 
     /**
      *
+     * @param {string} flag
+     * @returns {this}
+     */
+    setFlag (flag) {
+        this._senderMeta.flag = flag;
+        return this;
+    }
+
+    /**
+     *
      * Returns current conversation transcript
      *
      * @param {number} [limit]
+     * @param {string} [onlyFlag]
      * @returns {Promise<Transcript[]>}
      */
-    async getTranscript (limit = 10) {
+    async getTranscript (limit = 10, onlyFlag = null) {
         const { chatLogStorage } = this._messageSender;
         if (!chatLogStorage) {
             return [];
@@ -232,7 +243,8 @@ class Responder {
             chatLogStorage,
             this._senderId,
             this._pageId,
-            limit
+            limit,
+            onlyFlag
         );
         const { responseTexts = [] } = chatLogStorage;
         transcript.push(...responseTexts.map((text) => ({

@@ -554,6 +554,18 @@
                 },
                 {
                     "type": "text",
+                    "name": "limit",
+                    "label": "History context limit: (10)",
+                    "validations": [
+                        {
+                            "type": "regexp",
+                            "value": "^-?[0-9]*$",
+                            "message": "History context limit should be a valid number"
+                        }
+                    ]
+                },
+                {
+                    "type": "text",
                     "name": "persona",
                     "label": "Message persona name"
                 },

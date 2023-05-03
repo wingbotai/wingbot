@@ -4,6 +4,7 @@
 'use strict';
 
 const fetch = require('node-fetch').default;
+const Responder = require('../../src/Responder');
 const compileWithState = require('../../src/utils/compileWithState');
 
 const MSG_REPLACE = '#MSG-REPLACE#';
@@ -31,7 +32,7 @@ function chatgptPlugin (params, configuration = {}) {
 
         const maxTokens = parseFloat(compileWithState(req, res, params.maxTokens).trim() || '512') || 512;
 
-        const limit = parseInt(compileWithState(req, res, params.maxTokens).trim() || '10', 10) || 10;
+        const limit = parseInt(compileWithState(req, res, params.limit).trim() || '10', 10) || 10;
 
         const user = `${req.pageId}|${req.senderId}`;
 
@@ -45,6 +46,7 @@ function chatgptPlugin (params, configuration = {}) {
         let body;
 
         try {
+            res.setFlag('gpt');
             res.typingOn();
 
             body = {
@@ -56,7 +58,9 @@ function chatgptPlugin (params, configuration = {}) {
                 user
             };
 
-            const ts = await res.getTranscript(limit);
+            const onlyFlag = Math.sign(limit) === -1 ? 'gpt' : null;
+
+            const ts = await res.getTranscript(Math.abs(limit), onlyFlag);
 
             const messages = [
                 ...(system ? [{ role: 'system', content: system }] : []),
