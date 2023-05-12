@@ -143,6 +143,11 @@ class Tester {
          * @prop {string[]}
          */
         this.features = null;
+
+        /**
+         * @prop {string}
+         */
+        this.ATTACHMENT_MOCK_URL = 'http://mock.url/file.txt';
     }
 
     _actionHasGlobalIntent (action) {
@@ -413,6 +418,18 @@ class Tester {
      */
     text (text) {
         return this.processMessage(Request.text(this.senderId, text));
+    }
+
+    /**
+     * Sends attachment
+     *
+     * @param {'image'|'audio'|'video'|'file'} type
+     * @param {string} [url]
+     * @returns {Promise}
+     * @memberOf Tester
+     */
+    attachment (type = 'file', url = this.ATTACHMENT_MOCK_URL) {
+        return this.processMessage(Request.fileAttachment(this.senderId, url, type));
     }
 
     /**

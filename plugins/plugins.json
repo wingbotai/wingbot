@@ -609,6 +609,57 @@
             ],
             "items": [
             ]
+        },
+        {
+            "id": "ai.wingbot.upload",
+            "name": "Process upload",
+            "description": "Plugin is intended to be used in an interaction plugin",
+            "availableSince": 3.60,
+            "editable": false,
+            "isFactory": true,
+            "category": "detectors",
+            "inputs": [
+                {
+                    "name": "type",
+                    "label": "Allowed attachment type",
+                    "type": "select",
+                    "options": [
+                        { "value": "any", "label": "any attachment type" },
+                        { "value": "image", "label": "image" },
+                        { "value": "audio", "label": "audio" },
+                        { "value": "video", "label": "video" },
+                        { "value": "file", "label": "file" }
+                    ]
+                },
+                {
+                    "name": "variable",
+                    "label": "Variable name to set attachment URL(s)",
+                    "type": "text"
+                },
+                {
+                    "name": "datatype",
+                    "label": "Allowed attachment type",
+                    "type": "select",
+                    "options": [
+                        { "value": "string", "label": "string" },
+                        { "value": "array", "label": "array of strings" }
+                    ]
+                }
+            ],
+            "items": [
+                {
+                    "id": "noAttachment",
+                    "description": "No attachment uploaded"
+                },
+                {
+                    "id": "badType",
+                    "description": "Disallowed attachment type"
+                },
+                {
+                    "id": "success",
+                    "description": "Successfully uploaded"
+                }
+            ]
         }
     ],
     "categories": [

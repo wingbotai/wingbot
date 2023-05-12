@@ -102,7 +102,8 @@ class Responder {
         token = null,
         options = {},
         data = {},
-        configuration = {}
+        configuration = {},
+        senderMeta = null
     ) {
         this._messageSender = messageSender;
         this._senderId = senderId;
@@ -190,7 +191,7 @@ class Responder {
         this._trackAsAction = null;
 
         // both vars are package protected
-        this._senderMeta = { flag: null };
+        this._senderMeta = senderMeta || { flag: null };
 
         this._persona = null;
 

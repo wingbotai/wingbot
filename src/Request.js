@@ -110,6 +110,13 @@ function makeTimestamp () {
  */
 
 /**
+ * @typedef {object} Attachment
+ * @prop {'file'|'audio'|'video'|'image'} type
+ * @prop {object} payload
+ * @prop {string} payload.url
+ */
+
+/**
  * @typedef {number} AiSetStateOption
  */
 
@@ -175,6 +182,7 @@ class Request {
 
         this._optin = event.optin || null;
 
+        /** @type {Attachment[]} */
         this.attachments = (event.message
             && (event.message.attachment
                 ? [event.message.attachment]

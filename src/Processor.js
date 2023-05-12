@@ -527,7 +527,14 @@ class Processor extends EventEmitter {
         }
     }
 
-    async _processMessage (message, pageId, messageSender, responderData, preloadPromise = null) {
+    async _processMessage (
+        message,
+        pageId,
+        messageSender,
+        responderData,
+        preloadPromise = null,
+        senderMeta = null
+    ) {
         let senderId = message.sender && message.sender.id;
         const fromEvent = !!preloadPromise;
 
@@ -663,7 +670,8 @@ class Processor extends EventEmitter {
                 token,
                 options,
                 responderData,
-                configuration
+                configuration,
+                senderMeta
             );
             const postBack = this._createPostBack(postbackAcumulator, req, res, features);
 
@@ -815,7 +823,8 @@ class Processor extends EventEmitter {
                 senderId,
                 pageId,
                 messageSender,
-                responderData
+                responderData,
+                res.senderMeta
             );
 
             await emitPromise; // probably has been resolved this time
@@ -906,7 +915,14 @@ class Processor extends EventEmitter {
         });
     }
 
-    _processPostbacks (postbackAcumulator, senderId, pageId, messageSender, responderData) {
+    _processPostbacks (
+        postbackAcumulator,
+        senderId,
+        pageId,
+        messageSender,
+        responderData,
+        senderMeta
+    ) {
         return postbackAcumulator.reduce((promise, postback) => promise
             .then(() => postback)
             .then(({ action, data = {}, features }) => {
@@ -917,7 +933,14 @@ class Processor extends EventEmitter {
                     request = Request.postBack(senderId, action, data);
                 }
                 Object.assign(request, { features });
-                return this._processMessage(request, pageId, messageSender, responderData);
+                return this._processMessage(
+                    request,
+                    pageId,
+                    messageSender,
+                    responderData,
+                    null,
+                    senderMeta
+                );
             }), Promise.resolve({}));
     }
 
