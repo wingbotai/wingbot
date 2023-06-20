@@ -109,6 +109,12 @@ const {
  * @prop {string} [osName]
  * @prop {string} [skill]
  * @prop {string} [prevSkill]
+ * @prop {string|null} [cs]
+ * @prop {string|null} [cm]
+ * @prop {string|null} [cn]
+ * @prop {string|null} [ck]
+ * @prop {string|null} [cc]
+ * @prop {string|null} [dr]
  */
 
 /**
@@ -333,6 +339,15 @@ function onInteractionHandler (
             const useSkill = (skill && webalize(skill)) || noneAction;
             const usePrevSkill = (prevSkill && webalize(prevSkill)) || noneAction;
 
+            const {
+                '§cs': cs = null,
+                '§cm': cm = null,
+                '§cn': cn = null,
+                '§ck': ck = null,
+                '§cc': cc = null,
+                '§dr': dr = null
+            } = req.state;
+
             const metadata = {
                 sessionCount,
                 lang,
@@ -351,7 +366,16 @@ function onInteractionHandler (
                 deviceType: ua.device.type || null,
                 osName: ua.os.name || null,
                 skill: useSkill,
-                prevSkill: usePrevSkill
+                prevSkill: usePrevSkill,
+
+                cs,
+                cm,
+                cn,
+                ck,
+                cc,
+                dr: dr
+                    ? `${dr}`.toLowerCase().replace(/^[a-z0-9]:\/\//, '').replace(/(?<=\.[a-z]+)\/.*$/, '')
+                    : null
             };
 
             let sessionPromise;

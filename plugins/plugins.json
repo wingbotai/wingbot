@@ -141,7 +141,7 @@
         {
             "id": "ai.wingbot.trackingEvent",
             "name": "Report tracking event",
-            "description": "You can use handlebars templates here",
+            "description": "You can use handlebars templates here\nFrontend GA categories: generate_lead,view_item,purchase,tutorial_begin,tutorial_complete,sign_up,share\nFrontend GA action: item category\nFrontend GA label: currency (USD)",
             "availableSince": 3.13,
             "editable": false,
             "isFactory": false,
@@ -167,12 +167,12 @@
                 {
                     "name": "action",
                     "type": "text",
-                    "label": "Event action"
+                    "label": "Event action (item category)"
                 },
                 {
                     "name": "label",
                     "type": "text",
-                    "label": "Event label"
+                    "label": "Event label (currency)"
                 },
                 {
                     "name": "value",

@@ -84,6 +84,8 @@ function defaultPathContext () {
 /**
  * @typedef {object} BaseConfiguration
  * @prop {PersonConfiguration} [persona]
+ * @prop {string} [gaMeasurementId]
+ * @prop {string} [gaApiSecret]
  */
 
 /**
