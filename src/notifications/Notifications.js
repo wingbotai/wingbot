@@ -151,7 +151,13 @@ class Notifications extends EventEmitter {
 
         this._storage = notificationStorage;
         this._log = options.log || console;
+
+        /** @type {number} */
         this.limit = DEFAULT_LIMIT;
+
+        /** @type {number} */
+        this.sendLimit = DEFAULT_LIMIT;
+
         this._default24Clearance = options.default24Clearance || DEFAULT_24_CLEARANCE;
         this._allAudienceTag = typeof options.allAudienceTag !== 'undefined'
             ? options.allAudienceTag
@@ -824,7 +830,7 @@ class Notifications extends EventEmitter {
 
         while (run) {
             const now = timeStart + (Date.now() - begin);
-            const pop = await this._storage.popTasks(this.limit, now);
+            const pop = await this._storage.popTasks(this.sendLimit, now);
             await this._processPoppedTasks(pop, processor);
 
             run = pop.length !== 0 && (timeStart + timeLimit) > Date.now();

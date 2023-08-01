@@ -28,7 +28,8 @@ describe('<upload>', () => {
             plugins.getWrappedPlugin('ai.wingbot.upload', {
                 type: 'any',
                 variable: 'url',
-                datatype: 'string'
+                datatype: 'string',
+                allowSuffixes: 'txt'
             }, {
                 badType: (req, res) => { res.text('badType'); },
                 noAttachment: (req, res) => { res.text('noAttachment'); },

@@ -644,6 +644,11 @@
                         { "value": "string", "label": "string" },
                         { "value": "array", "label": "array of strings" }
                     ]
+                },
+                {
+                    "name": "allowSuffixes",
+                    "label": "Allowed attachment suffixes (comma separated)",
+                    "type": "text"
                 }
             ],
             "items": [
