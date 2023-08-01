@@ -31,9 +31,9 @@ module.exports = (params) => {
                 });
 
             const typeOk = (!params.type || params.type === 'any')
-                || (req.attachments.every((a) => a.type === params.type) && suffixOk);
+                || (req.attachments.every((a) => a.type === params.type));
 
-            if (!typeOk) {
+            if (!typeOk || !suffixOk) {
                 await res.run('badType');
                 return Router.NEXT;
             }
