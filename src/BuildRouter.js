@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const { decompress } = require('compress-json');
 const { default: fetch } = require('node-fetch');
 const assert = require('assert');
 const path = require('path');
@@ -374,7 +375,8 @@ class BuildRouter extends Router {
             auth = await Promise.resolve(this._loadBotAuthorization);
             Object.assign(options, {
                 headers: {
-                    Authorization: auth
+                    Authorization: auth,
+                    'X-Compressed-Blocks': '1'
                 }
             });
         }
@@ -401,6 +403,10 @@ class BuildRouter extends Router {
         }
 
         const snapshot = await response.json();
+
+        if (snapshot && snapshot.compressedBlocks) {
+            snapshot.blocks = decompress(snapshot.blocks);
+        }
 
         this._validateBlocks(snapshot && snapshot.blocks, 'load');
 
