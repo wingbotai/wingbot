@@ -278,7 +278,10 @@ type Query {
 
 type Mutation {
     "validate conversation data"
-    validateBot(bot:Any!): ValidationResult
+    validateBot(
+        bot:Any!,
+        compressed: Boolean = false
+    ): ValidationResult
 
     "invalidate a conversation cache in the chatbot"
     updateBot: Boolean

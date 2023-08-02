@@ -79,11 +79,19 @@ describe('openai plugin', () => {
 
         bot.use(/non-gpt/, (req, res) => { res.text('private'); });
 
-        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', { fetch, annotation: 'H', limit: '-10' }));
+        bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', {
+            fetch, charLim: 100, annotation: 'H', limit: '-10', maxTokens: 50
+        }));
 
         t = new Tester(bot);
 
         t.senderLogger = new MemoryChatLogStorage();
+
+        await t.text('sasa');
+
+        t.debug();
+
+        await t.text('lele');
 
         await t.text('non-gpt');
 
@@ -99,7 +107,7 @@ describe('openai plugin', () => {
         await t.text('ahoj');
 
         // @ts-ignore
-        const { body } = fetch.secondCall.args[1];
+        const { body } = fetch.getCall(3).args[1];
 
         const parsedBody = JSON.parse(body);
 

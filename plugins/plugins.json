@@ -578,6 +578,34 @@
                     "type": "textarea",
                     "name": "systemAfter",
                     "label": "Current message (system)"
+                },
+                {
+                    "type": "array",
+                    "name": "continueConfig",
+                    "label": "Continue quick reply",
+                    "keyPropertyName": "lang",
+                    "columns": [
+                        {
+                          "name": "lang",
+                          "label": "Language"
+                        },
+                        {
+                          "name": "title",
+                          "label": "Quick Reply"
+                        }
+                    ],
+                    "inputs": [
+                        {
+                            "type": "text",
+                            "name": "lang",
+                            "label": "Language (or 'default')"
+                        },
+                        {
+                            "type": "text",
+                            "name": "title",
+                            "label": "Quick reply title"
+                        }
+                    ]
                 }
             ],
             "items": [

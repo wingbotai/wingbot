@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const { decompress } = require('compress-json');
 const Tester = require('../Tester');
 const apiAuthorizer = require('./apiAuthorizer');
 
@@ -95,7 +96,11 @@ function validateBotApi (botFactory, postBackTest = null, textTest = null, acl =
                 return null;
             }
 
-            const validationRequestBody = args.bot;
+            let validationRequestBody = args.bot;
+
+            if (args.compressed) {
+                validationRequestBody = decompress(validationRequestBody);
+            }
 
             const bot = botFactory();
 

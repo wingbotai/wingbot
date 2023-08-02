@@ -9,6 +9,8 @@ const compileWithState = require('../../src/utils/compileWithState');
 
 const MSG_REPLACE = '#MSG-REPLACE#';
 
+const CHAR_LIM = 4096;
+
 function chatgptPlugin (params, configuration = {}) {
     const {
         openAiEndpoint = null,
@@ -17,6 +19,8 @@ function chatgptPlugin (params, configuration = {}) {
 
     async function chatgpt (req, res) {
         const content = req.text();
+
+        const charLim = params.charLim || CHAR_LIM;
 
         const token = compileWithState(req, res, params.token).trim();
 
@@ -43,6 +47,11 @@ function chatgptPlugin (params, configuration = {}) {
 
         const persona = compileWithState(req, res, params.persona).trim();
 
+        const continueConfig = params.continueConfig || [];
+        const lang = `${res.newState.lang || req.state.lang || 'default'}`.trim().toLocaleLowerCase();
+        const continueReply = continueConfig.find((c) => `${c.lang}`.trim().toLowerCase() === lang)
+            || continueConfig.find((c) => `${c.lang}`.trim().toLowerCase() === 'default');
+
         let body;
 
         try {
@@ -61,6 +70,18 @@ function chatgptPlugin (params, configuration = {}) {
             const onlyFlag = Math.sign(limit) === -1 ? 'gpt' : null;
 
             const ts = await res.getTranscript(Math.abs(limit), onlyFlag);
+
+            let total = (system ? system.length : 0)
+                + (systemAfter ? systemAfter.length : 0)
+                + maxTokens
+                + content.length;
+
+            for (let i = ts.length - 1; i >= 0; i--) {
+                total += ts[i].text.length;
+                if (total > charLim) {
+                    ts.splice(i, 1);
+                }
+            }
 
             const messages = [
                 ...(system ? [{ role: 'system', content: system }] : []),
@@ -106,6 +127,9 @@ function chatgptPlugin (params, configuration = {}) {
             const sent = data.choices
                 .filter((ch) => ch.message && ch.message.role === 'assistant' && ch.message.content)
                 .map((ch) => {
+
+                    let sliced = false;
+
                     let filtered = ch.message.content
                         .replace(/\n\n/g, '\n')
                         .split(/\n+(?!-)/g)
@@ -113,6 +137,7 @@ function chatgptPlugin (params, configuration = {}) {
 
                     if (filtered.length > 2) {
                         filtered = filtered.slice(0, filtered.length - 1);
+                        sliced = true;
                     }
 
                     if (persona) {
@@ -120,7 +145,7 @@ function chatgptPlugin (params, configuration = {}) {
                     }
 
                     filtered
-                        .forEach((t) => {
+                        .forEach((t, fi) => {
                             let trim = t.trim();
 
                             if (annotation) {
@@ -151,7 +176,14 @@ function chatgptPlugin (params, configuration = {}) {
                                 trim = `${annotation} ${trim}`;
                             }
 
-                            res.text(trim);
+                            res.text(trim, sliced && fi === (filtered.length - 1) && continueReply
+                                ? [
+                                    {
+                                        title: continueReply.title,
+                                        action: res.currentAction()
+                                    }
+                                ]
+                                : null);
                         });
 
                     if (persona) {
