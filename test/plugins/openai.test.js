@@ -58,7 +58,7 @@ describe('openai plugin', () => {
         assert.ok(parsedBody.messages.some((m) => m.role === 'user' && m.content === 'ahoj'));
     });
 
-    it('filters gpt', async () => {
+    it.only('filters gpt', async () => {
         const plugins = new Plugins();
 
         const bot = new Router();
@@ -70,7 +70,7 @@ describe('openai plugin', () => {
                     {
                         message: {
                             role: 'assistant',
-                            content: 'hello\nH welcome'
+                            content: 'hello\nH welcome\ntrim'
                         }
                     }
                 ]
@@ -80,7 +80,14 @@ describe('openai plugin', () => {
         bot.use(/non-gpt/, (req, res) => { res.text('private'); });
 
         bot.use(plugins.getWrappedPlugin('ai.wingbot.openai', {
-            fetch, charLim: 100, annotation: 'H', limit: '-10', maxTokens: 50
+            fetch,
+            charLim: 100,
+            annotation: 'H',
+            limit: '-10',
+            maxTokens: 50,
+            continueConfig: [
+                { title: 'Continue' }
+            ]
         }));
 
         t = new Tester(bot);
@@ -107,14 +114,23 @@ describe('openai plugin', () => {
         await t.text('ahoj');
 
         // @ts-ignore
-        const { body } = fetch.getCall(3).args[1];
-
-        const parsedBody = JSON.parse(body);
+        let { body } = fetch.getCall(3).args[1];
+        let parsedBody = JSON.parse(body);
 
         assert.ok(parsedBody.messages.some((m) => m.role === 'user' && m.content === 'ahoj'));
         assert.ok(parsedBody.messages.some((m) => m.role === 'user' && m.content === 'cau'));
         assert.ok(parsedBody.messages.every((m) => m.content !== 'non-gpt'));
         assert.ok(parsedBody.messages.every((m) => m.content !== 'private'));
+
+        await t.quickReplyText('Continue');
+
+        // @ts-ignore
+        body = fetch.getCall(4).args[1].body;
+        parsedBody = JSON.parse(body);
+
+        assert.ok(parsedBody.messages.some((m) => m.role === 'user' && m.content === 'Continue'));
+
+        // t.debug();
     });
 
 });

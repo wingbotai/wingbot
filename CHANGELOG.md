@@ -5,11 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.65.0] 2023-08-02
+## [3.65.0-1] 2023-08-02
 
 ### Added
 
 - "continue" quick reply for ChatGPT plugin
+
+### Fixed
+
+- ChatGPT plugins now filters longer text in chat history
+- `Tester.debug()` method now shows the whole message structure
 
 ## [3.64.0-1] 2023-08-01
 

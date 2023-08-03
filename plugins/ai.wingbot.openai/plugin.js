@@ -48,9 +48,10 @@ function chatgptPlugin (params, configuration = {}) {
         const persona = compileWithState(req, res, params.persona).trim();
 
         const continueConfig = params.continueConfig || [];
-        const lang = `${res.newState.lang || req.state.lang || 'default'}`.trim().toLocaleLowerCase();
+        const lang = `${res.newState.lang || req.state.lang || 'default'}`.trim().toLowerCase();
         const continueReply = continueConfig.find((c) => `${c.lang}`.trim().toLowerCase() === lang)
-            || continueConfig.find((c) => `${c.lang}`.trim().toLowerCase() === 'default');
+            || continueConfig.find((c) => ['default', '']
+                .includes(`${c.lang || ''}`.trim().toLowerCase()));
 
         let body;
 
@@ -128,7 +129,7 @@ function chatgptPlugin (params, configuration = {}) {
                 .filter((ch) => ch.message && ch.message.role === 'assistant' && ch.message.content)
                 .map((ch) => {
 
-                    let sliced = false;
+                    let sliced = data.usage && data.usage.completion_tokens >= maxTokens;
 
                     let filtered = ch.message.content
                         .replace(/\n\n/g, '\n')

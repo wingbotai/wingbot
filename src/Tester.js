@@ -4,6 +4,7 @@
 'use strict';
 
 const assert = require('assert');
+const { inspect } = require('util');
 const deepExtend = require('deep-extend');
 const Processor = require('./Processor');
 const Request = require('./Request');
@@ -597,7 +598,12 @@ class Tester {
             '\n===== actions =====\n',
             this._actionsDebug(true),
             '\n---- responses ----\n',
-            this.responses.map(({ messaging_type: m, recipient, ...o }) => o),
+            inspect(
+                this.responses.map(({ messaging_type: m, recipient, ...o }) => o),
+                false,
+                null,
+                true
+            ),
             '\n------ state ------\n',
             Object.fromEntries(
                 Object.entries(this.getState().state)

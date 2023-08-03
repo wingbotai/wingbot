@@ -586,10 +586,6 @@
                     "keyPropertyName": "lang",
                     "columns": [
                         {
-                          "name": "lang",
-                          "label": "Language"
-                        },
-                        {
                           "name": "title",
                           "label": "Quick Reply"
                         }
@@ -598,7 +594,7 @@
                         {
                             "type": "text",
                             "name": "lang",
-                            "label": "Language (or 'default')"
+                            "label": "Language (optional)"
                         },
                         {
                             "type": "text",
