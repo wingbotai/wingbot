@@ -58,7 +58,7 @@ describe('openai plugin', () => {
         assert.ok(parsedBody.messages.some((m) => m.role === 'user' && m.content === 'ahoj'));
     });
 
-    it.only('filters gpt', async () => {
+    it('filters gpt', async () => {
         const plugins = new Plugins();
 
         const bot = new Router();
