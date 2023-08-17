@@ -210,7 +210,8 @@ describe('<Ai> entity context', () => {
             bot.use('same-entities', (req, res) => {
                 res.text('test', [
                     { action: 'a', match: ['@en=1'], title: null },
-                    { action: 'b', match: ['@en', '@en'], title: null }
+                    { action: 'b', match: ['@en', '@en'], title: null },
+                    { action: 'c', match: ['intentttt', '@en={{entityvar}}'], title: null }
                 ]);
             });
 
@@ -228,6 +229,8 @@ describe('<Ai> entity context', () => {
             bot.use('a', (req, res) => { res.text('a'); });
 
             bot.use('b', (req, res) => { res.text('b'); });
+
+            bot.use('c', (req, res) => { res.text('c var'); });
 
             bot.use(ai.global('fakin', ['@entity']), (req, res) => {
                 res.text('Fakin');
@@ -317,6 +320,22 @@ describe('<Ai> entity context', () => {
             await t.processMessage(e);
 
             t.any().contains('b');
+        });
+
+        it('entities supports variables with intents', async () => {
+            t.setState({ entityvar: 'X' });
+
+            await t.postBack('same-entities');
+
+            const e = Request.text(t.senderId, 'txt');
+
+            Request.addIntentToRequest(e, 'intentttt', [
+                { entity: 'en', value: 'X', score: 1 }
+            ], 1);
+
+            await t.processMessage(e);
+
+            t.any().contains('c var');
         });
 
         it('prefers the one entity in exact match', async () => {

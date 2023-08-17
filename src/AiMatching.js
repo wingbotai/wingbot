@@ -461,6 +461,19 @@ class AiMatching {
         const regexpScore = this._matchRegexp(req, regexps, noIntentHandicap);
         const textLength = req.text().trim().length;
 
+        let useState;
+        if (stateless || intents.length === 0) {
+            useState = Object.entries(stateData(req))
+                .reduce((o, [k, v]) => {
+                    if (k.startsWith('@')) {
+                        return o;
+                    }
+                    return Object.assign(o, { [k]: v });
+                }, {});
+        } else {
+            useState = stateData(req);
+        }
+
         if (regexpScore !== 0 || (intents.length === 0 && regexps.length === 0)) {
 
             if (entities.length === 0) {
@@ -473,19 +486,6 @@ class AiMatching {
                     entities: [],
                     score: regexpScore - handicap
                 };
-            }
-
-            let useState;
-            if (stateless || intents.length === 0) {
-                useState = Object.entries(stateData(req))
-                    .reduce((o, [k, v]) => {
-                        if (k.startsWith('@')) {
-                            return o;
-                        }
-                        return Object.assign(o, { [k]: v });
-                    }, {});
-            } else {
-                useState = stateData(req);
             }
 
             const {
@@ -561,7 +561,7 @@ class AiMatching {
                             requestIntent,
                             entities,
                             req,
-                            stateless
+                            useState
                         );
 
                     if (score > max) {
@@ -594,7 +594,7 @@ class AiMatching {
      * @param {Intent} requestIntent
      * @param {EntityExpression[]} wantedEntities
      * @param {AIRequest} req
-     * @param {boolean} stateless
+     * @param {object} useState
      * @returns {{score:number,entities:Entity[]}}
      */
     _intentMatchingScore (
@@ -603,7 +603,7 @@ class AiMatching {
         requestIntent,
         wantedEntities,
         req,
-        stateless = false
+        useState
     ) {
         if (wantedIntent !== requestIntent.intent) {
             return { score: 0, entities: [] };
@@ -625,7 +625,7 @@ class AiMatching {
                 textLength,
                 wantedEntities,
                 useEntities,
-                stateless ? {} : req.state,
+                useState,
                 requestIntent.entities
                     ? (x) => Math.atan((x - 0.76) * 40) / Math.atan((1 - 0.76) * 40)
                     : (x) => x,
