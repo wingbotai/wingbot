@@ -551,7 +551,10 @@ describe('Responder', function () {
 
             res.expectedIntent(['#phrase-word'], 'action');
 
-            assert.strictEqual(sendFn.called, false);
+            // assert.strictEqual(sendFn.called, true);
+            assert.deepStrictEqual(sendFn.lastCall.args[0], {
+                expectedIntentsAndEntities: ['phrase word']
+            });
 
             res.expectedIntent(['intent'], 'action');
 
@@ -559,10 +562,10 @@ describe('Responder', function () {
                 expectedIntentsAndEntities: ['intent']
             });
 
-            res.expectedIntent(['@entity!=foo', '@bar?'], 'action');
+            res.expectedIntent(['@entity!=foo', '@bar?', '#some|words-in'], 'action');
 
             assert.deepStrictEqual(sendFn.lastCall.args[0], {
-                expectedIntentsAndEntities: ['@entity', '@bar']
+                expectedIntentsAndEntities: ['@entity', '@bar', 'some', 'words in']
             });
 
             res.text('text', [

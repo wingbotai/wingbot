@@ -779,7 +779,17 @@ class Responder {
             e.match
                 .forEach((rule) => {
                     if (rule.startsWith('#')) {
-                        // @todo propagate also keywords
+                        if (!rule.match(/^#(\|?[a-z0-9-]+)+#?$/i)) {
+                            return;
+                        }
+                        const keywords = rule.match(/\|?[a-z0-9-]+/ig)
+                            .map((k) => k
+                                .replace(/\|/g, '')
+                                .replace(/[-\s]+/g, ' '));
+
+                        expectedIntentsAndEntities.push(
+                            ...keywords
+                        );
                         return;
                     }
                     if (rule.startsWith('@')) {

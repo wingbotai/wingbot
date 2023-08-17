@@ -78,11 +78,14 @@ class GenericTemplate extends ButtonTemplate {
      *
      * @param {string} action - Button action (can be absolute or relative)
      * @param {object} [data={}] - Action data
+     * @param {object} [setState] - SetState data
      * @returns {this}
      *
      * @memberOf GenericTemplate
      */
-    setElementActionPostback (action, data = {}) {
+    setElementActionPostback (action, data = {}, setState = null) {
+        const hasSetState = setState && Object.keys(setState).length !== 0;
+
         Object.assign(this._element, {
             default_action: {
                 type: 'postback',
@@ -91,7 +94,8 @@ class GenericTemplate extends ButtonTemplate {
                     data: {
                         _ca: this.context.currentAction,
                         ...data
-                    }
+                    },
+                    ...(hasSetState ? { setState } : {})
                 })
             }
         });
@@ -134,6 +138,7 @@ class GenericTemplate extends ButtonTemplate {
         return this;
     }
 
+    // @ts-ignore
     getTemplate () {
         this._attachAndClearButtons();
         const res = {
