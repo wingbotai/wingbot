@@ -74,7 +74,7 @@ describe('<BuildRouter>', function () {
                 const b = new BuildRouter({ botId: '591ef270-b5d5-4310-af77-b0d435fac3cb', token: 'a' });
                 await b.preload();
             },
-            'Bot load failed: 401 - The token probably does not match snapshot \'production\' and botId \'591ef270-b5d5-4310-af77-b0d435fac3cb\''
+            'Bot load failed: 403 - The token probably does not match snapshot \'production\' and botId \'591ef270-b5d5-4310-af77-b0d435fac3cb\''
         );
         await throws(
             async () => {
