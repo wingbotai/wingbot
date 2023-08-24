@@ -10,6 +10,8 @@ const { dateToISO8601String, zeroHourDate } = require('./datetime');
 
 /**
  * @typedef {object} IStateRequest
+ * @prop {string} [senderId]
+ * @prop {string} [pageId]
  * @prop {object} [state]
  * @prop {object} [configuration]
  * @prop {Function} text
@@ -38,7 +40,14 @@ module.exports = function stateData (req, res = null, configuration = null, stat
     now.setDate(now.getDate() - 2);
     const $yesterday = dateToISO8601String(zeroHourDate(now), true);
 
+    const {
+        senderId,
+        pageId
+    } = req;
+
     return {
+        senderId,
+        pageId,
         c,
         configuration: c,
         ...req.state,
