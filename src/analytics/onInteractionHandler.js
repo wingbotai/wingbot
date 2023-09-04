@@ -536,67 +536,71 @@ function onInteractionHandler (
                 }))
             );
 
-            if (req.isText()) {
+            const skipThisInteraction = responseTexts.length === 0 && nonInteractive;
+
+            if (!skipThisInteraction) {
+                if (req.isText()) {
+                    trackEvents.push({
+                        type: TrackingType.TRAINING,
+                        // @ts-ignore
+                        lastAction,
+                        category: asCategory(TrackingCategory.INTENT_DETECTION),
+                        intent,
+                        action,
+                        label: text,
+                        value: score >= ai.confidence ? 0 : 1,
+                        ...langsExtension
+                    });
+                }
+
+                let actionCategory;
+                let label = noneAction;
+
+                if (isPassThread) {
+                    actionCategory = TrackingCategory.HANDOVER_TO_BOT;
+                } else if (req.isSticker()) {
+                    actionCategory = TrackingCategory.STICKER;
+                    label = req.attachmentUrl(0);
+                } else if (req.isImage()) {
+                    actionCategory = TrackingCategory.IMAGE;
+                    label = req.attachmentUrl(0);
+                } else if (req.hasLocation()) {
+                    actionCategory = TrackingCategory.LOCATION;
+                    const { lat, long } = req.getLocation();
+                    label = `${lat}, ${long}`;
+                } else if (isAttachment) {
+                    actionCategory = TrackingCategory.ATTACHMENT;
+                    label = req.attachment(0).type;
+                } else if (isText) {
+                    actionCategory = TrackingCategory.TEXT;
+                    label = text;
+                } else if (isQuickReply) {
+                    actionCategory = TrackingCategory.QUICK_REPLY;
+                    label = text;
+                } else if (req.isOptin()) {
+                    actionCategory = TrackingCategory.OPT_IN;
+                } else if (req.isReferral()) {
+                    actionCategory = TrackingCategory.REFERRAL;
+                } else if (isPostback) {
+                    actionCategory = TrackingCategory.POSTBACK_BUTTON;
+                    label = req.event.postback.title || (useExtendedScalars ? null : '(unknown)');
+                } else {
+                    actionCategory = TrackingCategory.OTHER;
+                }
+
                 trackEvents.push({
-                    type: TrackingType.TRAINING,
-                    // @ts-ignore
+                    ...(analyticsStorage.hasExtendedEvents ? actionMeta : {}),
+                    type: TrackingType.CONVERSATION_EVENT,
                     lastAction,
-                    category: asCategory(TrackingCategory.INTENT_DETECTION),
-                    intent,
+                    category: asCategory(actionCategory),
                     action,
-                    label: text,
-                    value: score >= ai.confidence ? 0 : 1,
+                    label,
+                    value,
+                    pageCategory,
+                    nonInteractive,
                     ...langsExtension
                 });
             }
-
-            let actionCategory;
-            let label = noneAction;
-
-            if (isPassThread) {
-                actionCategory = TrackingCategory.HANDOVER_TO_BOT;
-            } else if (req.isSticker()) {
-                actionCategory = TrackingCategory.STICKER;
-                label = req.attachmentUrl(0);
-            } else if (req.isImage()) {
-                actionCategory = TrackingCategory.IMAGE;
-                label = req.attachmentUrl(0);
-            } else if (req.hasLocation()) {
-                actionCategory = TrackingCategory.LOCATION;
-                const { lat, long } = req.getLocation();
-                label = `${lat}, ${long}`;
-            } else if (isAttachment) {
-                actionCategory = TrackingCategory.ATTACHMENT;
-                label = req.attachment(0).type;
-            } else if (isText) {
-                actionCategory = TrackingCategory.TEXT;
-                label = text;
-            } else if (isQuickReply) {
-                actionCategory = TrackingCategory.QUICK_REPLY;
-                label = text;
-            } else if (req.isOptin()) {
-                actionCategory = TrackingCategory.OPT_IN;
-            } else if (req.isReferral()) {
-                actionCategory = TrackingCategory.REFERRAL;
-            } else if (isPostback) {
-                actionCategory = TrackingCategory.POSTBACK_BUTTON;
-                label = req.event.postback.title || (useExtendedScalars ? null : '(unknown)');
-            } else {
-                actionCategory = TrackingCategory.OTHER;
-            }
-
-            trackEvents.push({
-                ...(analyticsStorage.hasExtendedEvents ? actionMeta : {}),
-                type: TrackingType.CONVERSATION_EVENT,
-                lastAction,
-                category: asCategory(actionCategory),
-                action,
-                label,
-                value,
-                pageCategory,
-                nonInteractive,
-                ...langsExtension
-            });
 
             await Promise.all([
                 analyticsStorage.storeEvents(
