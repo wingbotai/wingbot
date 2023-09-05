@@ -183,6 +183,12 @@ class AiMatching {
          */
         this.stateEntityScore = 1;
 
+        /**
+         * Score of matched regexp
+         * (1.02 by default)
+         */
+        this.regexpScore = 1.02;
+
         this._ai = ai;
     }
 
@@ -901,7 +907,9 @@ class AiMatching {
                 return 0;
             }
 
-            return f ? 1 : 1 - noIntentHandicap;
+            return f
+                ? this.regexpScore
+                : this.regexpScore - noIntentHandicap;
         });
 
         return Math.max(0, ...scores);
