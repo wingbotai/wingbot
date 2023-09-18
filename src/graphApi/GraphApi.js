@@ -4,7 +4,6 @@
 'use strict';
 
 const assert = require('assert');
-const { graphql, buildSchema } = require('graphql');
 const WingbotApiConnector = require('./WingbotApiConnector');
 // @ts-ignore
 const packageJson = require('../../package.json');
@@ -21,6 +20,7 @@ const DEFAULT_CACHE = 86400000; // 24 hours
  */
 
 /** @typedef {import('../CallbackAuditLog')} AuditLog */
+/** @typedef {import('graphql')} GqlLib */
 
 /**
  * Experimental chatbot API
@@ -81,6 +81,19 @@ class GraphApi {
             cacheKeys: opts.cacheKeys,
             useBundledGql: opts.useBundledGql
         });
+
+        this._lib = null;
+    }
+
+    /**
+     * @returns {GqlLib}
+     */
+    get _gql () {
+        if (this._lib === null) {
+            // eslint-disable-next-line global-require
+            this._lib = require('graphql');
+        }
+        return this._lib;
     }
 
     /**
@@ -139,8 +152,16 @@ class GraphApi {
             audit
         };
 
-        // @ts-ignore
-        return graphql(schema, body.query, this._root, ctx, body.variables, body.operationName);
+        const response = await this._gql.graphql({
+            schema,
+            source: body.query,
+            rootValue: this._root,
+            contextValue: ctx,
+            variableValues: body.variables,
+            operationName: body.operationName
+        });
+
+        return response;
     }
 
     async _schema () {
@@ -151,7 +172,7 @@ class GraphApi {
 
         if (!schemaIsSame) {
             this._originalSchema = loadedSchema;
-            this._cachedSchema = buildSchema(loadedSchema);
+            this._cachedSchema = this._gql.buildSchema(loadedSchema);
         }
         return this._cachedSchema;
     }

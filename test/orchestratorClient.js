@@ -54,7 +54,12 @@ describe('OrchestratorClient', () => {
         fetch = sinon.spy(async (url, { body }) => {
             const req = JSON.parse(body);
             // Pass request to mock graphql server
-            const res = await graphql(builtSchema, req.query, root, {}, req.variables);
+            const res = await graphql({
+                schema: builtSchema,
+                source: req.query,
+                rootValue: root,
+                variableValues: req.variables
+            });
             // Return result in format like from orchestrator
             return { json: () => ({ data: res.data, request: {} }) };
         });

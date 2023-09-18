@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.65.9",
+  "version": "3.65.11",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -57,7 +57,7 @@
     "compress-json": "^2.1.2",
     "deep-extend": "^0.6.0",
     "form-data": "^4.0.0",
-    "graphql": "^15.8.0",
+    "graphql": "^16.8.0",
     "jsonwebtoken": "^9.0.0",
     "node-fetch": "^2.6.7",
     "path-to-regexp": "^6.2.1",
