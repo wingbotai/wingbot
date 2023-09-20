@@ -161,6 +161,13 @@ class AiMatching {
         this.redundantEntityHandicap = 0.02;
 
         /**
+         * Upper threshold for redundant entity handicaps
+         *
+         * @type {number}
+         */
+        this.redundantEntityClamp = 0.1;
+
+        /**
          * When there is additional intent, the final score will be lowered by this value
          * (0.02 by default)
          *
@@ -808,11 +815,31 @@ class AiMatching {
                 ? 1
                 : 0;
 
-            handicap += (requestEntities.length + fromState - matched.length + coveringHandicap)
-                * this.redundantEntityHandicap;
+            const matchingSame = requestEntities.reduce((cnt, e) => {
+                const inMatching = matched.some((me) => e.entity === me.entity);
+                return cnt + (inMatching ? 1 : 0);
+            }, 0);
+
+            // all of them can be in state
+            const distinctEntities = new Set(matched.map((m) => m.entity)).size;
+            const matchSameOver = matchingSame - matched.length;
+            const nonMatching = requestEntities.length - matchingSame;
+
+            const redundantCount = nonMatching
+                + (matchSameOver > distinctEntities ? matchSameOver * 0.5 : matchSameOver);
 
             // eslint-disable-next-line max-len
-            // console.log({ requestEntities, matched, handicap, coveringHandicap, otherEntitiesTextLen });
+            // console.log({ distinctEntities, redundantCount, nonMatching, matchSameOver, mat: matched.length, req: requestEntities.length });
+
+            const redundantHandicap = Math.min(
+                this.redundantEntityHandicap * (redundantCount + fromState + coveringHandicap),
+                this.redundantEntityClamp
+            );
+
+            handicap += redundantHandicap;
+
+            // eslint-disable-next-line max-len
+            // console.log({ redundantHandicap, requestEntities, matched, handicap, coveringHandicap, otherEntitiesTextLen });
 
         }
         const score = matched.length === 0 ? 0 : sum / matched.length;

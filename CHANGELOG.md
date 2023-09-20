@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- redundant entity matching clamped
+
+## [3.65.11] 2023-09-15
+
+### Fixed
+
 - lazyload of GQL and plugins
 
 ## [3.65.10] 2023-09-15

@@ -83,6 +83,40 @@ describe('<AiMatching>', () => {
             });
         });
 
+        it('should multiple same entities', () => {
+            const rule = ai.preprocessRule(['@entity']);
+
+            const entities = [
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('entity', 'v', 1),
+                entity('x', 'v', 1),
+                entity('y', 'v', 1)
+            ];
+
+            const req = fakeReq([intent('intent', entities, 0.9975)], entities);
+
+            assert.deepEqual(ai.match(req, rule), {
+                entities: [
+                    entity('entity', 'v', 1)
+                ],
+                intent: null,
+                score: 0.88
+            });
+        });
+
         it('should match intent with optional entity', () => {
             const rule = ai.preprocessRule('@entity=');
 
