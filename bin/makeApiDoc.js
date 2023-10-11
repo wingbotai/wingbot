@@ -72,6 +72,13 @@ docs.forEach((doc, index) => {
                 .replace(/\/\*\*[^/]+@typedef\s+\{import[^*]+\*\//gm, '')
                 // tuples
                 .replace(/\/\*\*[^/]+@typedef\s+\{\[[^*]+\*\//gm, '')
+                // object merges to unions with template at the end
+                .replace(/\*\s+@typedef\s+\{([^}]+&[^}]+)\}/gm, (a, b) => {
+                    if (b.match(/<[^>]+>/)) {
+                        return a.replace(/&/g, '|');
+                    }
+                    return a;
+                })
                 // keyof
                 .replace(/(\/\*\*[^/]+\{[^}]+(<|,\s))keyof/gm, '$1')
                 // unions
@@ -108,7 +115,7 @@ order: ${index} # Order in the sidebar navigation group\n\
     fs.writeFileSync(docFile, apiDoc);
 });
 
-fs.rmdirSync(tempDir, { recursive: true });
+fs.rmSync(tempDir, { recursive: true });
 
 const file = path.resolve(process.cwd(), 'doc', 'api', 'graphqlSchema.md');
 let data = fs.readFileSync(file, { encoding: 'utf8' });
