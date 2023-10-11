@@ -128,6 +128,15 @@ class Router extends ReducerWrapper {
         return this._configuration;
     }
 
+    /**
+     *
+     * @param {Partial<C>} c
+     * @returns {C}
+     */
+    updateConfiguration (c) {
+        return Object.assign(this._configuration, c);
+    }
+
     _normalizePath (path) {
         let normalizedPath;
 

@@ -49,6 +49,8 @@ let uq = 1;
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Phrases} Phrases */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').EntityDetector} EntityDetector */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').DetectorOptions} DetectorOptions */
+// eslint-disable-next-line max-len
+/** @typedef {import('./wingbot/CustomEntityDetectionModel').WordEntityDetector} WordEntityDetector */
 
 /** @typedef {[string,EntityDetector|RegExp,DetectorOptions]} DetectorArgs */
 
@@ -71,6 +73,12 @@ class Ai {
         this._detectors = new Map(
             systemEntities.map((a) => [a[0], a])
         );
+
+        /**
+         * @private
+         * @type {WordEntityDetector}
+         */
+        this._wordEntityDetector = null;
 
         /**
          * Upper threshold - for match method and for navigate method
@@ -191,15 +199,18 @@ class Ai {
         if (typeof model === 'string') {
             // @ts-ignore
             modelObj = new WingbotModel({
-                model
+                model,
+                prefix
             }, this.logger);
         } else {
             // @ts-ignore
             modelObj = model;
+            modelObj.prefix = prefix;
         }
 
         this._keyworders.set(prefix, modelObj);
 
+        modelObj.wordEntityDetector = this._wordEntityDetector;
         for (const entityArgs of this._detectors.values()) {
             modelObj.setEntityDetector(...entityArgs);
         }
@@ -229,6 +240,19 @@ class Ai {
             model.setEntityDetector(name, detector, useOptions);
         }
 
+        return this;
+    }
+
+    /**
+     *
+     * @param {WordEntityDetector} wordEntityDetector
+     */
+    setWordEntityDetector (wordEntityDetector) {
+        this._wordEntityDetector = wordEntityDetector;
+
+        for (const model of this._keyworders.values()) {
+            model.wordEntityDetector = wordEntityDetector;
+        }
         return this;
     }
 

@@ -53,14 +53,16 @@ class Plugins {
         this._plugins = new Map();
     }
 
-    getPluginFactory (name, paramsData = {}, configuration = {}) {
+    getPluginFactory (name, paramsData = {}, configuration = {}, defaultPlugin = null) {
         let plugin;
         if (plugins.has(name)) {
             plugin = plugins.get(name);
-        } else if (!this._plugins.has(name)) {
-            throw new Error(`Unknown Plugin: ${name}. Ensure its registration.`);
-        } else {
+        } else if (this._plugins.has(name)) {
             plugin = this._plugins.get(name);
+        } else if (defaultPlugin) {
+            plugin = defaultPlugin;
+        } else {
+            throw new Error(`Unknown Plugin: ${name}. Ensure its registration.`);
         }
         if (plugin && plugin.pluginFactory) {
             return plugin.pluginFactory(paramsData, configuration);
@@ -79,6 +81,7 @@ class Plugins {
      * @param {boolean} [context.isLastIndex]
      * @param {Router} [context.router]
      * @param {object} [context.configuration]
+     * @param {Middleware} [context.defaultPlugin]
      * @example
      *
      * const { Router } = require('wingbot');
@@ -122,7 +125,13 @@ class Plugins {
             .map(([k, e]) => ({ [k]: e }))
             .reduce(Object.assign, {});
 
-        const customFn = this.getPluginFactory(name, cleanParams, context.configuration);
+        const customFn = this.getPluginFactory(
+            name,
+            cleanParams,
+            context.configuration,
+            context.defaultPlugin
+        );
+
         if (typeof customFn === 'object') {
             // this is an attached router
 

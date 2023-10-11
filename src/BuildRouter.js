@@ -111,16 +111,21 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  * @param {object} state
  * @param {string} pageId
  * @returns {string}
- */
+*/
 
 /**
  * @template {BaseConfiguration} [C=object]
- * @typedef {object} BotContext
+ * @typedef {object} BuildRouterContext
  * @prop {LinkTranslator} [linksTranslator] - function, that translates links globally
  * @prop {ConfigStorage} [configStorage] - function, that translates links globally
  * @prop {boolean} [allowForbiddenSnippetWords] - disable security rule
+ * @prop {Middleware} [defaultPlugin] - to be able to test configurations without plugins
  * @prop {RouteConfig[]} [routeConfigs] - list of disabled routes
  * @prop {C} [configuration] - context data
+ */
+
+/**
+ * @typedef {object} BotContextExtention
  * @prop {LinksMap} [linksMap]
  * @prop {boolean} [isLastIndex]
  * @prop {boolean} [isLastMessage]
@@ -140,6 +145,11 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  */
 
 /**
+ * @template {BaseConfiguration} [C=object]
+ * @typedef {BotContextExtention & BuildRouterContext<C>} BotContext
+ */
+
+/**
  * Build bot from Wingbot configuration file or snapshot url
  *
  * @template {object} [S=object]
@@ -155,12 +165,7 @@ class BuildRouter extends Router {
      * @constructor
      * @param {BotConfig|Block} block
      * @param {Plugins} plugins - custom code blocks resource
-     * @param {object} context - the building context
-     * @param {object} [context.linksTranslator] - function, that translates links globally
-     * @param {ConfigStorage} [context.configStorage] - function, that translates links globally
-     * @param {boolean} [context.allowForbiddenSnippetWords] - disable security rule
-     * @param {RouteConfig[]} [context.routeConfigs] - list of disabled routes
-     * @param {C} [context.configuration]
+     * @param {BuildRouterContext<C>} context - the building context
      * @param {fetch} [fetchFn] - override a request function
      * @example
      *

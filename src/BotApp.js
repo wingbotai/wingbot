@@ -16,7 +16,7 @@ const DEFAULT_API_URL = 'https://orchestrator-api.wingbot.ai';
 
 /** @typedef {import('./ReducerWrapper')} ReducerWrapper */
 /** @typedef {import('./Router')} Router */
-/** @typedef {import('./Processor').ProcessorOptions} ProcessorOptions */
+/** @typedef {import('./Processor').ProcessorOptions<Router>} ProcessorOptions */
 /** @typedef {import('./ReturnSender').ChatLogStorage} ChatLogStorage */
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder')} Responder */
@@ -70,7 +70,7 @@ class BotApp {
 
     /**
      *
-     * @param {ReducerWrapper|Router} bot
+     * @param {Router} bot
      * @param {Options} options
      */
     constructor (bot, options) {
@@ -91,6 +91,7 @@ class BotApp {
         } = options;
 
         this._returnSenderOptions = {
+            dontWaitForDeferredOps: processorOptions.dontWaitForDeferredOps,
             textFilter,
             logStandbyEvents,
             confidentInputFilter
@@ -312,8 +313,8 @@ class BotApp {
             const sender = new ReturnSender(options, senderId, message, this._senderLogger);
             sender.propagatesWaitEvent = true;
             const res = await this._processor.processMessage(message, pageId, sender, { appId });
-            await this._processSenderResponses(sender, senderId, pageId, headers);
-
+            sender.defer(this._processSenderResponses(sender, senderId, pageId, headers));
+            await sender.waitForDeferredOps();
             return {
                 status: res.status,
                 // yes, it should be just mid
@@ -337,7 +338,8 @@ class BotApp {
 
         const sender = await this.createSender(senderId, pageId, message, secret, appId);
         const res = await this._processor.processMessage(message, pageId, sender, { appId });
-        await this._processSenderResponses(sender, senderId, pageId, headers);
+        sender.defer(this._processSenderResponses(sender, senderId, pageId, headers));
+        await sender.waitForDeferredOps();
 
         return {
             status: res.status,

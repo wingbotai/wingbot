@@ -4,6 +4,7 @@
 'use strict';
 
 const { replaceDiacritics } = require('../utils');
+const { iterateThroughWords } = require('../utils/ai');
 
 /**
  * @typedef {object} DetectedEntity
@@ -62,6 +63,14 @@ const { replaceDiacritics } = require('../utils');
  */
 
 /**
+ * @callback WordEntityDetector
+ * @param {string} text
+ * @param {DetectedEntity[]} entities
+ * @param {number} startIndex
+ * @param {string} prefix
+ */
+
+/**
  * @typedef {object} Phrases
  * @prop {Map<string,string[]>} phrases
  */
@@ -82,11 +91,14 @@ class CustomEntityDetectionModel {
 
     /**
      * @param {object} options
+     * @param {string} [options.prefix]
      * @param {{ warn: Function, error: Function, log: Function }} [log]
      */
     constructor (options, log = console) {
         this._options = options;
         this._log = log;
+
+        this.prefix = options.prefix;
 
         this._entityDetectors = new Map();
 
@@ -94,6 +106,16 @@ class CustomEntityDetectionModel {
          * @type {number}
          */
         this.phrasesCacheTime = 0;
+
+        /**
+         * @type {number}
+         */
+        this.maxWordCount = 0;
+
+        /**
+         * @type {WordEntityDetector}
+         */
+        this.wordEntityDetector = null;
     }
 
     /**
@@ -378,6 +400,13 @@ class CustomEntityDetectionModel {
      * @returns {Promise<DetectedEntity[]>}
      */
     async resolveEntities (text, singleEntity = null, expected = [], prevEnts = [], subWord = []) {
+        let entities = prevEnts.slice();
+        if (this.wordEntityDetector) {
+            for (const [s, startIndex] of iterateThroughWords(text, this.maxWordCount)) {
+                this.wordEntityDetector(s, entities, startIndex, this.prefix);
+            }
+        }
+
         // mark unknown dependencies as resolved
         const resolved = new Set(
             this.getDependentEntities(false)
@@ -385,7 +414,7 @@ class CustomEntityDetectionModel {
         );
 
         let missing = Array.from(this._entityDetectors.keys());
-        const entities = prevEnts.map((e) => {
+        entities = entities.map((e) => {
             if (typeof e.text === 'string') {
                 return e;
             }

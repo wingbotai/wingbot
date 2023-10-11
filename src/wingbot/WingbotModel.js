@@ -1,6 +1,8 @@
 'use strict';
 
 const { default: fetch } = require('node-fetch');
+const { brotliCompress } = require('zlib');
+const { promisify } = require('util');
 const assert = require('assert');
 const CachedModel = require('./CachedModel');
 
@@ -35,6 +37,7 @@ class WingbotModel extends CachedModel {
 
     /**
      * @param {object} options
+     * @param {string} [options.prefix]
      * @param {string} [options.serviceUrl]
      * @param {string} [options.trainingUrl]
      * @param {string} options.model
@@ -59,6 +62,7 @@ class WingbotModel extends CachedModel {
         this._serviceUrl = options.serviceUrl || SERVICE_URL;
         this._trainingUrl = options.trainingUrl || TRAINING_URL;
         this._model = options.model;
+        this._brotli = promisify(brotliCompress);
     }
 
     async _getPhrases () {
@@ -84,9 +88,10 @@ class WingbotModel extends CachedModel {
     /**
      *
      * @param {string} text
+     * @param {Entity[]} entities
      * @returns {Promise<Result>}
      */
-    async _queryModel (text) {
+    async _queryModel (text, entities = null) {
         if ((text || '').trim().length === 0) {
             return [];
         }
@@ -95,6 +100,11 @@ class WingbotModel extends CachedModel {
             `text=${encodeURIComponent(text)}`,
             `matches=${encodeURIComponent(this._matches)}`
         ];
+
+        if (entities) {
+            const buf = await this._brotli(Buffer.from(JSON.stringify({ entities })));
+            qs.push(`meta=${encodeURIComponent(buf.toString('base64url'))}`);
+        }
 
         try {
             const res = await this._fetch(

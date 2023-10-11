@@ -31,6 +31,7 @@ const extractText = require('./transcript/extractText');
 
 /**
  * @typedef {object} ReturnSenderOptions
+ * @prop {boolean} [dontWaitForDeferredOps]
  * @prop {textFilter} [textFilter] - filter for saving the texts
  * @prop {boolean} [logStandbyEvents] - log the standby events
  * @prop {textFilter} [confidentInputFilter] - filter for confident input (@CONFIDENT)
@@ -40,6 +41,16 @@ const extractText = require('./transcript/extractText');
  * @typedef {object} UploadResult
  * @prop {string} [url]
  * @prop {string|number} [attachmentId]
+ */
+
+/**
+ * @callback DeferOperation
+ * @returns {Promise<any>}
+ */
+
+/**
+ * @typedef {object} ErrorLogger
+ * @prop {Function} error
  */
 
 /**
@@ -147,6 +158,44 @@ class ReturnSender {
         this._gotAnotherEventDefer = null;
         this._anotherEventPromise = null;
         this._gotAnotherEvent();
+
+        this._skipWaitForDeferred = options.dontWaitForDeferredOps;
+        this._opQueue = new Set();
+    }
+
+    async waitForDeferredOps () {
+        if (this._skipWaitForDeferred) {
+            return;
+        }
+        await Promise.all(Array.from(this._opQueue.values()));
+        if (this._throwAtTheEnd) {
+            const e = this._throwAtTheEnd;
+            this._throwAtTheEnd = null;
+            throw e;
+        }
+    }
+
+    /**
+     *
+     * @param {DeferOperation|Promise} operation
+     * @param {ErrorLogger} logger
+     */
+    defer (operation, logger = console) {
+        const promise = (typeof operation === 'function'
+            ? Promise.resolve(operation())
+            : operation
+        )
+            .catch((e) => {
+                if (this._skipWaitForDeferred === false) {
+                    this._throwAtTheEnd = e;
+                }
+                // eslint-disable-next-line no-console
+                logger.error('DEFER# - op failed', e);
+            })
+            .then(() => {
+                this._opQueue.delete(promise);
+            });
+        this._opQueue.add(promise);
     }
 
     set simulatesOptIn (value) {
@@ -578,27 +627,29 @@ class ReturnSender {
             if (!this._logger || meta.flag === ResponseFlag.DO_NOT_LOG) {
                 // noop
             } else if (error) {
-                await Promise.resolve(this._logger
-                    .error(error, this._senderId, sent, incomming, meta));
+                this.defer(Promise.resolve(this._logger
+                    .error(error, this._senderId, sent, incomming, meta)));
             } else if (this._sendLogs) {
                 this._sendLogs = false;
-                await Promise.resolve(this._logger
-                    .log(this._senderId, sent, incomming, meta));
+                this.defer(Promise.resolve(this._logger
+                    .log(this._senderId, sent, incomming, meta)));
             }
         } catch (e) {
             console.log('meta', meta); // eslint-disable-line no-console
-            await Promise.resolve(reportError(e, this._incommingMessage, this._senderId));
+            this.defer(Promise.resolve(reportError(e, this._incommingMessage, this._senderId)));
         }
 
         if (error) {
             // @ts-ignore
             const { code = 500, message } = error;
-            await Promise.resolve(reportError(error, this._incommingMessage, this._senderId));
+            this.defer(Promise.resolve(reportError(error, this._incommingMessage, this._senderId)));
+            await this.waitForDeferredOps();
             return { status: code, error: message, results: this.results };
         }
 
         const somethingSent = this._results.length > 0;
 
+        await this.waitForDeferredOps();
         return {
             status: somethingSent ? 200 : 204,
             results: this._results

@@ -33,6 +33,7 @@ class CachedModel extends CustomEntityDetectionModel {
 
     /**
      * @param {object} options
+     * @param {string} [options.prefix]
      * @param {number} [options.cacheSize]
      * @param {number} [options.cachePhrasesTime]
      * @param {{ warn: Function, error: Function, log: Function }} [log]
@@ -65,7 +66,7 @@ class CachedModel extends CustomEntityDetectionModel {
             return this._cacheMap.get(text);
         }
 
-        const promise = this._queryModel(local.text)
+        const promise = this._queryModel(local.text, local.entities)
             .then((res) => {
                 // clean the cache
                 while (this._cache.length > this._cacheSize) {
@@ -156,9 +157,10 @@ class CachedModel extends CustomEntityDetectionModel {
     /**
      *
      * @param {string} text
+     * @param {Entity[]} entities
      * @returns {Promise<Intent[]|Result>}
      */
-    async _queryModel (text) { // eslint-disable-line no-unused-vars
+    async _queryModel (text, entities) { // eslint-disable-line no-unused-vars
         throw new Error('Not implemented!');
     }
 

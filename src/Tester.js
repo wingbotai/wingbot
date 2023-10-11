@@ -227,7 +227,10 @@ class Tester {
             Object.assign(message, { features: this.features });
         }
 
-        const messageSender = new ReturnSender({}, senderId, message, this.senderLogger);
+        const messageSender = new ReturnSender({
+            dontWaitForDeferredOps: false
+        }, senderId, message, this.senderLogger);
+
         messageSender.simulatesOptIn = true;
 
         const res = await this.processor

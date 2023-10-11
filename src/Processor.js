@@ -90,6 +90,7 @@ const { prepareState, mergeState, isUserInteraction } = require('./utils/stateVa
 
 /**
  *
+ * @template {ReducerWrapper|Router|BuildRouter} R
  * @typedef {object} ProcessorOptions
  * @prop {string} [appUrl] - url basepath for relative links
  * @prop {IStateStorage} [stateStorage] - chatbot state storage
@@ -109,6 +110,7 @@ const { prepareState, mergeState, isUserInteraction } = require('./utils/stateVa
  * @prop {string} [apiUrl] - Url for calling orchestrator API
  * @prop {Function} [fetch] - Fetch function for calling orchestrator API
  * @prop {number} [sessionDuration] - Session duration for analytic purposes
+ * @prop {Preloader<R>} [preloader]
  */
 
 /**
@@ -131,6 +133,14 @@ const { prepareState, mergeState, isUserInteraction } = require('./utils/stateVa
  * @prop {Function} saveState
  * @prop {Function} getState
  * @prop {Function} getOrCreateAndLock
+ */
+
+/**
+ * @template {ReducerWrapper|Router|BuildRouter} T
+ * @callback Preloader
+ * @param {T} router
+ * @param {Ai} ai
+ * @returns {Promise<void>}
  */
 
 function NAME_FROM_STATE (state) {
@@ -161,6 +171,7 @@ function toBase (number) {
 /**
  * Messaging event processor
  *
+ * @template {ReducerWrapper|Router|BuildRouter} T
  * @class
  * @fires Processor#interaction
  */
@@ -169,8 +180,8 @@ class Processor extends EventEmitter {
     /**
      * Creates an instance of Processor
      *
-     * @param {ReducerWrapper|Router|BuildRouter} reducer
-     * @param {ProcessorOptions} [options] - processor options
+     * @param {T} reducer
+     * @param {ProcessorOptions<T>} [options] - processor options
      *
      * @memberOf Processor
      */
@@ -196,6 +207,8 @@ class Processor extends EventEmitter {
         };
 
         Object.assign(this.options, options);
+
+        this._preloaders = options.preloader ? [options.preloader] : [];
 
         this.reducer = reducer;
 
@@ -319,15 +332,17 @@ class Processor extends EventEmitter {
     }
 
     async _preload () {
-        // @ts-ignore
-        if (this.reducer && typeof this.reducer.preload === 'function') {
+        return Promise.all([
             // @ts-ignore
-            return this.reducer.preload()
-                .catch((e) => this.options.log.error('preload error', e))
-                // mute log errors
-                .catch(() => {});
-        }
-        return Promise.resolve();
+            this.reducer && typeof this.reducer.preload === 'function'
+                // @ts-ignore
+                ? this.reducer.preload()
+                : Promise.resolve(),
+            ...this._preloaders
+                .map((preloader) => preloader(this.reducer, Ai.ai))
+        ]).catch((e) => this.options.log.error('preload error', e))
+            // mute log errors
+            .catch(() => {});
     }
 
     async processMessage (
@@ -388,7 +403,7 @@ class Processor extends EventEmitter {
         const result = await this
             ._dispatch(message, pageId, messageSender, responderData, preloadPromise);
 
-        await preloadPromise;
+        messageSender.defer(preloadPromise, this.options.log);
         return result;
     }
 
@@ -404,7 +419,7 @@ class Processor extends EventEmitter {
             } = await this
                 ._processMessage(message, pageId, messageSender, responderData, preloadPromise));
 
-            await this._emitInteractionEvent(req, res, messageSender, state, data);
+            messageSender.defer(this._emitInteractionEvent(req, res, messageSender, state, data));
 
             return messageSender.finished(req, res, null, errorHandler);
         } catch (e) {
@@ -564,7 +579,7 @@ class Processor extends EventEmitter {
         let req;
         let res;
 
-        let emitPromise = Promise.resolve();
+        // let emitPromise = Promise.resolve();
 
         try {
             // ensure the request was not processed
@@ -761,7 +776,7 @@ class Processor extends EventEmitter {
                 }
 
                 if (fromEvent) {
-                    emitPromise = this._emitEvent(req, res);
+                    messageSender.defer(this._emitEvent(req, res), this.options.log);
                 }
             }
 
@@ -807,13 +822,22 @@ class Processor extends EventEmitter {
 
         } catch (e) {
             await this.stateStorage.saveState(originalState);
-            await emitPromise;
+            // await emitPromise;
             Object.assign(e, { req, res });
             throw e;
         }
 
+        if (postbackAcumulator.length === 0) {
+            messageSender.defer(this.stateStorage.saveState(stateObject));
+            return {
+                req, res, data: res.data, state: stateObject.state
+            };
+        }
+
         try {
+
             await this.stateStorage.saveState(stateObject);
+
             // process postbacks
             const {
                 state = stateObject.state,
@@ -827,7 +851,7 @@ class Processor extends EventEmitter {
                 res.senderMeta
             );
 
-            await emitPromise; // probably has been resolved this time
+            // await emitPromise; // probably has been resolved this time
 
             return {
                 req, res, data, state
