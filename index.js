@@ -3,7 +3,7 @@
  */
 'use strict';
 
-/** @typedef {import('./src/Processor').ProcessorOptions} ProcessorOptions */
+/** @typedef {import('./src/Processor').ProcessorOptions<Router|BuildRouter>} ProcessorOptions */
 
 const Processor = require('./src/Processor');
 const Router = require('./src/Router');
@@ -19,6 +19,7 @@ const CustomEntityDetectionModel = require('./src/wingbot/CustomEntityDetectionM
 const ConversationTester = require('./src/ConversationTester');
 const { asserts } = require('./src/testTools');
 const BuildRouter = require('./src/BuildRouter');
+const ChatGpt = require('./src/ChatGpt');
 const MockAiModel = require('./src/MockAiModel');
 const ReturnSender = require('./src/ReturnSender');
 const CallbackAuditLog = require('./src/CallbackAuditLog');
@@ -126,6 +127,7 @@ module.exports = {
     ButtonTemplate,
     GenericTemplate,
     BaseTemplate,
+    ChatGpt,
 
     // tests
     ConversationTester,

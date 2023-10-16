@@ -3,13 +3,15 @@
  */
 'use strict';
 
+const { PHONE_REGEX } = require('./regexps');
+
 /** @typedef {import('../wingbot/CustomEntityDetectionModel').EntityDetector} EntityDetector */
 /** @typedef {import('../wingbot/CustomEntityDetectionModel').DetectorOptions} DetectorOptions */
 
 /** @type {[string,EntityDetector|RegExp,DetectorOptions]} */
 module.exports = [
     'phone',
-    /((00|\+)[\s-]?[0-9]{1,4}[\s-]?)?([0-9]{3,4}[\s-]?([0-9]{2,3}[\s-]?[0-9]{2}[\s-]?[0-9]{2,3}|[0-9]{3,4}[\s-]?[0-9]{3,4}))(?=(\s|$|[,!.?\-:]))/,
+    PHONE_REGEX,
     {
         anonymize: true,
         clearOverlaps: true,

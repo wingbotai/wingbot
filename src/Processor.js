@@ -333,6 +333,7 @@ class Processor extends EventEmitter {
 
     async _preload () {
         return Promise.all([
+            Ai.ai.preloadDetectors(),
             // @ts-ignore
             this.reducer && typeof this.reducer.preload === 'function'
                 // @ts-ignore

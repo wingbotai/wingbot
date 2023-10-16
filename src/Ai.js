@@ -10,8 +10,6 @@ const { deepEqual } = require('./utils/deepMapTools');
 const systemEntities = require('./systemEntities');
 const CustomEntityDetectionModel = require('./wingbot/CustomEntityDetectionModel');
 
-const DEFAULT_PREFIX = 'default';
-
 let uq = 1;
 
 /** @typedef {import('./AiMatching').Compare} Compare */
@@ -49,8 +47,14 @@ let uq = 1;
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Phrases} Phrases */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').EntityDetector} EntityDetector */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').DetectorOptions} DetectorOptions */
+/** @typedef {import('./wingbot/CustomEntityDetectionModel').Entity} Entity */
 // eslint-disable-next-line max-len
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').WordEntityDetector} WordEntityDetector */
+
+/**
+ * @callback WordEntityDetectorFactory
+ * @returns {Promise<WordEntityDetector>}
+ */
 
 /** @typedef {[string,EntityDetector|RegExp,DetectorOptions]} DetectorArgs */
 
@@ -76,7 +80,13 @@ class Ai {
 
         /**
          * @private
-         * @type {WordEntityDetector}
+         * @type {WordEntityDetectorFactory}
+         */
+        this._wordEntityDetectorFactory = null;
+
+        /**
+         * @private
+         * @type {WordEntityDetector|Promise<WordEntityDetector>}
          */
         this._wordEntityDetector = null;
 
@@ -140,6 +150,37 @@ class Ai {
          * @type {AiMatching}
          */
         this.matcher = new AiMatching(this);
+
+        /**
+         * @type {string}
+         */
+        this.DEFAULT_PREFIX = 'default';
+    }
+
+    /**
+     *
+     * @param {string} text
+     * @param {string|Request} prefix
+     * @returns {Promise<Entity[]>}
+     */
+    async detectEntities (text, prefix = this.DEFAULT_PREFIX) {
+        let model;
+
+        if (typeof prefix === 'string') {
+            model = this._keyworders.get(prefix);
+        } else {
+            const usePrefix = this.getPrefix(this.DEFAULT_PREFIX, prefix);
+            model = this._keyworders.get(usePrefix);
+        }
+
+        if (!model) {
+            return [];
+        }
+
+        const entities = await model.resolveEntities(text);
+
+        // @ts-ignore
+        return entities;
     }
 
     /**
@@ -192,7 +233,7 @@ class Ai {
      * @returns {T}
      * @memberOf Ai
      */
-    register (model, prefix = 'default') {
+    register (model, prefix = this.DEFAULT_PREFIX) {
         /** @type {T} */
         let modelObj;
 
@@ -210,7 +251,10 @@ class Ai {
 
         this._keyworders.set(prefix, modelObj);
 
-        modelObj.wordEntityDetector = this._wordEntityDetector;
+        if (typeof this._wordEntityDetector === 'function') {
+            modelObj.wordEntityDetector = this._wordEntityDetector;
+        }
+
         for (const entityArgs of this._detectors.values()) {
             modelObj.setEntityDetector(...entityArgs);
         }
@@ -245,9 +289,15 @@ class Ai {
 
     /**
      *
-     * @param {WordEntityDetector} wordEntityDetector
+     * @param {WordEntityDetector|WordEntityDetectorFactory} wordEntityDetector
      */
     setWordEntityDetector (wordEntityDetector) {
+        if (wordEntityDetector.length === 0) {
+            // @ts-ignore
+            this._wordEntityDetectorFactory = wordEntityDetector;
+            return this;
+        }
+
         this._wordEntityDetector = wordEntityDetector;
 
         for (const model of this._keyworders.values()) {
@@ -286,7 +336,7 @@ class Ai {
      *
      * @param {string} [prefix]
      */
-    deregister (prefix = 'default') {
+    deregister (prefix = this.DEFAULT_PREFIX) {
         this._keyworders.delete(prefix);
     }
 
@@ -298,7 +348,7 @@ class Ai {
      * @returns {CustomEntityDetectionModel}
      * @memberOf Ai
      */
-    getModel (prefix = 'default') {
+    getModel (prefix = this.DEFAULT_PREFIX) {
         const model = this._keyworders.get(prefix);
         if (!model) {
             throw new Error(`Model ${prefix} not registered yet. Register the model first.`);
@@ -592,7 +642,8 @@ class Ai {
         };
     }
 
-    _getModelForRequest (req, isConfident = req.isConfidentInput(), defaultModel = DEFAULT_PREFIX) {
+    // eslint-disable-next-line max-len
+    _getModelForRequest (req, isConfident = req.isConfidentInput(), defaultModel = this.DEFAULT_PREFIX) {
         if (isConfident) {
             return null;
         }
@@ -625,6 +676,35 @@ class Ai {
             intents,
             entities
         };
+    }
+
+    /**
+     *
+     * @returns {Promise}
+     */
+    preloadDetectors () {
+        if (this._wordEntityDetectorFactory === null || this._wordEntityDetector) {
+            return Promise.resolve();
+        }
+
+        const promise = this._wordEntityDetectorFactory()
+            .then((detector) => {
+                this._wordEntityDetector = detector;
+                for (const model of this._keyworders.values()) {
+                    model.wordEntityDetector = detector;
+                }
+                return detector;
+            })
+            .catch((e) => {
+                // eslint-disable-next-line no-console
+                console.error('AI.preloadDetectors FAILED', e);
+                this._wordEntityDetector = null;
+            });
+
+        // @ts-ignore
+        this._wordEntityDetector = promise;
+
+        return promise;
     }
 
     /**
@@ -710,6 +790,7 @@ class Ai {
                 req.intents = [];
                 return;
             }
+
             await this._loadIntents(req, res, model);
         } else {
             req.intents = [];
@@ -733,6 +814,8 @@ class Ai {
                 return { intents: [], entities: [] };
             }
         }
+
+        await this.preloadDetectors();
 
         const texts = req.textAlternatives()
             .filter((alt) => alt.score >= this.sttScoreThreshold)
