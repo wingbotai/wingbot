@@ -189,22 +189,22 @@ class Request {
                 : event.message.attachments)) || [];
 
         /**
-         * @prop {number|null} timestamp
+         * @type {number|null} timestamp
          */
         this.timestamp = event.timestamp || Date.now();
 
         /**
-         * @prop {string} senderId sender.id from the event
+         * @type {string} senderId sender.id from the event
          */
         this.senderId = (event.sender && event.sender.id) || null;
 
         /**
-         * @prop {string} recipientId recipient.id from the event
+         * @type {string} recipientId recipient.id from the event
          */
         this.recipientId = event.recipient && event.recipient.id;
 
         /**
-         * @prop {string} pageId page identifier from the event
+         * @type {string} pageId page identifier from the event
          */
         this.pageId = pageId;
 
@@ -214,29 +214,29 @@ class Request {
         this.state = state;
 
         /**
-         * @prop {string[]} features supported messaging features
+         * @type {string[]} features supported messaging features
          */
         this.features = Array.isArray(event.features)
             ? event.features
             : getDefaultFeatureList();
 
         /**
-         * @prop {string[]} state list of subscribed tags
+         * @type {string[]} state list of subscribed tags
          */
         this.subscribtions = [];
 
         /**
-         * @prop {Entity[]} entities list of entities
+         * @type {Entity[]} entities list of entities
          */
         this.entities = [];
 
         /**
-         * @prop {Intent[]} intents list of resolved intents
+         * @type {Intent[]} intents list of resolved intents
          */
         this.intents = [];
 
         /**
-         * @prop {Action}
+         * @type {Action}
          * @private
          */
         this._action = undefined;

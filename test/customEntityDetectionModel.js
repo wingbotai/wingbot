@@ -40,6 +40,30 @@ describe('customEntityDetectionModel', () => {
             m.setEntityDetector('child', /@PARENT\s?lkko/);
         });
 
+        it('works with word detectors', async () => {
+            m.wordEntityDetector = (t) => (t === 'lele' ? [{
+                entity: 'word',
+                value: 'lele',
+                text: 'lele',
+                score: 1
+            }] : []);
+
+            m.maxWordCount = 2;
+
+            const entities = await m.resolveEntities('sasa lele');
+
+            assert.deepEqual(entities, [
+                {
+                    entity: 'word',
+                    value: 'lele',
+                    text: 'lele',
+                    score: 1,
+                    start: 5,
+                    end: 9
+                }
+            ]);
+        });
+
         it('should work well with optional entities', async () => {
             m.setEntityDetector('optional', /@PARENT?\s?sasalele/);
 

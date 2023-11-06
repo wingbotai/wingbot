@@ -4,6 +4,7 @@
 'use strict';
 
 const nodeFetch = require('node-fetch').default;
+const util = require('util');
 const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
 
 /** @typedef {import('node-fetch').default} Fetch */
@@ -30,7 +31,7 @@ const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
 /** @typedef {'gpt-3.5-turbo'|'gpt-4'|'gpt-4-32k'|'gpt-3.5-turbo-16k'|string} ChatGPTModel */
 
 /**
- * @typedef {object} RequestOptions
+ * @typedef {object} DefaultRequestOptions
  * @prop {ChatGPTModel} [model]
  * @prop {number} [presencePenalty=0.0]
  * @prop {number} [requestTokens=256]
@@ -40,7 +41,14 @@ const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
  */
 
 /**
- * @typedef {GeneralOptions & RequestOptions} ChatGptOptions
+ * @typedef {object} OptionsExtension
+ * @prop {FNAnnotation[]} [functions]
+ *
+ * @typedef {OptionsExtension & DefaultRequestOptions} RequestOptions
+ */
+
+/**
+ * @typedef {GeneralOptions & DefaultRequestOptions} ChatGptOptions
  */
 
 /**
@@ -107,6 +115,37 @@ const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
  */
 
 /**
+ * @typedef {object} FNScalarParam
+ * @prop {'string'|'number'|'boolean'} type
+ * @prop {string[]} [enum]
+ * @prop {string} [description]
+ */
+
+/**
+ * @typedef {object} FNArrayParam
+ * @prop {'array'} type
+ * @prop {string} [description]
+ * @prop {FNParam} items
+ */
+
+/**
+ * @typedef {object} FNObjectParam
+ * @prop {'object'} type
+ * @prop {{ [key: string]: FNParam }} properties
+ * @prop {string[]} [required]
+ * @prop {string} [description]
+ */
+
+/** @typedef {FNScalarParam|FNObjectParam|FNArrayParam} FNParam */
+
+/**
+ * @typedef {object} FNAnnotation
+ * @prop {string} name
+ * @prop {string} description
+ * @prop {FNParam} parameters
+ */
+
+/**
  * @class ChatGpt
  */
 class ChatGpt {
@@ -135,7 +174,7 @@ class ChatGpt {
 
         this._defaultUser = defaultUser;
 
-        /** @type {Required<RequestOptions>} */
+        /** @type {Required<DefaultRequestOptions>} */
         this._options = {
             requestTokens: 256,
             tokensLimit: 4096,
@@ -146,7 +185,7 @@ class ChatGpt {
             ...rest
         };
 
-        this._log = log;
+        this._logger = log;
 
         this.MSG_REPLACE = '#MSG-REPLACE#';
 
@@ -156,6 +195,17 @@ class ChatGpt {
             { replacement: '@PHONE', regex: new RegExp(PHONE_REGEX.source, 'g') },
             { replacement: '@EMAIL', regex: new RegExp(EMAIL_REGEX.source, 'g') }
         ];
+    }
+
+    _log (msg, ...args) {
+        if (this._logger === console) {
+
+            this._logger.log(msg, ...args.map((arg) => util.inspect(arg, {
+                showHidden: false, depth: null, colors: true
+            })));
+        } else {
+            this._logger.log(msg, ...args);
+        }
     }
 
     /**
@@ -202,7 +252,8 @@ class ChatGpt {
             tokensLimit,
             model,
             presencePenalty,
-            temperature
+            temperature,
+            functions = []
         } = {
             ...this._options,
             ...requestOptions
@@ -218,7 +269,8 @@ class ChatGpt {
                 frequency_penalty: 0,
                 presence_penalty: presencePenalty,
                 max_tokens: maxTokens,
-                temperature
+                temperature,
+                ...(functions.length ? { functions } : {})
             };
 
             if (typeof user === 'string') {
@@ -253,7 +305,7 @@ class ChatGpt {
 
             const apiUrl = `${this._openAiEndpoint}/chat/completions${this._apiKey ? '?api-version=2023-03-15-preview' : ''}`;
 
-            this._log.log('#GPT request', body);
+            this._log('#GPT request', body);
 
             const response = await this._fetch(apiUrl, {
                 method: 'POST',
@@ -273,7 +325,7 @@ class ChatGpt {
                 || !Array.isArray(data.choices)) {
                 const { status, statusText } = response;
 
-                this._log.error('#GPT failed', {
+                this._logger.error('#GPT failed', {
                     status, statusText, data, body
                 });
                 throw new Error(`Chat GPT ${status}`);
@@ -281,11 +333,11 @@ class ChatGpt {
 
             const [choice] = data.choices;
 
-            this._log.log('#GPT response', { choice, data });
+            this._log('#GPT response', { choice, data });
 
             return choice;
         } catch (e) {
-            this._log.error('#GPT failed', e, body);
+            this._logger.error('#GPT failed', e, body);
             throw e;
         }
     }
@@ -412,7 +464,7 @@ class ChatGpt {
 
         if (messages.length === 0) {
             const err = new Error('#GPT nothing to send');
-            this._log.error('#GPT nothing to send', err, { choice, content });
+            this._logger.error('#GPT nothing to send', err, { choice, content });
             throw err;
         }
 

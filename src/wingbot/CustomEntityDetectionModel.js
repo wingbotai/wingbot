@@ -47,7 +47,7 @@ const { iterateThroughWords } = require('../utils/ai');
 
 /**
  * @typedef {object} Result
- * @prop {string} text
+ * @prop {string} [text]
  * @prop {Entity[]} entities
  * @prop {Intent[]} intents
  */
@@ -68,6 +68,7 @@ const { iterateThroughWords } = require('../utils/ai');
  * @param {DetectedEntity[]} entities
  * @param {number} startIndex
  * @param {string} prefix
+ * @returns {DetectedEntity[]}
  */
 
 /**
@@ -403,7 +404,28 @@ class CustomEntityDetectionModel {
         let entities = prevEnts.slice();
         if (this.wordEntityDetector) {
             for (const [s, startIndex] of iterateThroughWords(text, this.maxWordCount)) {
-                this.wordEntityDetector(s, entities, startIndex, this.prefix);
+                const ents = this.wordEntityDetector(s, prevEnts, startIndex, this.prefix);
+
+                const byEntity = new Map();
+
+                for (const entity of ents) {
+                    let list;
+                    if (byEntity.has(entity.entity)) {
+                        list = byEntity.get(entity.entity);
+                    } else {
+                        list = [];
+                        byEntity.set(entity.entity, list);
+                    }
+                    list.push({
+                        text: s,
+                        ...entity
+                    });
+                }
+
+                const normalized = Array.from(byEntity.entries())
+                    .flatMap(([e, list]) => this._normalizeResult(list, e, s, startIndex, text));
+
+                entities.push(...normalized);
             }
         }
 
@@ -496,6 +518,7 @@ class CustomEntityDetectionModel {
         // filter the text
         for (let i = entities.length - 1; i >= 0; i--) {
             const entity = entities[i];
+            if (!this._entityDetectors.has(entity.entity)) continue;
             const { anonymize } = this._entityDetectors.get(entity.entity);
 
             if (anonymize) {

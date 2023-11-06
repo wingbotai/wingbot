@@ -52,8 +52,14 @@ let uq = 1;
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').WordEntityDetector} WordEntityDetector */
 
 /**
+ * @typedef {object} WordDetectorData
+ * @prop {WordEntityDetector} detector
+ * @prop {number} [maxWordCount]
+ */
+
+/**
  * @callback WordEntityDetectorFactory
- * @returns {Promise<WordEntityDetector>}
+ * @returns {Promise<WordEntityDetector|WordDetectorData>}
  */
 
 /** @typedef {[string,EntityDetector|RegExp,DetectorOptions]} DetectorArgs */
@@ -89,6 +95,8 @@ class Ai {
          * @type {WordEntityDetector|Promise<WordEntityDetector>}
          */
         this._wordEntityDetector = null;
+
+        this._wordEntityDetectorMaxWordCount = 0;
 
         /**
          * Upper threshold - for match method and for navigate method
@@ -289,19 +297,34 @@ class Ai {
 
     /**
      *
-     * @param {WordEntityDetector|WordEntityDetectorFactory} wordEntityDetector
+     * @param {WordEntityDetector|WordEntityDetectorFactory|WordDetectorData} wordEntityDetector
      */
     setWordEntityDetector (wordEntityDetector) {
-        if (wordEntityDetector.length === 0) {
+        if (typeof wordEntityDetector === 'function' && wordEntityDetector.length === 0) {
             // @ts-ignore
             this._wordEntityDetectorFactory = wordEntityDetector;
+            this._wordEntityDetector = null;
             return this;
         }
 
-        this._wordEntityDetector = wordEntityDetector;
+        let detector;
+        if (typeof wordEntityDetector === 'object') {
+            ({ detector } = wordEntityDetector);
+            this._wordEntityDetectorMaxWordCount = Math.max(
+                this._wordEntityDetectorMaxWordCount,
+                wordEntityDetector.maxWordCount || 0
+            );
+        } else {
+            detector = wordEntityDetector;
+        }
+
+        // @ts-ignore
+        this._wordEntityDetector = detector;
 
         for (const model of this._keyworders.values()) {
-            model.wordEntityDetector = wordEntityDetector;
+            // @ts-ignore
+            model.wordEntityDetector = detector;
+            model.maxWordCount = Math.max(model.maxWordCount, this._wordEntityDetectorMaxWordCount);
         }
         return this;
     }
@@ -684,15 +707,12 @@ class Ai {
      */
     preloadDetectors () {
         if (this._wordEntityDetectorFactory === null || this._wordEntityDetector) {
-            return Promise.resolve();
+            return Promise.resolve(this._wordEntityDetector);
         }
 
         const promise = this._wordEntityDetectorFactory()
             .then((detector) => {
-                this._wordEntityDetector = detector;
-                for (const model of this._keyworders.values()) {
-                    model.wordEntityDetector = detector;
-                }
+                this.setWordEntityDetector(detector);
                 return detector;
             })
             .catch((e) => {

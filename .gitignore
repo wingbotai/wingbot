@@ -35,3 +35,4 @@ out
 node_modules/
 .cache/
 public
+test/ChatGpt.test.js

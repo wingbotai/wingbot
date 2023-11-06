@@ -5,11 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.67.4-6]
+
+### Fixed
+
+- Word entity detector now fixes searched data
+
+## [3.67.3]
+
+### Fixed
+
+- Word entity detector now normalizes entites
+
+## [3.67.2]
+
+### Fixed
+
+- Word entity detector maxWord config support
+
 ## [3.67.0] 2023-10-16
 
 ### Added
 
 - `<ChatGpt>` class to provide general support for chatgpt answering
+- Support for `Router/BuildRouter` configuration as a promise
+- Support for async word entity detector
 
 ## [3.66.4] 2023-10-16
 

@@ -99,14 +99,19 @@ function defaultPathContext () {
 class Router extends ReducerWrapper {
 
     /**
-     * @param {C} [configuration]
+     * @param {C|Promise<C>} [configuration]
      */
     constructor (configuration = null) {
         super();
 
-        /** @type {C} */
+        /** @type {C|Promise<C>} */
         // @ts-ignore
-        this._configuration = configuration || {};
+        this._configuration = configuration instanceof Promise
+            ? configuration.then((c) => {
+                this._configuration = c;
+                return c;
+            })
+            : configuration || {};
 
         this._routes = [];
 
@@ -114,15 +119,17 @@ class Router extends ReducerWrapper {
     }
 
     /**
-     * @returns {C}
+     * @returns {C|null}
      */
     get configuration () {
-        return this._configuration;
+        return this._configuration instanceof Promise
+            ? null
+            : this._configuration;
     }
 
     /**
      *
-     * @returns {C}
+     * @returns {C|Promise<C>}
      */
     getConfiguration () {
         return this._configuration;
@@ -131,10 +138,13 @@ class Router extends ReducerWrapper {
     /**
      *
      * @param {Partial<C>} c
-     * @returns {C}
+     * @returns {Promise<C>}
      */
-    updateConfiguration (c) {
-        return Object.assign(this._configuration, c);
+    async updateConfiguration (c) {
+        const cfg = this._configuration instanceof Promise
+            ? await this._configuration
+            : this._configuration;
+        return Object.assign(cfg, c);
     }
 
     _normalizePath (path) {

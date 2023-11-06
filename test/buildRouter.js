@@ -328,6 +328,45 @@ describe('<BuildRouter>', function () {
         };
     }
 
+    it('accepts configuration as a promise', async () => {
+        const plugins = new Plugins();
+
+        // lets mock the storage
+        const configStorage = new MemoryBotConfigStorage();
+
+        const config = new Promise((re) => {
+            setTimeout(() => {
+                re({ configStorage });
+            }, 200);
+        });
+
+        let cnt = 0;
+
+        const mockRequest = sinon.spy(async () => ({
+            async json () {
+                switch (cnt++) {
+                    case 0:
+                        return makeBot('first');
+                    case 1:
+                        return makeBot('second');
+                    default:
+                        throw new Error('Can be trigged only twice');
+                }
+            }
+        }));
+
+        const bot = new BuildRouter({ botId: 'fake-bot-id' }, plugins, config, mockRequest);
+
+        bot.use('xyz', (req, res) => {
+            res.text('hello');
+        });
+
+        const t = new Tester(bot);
+
+        await t.postBack('xyz');
+        t.res(0).contains('hello');
+    });
+
     describe('#reduce()', () => {
 
         let bot;

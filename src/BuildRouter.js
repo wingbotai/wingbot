@@ -165,7 +165,7 @@ class BuildRouter extends Router {
      * @constructor
      * @param {BotConfig|Block} block
      * @param {Plugins} plugins - custom code blocks resource
-     * @param {BuildRouterContext<C>} context - the building context
+     * @param {BuildRouterContext<C>|Promise<BuildRouterContext<C>>} context - the building context
      * @param {fetch} [fetchFn] - override a request function
      * @example
      *
@@ -190,14 +190,23 @@ class BuildRouter extends Router {
      * module.exports = bot;
      */
     constructor (block, plugins = new Plugins(), context = {}, fetchFn = fetch) {
-        super(context.configuration);
+        super(
+            context instanceof Promise
+                ? context.then((c) => c.configuration)
+                : context.configuration
+        );
 
         this._validateBlock(block);
 
         this._plugins = plugins;
 
-        /** @type {BotContext<C>} */
+        /** @type {BotContext<C>|Promise<BuildRouterContext<C>>} */
         this._context = context;
+
+        /** @type {BotContext<C>} */
+        this._resolvedContext = context instanceof Promise
+            ? null
+            : context;
 
         /** @type {LinksMap} */
         this._linksMap = new Map();
@@ -218,7 +227,10 @@ class BuildRouter extends Router {
 
         this._loadBotAuthorization = 'token' in block ? block.token : null;
 
-        this._configStorage = context.configStorage;
+        /** @type {ConfigStorage|Promise<ConfigStorage>} */
+        this._configStorage = context instanceof Promise
+            ? context.then((c) => c.configStorage)
+            : context.configStorage;
 
         this._runningReqs = [];
 
@@ -227,7 +239,7 @@ class BuildRouter extends Router {
         /**
          * Timeout, when the router is not checking for new configuration
          *
-         * @prop {number}
+         * @type {number}
          */
         this.keepConfigFor = 60000;
 
@@ -315,16 +327,40 @@ class BuildRouter extends Router {
             return;
         }
 
-        if (!this._configStorage) {
-            // not need to wait for existing requests, there are no existing ones
+        /** @type {ConfigStorage} */
+        let configStorage;
+        let snapshot;
+        /** @type {BotContext<C>} */
+        let context;
 
-            let botLoaded = false;
+        if (this._context instanceof Promise || this._configStorage instanceof Promise) {
+            [
+                configStorage,
+                snapshot,
+                context
+            ] = await Promise.all([
+                Promise.resolve(this._configStorage),
+                this.loadBot(),
+                this._context
+            ]);
+
+            this._context = context;
+            this._resolvedContext = context;
+            this._configStorage = configStorage;
+        } else {
+            configStorage = this._configStorage;
+            context = this._context;
+        }
+
+        if (!configStorage) {
+            // not need to wait for existing requests, there are no existing ones
             try {
-                const snapshot = await this.loadBot();
-                botLoaded = true;
+                if (!snapshot) {
+                    snapshot = await this.loadBot();
+                }
                 this.buildWithSnapshot(snapshot.blocks);
             } catch (e) {
-                if (this._configTs > 0 && !botLoaded) {
+                if (this._configTs > 0 && !snapshot) {
                     // mute
                     // eslint-disable-next-line no-console
                     console.info('Loading new state failed - recovering', e);
@@ -335,26 +371,29 @@ class BuildRouter extends Router {
 
             return;
         }
+
         try {
             // check for current TS
-            const ts = await this._configStorage.getConfigTimestamp();
+            const ts = await configStorage.getConfigTimestamp();
 
             if (ts <= this._configTs && this._configTs !== 0 && ts !== 0) {
                 // do not update, when there is no better configuration
                 return;
             }
 
-            let snapshot;
+            if (snapshot) {
+                snapshot = await configStorage.updateConfig(snapshot);
+            }
 
-            if (ts !== 0) {
+            if (ts !== 0 && !snapshot) {
                 // probably someone has updated the configuration
-                snapshot = await this._configStorage.getConfig();
+                snapshot = await configStorage.getConfig();
             }
 
             if (!snapshot || typeof snapshot !== 'object' || !Array.isArray(snapshot.blocks)) {
                 // there is no configuration, load it from server
                 snapshot = await this.loadBot();
-                snapshot = await this._configStorage.updateConfig(snapshot);
+                snapshot = await configStorage.updateConfig(snapshot);
             }
 
             // wait for running request
@@ -362,7 +401,7 @@ class BuildRouter extends Router {
 
             this.buildWithSnapshot(snapshot.blocks, snapshot.timestamp, snapshot.lastmod);
         } catch (e) {
-            await this._configStorage.invalidateConfig();
+            await configStorage.invalidateConfig();
             throw e;
         }
     }
@@ -428,7 +467,7 @@ class BuildRouter extends Router {
     buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER, lastmod = '-') {
         this._validateBlocks(blocks);
 
-        Object.assign(this._context, { blocks });
+        Object.assign(this._resolvedContext, { blocks });
 
         const rootBlock = blocks.find((block) => block.isRoot);
 
@@ -482,8 +521,8 @@ class BuildRouter extends Router {
             blockName, blockType, isRoot, staticBlockId
         } = block;
 
-        this._context = {
-            ...this._context, blockName, blockType, isRoot, staticBlockId, BuildRouter
+        this._resolvedContext = {
+            ...this._resolvedContext, blockName, blockType, isRoot, staticBlockId, BuildRouter
         };
 
         this._linksMap = this._createLinksMap(block);
@@ -544,7 +583,7 @@ class BuildRouter extends Router {
             .filter((route) => !route.isResponder)
             .forEach((route) => linksMap.set(route.id, route.path));
 
-        const { linksMap: prevLinksMap } = this._context;
+        const { linksMap: prevLinksMap } = this._resolvedContext;
 
         if (prevLinksMap) {
             for (const [from, to] of prevLinksMap.entries()) {
@@ -612,7 +651,7 @@ class BuildRouter extends Router {
         if (!staticBlockId) {
             return null;
         }
-        const nestedBlock = (this._context.blocks || [])
+        const nestedBlock = (this._resolvedContext.blocks || [])
             .find((b) => b.staticBlockId === staticBlockId);
 
         if (!nestedBlock || nestedBlock.disabled) {
@@ -627,7 +666,7 @@ class BuildRouter extends Router {
      * @returns {RouteConfig}
      */
     _getRouteConfig (route) {
-        const { path: ctxPath, routeConfigs } = this._context;
+        const { path: ctxPath, routeConfigs } = this._resolvedContext;
         if (!routeConfigs || !route.path || route.isFallback) {
             return null;
         }
@@ -810,10 +849,15 @@ class BuildRouter extends Router {
         const lastMessageIndex = this._lastMessageIndex(resolvers);
         const lastIndex = resolvers.length - 1;
 
+        /** @type {C} */
+        const configuration = this._configuration instanceof Promise
+            ? null
+            : this._configuration;
+
         return resolvers.map((resolver, i) => {
 
             const context = {
-                ...this._context,
+                ...this._resolvedContext,
                 isLastIndex: lastIndex === i && !buildInfo.expectedToAddResolver,
                 isLastMessage: lastMessageIndex === i,
                 router: this,
@@ -823,7 +867,7 @@ class BuildRouter extends Router {
                 isResponder,
                 expectedPath,
                 routeId: id,
-                configuration: this._configuration,
+                configuration,
                 resolverId: resolver.id
             };
 
@@ -832,7 +876,7 @@ class BuildRouter extends Router {
             // @ts-ignore
             if (typeof resFn.configuration === 'undefined') {
                 // @ts-ignore
-                resFn.configuration = this._configuration;
+                resFn.configuration = configuration;
             }
             return resFn;
         });

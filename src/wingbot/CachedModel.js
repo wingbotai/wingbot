@@ -10,25 +10,27 @@ const DEFAULT_PHRASES_CACHE_TIME = 3600000; // one hour
 
 /**
  * @typedef {object} Entity
- * @param {string} entity
- * @param {string} value
- * @param {number} score
+ * @prop {string} entity
+ * @prop {string} value
+ * @prop {number} score
  */
 
 /**
  * @typedef {object} Intent
- * @param {string} intent
- * @param {number} score
- * @param {Entity[]} [entities]
+ * @prop {string} intent
+ * @prop {number} score
+ * @prop {Entity[]} [entities]
  */
 
 /**
  * @typedef {object} Result
- * @param {Entity[]} entities
- * @param {Intent[]} intents
+ * @prop {string} [text]
+ * @prop {Entity[]} entities
+ * @prop {Intent[]} intents
  */
 
 /** @typedef {import('../Request')} Request */
+
 class CachedModel extends CustomEntityDetectionModel {
 
     /**

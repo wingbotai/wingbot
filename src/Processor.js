@@ -607,6 +607,9 @@ class Processor extends EventEmitter {
             let configuration = {};
             if ('getConfiguration' in this.reducer) {
                 configuration = this.reducer.getConfiguration();
+                if (configuration instanceof Promise) {
+                    configuration = await configuration;
+                }
             }
 
             // @ts-ignore
