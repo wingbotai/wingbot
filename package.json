@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.67.6",
+  "version": "3.67.8",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -44,7 +44,7 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-mocha": "^10.1.0",
     "eslint-plugin-react": "^7.32.2",
-    "graphql-markdown": "^6.0.0",
+    "graphql-markdown": "^7.0.0",
     "jsdoc-to-markdown": "^8.0.0",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",

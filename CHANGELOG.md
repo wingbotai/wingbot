@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.67.8]
+
+### Fixed
+
+- tracking of custom dimensions
+
+
+## [3.67.7]
+
+### Fixed
+
+- email entity detection regex behavior with comma
+
 ## [3.67.4-6]
 
 ### Fixed

@@ -307,6 +307,16 @@ function onInteractionHandler (
                 [userAgentVar]: userAgent
             } = req.state;
 
+            const customDimensions = {};
+            for (let i = 1; i <= 8; i++) {
+                const k = `cd${i}`;
+                if (!['undefined', 'object'].includes(typeof req.state[k])) {
+                    Object.assign(customDimensions, {
+                        [k]: req.state[k]
+                    });
+                }
+            }
+
             const ua = uaParserJs(userAgent);
 
             const pageCategory = pathCategoryExtractor(pagePath);
@@ -493,6 +503,7 @@ function onInteractionHandler (
                     skill: useSkill,
                     isGoto: false,
                     withUser,
+                    ...customDimensions,
                     ...langsExtension,
                     ...actionMeta
                 });
@@ -513,6 +524,7 @@ function onInteractionHandler (
                             skill: useSkill,
                             isGoto: true,
                             withUser,
+                            ...customDimensions,
                             ...langsExtension
                         };
 

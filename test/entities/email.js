@@ -24,11 +24,15 @@ describe('@email ENTITY', () => {
                 assert.strictEqual(r.entities[0]
                     ? r.entities[0].value
                     : undefined, undefined);
+            } else if (typeof out === 'number') {
+                assert.strictEqual(r.entities.length, out);
             } else {
                 // @ts-ignore
                 assert.strictEqual(r.entities[0].value, out);
             }
         };
+
+        await ask('john.doe@gmail.com,sasa@lele.cz,mail@domain.com', 3);
 
         await ask('john.doe@gmail.com', 'john.doe@gmail.com');
         await ask('just -bizare.email~forspam@within.domain.com', '-bizare.email~forspam@within.domain.com');
