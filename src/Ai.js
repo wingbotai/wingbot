@@ -59,7 +59,7 @@ let uq = 1;
 
 /**
  * @callback WordEntityDetectorFactory
- * @returns {Promise<WordEntityDetector|WordDetectorData>}
+ * @returns {Promise<WordDetectorData>}
  */
 
 /** @typedef {[string,EntityDetector|RegExp,DetectorOptions]} DetectorArgs */
@@ -241,11 +241,14 @@ class Ai {
      * @returns {T}
      * @memberOf Ai
      */
-    register (model, prefix = this.DEFAULT_PREFIX) {
+    register (model = null, prefix = this.DEFAULT_PREFIX) {
         /** @type {T} */
         let modelObj;
 
-        if (typeof model === 'string') {
+        if (!model) {
+            // @ts-ignore
+            modelObj = new CustomEntityDetectionModel({ prefix });
+        } else if (typeof model === 'string') {
             // @ts-ignore
             modelObj = new WingbotModel({
                 model,
@@ -803,7 +806,6 @@ class Ai {
         if (!req.isText()) {
             return;
         }
-
         if (this._keyworders.size !== 0) {
             const model = this._getModelForRequest(req);
             if (!model) {

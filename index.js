@@ -64,6 +64,9 @@ const {
 } = require('./src/analytics/consts');
 
 const { version: wingbotVersion } = require('./package.json');
+const { fuzzy } = require('./src/fuzzy');
+const prepareFuzzyIndex = require('./src/fuzzy/prepareFuzzyIndex');
+const factoryFuzzySearch = require('./src/fuzzy/factoryFuzzySearch');
 
 module.exports = {
 
@@ -108,6 +111,11 @@ module.exports = {
     WingbotModel,
     plugins,
     vars,
+
+    // FUZZY
+    fuzzy,
+    prepareFuzzyIndex,
+    factoryFuzzySearch,
 
     // Notifications
     Notifications,

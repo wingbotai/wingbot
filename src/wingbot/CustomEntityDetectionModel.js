@@ -65,9 +65,9 @@ const { iterateThroughWords } = require('../utils/ai');
 /**
  * @callback WordEntityDetector
  * @param {string} text
- * @param {DetectedEntity[]} entities
- * @param {number} startIndex
- * @param {string} prefix
+ * @param {DetectedEntity[]} [entities]
+ * @param {number} [startIndex]
+ * @param {string} [prefix]
  * @returns {DetectedEntity[]}
  */
 

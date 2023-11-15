@@ -87,14 +87,51 @@ const DEFAULT_REMOVAL_MAP = [
     { base: 'w', letters: '\u0077\u24E6\uFF57\u1E81\u1E83\u0175\u1E87\u1E85\u1E98\u1E89\u2C73' },
     { base: 'x', letters: '\u0078\u24E7\uFF58\u1E8B\u1E8D' },
     { base: 'y', letters: '\u0079\u24E8\uFF59\u1EF3\u00FD\u0177\u1EF9\u0233\u1E8F\u00FF\u1EF7\u1E99\u1EF5\u01B4\u024F\u1EFF' },
-    { base: 'z', letters: '\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763' }
+    { base: 'z', letters: '\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763' },
+
+    { base: '\u0433', letters: '\u0403\u0490\u0491\u0492\u0493\u0413\u0494\u0495\u04F6\u04F7' }, // Г
+    { base: 'i', letters: '\u0406\u0456\u04c0\u0407\u0457\u04CF' },
+    { base: 'j', letters: '\u0408\u0458' },
+    { base: '\u0438', letters: '\u040d\u0419\u0439\u0418\u045D\u048B\u04E2\u04E3\u04E4\u04E5' }, // И
+    { base: 'a', letters: '\u0410\u0430\u04D0\u04D1\u04D2\u04D3' },
+    { base: 'b', letters: '\u0412\u0432' },
+    { base: 'e', letters: '\u0400\u0401\u0415\u0435\u0450\u0451\u0454\u04BC\u04BD\u04BE\u04BF\u04D6\u04D7' },
+    { base: 'h', letters: '\u04BA\u04BB\u04C7\u04C8\u04C9\u04CA' },
+    { base: 'k', letters: '\u040c\u041a\u043A\u045C\u049A\u049B\u049C\u049D\u049E\u049F\u04A0\u04A1\u04C3\u04C4' },
+    { base: 'm', letters: '\u041c\u043C\u04CD\u04CE' },
+    { base: 'h', letters: '\u041d\u043D\u045B\u04A2\u04A3\u04A4\u04A5' },
+    { base: 'o', letters: '\u041e\u043E\u04E6\u04E7\u04E8\u04E9\u04EA\u04EB' },
+    { base: 'p', letters: '\u0420\u0440\u048E\u048F' },
+    { base: 's', letters: '\u0405\u0455' },
+    { base: 'c', letters: '\u0421\u0441\u04AA\u04AB' },
+    { base: 't', letters: '\u0422\u0442\u04AC\u04AD' },
+    { base: 'y', letters: '\u0423\u040E\u0478\u04ee\u04f0\u04ef\u0443\u04f1\u04f2\u04f3\u045E\u04AE\u04AF\u04B0\u04B1' },
+    { base: 'x', letters: '\u0425\u0445\u04A8\u04A9\u04B2\u04B3' }, // Х (H)
+    { base: '\u044C', letters: '\u042C\u048C\u048D' }, // ь
+    { base: '\u0436', letters: '\u0496\u0497\u0416\u04C1\u04C2\u04DC\u04DD' }, // Ж (ZH)
+    { base: '\u0437', letters: '\u0417\u0498\u0499\u04DE\u04DF\u04E0\u04E1' }, // З (ZE)
+    { base: '\u043f', letters: '\u041f\u04A6\u04A7' }, // П (P)
+    { base: '\u0446', letters: '\u0426\u04B4\u04B5' }, // Ц (TSE)
+    { base: '\u0447', letters: '\u0427\u04B6\u04B7\u04B8\u04B9\u04CB\u04CC\u04F4\u04F5' }, // Ч (CHE)
+    { base: '\u0434', letters: '\u041B\u04C5\u04C6' }, // Л (L)
+    { base: '\u044D', letters: '\u042D\u04ED\u04EC' }, // Э (E)
+    { base: '\u044b', letters: '\u042b\u04F8\u04F9' }, // Ы (YER)
+
+    { base: 'nj', letters: '\u045A\u040A' }, // њ
+    { base: 'lj', letters: '\u0409\u0459' }, // Љ
+    { base: 'dz', letters: '\u045F\u040F' } // џ
+
 ];
 
-const diacriticsMap = {};
-for (let i = 0; i < DEFAULT_REMOVAL_MAP.length; i++) {
-    const { letters } = DEFAULT_REMOVAL_MAP[i];
-    for (let j = 0; j < letters.length; j++) {
-        diacriticsMap[letters[j]] = DEFAULT_REMOVAL_MAP[i].base;
+let diacriticsMap = null;
+
+function buildDiacriticsMap () {
+    diacriticsMap = {};
+    for (let i = 0; i < DEFAULT_REMOVAL_MAP.length; i++) {
+        const { letters } = DEFAULT_REMOVAL_MAP[i];
+        for (let j = 0; j < letters.length; j++) {
+            diacriticsMap[letters[j]] = DEFAULT_REMOVAL_MAP[i].base;
+        }
     }
 }
 
@@ -106,7 +143,26 @@ for (let i = 0; i < DEFAULT_REMOVAL_MAP.length; i++) {
  * @returns {string}
  */
 function replaceDiacritics (str) {
+    if (!diacriticsMap) {
+        buildDiacriticsMap();
+    }
     return str.replace(/[^\u0000-\u007E]/g, (a) => diacriticsMap[a] || a); // eslint-disable-line no-control-regex
+}
+
+/**
+ *
+ * @param {string|number} str
+ * @returns {string}
+ */
+function normalize (str) {
+    if (!diacriticsMap) {
+        buildDiacriticsMap();
+    }
+    //  U+0400–U+04FF - cyrillic
+    return `${str}`
+        .replace(/[\u0400-\u04ff]/g, (a) => (diacriticsMap[a] ? diacriticsMap[a] : a)) // cyrillic
+        .replace(/[^A-Za-z0-9\s'`\u0400-\u04ff]/g, (a) => (diacriticsMap[a] ? diacriticsMap[a] : ' '))
+        .toLowerCase();
 }
 
 /**
@@ -124,5 +180,6 @@ function tokenize (string) {
 
 module.exports = {
     replaceDiacritics,
-    tokenize
+    tokenize,
+    normalize
 };

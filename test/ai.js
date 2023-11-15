@@ -10,6 +10,7 @@ const Router = require('../src/Router');
 const Tester = require('../src/Tester');
 const Request = require('../src/Request');
 const WingbotModel = require('../src/wingbot/WingbotModel');
+const { fuzzy } = require('..');
 
 const DEFAULT_SCORE = 0.96;
 
@@ -313,7 +314,21 @@ describe('<Ai>', function () {
             t.res(0).contains('nothing');
         });
 
-        it('single entity makes a match');
+        it('supports word detectors', async function () {
+            ai.setWordEntityDetector(fuzzy([{
+                entity: 't',
+                value: 'xxxxxxx'
+            }]));
+
+            ai.register();
+
+            const mid = ai.match(['@t']);
+            const args = fakeReq('xxxxxxx');
+            const res = await mid(...args);
+
+            assert.strictEqual(res, Router.CONTINUE);
+            assert.strictEqual(args[0].entities[0].entity, 't');
+        });
 
     });
 
