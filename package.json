@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.67.9",
+  "version": "3.67.10",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "scripts": {
@@ -54,18 +54,18 @@
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.33",
-    "compress-json": "^2.1.2",
+    "compress-json": "^3.0.0",
     "deep-extend": "^0.6.0",
     "form-data": "^4.0.0",
-    "graphql": "^16.8.0",
-    "jsonwebtoken": "^9.0.0",
+    "graphql": "^16.8.1",
+    "jsonwebtoken": "^9.0.2",
     "node-fetch": "^2.6.7",
     "path-to-regexp": "^6.2.1",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "webalize": "^0.1.0"
   },
   "optionalDependencies": {
-    "axios": "^0.21.1",
+    "axios": "^1.6.4",
     "handlebars": "^4.0.0"
   }
 }

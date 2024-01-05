@@ -129,7 +129,9 @@ function prepareFuzzyIndex (data, {
                 ? synonyms
                 : [value, ...synonyms];
 
-            texts = texts.map((text) => cleanForMultiples(text));
+            texts = texts
+                .filter((t) => t)
+                .map((text) => cleanForMultiples(text));
 
             texts = texts
                 .map((text) => multiplier(text, texts[0]))
