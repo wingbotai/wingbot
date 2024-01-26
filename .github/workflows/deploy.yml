@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     steps:
 
@@ -33,7 +33,7 @@ jobs:
 
       - name: Test
         run: npm run test
-      
+
       - name: Rewrite gatsby confing inside smoothdoc
         run: cp documentation/smooth-doc-gatsby-config.js documentation/node_modules/smooth-doc/gatsby-config.js
 
@@ -42,7 +42,7 @@ jobs:
 
       - name: Build documentation website with gatsby
         run: cd documentation && npm run build
-      
+
       - name: Deploy documentation to github pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
