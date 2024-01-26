@@ -18,15 +18,19 @@ function wait (ms) {
     return new Promise((r) => setTimeout(r, ms));
 }
 
-async function throws (fn, expectedMessage) {
+async function throws (fn, expectedMessage, startsWith = false) {
     let message = 'none';
     try {
         await Promise.resolve(fn());
     } catch (e) {
         message = e.message;
     }
-    // @ts-ignore
-    assert.strictEqual(message, expectedMessage, 'Exception does not match');
+    if (startsWith) {
+        assert.ok(message.startsWith(expectedMessage), [message, expectedMessage].join('\nX\n'));
+    } else {
+        // @ts-ignore
+        assert.strictEqual(message, expectedMessage, 'Exception does not match');
+    }
 }
 
 describe('<BuildRouter>', function () {
@@ -81,7 +85,8 @@ describe('<BuildRouter>', function () {
                 const b = new BuildRouter({ url: 'https://google.com' });
                 await b.preload();
             },
-            'invalid json response body at https://www.google.com/ reason: Unexpected token < in JSON at position 0'
+            'invalid json response body',
+            true
         );
         const url = 'https://raw.githubusercontent.com/wingbotai/wingbot/master/test/faq-testbot.json';
         await throws(

@@ -287,9 +287,10 @@ class CustomEntityDetectionModel {
      *
      * @param {DetectedEntity[]} entities
      * @param {string[]} [expectedEntities]
+     * @param {boolean} [justDuplicates]
      * @returns {DetectedEntity[]}
      */
-    nonOverlapping (entities, expectedEntities = []) {
+    nonOverlapping (entities, expectedEntities = [], justDuplicates = false) {
         // longest first
         entities.sort(({ start: a, end: b }, { start: z, end: y }) => {
             const aLen = b - a;
@@ -308,18 +309,22 @@ class CustomEntityDetectionModel {
 
             const isExpected = expectedEntities.includes(entity.entity);
 
-            let overlapping = res
-                .some((e) => e.start < entity.end && e.end > entity.start);
+            const duplicate = res
+                .find((e) => e.start === entity.start && e.end === entity.end);
+
+            let overlapping = justDuplicates
+                ? !!duplicate
+                : res
+                    .some((e) => e.start < entity.end && e.end > entity.start);
 
             if (overlapping) {
-                const duplicate = res
-                    .find((e) => e.start === entity.start && e.end === entity.end);
-
                 if (duplicate) {
                     overlapping = !isExpected && expectedEntities.includes(duplicate.entity);
                 }
 
-                if (isExpected) {
+                if (duplicate && duplicate.entity === entity.entity) {
+                    overlapping = true;
+                } else if (isExpected) {
                     overlapping = false;
                     res = res.filter((e) => {
                         const isOverlapping = e.start < entity.end && e.end > entity.start;

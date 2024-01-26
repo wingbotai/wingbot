@@ -120,15 +120,13 @@ class CachedModel extends CustomEntityDetectionModel {
 
                 return {
                     ...i,
-                    entities: expectedEntities
-                        ? this.nonOverlapping(ents, expectedEntities)
-                        : ents
+                    entities: this.nonOverlapping(ents, expectedEntities || [], !expectedEntities)
                 };
             });
 
         return [
             retIntents,
-            expectedEntities ? this.nonOverlapping(retEntities, expectedEntities) : retEntities
+            this.nonOverlapping(retEntities, expectedEntities || [], !expectedEntities)
         ];
     }
 
