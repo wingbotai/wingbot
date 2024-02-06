@@ -26,6 +26,11 @@ describe('@email ENTITY', () => {
                     : undefined, undefined);
             } else if (typeof out === 'number') {
                 assert.strictEqual(r.entities.length, out);
+            } else if (Array.isArray(out)) {
+                out.forEach((o, i) => {
+                    // @ts-ignore
+                    assert.strictEqual(r.entities[i].value, o);
+                });
             } else {
                 // @ts-ignore
                 assert.strictEqual(r.entities[0].value, out);
@@ -40,6 +45,7 @@ describe('@email ENTITY', () => {
         await ask('this is @username', null);
         await ask('this is email@withoutdomain', null);
         await ask('this is email@with@two.at', null);
+        await ask('email@two.at; email@on-e.at', ['email@two.at', 'email@on-e.at']);
         await ask('this is @username.with.dots', null);
         await ask('this a http password http://user@domain.com', null);
     });

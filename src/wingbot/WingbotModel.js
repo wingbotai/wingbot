@@ -109,7 +109,7 @@ class WingbotModel extends CachedModel {
         try {
             const res = await this._fetch(
                 `${this._serviceUrl}/${this._model}?${qs.join('&')}`,
-                { timeout: 20000 }
+                { timeout: 6000 }
             );
 
             if (res.status === 403) {
