@@ -4,6 +4,8 @@
 'use strict';
 
 const { decompress } = require('compress-json');
+const { brotliCompress, brotliDecompress } = require('zlib');
+const { promisify } = require('util');
 const { default: fetch } = require('node-fetch');
 const assert = require('assert');
 const path = require('path');
@@ -223,6 +225,9 @@ class BuildRouter extends Router {
 
         this._prebuiltGlobalIntents = null;
 
+        this._brotliCompress = promisify(brotliCompress);
+        this._brotliDecompress = promisify(brotliDecompress);
+
         this.resources = defaultResourceMap();
 
         this._loadBotAuthorization = 'token' in block ? block.token : null;
@@ -382,18 +387,19 @@ class BuildRouter extends Router {
             }
 
             if (snapshot) {
-                snapshot = await configStorage.updateConfig(snapshot);
+                snapshot = await this._updateConfig(configStorage, snapshot);
             }
 
             if (ts !== 0 && !snapshot) {
                 // probably someone has updated the configuration
                 snapshot = await configStorage.getConfig();
+                snapshot = await this._decompressIfCompressed(snapshot);
             }
 
             if (!snapshot || typeof snapshot !== 'object' || !Array.isArray(snapshot.blocks)) {
                 // there is no configuration, load it from server
                 snapshot = await this.loadBot();
-                snapshot = await configStorage.updateConfig(snapshot);
+                snapshot = await this._updateConfig(configStorage, snapshot);
             }
 
             // wait for running request
@@ -404,6 +410,32 @@ class BuildRouter extends Router {
             await configStorage.invalidateConfig();
             throw e;
         }
+    }
+
+    async _updateConfig (configStorage, snapshot) {
+        const buf = await this._brotliCompress(Buffer.from(JSON.stringify(snapshot)));
+        const compressed = {
+            compression: 'brotli',
+            base64url: buf.toString('base64url'),
+            timestamp: snapshot.timestamp
+        };
+        const updated = await configStorage.updateConfig(compressed);
+        const decoded = await this._decompressIfCompressed(updated);
+        return decoded;
+    }
+
+    async _decompressIfCompressed (snapshot) {
+        if (!snapshot || snapshot.compression !== 'brotli' || !snapshot.base64url) {
+            return snapshot;
+        }
+        const buf = Buffer.from(snapshot.base64url, 'base64url');
+        const data = await this._brotliDecompress(buf);
+
+        const parsed = JSON.parse(data.toString('utf8'));
+        return {
+            ...parsed,
+            timestamp: snapshot.timestamp
+        };
     }
 
     /**

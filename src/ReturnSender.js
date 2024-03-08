@@ -215,6 +215,25 @@ class ReturnSender {
     /**
      * @returns {string[]}
      */
+    get requestTexts () {
+        const text = extractText(this._incommingMessage);
+
+        if (!text) {
+            return [];
+        }
+
+        const filter = this._confidentInput
+            ? this.confidentInputFilter
+            : this.textFilter;
+
+        return [
+            filter(text).trim()
+        ];
+    }
+
+    /**
+     * @returns {string[]}
+     */
     get responseTexts () {
         const filter = this._confidentInput
             ? this.confidentInputFilter

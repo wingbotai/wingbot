@@ -247,7 +247,10 @@ class Responder {
             limit,
             onlyFlag
         );
-        const { responseTexts = [] } = chatLogStorage;
+        const { responseTexts = [], requestTexts = [] } = this._messageSender;
+        transcript.push(...requestTexts.map((text) => ({
+            fromBot: false, text
+        })));
         transcript.push(...responseTexts.map((text) => ({
             fromBot: true, text
         })));
