@@ -19,6 +19,8 @@ module.exports = {
         { entity: 'ww', value: '1valka', synonyms: ['1. světová válka'] },
         { entity: 'ww', value: '2valka', synonyms: ['2. světová válka'] },
         { entity: 'ww', value: 'ivalka', synonyms: ['I. světová válka'] },
+        { entity: 'nu', value: '509-102' },
+        { entity: 'nu', value: 'ax2' },
         { entity: 'ti', value: 'z378jqtr2', synonyms: ['Harry Potter a Kámen mudrců'] },
         { entity: 'ti', value: 'aohyxb9n', synonyms: ['Harry'] },
         { entity: 'au', value: 'karcap', synonyms: ['Karel Čapek', 'Čapek'] },

@@ -156,9 +156,8 @@ function relativeLevenshtein (
 
     const leftNum = left.replace(/[^0-9]+/g, '');
     const rightNum = right.replace(/[^0-9]+/g, '');
-    const numLen = leftNum.length ? leftNum.length * NUMERIC_KOEF : rightNum.length;
-    const useNumK = leftNum.length ? NUMERIC_KOEF : 1;
-    const numLev = numLen ? levenshtein(leftNum, rightNum) * useNumK : 0;
+    const numLen = Math.max(leftNum.length, rightNum.length);
+    const numLev = numLen ? levenshtein(leftNum, rightNum) * NUMERIC_KOEF : 0;
 
     if (stemLen < 3) {
         return addSeed(seed, len + numLen, levenshtein(left, right) + numLev) * wordHandicap;
@@ -190,7 +189,6 @@ function relativeLevenshtein (
 
     const r = (vStem + vSuffix) * wordHandicap;
 
-    // console.log(`#levenshtein "${left}" <- ${right}: ${r.toFixed(3)}`);
     return r;
 }
 

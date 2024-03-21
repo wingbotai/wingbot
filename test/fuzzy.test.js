@@ -29,6 +29,31 @@ describe('fuzzy search', () => {
         ]);
     });
 
+    it('works more strictly with numbers', async () => {
+        const data = await prepareFuzzyIndex(entitiesTestData.entities);
+        const search = await factoryFuzzySearch(data);
+
+        // 101.2, 'ax2'
+
+        assert.deepStrictEqual(search.detector('509-102'), [
+            {
+                entity: 'nu',
+                score: 1,
+                value: '509-102'
+            }
+        ], 'exact 509-402');
+
+        assert.deepStrictEqual(search.detector('509-103'), [
+            {
+                entity: 'nu',
+                score: 0.8499,
+                value: '509-102'
+            }
+        ], 'should be too different 509-448');
+
+        assert.deepStrictEqual(search.detector('109.1'), [], '109.1 - should be different too');
+    });
+
     it('should work', async () => {
         const data = await prepareFuzzyIndex(entitiesTestData.entities);
         const search = await factoryFuzzySearch(data);
