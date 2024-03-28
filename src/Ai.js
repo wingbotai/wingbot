@@ -339,6 +339,7 @@ class Ai {
      * @param {string} name
      * @param {object} options
      * @param {boolean} [options.anonymize]
+     * @param {boolean} [options.clearOverlaps] - set true to override entities from NLP
      * @returns {this}
      * @example
      *

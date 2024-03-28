@@ -264,19 +264,19 @@ describe('BotApp', () => {
                                             sender: {
                                                 id: PAGE_ID
                                             },
-                                            response_to_mid: '2'
-                                        },
-                                        {
-                                            recipient: {
-                                                id: 's'
-                                            },
-                                            messaging_type: 'RESPONSE',
                                             response_to_mid: '2',
-                                            sender: {
-                                                id: PAGE_ID
-                                            },
                                             set_context: { foo: 'bar' }
                                         }
+                                        // {
+                                        //     recipient: {
+                                        //         id: 's'
+                                        //     },
+                                        //     messaging_type: 'RESPONSE',
+                                        //     response_to_mid: '2',
+                                        //     sender: {
+                                        //         id: PAGE_ID
+                                        //     },
+                                        // }
                                     ]
                                 }
                             ]

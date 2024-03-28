@@ -465,6 +465,28 @@ class ReturnSender {
         throw new Error('#upload() not supported by this channel');
     }
 
+    _isVisibleMessage (event, needTitle = true) {
+        // @todo is also in orchestrator
+
+        if (event.message) {
+            return !!(event.message.text
+                || event.message.attachment
+                || event.message.attachments);
+        }
+
+        if (event.sender_action) {
+            return true;
+        }
+
+        if (event.postback
+            && (!needTitle || event.postback.title)) {
+
+            return true;
+        }
+
+        return false;
+    }
+
     send (payload) {
         if (this._finished) {
             throw new Error('Cannot send message after sender is finished');
@@ -480,6 +502,29 @@ class ReturnSender {
             this._intentsAndEntities.push(...payload.expectedIntentsAndEntities);
             this._sendLastMessageWithFinish = this._sendLastMessageWithFinish
                 || this._intentsAndEntities.some((e) => e && e.type);
+            return;
+        }
+
+        const lastInQueue = this._queue[this._queue.length - 1];
+
+        if (payload.set_context
+            && !this._isVisibleMessage(payload, false)
+            && lastInQueue
+            && this._isVisibleMessage(lastInQueue)) {
+
+            const { set_context: setContext, ...rest } = payload;
+
+            Object.assign(
+                lastInQueue,
+                rest,
+                lastInQueue,
+                {
+                    set_context: {
+                        ...lastInQueue.set_context,
+                        ...setContext
+                    }
+                }
+            );
             return;
         }
 
