@@ -117,6 +117,35 @@ class AnyResponseAssert {
     }
 
     /**
+     * Checks for missing quick response text
+     *
+     * @param {string} search
+     * @returns {this}
+     *
+     * @memberOf ResponseAssert
+     */
+    quickReplyTextNotContains (search) {
+        const ok = this.responses
+            .every((res) => !asserts.quickReplyText(res, search, false));
+
+        if (!ok) {
+            const actual = this.responses
+                .map((res) => asserts.getQuickReplies(res))
+                .filter((replies) => !!replies)
+                .reduce((a, replies) => {
+                    for (const { title } of replies) {
+                        if (title) {
+                            a.push(title);
+                        }
+                    }
+                    return a;
+                }, []);
+            assert.fail(m('Quick reply should not be found', search, actual));
+        }
+        return this;
+    }
+
+    /**
      * Checks template type
      *
      * @param {string} type

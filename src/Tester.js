@@ -19,7 +19,7 @@ const Router = require('./Router'); // eslint-disable-line no-unused-vars
 const ReducerWrapper = require('./ReducerWrapper'); // eslint-disable-line no-unused-vars
 const { FEATURE_TEXT } = require('./features');
 
-/** @typedef {import('./Processor').ProcessorOptions} ProcessorOptions */
+/** @typedef {import('./Processor').ProcessorOptions<Router>} ProcessorOptions */
 
 /**
  * Utility for testing requests

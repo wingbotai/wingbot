@@ -427,6 +427,8 @@ describe('Tester', function () {
         }
         assert.ok(message && message.indexOf('Quick reply action not found') !== -1);
 
+        t.any().quickReplyTextNotContains('other');
+
         try {
             t.any().quickReplyTextContains('other');
         } catch (e) {
