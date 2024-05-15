@@ -233,9 +233,10 @@ class Responder {
      *
      * @param {number} [limit]
      * @param {string} [onlyFlag]
+     * @param {boolean} [skipThisTurnaround]
      * @returns {Promise<Transcript[]>}
      */
-    async getTranscript (limit = 10, onlyFlag = null) {
+    async getTranscript (limit = 10, onlyFlag = null, skipThisTurnaround = false) {
         const { chatLogStorage } = this._messageSender;
         if (!chatLogStorage) {
             return [];
@@ -247,13 +248,15 @@ class Responder {
             limit,
             onlyFlag
         );
-        const { responseTexts = [], requestTexts = [] } = this._messageSender;
-        transcript.push(...requestTexts.map((text) => ({
-            fromBot: false, text
-        })));
-        transcript.push(...responseTexts.map((text) => ({
-            fromBot: true, text
-        })));
+        if (!skipThisTurnaround) {
+            const { responseTexts = [], requestTexts = [] } = this._messageSender;
+            transcript.push(...requestTexts.map((text) => ({
+                fromBot: false, text
+            })));
+            transcript.push(...responseTexts.map((text) => ({
+                fromBot: true, text
+            })));
+        }
         return transcript;
     }
 

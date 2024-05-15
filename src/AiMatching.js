@@ -123,6 +123,8 @@ const COMPARE = {
  * @prop {number} confidence
  */
 
+const ENTITY_OK = 0.79; // 0.835 on NLP;
+
 /**
  * @class {AiMatching}
  *
@@ -465,9 +467,10 @@ class AiMatching {
      * @param {PreprocessorOutput} rule
      * @param {boolean} [stateless]
      * @param {Entity[]} [reqEntities]
+     * @param {boolean} [noEntityThreshold]
      * @returns {Intent|null}
      */
-    match (req, rule, stateless = false, reqEntities = req.entities) {
+    match (req, rule, stateless = false, reqEntities = req.entities, noEntityThreshold = false) {
         const { regexps, intents, entities } = rule;
 
         const noIntentHandicap = req.intents.length === 0 ? 0 : this.redundantIntentHandicap;
@@ -508,7 +511,10 @@ class AiMatching {
                     textLength,
                     entities,
                     reqEntities,
-                    useState
+                    useState,
+                    undefined,
+                    undefined,
+                    noEntityThreshold
                 );
 
             const allOptional = entities.every((e) => e.optional
@@ -574,7 +580,8 @@ class AiMatching {
                             requestIntent,
                             entities,
                             req,
-                            useState
+                            useState,
+                            noEntityThreshold
                         );
 
                     if (score > max) {
@@ -608,6 +615,7 @@ class AiMatching {
      * @param {EntityExpression[]} wantedEntities
      * @param {AIRequest} req
      * @param {object} useState
+     * @param {boolean} [noEntityThreshold]
      * @returns {{score:number,entities:Entity[]}}
      */
     _intentMatchingScore (
@@ -616,7 +624,8 @@ class AiMatching {
         requestIntent,
         wantedEntities,
         req,
-        useState
+        useState,
+        noEntityThreshold = false
     ) {
         if (wantedIntent !== requestIntent.intent) {
             return { score: 0, entities: [] };
@@ -642,7 +651,8 @@ class AiMatching {
                 requestIntent.entities
                     ? (x) => Math.atan((x - 0.76) * 40) / Math.atan((1 - 0.76) * 40)
                     : (x) => x,
-                req.entities
+                req.entities,
+                noEntityThreshold
             );
 
         // eslint-disable-next-line max-len,object-curly-newline
@@ -650,6 +660,7 @@ class AiMatching {
 
         const allOptional = wantedEntities.every((e) => e.optional
             && (!e.op || useEntities.every((n) => n.entity !== e.entity)));
+
         if (entitiesScore <= 0 && !allOptional) {
             return { score: 0, entities: [] };
         }
@@ -677,7 +688,8 @@ class AiMatching {
      * @param {Entity[]} requestEntities
      * @param {object} [requestState]
      * @param {Function} [scoreFn]
-     * @param {Entity[]} allEntities
+     * @param {Entity[]} [allEntities]
+     * @param {boolean} [noEntityThreshold]
      *
      * @returns {EntityMatchingResult}
      */
@@ -687,7 +699,8 @@ class AiMatching {
         requestEntities = [],
         requestState = {},
         scoreFn = (x) => x,
-        allEntities = requestEntities
+        allEntities = requestEntities,
+        noEntityThreshold = false
     ) {
         const occurences = new Map();
 
@@ -698,6 +711,8 @@ class AiMatching {
         let fromState = 0;
         let metl = 0;
 
+        let optHandicap = 0;
+
         for (const wanted of wantedEntities) {
             const usedIndexes = occurences.has(wanted.entity)
                 ? occurences.get(wanted.entity)
@@ -706,7 +721,9 @@ class AiMatching {
             let entityExists = false;
             const index = requestEntities
                 .findIndex((e, i) => {
-                    if (e.entity !== wanted.entity || usedIndexes.includes(i)) {
+                    if (e.entity !== wanted.entity
+                        || usedIndexes.includes(i)
+                        || (!noEntityThreshold && e.score < ENTITY_OK)) {
                         return false;
                     }
                     entityExists = true;
@@ -754,14 +771,21 @@ class AiMatching {
             }
 
             if (!matching) { // && optional && !entityExists
-                handicap += this.redundantEntityHandicap;
+                if (optHandicap < this.redundantEntityHandicap) {
+                    handicap += this.redundantEntityHandicap;
+                } else {
+                    handicap += this.optionalHandicap;
+                }
+                optHandicap += this.redundantEntityHandicap;
                 continue;
             }
 
             if (wanted.optional) {
-                handicap += wanted.op
+                const oph = wanted.op
                     ? this.optionalEqualityHandicap
                     : this.optionalHandicap;
+
+                handicap += oph;
             }
 
             if (wanted.op === COMPARE.NOT_EQUAL) {

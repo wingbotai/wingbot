@@ -221,7 +221,7 @@ class ChatGpt {
         anonymize = true
     ) {
         const onlyFlag = Math.sign(limit) === -1 ? 'gpt' : null;
-        const transcript = await res.getTranscript(Math.abs(limit), onlyFlag);
+        const transcript = await res.getTranscript(Math.abs(limit), onlyFlag, true);
 
         if (!anonymize) {
             return transcript;

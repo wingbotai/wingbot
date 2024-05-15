@@ -461,13 +461,21 @@ class Tester {
      * @param {string} [value]
      * @param {string} [text]
      * @param {number} [score]
+     * @param {number} [entityScore]
      * @returns {Promise}
      *
      * @memberOf Tester
      */
-    intentWithEntity (intent, entity, value = entity, text = intent, score = 1) {
+    intentWithEntity (
+        intent,
+        entity,
+        value = entity,
+        text = intent,
+        score = 1,
+        entityScore = score
+    ) {
         return this.processMessage(Request
-            .intentWithEntity(this.senderId, text, intent, entity, value, score));
+            .intentWithEntity(this.senderId, text, intent, entity, value, score, entityScore));
     }
 
     /**

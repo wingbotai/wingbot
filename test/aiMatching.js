@@ -272,6 +272,16 @@ describe('<AiMatching>', () => {
             assert(badScore < goodScore);
         });
 
+        it('should handicap optional entities, but not so much', () => {
+            const rule = ai.preprocessRule(['int', 'oint', '@a?', '@b?', '@c?', '@d?', '@e?', '@f?']);
+
+            const req = fakeReq([intent('int', [entity('a', 'x', 0.5)], 0.85)], [entity('a', 'x', 0.5)]);
+
+            const { score } = ai.match(req, rule);
+
+            assert.ok(score >= 0.8);
+        });
+
         it('should handicap optional entities if the entity is missing', () => {
             const badRule = ai.preprocessRule(['@foo', { entity: 'bar', optional: true }]);
             const goodRule = ai.preprocessRule(['@foo']);
@@ -606,11 +616,11 @@ describe('<AiMatching>', () => {
             const rule = ai.preprocessRule(['intent', '@foo']);
 
             // @ts-ignore
-            const fooEntity = entity('foo', 'value', 0.79);
+            const fooEntity = entity('foo', 'value', 0.835);
 
             const fooIntent = intent('intent', [fooEntity], 0.9);
             const goodReq = fakeReq([fooIntent], [fooEntity]);
-            const winningIntent = intent('intent', [fooEntity], 0.4279);
+            const winningIntent = intent('intent', [fooEntity], 0.8699);
 
             const res = ai.match(goodReq, rule);
             assert.deepEqual(res, winningIntent);
@@ -681,7 +691,7 @@ describe('<AiMatching>', () => {
 
             // @ts-ignore
             const fooEntity = entity('foo', 'value', 0.8);
-            const goodReq = fakeReq([intent('intent', [fooEntity], 0.79)], [fooEntity]);
+            const goodReq = fakeReq([intent('intent', [fooEntity], 0.835)], [fooEntity]);
 
             const res = ai.match(goodReq, rule);
             assert.ok(res, 'it should match');

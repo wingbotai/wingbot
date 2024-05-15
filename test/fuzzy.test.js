@@ -6,8 +6,19 @@
 const assert = require('assert');
 const entitiesTestData = require('./entitiesTestData');
 const { prepareFuzzyIndex, factoryFuzzySearch } = require('..');
+const { multiwordLevenshtein, relativeLevenshtein } = require('../src/fuzzy/levenshtein');
 
 describe('fuzzy search', () => {
+
+    it('relativeLevenshtein', () => {
+        assert.strictEqual(relativeLevenshtein('c1234', 'b1234'), 0.75);
+        assert.strictEqual(relativeLevenshtein('c12', 'b12'), 0.5833333333333334);
+        assert.strictEqual(relativeLevenshtein('c12', 'c123'), 0.6875);
+    });
+
+    it('relativeLevenshtein', async () => {
+        assert.strictEqual(multiwordLevenshtein('budova u12', 'budova c12'), 0.5395833333333334);
+    });
 
     it('should work', async () => {
         const data = prepareFuzzyIndex(entitiesTestData.entities);
@@ -46,7 +57,7 @@ describe('fuzzy search', () => {
         assert.deepStrictEqual(search.detector('509-103'), [
             {
                 entity: 'nu',
-                score: 0.8499,
+                score: 0.8661,
                 value: '509-102'
             }
         ], 'should be too different 509-448');

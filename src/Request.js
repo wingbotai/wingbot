@@ -1649,11 +1649,14 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
         entity,
         value,
         score = 1,
+        entityScore = Math.max(score, 0.835),
         timestamp = makeTimestamp()
     ) {
         const res = Request.text(senderId, text, timestamp);
 
-        return Request.addIntentToRequest(res, intent, [{ entity, value, score }], score);
+        return Request.addIntentToRequest(res, intent, [
+            { entity, value, score: entityScore }
+        ], score);
     }
 
     static quickReply (senderId, action, data = {}, timestamp = makeTimestamp()) {

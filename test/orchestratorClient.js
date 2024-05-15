@@ -65,6 +65,22 @@ describe('OrchestratorClient', () => {
         });
     });
 
+    it.skip('works', async () => {
+        const oc = new OrchestratorClient({
+            apiUrl: 'https://chat-dev-api.flyto.cloud/api',
+            appId: 'bots-lambda',
+            senderId: 'LVP599a3UDmMRy',
+            pageId: '660d7cf118bf6ff208514a38',
+            secret: '<PUT>'
+        });
+
+        // eslint-disable-next-line no-unused-vars
+        const c = await oc.getTranscript();
+
+        // eslint-disable-next-line no-console
+        console.log(c);
+    });
+
     it('should get orchestratorClient and load conversation token from orchestrator API', async () => {
 
         const senderId = 'my-senderId';

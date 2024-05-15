@@ -128,42 +128,68 @@ function addSeed (seed, len, value, base = seed) {
     return base + (((len - value) / len) * (1 - seed));
 }
 
+function numStats (left, right) {
+    const len = Math.max(left.length, right.length);
+    const leftNum = left.replace(/[^0-9]+/g, '');
+    const rightNum = right.replace(/[^0-9]+/g, '');
+    const numLen = Math.max(leftNum.length, rightNum.length);
+    const numLev = numLen ? levenshtein(leftNum, rightNum) * NUMERIC_KOEF : 0;
+    const numRelLen = len ? numLen / len : 0;
+
+    return {
+        len,
+        leftNum,
+        rightNum,
+        numLen,
+        numLev,
+        numRelLen
+    };
+}
+
+const STRING_REPLACER = /[^\s-]+/g;
+const STRING_SPLITTER = /\s+/g;
+
 /**
  *
  * @param {string} left - training data
  * @param {string} right - query
  * @param {number} [seed]
  * @param {number} [wordKoef]
+ * @param {object} [nums]
  * @returns {number}
  */
 function relativeLevenshtein (
     left,
     right,
     seed = SEED_DEFAULT,
-    wordKoef = WORD_HANDICAP_K_DEFAULT
+    wordKoef = WORD_HANDICAP_K_DEFAULT,
+    nums = numStats(left, right)
 ) {
-    const len = Math.max(left.length, right.length);
-    if (!len) {
+    if (nums.len === 0) {
         return 0;
     }
     let stemLen = Math.min(left.length, right.length);
 
-    const leftWordCount = (left.match(/[^\s]+/g) || ['']).length;
-    const rightWordCount = (right.match(/[^\s]+/g) || ['']).length;
+    const leftWordCount = (left.match(STRING_REPLACER) || ['']).length;
+    const rightWordCount = (right.match(STRING_REPLACER) || ['']).length;
 
     const wordDiff = Math.max(0, rightWordCount - leftWordCount);
     const wordHandicap = (wordKoef ** wordDiff);
 
-    const leftNum = left.replace(/[^0-9]+/g, '');
-    const rightNum = right.replace(/[^0-9]+/g, '');
-    const numLen = Math.max(leftNum.length, rightNum.length);
-    const numLev = numLen ? levenshtein(leftNum, rightNum) * NUMERIC_KOEF : 0;
+    const l = levenshtein(left, right);
 
-    if (stemLen < 3) {
-        return addSeed(seed, len + numLen, levenshtein(left, right) + numLev) * wordHandicap;
+    if (nums.numRelLen >= 0.5) {
+        const max = nums.len * 0.2; // 1/5 allowed error
+        const s = (l / max) * 0.25;
+
+        return Math.max(0, 1 - s) * wordHandicap;
     }
 
-    let diff = len - stemLen;
+    if (stemLen < 3) {
+        return addSeed(seed, nums.len + nums.numLen, l + nums.numLev) * wordHandicap;
+    }
+
+    let diff = nums.len - stemLen;
 
     if (diff <= 2) {
         diff += 2;
@@ -184,7 +210,7 @@ function relativeLevenshtein (
         diffWeight = (diff - 1) * SUFFIX_WEIGHT;
     }
 
-    const vStem = addSeed(seed, stemLen + numLen, stemLev + numLev, seed - diffWeight);
+    const vStem = addSeed(seed, stemLen + nums.numLen, stemLev + nums.numLev, seed - diffWeight);
     const vSuffix = addSeed(1 - diffWeight, diff, suffLev, 0);
 
     const r = (vStem + vSuffix) * wordHandicap;
@@ -200,18 +226,35 @@ function relativeLevenshtein (
  * @param {number} [wordKoef]
  * @returns {number}
  */
-function multiwordLevenshtein (left, right, seed, wordKoef = undefined) {
-    const leftSplit = `${left}`.split(/\s+/g);
-    const rightSplit = `${right}`.split(/\s+/g);
+function multiwordLevenshtein (left, right, seed = SEED_DEFAULT, wordKoef = undefined) {
+    const leftSplit = `${left}`.split(STRING_SPLITTER);
+    const rightSplit = `${right}`.split(STRING_SPLITTER);
 
     let sum = 0;
+    let sumNums = 0;
+    let cntNums = 0;
 
     const max = Math.max(leftSplit.length, rightSplit.length, 1);
     for (let i = 0; i < max; i++) {
-        sum += relativeLevenshtein(leftSplit[i] || '', rightSplit[i] || '', seed, wordKoef);
+        const ls = leftSplit[i] || '';
+        const rs = rightSplit[i] || '';
+        const nums = numStats(ls, rs);
+
+        const l = relativeLevenshtein(ls, rs, seed, wordKoef, nums);
+
+        if (nums.numRelLen >= 0.25) {
+            cntNums++;
+            sumNums += l;
+            sum += Math.max(0.85, l);
+        } else {
+            sum += l;
+        }
     }
 
-    return sum / max;
+    const total = sum / max;
+    const numeric = cntNums ? (sumNums / cntNums) : 1;
+
+    return total * numeric;
 }
 
 module.exports = {

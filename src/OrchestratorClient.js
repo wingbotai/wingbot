@@ -6,6 +6,9 @@
 const { withParams } = require('webalize');
 const { default: fetch, Headers } = require('node-fetch');
 const BotAppSender = require('./BotAppSender');
+const extractText = require('./transcript/extractText');
+
+/** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */
 
 /**
  * @typedef OrchestratorClientOptions
@@ -60,7 +63,131 @@ class OrchestratorClient {
             expirationInSeconds,
             conversationToken
         };
+    }
 
+    /**
+     * @returns {Promise<Transcript[]>}
+     */
+    async getTranscript () {
+        const events = await this.getChatHistory();
+
+        return events
+            .map((e) => {
+                const text = extractText(e);
+
+                return {
+                    fromBot: e.sender
+                        ? e.sender.id !== this._senderId
+                        : e.recipient.id === this._senderId,
+                    text
+                };
+            })
+            .filter((ret) => !!ret.text);
+    }
+
+    /**
+     *
+     * @returns {Promise<object[]>}
+     */
+    async getChatHistory () {
+        const res = await this._send({
+            query: `query FetchHistory (
+                $pageId: String!
+                $senderId: String!
+            ) {
+                chat {
+                    history (
+                        pageId: $pageId,
+                        senderId: $senderId
+                    ) {
+                        events {
+                            sender {
+                                id
+                            }
+                            recipient {
+                                id
+                            }
+                            mid
+                            timestamp
+                            sender_action
+                            set_context
+                            postback {
+                                payload
+                                title
+                            }
+                            expected {
+                                input {
+                                    type
+                                }
+                            }
+                            persona {
+                                name
+                                profile_pic_url
+                            }
+                            message {
+                                text
+                                is_confident
+                                attachments {
+                                    type
+                                    payload {
+                                        url
+                                        template_type
+                                        image_aspect_ratio
+                                        text
+                                        buttons {
+                                            type
+                                            title
+                                            payload
+                                            url
+                                        }
+                                        elements {
+                                            default_action {
+                                                type
+                                                title
+                                                payload
+                                                url
+                                            }
+                                            title
+                                            subtitle
+                                            image_url
+                                            buttons {
+                                                type
+                                                title
+                                                payload
+                                                url
+                                            }
+                                        }
+                                    }
+                                }
+                                quick_replies {
+                                    content_type
+                                    title
+                                    payload
+                                }
+                            }
+                        }
+                        nextStartAt
+                        nextEndAt
+                    }
+                }
+            }`,
+            variables: {
+                senderId: this._senderId,
+                pageId: this._pageId
+            }
+        });
+
+        if (res.errors && res.errors[0]) {
+            throw new Error(res.errors[0].message);
+        }
+
+        const events = (res.data
+            && res.data
+            && res.data.chat
+            && res.data.chat.history
+            && res.data.chat.history.events) || [];
+
+        return events;
     }
 
     /**

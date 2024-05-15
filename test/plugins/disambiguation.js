@@ -74,7 +74,7 @@ describe('Disambiguation', () => {
         });
 
         it('passes also entity with low threshold and title to the fallback', async () => {
-            await t.intentWithEntity('haha', 'ent', 'val', 'text', 0.5);
+            await t.intentWithEntity('haha', 'ent', 'val', 'text', 0.5, 0.79);
 
             t.any()
                 .quickReplyAction('has-entity');
@@ -85,7 +85,7 @@ describe('Disambiguation', () => {
         });
 
         it('works also when there is no matching action', async () => {
-            await t.intentWithEntity('haha', 'dkaldsa', 'val', 'text', 0.5);
+            await t.intentWithEntity('haha', 'dkaldsa', 'val', 'text', 0.5, 0.79);
 
             t.any()
                 .contains('No result.');
@@ -108,7 +108,7 @@ describe('Disambiguation', () => {
         it('just works with quick replies', async () => {
             await t.postBack('start');
 
-            await t.intentWithEntity('intent', 'entity', 'value', 'hello', 0.5);
+            await t.intentWithEntity('intent', 'entity', 'value', 'hello', 0.5, 0.79);
 
             t.any().contains('disambiguation');
 
@@ -120,7 +120,7 @@ describe('Disambiguation', () => {
         it('just works with intent handlers', async () => {
             await t.postBack('start');
 
-            await t.intentWithEntity('foo', 'bar', 'sasalele', 'hello', 0.5);
+            await t.intentWithEntity('foo', 'bar', 'sasalele', 'hello', 0.5, 0.79);
 
             t.any()
                 .contains('disambiguation')
@@ -134,7 +134,7 @@ describe('Disambiguation', () => {
         it('just works with intent handlers, but accepts different entity value', async () => {
             await t.postBack('start');
 
-            await t.intentWithEntity('foo', 'bar', 'sasalele', 'hello', 0.5);
+            await t.intentWithEntity('foo', 'bar', 'sasalele', 'hello', 0.5, 0.79);
 
             t.any()
                 .contains('disambiguation')

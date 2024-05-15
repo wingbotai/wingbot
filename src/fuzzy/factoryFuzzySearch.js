@@ -5,7 +5,7 @@
 
 const { shortArrayIndex, splitToNgrams, cleanup } = require('./fuzzyUtils');
 const {
-    relativeLevenshtein, SEED_FUZZY, SEED_FUZZY_MULTIPLICATOR, WORD_HANDICAP_K_FUZZY
+    multiwordLevenshtein, SEED_FUZZY, SEED_FUZZY_MULTIPLICATOR, WORD_HANDICAP_K_FUZZY
 } = require('./levenshtein');
 
 const LOWER_DUPLICATES = 0.9;
@@ -41,7 +41,7 @@ function getIndexesToIterate (ngrams, tfEntry) {
 function searchFnFactory (indexMap, ngramCounts, entities, maxIdf, {
     stemmer = null,
     keepMultipleValues = false,
-    threshold = 0.5,
+    threshold = 0.835,
     limit = undefined
 }, hasFuzzyMultiplier = false) {
     /** @type {WordEntityDetector} */
@@ -93,7 +93,7 @@ function searchFnFactory (indexMap, ngramCounts, entities, maxIdf, {
                 const [, entityIndex, cleanText] = ngramCounts[id];
                 const [entity, value] = entities[entityIndex];
                 const relIdf = (idf / cnt) / maxIdf;
-                let score = relativeLevenshtein(
+                let score = multiwordLevenshtein(
                     cleanText,
                     cleanQuery,
                     levenshteinSeed,
@@ -103,7 +103,7 @@ function searchFnFactory (indexMap, ngramCounts, entities, maxIdf, {
 
                 if (cleanQuery.match(/^[^\s]{1,3}\s+.{6,}$/)) {
                     const without = cleanQuery.replace(/^[^\s]{1,3}\s+/, '');
-                    const altScore = relativeLevenshtein(
+                    const altScore = multiwordLevenshtein(
                         cleanText,
                         without,
                         levenshteinSeed,

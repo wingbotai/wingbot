@@ -553,9 +553,15 @@ class Ai {
         };
     }
 
-    ruleIsMatching (intent, req, stateless = false) {
+    ruleIsMatching (intent, req, stateless = false, noEntityThreshold = false) {
         const rules = this.matcher.preprocessRule(intent);
-        const winningIntent = this.matcher.match(req, rules, stateless);
+        const winningIntent = this.matcher.match(
+            req,
+            rules,
+            stateless,
+            undefined,
+            noEntityThreshold
+        );
 
         if (!winningIntent || winningIntent.score < this.threshold) {
             return null;

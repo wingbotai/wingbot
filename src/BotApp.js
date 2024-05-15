@@ -166,22 +166,31 @@ class BotApp {
              * @param {Responder} res
              */
             afterProcessMessage (req, res) {
-                const wasSet = req.getSetContext(true);
-                const updatedVariables = Object.keys(res.newState)
-                    .filter((key) => key.match(/^§/) && wasSet[key] !== res.newState[key]);
-
-                if (updatedVariables.length !== 0) {
-                    const setContext = updatedVariables
-                        .reduce((o, key) => Object.assign(o, {
-                            [key.replace(/^§/, '')]: res.newState[key]
-                        }), {});
-
-                    res.send({
-                        set_context: setContext
-                    });
-                }
+                BotApp.sendContext(req, res);
             }
         };
+    }
+
+    /**
+     *
+     * @param {Request} req
+     * @param {Responder} res
+     */
+    static sendContext (req, res) {
+        const wasSet = req.getSetContext(true);
+        const updatedVariables = Object.keys(res.newState)
+            .filter((key) => key.match(/^§/) && wasSet[key] !== res.newState[key]);
+
+        if (updatedVariables.length !== 0) {
+            const setContext = updatedVariables
+                .reduce((o, key) => Object.assign(o, {
+                    [key.replace(/^§/, '')]: res.newState[key]
+                }), {});
+
+            res.send({
+                set_context: setContext
+            });
+        }
     }
 
     /**
