@@ -275,7 +275,7 @@ function onInteractionHandler (
         req,
         actions,
         lastAction,
-        // state,
+        state,
         // data,
         skill,
         prevSkill,
@@ -305,14 +305,14 @@ function onInteractionHandler (
                 lang,
                 [pagePathVar]: pagePath,
                 [userAgentVar]: userAgent
-            } = req.state;
+            } = state;
 
             const customDimensions = {};
             for (let i = 1; i <= 8; i++) {
                 const k = `cd${i}`;
-                if (!['undefined', 'object'].includes(typeof req.state[k])) {
+                if (!['undefined', 'object'].includes(typeof state[k])) {
                     Object.assign(customDimensions, {
-                        [k]: req.state[k]
+                        [k]: state[k]
                     });
                 }
             }

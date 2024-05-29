@@ -115,7 +115,7 @@ class ConversationTester {
      * @param {boolean} [options.disableAssertTexts]
      * @param {boolean} [options.disableAssertQuickReplies]
      * @param {boolean} [options.useConversationForTextTestCases]
-     * @param {boolean} [options.textThreshold]
+     * @param {number} [options.textThreshold]
      * @param {number} [options.stepCasesPerStep]
      * @param {number} [options.textCasesPerStep]
      * @param {number} [options.textCaseParallel]
@@ -403,21 +403,27 @@ class ConversationTester {
      * @param {TestsGroup} testsGroup
      * @param {object} [botconfig]
      * @param {string} [lang]
-     * @returns {Tester}
+     * @returns {Promise<Tester>}
      */
-    _createTester (testsGroup, botconfig = null, lang = null) {
+    async _createTester (testsGroup, botconfig = null, lang = null) {
         if (!this._cachedBot) {
-            this._cachedBot = this._botFactory(true);
-            if (botconfig) {
-                this._cachedBot.buildWithSnapshot(botconfig.blocks, Number.MAX_SAFE_INTEGER);
-            }
+            this._cachedBot = Promise.resolve(this._botFactory(true))
+                .then((cb) => {
+                    if (botconfig) {
+                        cb.buildWithSnapshot(botconfig.blocks, Number.MAX_SAFE_INTEGER);
+                    }
+                    return cb;
+                })
+                .catch((e) => { this._cachedBot = null; throw e; });
         }
+
+        const cachedBot = await this._cachedBot;
 
         let t;
         if (typeof this._options.testerFactory === 'function') {
-            t = this._options.testerFactory(this._cachedBot, testsGroup);
+            t = this._options.testerFactory(cachedBot, testsGroup);
         } else {
-            t = new Tester(this._cachedBot);
+            t = new Tester(cachedBot);
             t.allowEmptyResponse = !!this._options.allowEmptyResponse;
         }
 
@@ -436,7 +442,7 @@ class ConversationTester {
      * @param {string} [lang]
      */
     async _runTextCaseTests (testsGroup, botconfig = null, lang = null) {
-        const t = this._createTester(testsGroup, botconfig, lang);
+        const t = await this._createTester(testsGroup, botconfig, lang);
         let out = '';
         let passing = 0;
         let longestText = 0;
@@ -499,7 +505,7 @@ class ConversationTester {
         const out = [];
 
         for (const testCase of testsGroup.testCases) {
-            const t = this._createTester(testsGroup, botconfig, lang);
+            const t = await this._createTester(testsGroup, botconfig, lang);
             let o = '';
             let fail = null;
             // @ts-ignore
@@ -535,7 +541,7 @@ class ConversationTester {
      */
     async executeTextCase (testsGroup, t, textCase, botconfig, longestText, lang = null) {
         if (this._options.useConversationForTextTestCases) {
-            const tester = this._createTester(testsGroup, botconfig, lang);
+            const tester = await this._createTester(testsGroup, botconfig, lang);
 
             try {
                 await tester.text(textCase.text);

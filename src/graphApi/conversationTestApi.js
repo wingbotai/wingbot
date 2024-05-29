@@ -23,7 +23,7 @@ const ConversationTester = require('../ConversationTester');
  * @param {boolean} [options.disableAssertTexts]
  * @param {boolean} [options.disableAssertQuickReplies]
  * @param {boolean} [options.useConversationForTextTestCases]
- * @param {boolean} [options.textThreshold]
+ * @param {number} [options.textThreshold]
  * @param {number} [options.stepCasesPerStep]
  * @param {number} [options.textCasesPerStep]
  * @param {number} [options.textCaseParallel]
