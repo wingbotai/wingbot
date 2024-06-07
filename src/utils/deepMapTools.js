@@ -23,6 +23,58 @@ function deepEqual (left, right) {
     }
 }
 
+/**
+ * @callback Mapper
+ * @param {string} key
+ * @param {any} val
+ * @param {object} lastObj
+ * @param {string|null} lastKey
+ * @returns {any}
+ */
+
+/**
+ *
+ * @param {Mapper} [otherMapper]
+ * @returns {Mapper}
+ */
+function defaultMapperFactory (otherMapper = null) {
+    return (k, v, o, lk) => {
+        const useV = otherMapper
+            ? otherMapper(k, v, o, lk)
+            : v;
+
+        if (useV instanceof Date) {
+            return v.toISOString();
+        }
+        return useV;
+    };
+}
+
+/**
+ *
+ * @template T
+ * @param {T} obj
+ * @param {Mapper} mapFn
+ * @returns {T}
+ */
+function mapObject (obj, mapFn) {
+    let lastKey = null;
+    let lastObj = obj;
+
+    const str = JSON.stringify(obj, (key, val) => {
+        const ret = mapFn(key, val, lastObj, lastKey);
+
+        if (val && typeof val === 'object') {
+            lastObj = val;
+            lastKey = key || null;
+        }
+
+        return ret;
+    });
+
+    return JSON.parse(str);
+}
+
 function apiTextOutputFilter (obj, callback, prevKey = '') {
     let useKey;
     if (Array.isArray(obj)) {
@@ -59,4 +111,6 @@ function apiTextOutputFilter (obj, callback, prevKey = '') {
     return obj;
 }
 
-module.exports = { apiTextOutputFilter, deepEqual };
+module.exports = {
+    apiTextOutputFilter, deepEqual, mapObject, defaultMapperFactory
+};

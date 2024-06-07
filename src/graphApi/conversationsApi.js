@@ -4,7 +4,9 @@
 'use strict';
 
 const apiAuthorizer = require('./apiAuthorizer');
-const { apiTextOutputFilter } = require('../utils/deepMapTools');
+const { apiTextOutputFilter, mapObject, defaultMapperFactory } = require('../utils/deepMapTools');
+
+/** @typedef {import('../utils/deepMapTools').Mapper} Mapper */
 
 /**
  * @typedef {object} ConversationsAPI
@@ -31,7 +33,7 @@ const { apiTextOutputFilter } = require('../utils/deepMapTools');
 /**
  * Function for filtration of string output
  *
- * @callback textFilter
+ * @callback TextFilter
  * @param {string} value
  * @param {string} key
  * @returns {any}
@@ -46,7 +48,8 @@ const { apiTextOutputFilter } = require('../utils/deepMapTools');
  * @param {Notifications} notifications
  * @param {string[]|Function} [acl] - limit api to array of groups or use auth function
  * @param {object} options
- * @param {textFilter} [options.stateTextFilter] - optional funcion for filtering data in states
+ * @param {TextFilter} [options.stateTextFilter] - optional funcion for filtering data in states
+ * @param {Mapper} [options.mapper] - mapper for state values
  * @returns {ConversationsAPI}
  * @example
  * const { GraphApi, conversationsApi } = require('wingbot');
@@ -106,6 +109,13 @@ function conversationsApi (
             history,
             subscribtions
         });
+    } else if (options.mapper) {
+        mapState = (d) => mapObject({
+            ...d,
+            lastInteraction: d.lastInteraction || (new Date(0)),
+            history,
+            subscribtions
+        }, defaultMapperFactory(options.mapper));
     } else {
         mapState = (d) => ({
             ...d,

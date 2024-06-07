@@ -25,6 +25,8 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./ReturnSender').UploadResult} UploadResult */
+/** @typedef {import('./ReturnSender').SendOptions} SendOptions */
+/** @typedef {import('./ReturnSender').TextFilter} TextFilter */
 /** @typedef {import('./analytics/consts').TrackingCategory} TrackingCategory */
 /** @typedef {import('./analytics/consts').TrackingType} TrackingType */
 /** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */
@@ -36,10 +38,18 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 const ExpectedInput = {
     TYPE_PASSWORD: 'password',
     TYPE_NONE: 'none',
-    TYPE_UPLOAD: 'upload'
+    TYPE_UPLOAD: 'upload',
+    TYPE_WEBVIEW: 'webview'
 };
 
 Object.freeze(ExpectedInput);
+
+/**
+ * @typedef {object} ExpectedInputOptions
+ * @prop {string} [url]
+ * @prop {string} [webview_height_ratio]
+ * @prop {string} [on_close_payload]
+ */
 
 /**
  * @typedef {object} QuickReply
@@ -200,6 +210,9 @@ class Responder {
         this._textResponses = [];
 
         this._typingSent = false;
+
+        /** @type {SendOptions} */
+        this._nextMessageSendOptions = null;
     }
 
     _findPersonaConfiguration (name) {
@@ -369,7 +382,12 @@ class Responder {
         }
         this.startedOutput = true;
         this._typingSent = data.sender_action === 'typing_on';
-        this._messageSender.send(data);
+        let opts;
+        if (!data.sender_action && this._nextMessageSendOptions) {
+            opts = this._nextMessageSendOptions;
+            this._nextMessageSendOptions = null;
+        }
+        this._messageSender.send(data, opts);
         return this;
     }
 
@@ -881,15 +899,16 @@ class Responder {
     /**
      *
      * @param {ExpectedInput} type
+     * @param {ExpectedInputOptions} [options]
      * @returns {this}
      * @example
      * bot.use((req, res) => {
      *     res.expectedInput(res.ExpectedInputTypes.TYPE_PASSWORD)
      * });
      */
-    expectedInput (type) {
+    expectedInput (type, options = {}) {
         this._messageSender.send({
-            expectedIntentsAndEntities: [{ type }]
+            expectedIntentsAndEntities: [{ type, ...options }]
         });
         return this;
     }
@@ -1309,6 +1328,17 @@ class Responder {
             (payload) => this.template(payload),
             this._createContext()
         );
+    }
+
+    /**
+     * Set next message as confident
+     *
+     * @param {TextFilter} anonymizer
+     */
+    nextOutputConfident (anonymizer) {
+        this._nextMessageSendOptions = {
+            anonymizer
+        };
     }
 
     /**

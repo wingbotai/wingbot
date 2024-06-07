@@ -32,9 +32,9 @@ const extractText = require('./transcript/extractText');
 /**
  * @typedef {object} ReturnSenderOptions
  * @prop {boolean} [dontWaitForDeferredOps]
- * @prop {textFilter} [textFilter] - filter for saving the texts
+ * @prop {TextFilter} [textFilter] - filter for saving the texts
  * @prop {boolean} [logStandbyEvents] - log the standby events
- * @prop {textFilter} [confidentInputFilter] - filter for confident input (@CONFIDENT)
+ * @prop {TextFilter} [confidentInputFilter] - filter for confident input (@CONFIDENT)
  */
 
 /**
@@ -54,10 +54,16 @@ const extractText = require('./transcript/extractText');
  */
 
 /**
+ * @typedef {object} SendOptions
+ * @prop {TextFilter} [anonymizer]
+ */
+
+/**
  * Text filter function
  *
- * @callback textFilter
+ * @callback TextFilter
  * @param {string} text - input text
+ * @param {'text'|'title'|'url'|'content'} key
  * @returns {string} - filtered text
  */
 
@@ -73,10 +79,11 @@ class ReturnSender {
     constructor (options, senderId, incommingMessage, logger = null) {
         this._queue = [];
 
-        /**
-         * @type {object[]}
-         */
+        /**  @type {object[]} */
         this.responses = [];
+
+        /** @type {SendOptions[]} */
+        this._responseOptions = [];
         this._results = [];
 
         this._promise = null;
@@ -131,7 +138,7 @@ class ReturnSender {
          * For example to remove any confidential data
          *
          * @param {string} text
-         * @type {textFilter}
+         * @type {TextFilter}
          */
         this.textFilter = options.textFilter || ((text) => text);
 
@@ -227,7 +234,7 @@ class ReturnSender {
             : this.textFilter;
 
         return [
-            filter(text).trim()
+            filter(text, null).trim()
         ];
     }
 
@@ -240,7 +247,7 @@ class ReturnSender {
             : this.textFilter;
 
         return this._responseTexts
-            .map((t) => filter(t))
+            .map((t) => filter(t, null))
             .filter((t) => t && `${t}`.trim());
     }
 
@@ -300,11 +307,18 @@ class ReturnSender {
         return new Promise((r) => setTimeout(r, nextWait));
     }
 
-    _filterMessage (payload, confidentInput = false, req = null) {
+    _filterMessage (payload, confidentInput = null, req = null) {
 
-        const filter = confidentInput
-            ? this.confidentInputFilter
-            : this.textFilter;
+        let filter;
+        const processButtons = typeof confidentInput === 'function';
+
+        if (processButtons) {
+            filter = confidentInput;
+        } else if (confidentInput) {
+            filter = this.confidentInputFilter;
+        } else {
+            filter = this.textFilter;
+        }
 
         let { message } = payload;
 
@@ -314,7 +328,7 @@ class ReturnSender {
                 text: message.text ? message.text : message.voice.ssml,
                 voice: {
                     ...message.voice,
-                    ssml: filter(message.voice.ssml)
+                    ssml: filter(message.voice.ssml, 'ssml')
                 }
             };
         }
@@ -331,7 +345,7 @@ class ReturnSender {
                 ...payload,
                 message: {
                     ...message,
-                    text: filter(text)
+                    text: filter(text, 'text')
                 }
             };
         }
@@ -342,6 +356,8 @@ class ReturnSender {
             && message.attachment.payload
             && message.attachment.payload.text) {
 
+            const { payload: p } = message.attachment;
+
             return {
                 ...payload,
                 message: {
@@ -349,8 +365,46 @@ class ReturnSender {
                     attachment: {
                         ...message.attachment,
                         payload: {
-                            ...message.attachment.payload,
-                            text: filter(message.attachment.payload.text)
+                            ...p,
+                            text: filter(p.text, 'text'),
+                            ...(processButtons && Array.isArray(p.buttons)
+                                ? {
+                                    buttons: p.buttons.map((btn) => {
+                                        switch (btn.type) {
+                                            case 'attachment':
+                                                return {
+                                                    ...btn,
+                                                    title: filter(btn.title, 'title'),
+                                                    ...(btn.payload && btn.payload.content
+                                                        ? {
+                                                            payload: {
+                                                                ...btn.payload,
+                                                                content: filter(btn.payload.content, 'content')
+                                                            }
+                                                        }
+                                                        : {}
+                                                    )
+                                                };
+                                            case 'web_url':
+                                                return {
+                                                    ...btn,
+                                                    url: filter(btn.url, 'url'),
+                                                    title: filter(btn.title, 'title')
+                                                };
+
+                                            case 'postback':
+                                                return {
+                                                    ...btn,
+                                                    title: filter(btn.title, 'title')
+                                                };
+
+                                            default:
+                                                return btn;
+                                        }
+                                    })
+                                }
+                                : {}
+                            )
                         }
                     }
                 }
@@ -363,10 +417,11 @@ class ReturnSender {
     async _work () {
         this._isWorking = true;
         let payload;
+        let options;
         let req;
         let previousResponse = null;
         while (this._queue.length > 0) {
-            payload = this._queue.shift();
+            ({ payload, options } = this._queue.shift());
 
             let lastInQueueForNow = this._queue.length === 0;
             if (this._queue.length === 0 && this._sendLastMessageWithFinish) {
@@ -392,6 +447,7 @@ class ReturnSender {
             } else {
                 await this._enrichPayload(payload, req, lastInQueueForNow);
                 this.responses.push(payload);
+                this._responseOptions.push(options);
                 previousResponse = await this._send(payload);
                 this._results.push(previousResponse);
             }
@@ -487,7 +543,13 @@ class ReturnSender {
         return false;
     }
 
-    send (payload) {
+    /**
+     *
+     * @param {object} payload
+     * @param {SendOptions} options
+     * @returns {void}
+     */
+    send (payload, options = {}) {
         if (this._finished) {
             throw new Error('Cannot send message after sender is finished');
         }
@@ -510,17 +572,17 @@ class ReturnSender {
         if (payload.set_context
             && !this._isVisibleMessage(payload, false)
             && lastInQueue
-            && this._isVisibleMessage(lastInQueue)) {
+            && this._isVisibleMessage(lastInQueue.payload)) {
 
             const { set_context: setContext, ...rest } = payload;
 
             Object.assign(
-                lastInQueue,
+                lastInQueue.payload,
                 rest,
-                lastInQueue,
+                lastInQueue.payload,
                 {
                     set_context: {
-                        ...lastInQueue.set_context,
+                        ...lastInQueue.payload.set_context,
                         ...setContext
                     }
                 }
@@ -532,7 +594,7 @@ class ReturnSender {
         if (text) {
             this._responseTexts.push(text);
         }
-        this._queue.push(payload);
+        this._queue.push({ payload, options });
         this._gotAnotherEvent();
 
         if (this._catchedBeforeFinish) {
@@ -620,7 +682,7 @@ class ReturnSender {
             let text = req.text();
 
             if (text) {
-                text = this.textFilter(text);
+                text = this.textFilter(text, null);
             }
 
             const expected = req.expected();
@@ -675,7 +737,10 @@ class ReturnSender {
         }
 
         try {
-            const sent = this.responses.map((s) => this._filterMessage(s));
+            const sent = this.responses.map((s, i) => {
+                const opts = this._responseOptions[i];
+                return this._filterMessage(s, opts.anonymizer);
+            });
             const processedEvent = req
                 ? req.event
                 : this._incommingMessage;

@@ -4,7 +4,9 @@
 'use strict';
 
 const assert = require('assert');
-const { apiTextOutputFilter, deepEqual } = require('../../src/utils/deepMapTools');
+const {
+    apiTextOutputFilter, deepEqual, mapObject, defaultMapperFactory
+} = require('../../src/utils/deepMapTools');
 
 // const assert = require('assert');
 
@@ -49,6 +51,50 @@ describe('deepMapTools', () => {
             assert.strictEqual(deepEqual('123', 123), false);
             // @ts-ignore
             assert.strictEqual(deepEqual(null, 0), false);
+        });
+
+    });
+
+    describe('apiTextOutputFilter()', () => {
+
+        it('filters all strings in object', function () {
+
+            const o = {
+                foo: ['a', 'b'],
+                bar: [{
+                    foo: 'c',
+                    bar: 'd',
+                    num: 12,
+                    bool: true,
+                    nil: null,
+                    date: new Date('2020-08-21T13:49:32.438Z')
+                }],
+                baz: 'e'
+            };
+
+            const res = mapObject(o, defaultMapperFactory((k, v) => {
+                switch (typeof v) {
+                    case 'string':
+                        return 'X';
+                    default:
+                        return v;
+                }
+            }));
+
+            // @ts-ignore
+            assert.deepStrictEqual(res, {
+                foo: ['X', 'X'],
+                bar: [{
+                    foo: 'X',
+                    bar: 'X',
+                    num: 12,
+                    bool: true,
+                    nil: null,
+                    date: 'X'
+                }],
+                baz: 'X'
+            });
+
         });
 
     });

@@ -83,18 +83,35 @@ class ButtonTemplate extends BaseTemplate {
      * @param {string} linkUrl - button url
      * @param {boolean} hasExtension - includes token in url
      * @param {string} [webviewHeight=null] - compact|tall|full
+     * @param {string} [onCloseAction] - close action for webview
+     * @param {object} [onCloseData] - data
      * @returns {this}
      *
      * @memberOf ButtonTemplate
      */
-    urlButton (title, linkUrl, hasExtension = false, webviewHeight = null) {
-        this.buttons.push({
+    urlButton (
+        title,
+        linkUrl,
+        hasExtension = false,
+        webviewHeight = null,
+        onCloseAction = null,
+        onCloseData = {}
+    ) {
+        const btn = {
             type: 'web_url',
             title: this._t(title),
             url: this._makeExtensionUrl(linkUrl, hasExtension),
             webview_height_ratio: webviewHeight || (hasExtension ? 'tall' : 'full'),
             messenger_extensions: hasExtension
-        });
+        };
+        // on_close_payload
+        if (onCloseAction) {
+            Object.assign(btn, {
+                on_close_payload: this._createPayload(onCloseAction, onCloseData)
+            });
+        }
+
+        this.buttons.push(btn);
         return this;
     }
 
@@ -110,21 +127,25 @@ class ButtonTemplate extends BaseTemplate {
      * @memberOf ButtonTemplate
      */
     postBackButton (title, action, data = {}, setState = null) {
-        const hasSetState = setState && Object.keys(setState).length !== 0;
-
         this.buttons.push({
             type: 'postback',
             title: this._t(title),
-            payload: JSON.stringify({
-                action: makeAbsolute(action, this.context.path),
-                data: {
-                    _ca: this.context.currentAction,
-                    ...data
-                },
-                ...(hasSetState ? { setState } : {})
-            })
+            payload: this._createPayload(action, data, setState)
         });
         return this;
+    }
+
+    _createPayload (action, data, setState = null) {
+        const hasSetState = setState && Object.keys(setState).length !== 0;
+
+        return JSON.stringify({
+            action: makeAbsolute(action, this.context.path),
+            data: {
+                _ca: this.context.currentAction,
+                ...data
+            },
+            ...(hasSetState ? { setState } : {})
+        });
     }
 
     /**

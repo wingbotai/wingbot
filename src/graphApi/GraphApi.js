@@ -19,6 +19,11 @@ const DEFAULT_CACHE = 86400000; // 24 hours
  * @param {object[]} [errors]
  */
 
+/**
+ * @typedef {object} RequestParams
+ * @param {string} [snapshot]
+ */
+
 /** @typedef {import('../CallbackAuditLog')} AuditLog */
 /** @typedef {import('graphql')} GqlLib */
 
@@ -110,9 +115,10 @@ class GraphApi {
      * @param {string} [headers.Referer]
      * @param {string} [headers.referer]
      * @param {string} [wingbotToken]
+     * @param {RequestParams} [params]
      * @returns {Promise<GraphQlResponse>}
      */
-    async request (body, headers, wingbotToken = undefined) {
+    async request (body, headers, wingbotToken = undefined, params = {}) {
         assert.ok(body && typeof body === 'object', 'GraphQL request should be an object with a request property');
         assert.equal(typeof body.query, 'string', 'GraphQL request should contain a query property');
 
@@ -149,7 +155,8 @@ class GraphApi {
         const ctx = {
             token,
             groups: this._defaultGroups,
-            audit
+            audit,
+            params
         };
 
         const response = await this._gql.graphql({
