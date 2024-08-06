@@ -103,6 +103,8 @@ class ReturnSender {
 
         this._features = Array.isArray(incommingMessage.features) ? incommingMessage.features : ['text'];
 
+        this.timestamp = incommingMessage.timestamp;
+
         this._sendLastMessageWithFinish = this._features.includes(FEATURE_PHRASES)
             || this._features.includes(FEATURE_TRACKING);
 

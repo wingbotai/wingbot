@@ -19,8 +19,15 @@ const defaultResourceMap = require('./defaultResourceMap');
 const { shouldExecuteResolver } = require('./resolvers/resolverTags');
 
 const MESSAGE_RESOLVER_NAME = 'botbuild.message';
+const PLUGIN_RESOLVER_NAME = 'botbuild.customCode';
 
 /** @typedef {import('./Router').BaseConfiguration} BaseConfiguration */
+/**
+ * @typedef {object} BuildInfo
+ * @prop {boolean} [expectedToAddResolver]
+ * @prop {boolean} [attachedRouter]
+ * @prop {boolean} [notLastMessage]
+ */
 
 /**
  *
@@ -35,6 +42,7 @@ const MESSAGE_RESOLVER_NAME = 'botbuild.message';
  * @prop {string} type
  * @prop {object} params
  * @prop {string} [params.staticBlockId]
+ * @prop {object} [params.items]
  * @prop {string} [tag]
  */
 
@@ -859,7 +867,10 @@ class BuildRouter extends Router {
      */
     _lastMessageIndex (resolvers) {
         for (let i = resolvers.length - 1; i >= 0; i--) {
-            if (resolvers[i].type === MESSAGE_RESOLVER_NAME) {
+            const { type, params = {} } = resolvers[i];
+            if (MESSAGE_RESOLVER_NAME === type
+                || (type === PLUGIN_RESOLVER_NAME
+                    && params && params.items && Object.keys(params.items).length)) {
                 return i;
             }
         }
@@ -869,8 +880,8 @@ class BuildRouter extends Router {
     /**
      *
      * @param {Resolver[]} resolvers
-     * @param {TransformedRoute} route
-     * @param {*} buildInfo
+     * @param {TransformedRoute} [route]
+     * @param {BuildInfo} [buildInfo]
      * @returns {Middleware<S,C>[]}
      */
     buildResolvers (resolvers, route = DUMMY_ROUTE, buildInfo = {}) {
@@ -891,7 +902,7 @@ class BuildRouter extends Router {
             const context = {
                 ...this._resolvedContext,
                 isLastIndex: lastIndex === i && !buildInfo.expectedToAddResolver,
-                isLastMessage: lastMessageIndex === i,
+                isLastMessage: lastMessageIndex === i && !buildInfo.notLastMessage,
                 router: this,
                 linksMap: this._linksMap,
                 path: ctxPath,
@@ -918,7 +929,7 @@ class BuildRouter extends Router {
      *
      * @param {Resolver} resolver
      * @param {BotContext<C>} context
-     * @param {*} buildInfo
+     * @param {BuildInfo} buildInfo
      * @returns {Middleware<S,C>}
      */
     _resolverFactory (resolver, context, buildInfo) {

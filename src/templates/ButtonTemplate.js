@@ -58,7 +58,7 @@ class ButtonTemplate extends BaseTemplate {
     }
 
     _makeExtensionUrl (url, hasExtension) {
-        if (hasExtension) {
+        if (hasExtension && !`${url}`.match(/#.+/)) {
             const hash = [
                 `token=${encodeURIComponent(this.context.token)}`,
                 `senderId=${encodeURIComponent(this.context.senderId)}`

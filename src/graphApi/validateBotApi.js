@@ -102,7 +102,7 @@ function validateBotApi (botFactory, postBackTest = null, textTest = null, acl =
                 validationRequestBody = decompress(validationRequestBody);
             }
 
-            const bot = await Promise.resolve(botFactory(true, ctx.snapshot));
+            const bot = await Promise.resolve(botFactory(true, ctx.params.snapshot));
 
             await ctx.audit('validateBot');
             return validate(bot, validationRequestBody, postBackTest, textTest);

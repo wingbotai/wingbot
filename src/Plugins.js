@@ -41,6 +41,11 @@ const wrapPluginFunction = require('./utils/wrapPluginFunction');
  */
 
 /**
+ * @typedef {object} PluginFactoryOptions
+ * @prop {string[]} [notLastMessageItems]
+ */
+
+/**
  * Custom code plugins for BuildRouter and wingbot.ai
  *
  * @template {object} [S=object]
@@ -53,7 +58,22 @@ class Plugins {
         this._plugins = new Map();
     }
 
-    getPluginFactory (name, paramsData = {}, configuration = {}, defaultPlugin = null) {
+    /**
+     *
+     * @param {string} name
+     * @returns {PluginFactoryOptions}
+     */
+    getPluginOptions (name) {
+        const plugin = this._getPlug(name, {});
+
+        if (plugin && plugin.options) {
+            return plugin.options;
+        }
+
+        return {};
+    }
+
+    _getPlug (name, defaultPlugin) {
         let plugin;
         if (plugins.has(name)) {
             plugin = plugins.get(name);
@@ -64,6 +84,11 @@ class Plugins {
         } else {
             throw new Error(`Unknown Plugin: ${name}. Ensure its registration.`);
         }
+        return plugin;
+    }
+
+    getPluginFactory (name, paramsData = {}, configuration = {}, defaultPlugin = null) {
+        const plugin = this._getPlug(name, defaultPlugin);
         if (plugin && plugin.pluginFactory) {
             return plugin.pluginFactory(paramsData, configuration);
         }
@@ -174,13 +199,14 @@ class Plugins {
      *
      * @param {string} name - plugin name or plugins object to include
      * @param {PluginFactory<S,C>} pluginFactory - function, which returns a plugin
+     * @param {PluginFactoryOptions} [options]
      */
-    registerFactory (name, pluginFactory) {
+    registerFactory (name, pluginFactory, options = {}) {
         if (typeof pluginFactory !== 'function') {
             // eslint-disable-next-line no-console
             console.warn(`Plugin factory expected, ${typeof pluginFactory} given (plugin: ${name})`);
         }
-        this._plugins.set(name, { pluginFactory });
+        this._plugins.set(name, { pluginFactory, options });
     }
 
 }

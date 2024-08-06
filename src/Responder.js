@@ -48,7 +48,8 @@ Object.freeze(ExpectedInput);
  * @typedef {object} ExpectedInputOptions
  * @prop {string} [url]
  * @prop {string} [webview_height_ratio]
- * @prop {string} [on_close_payload]
+ * @prop {string} [onCloseAction]
+ * @prop {string} [onCloseActionData]
  */
 
 /**
@@ -250,7 +251,7 @@ class Responder {
      * @returns {Promise<Transcript[]>}
      */
     async getTranscript (limit = 10, onlyFlag = null, skipThisTurnaround = false) {
-        const { chatLogStorage } = this._messageSender;
+        const { chatLogStorage, timestamp } = this._messageSender;
         if (!chatLogStorage) {
             return [];
         }
@@ -264,10 +265,10 @@ class Responder {
         if (!skipThisTurnaround) {
             const { responseTexts = [], requestTexts = [] } = this._messageSender;
             transcript.push(...requestTexts.map((text) => ({
-                fromBot: false, text
+                fromBot: false, text, timestamp
             })));
             transcript.push(...responseTexts.map((text) => ({
-                fromBot: true, text
+                fromBot: true, text, timestamp
             })));
         }
         return transcript;
@@ -704,6 +705,7 @@ class Responder {
      * @param {QuickReply} reply
      * @param {boolean} [atStart]
      * @param {boolean} [toLastMessage]
+     * @param {boolean} [ifNotExists]
      * @returns {this}
      * @example
      *
@@ -715,12 +717,18 @@ class Responder {
      *     }); // will be merged and sent with previously added quick replies
      * });
      */
-    quickReply (reply, atStart = false, toLastMessage = true) {
+    quickReply (reply, atStart = false, toLastMessage = true, ifNotExists = false) {
         const useCa = this.currentAction();
+
+        const action = this.toAbsoluteAction(reply.action);
+
+        if (ifNotExists && this._quickReplyCollector.some((q) => q.action === action)) {
+            return this;
+        }
 
         this._quickReplyCollector.push({
             ...reply,
-            action: this.toAbsoluteAction(reply.action),
+            action,
             useCa,
             ...(atStart && { _prepend: true }),
             ...(toLastMessage && { _justToExisting: true })
@@ -907,8 +915,14 @@ class Responder {
      * });
      */
     expectedInput (type, options = {}) {
+        const { onCloseAction, onCloseActionData = {}, ...rest } = options;
+        if (onCloseAction) {
+            Object.assign(rest, {
+                on_close_payload: this._makePayload(onCloseAction, onCloseActionData)
+            });
+        }
         this._messageSender.send({
-            expectedIntentsAndEntities: [{ type, ...options }]
+            expectedIntentsAndEntities: [{ type, ...rest }]
         });
         return this;
     }
@@ -1063,13 +1077,17 @@ class Responder {
         return this.template({
             template_type: 'one_time_notif_req',
             title: this._t(title),
-            payload: JSON.stringify({
-                action: makeAbsolute(action, this.path),
-                data: {
-                    ...data,
-                    _ntfTag: tag
-                }
+            payload: this._makePayload(action, {
+                ...data,
+                _ntfTag: tag
             })
+        });
+    }
+
+    _makePayload (action, data) {
+        return JSON.stringify({
+            action: makeAbsolute(action, this.path),
+            data
         });
     }
 

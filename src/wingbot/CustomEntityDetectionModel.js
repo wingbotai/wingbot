@@ -58,6 +58,7 @@ const { iterateThroughWords } = require('../utils/ai');
  * @prop {Function|string} [extractValue] - entity extractor
  * @prop {boolean} [matchWholeWords] - match whole words at regular expression
  * @prop {boolean} [replaceDiacritics] - keep diacritics when matching regexp
+ * @prop {boolean} [options.caseSensitiveRegex] - make regex case sensitive
  * @prop {string[]} [dependencies] - array of dependent entities
  * @prop {boolean} [clearOverlaps] - let longer entities from NLP to replace entity
  */
@@ -576,6 +577,7 @@ class CustomEntityDetectionModel {
      * @param {boolean} [options.matchWholeWords] - match whole words at regular expression
      * @param {boolean} [options.replaceDiacritics] - replace diacritics when matching regexp
      * @param {string[]} [options.dependencies] - array of dependent entities
+     * @param {boolean} [options.caseSensitiveRegex] - make regex case sensitive
      */
     _regexpToDetector (regexp, options) {
         const { dependencies = [], extractValue = null } = options;
@@ -606,12 +608,16 @@ class CustomEntityDetectionModel {
             });
 
             if (options.matchWholeWords && !searchWithinWords) {
-                replaced = `(?<=(^|[^a-z0-9\u00C0-\u017F]))${replaced}(?=([^a-z0-9\u00C0-\u017F]|$))`;
+                replaced = `(?<=(^|[^a-zA-Z0-9\u00C0-\u017F]))${replaced}(?=([^a-zA-Z0-9\u00C0-\u017F]|$))`;
             }
 
-            const r = new RegExp(replaced, 'i');
-            const lc = text.toLocaleLowerCase();
+            const r = new RegExp(replaced, options.caseSensitiveRegex ? '' : 'i');
+            const lc = options.caseSensitiveRegex
+                ? text
+                : text.toLocaleLowerCase();
+
             let matchText = lc;
+
             if (options.replaceDiacritics) {
                 matchText = replaceDiacritics(matchText);
             }

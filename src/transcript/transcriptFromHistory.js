@@ -22,6 +22,7 @@ const extractText = require('./extractText');
  * @typedef {object} Transcript
  * @prop {string} text
  * @prop {boolean} fromBot
+ * @prop {number} [timestamp]
  */
 
 /**
@@ -51,12 +52,17 @@ async function transcriptFromHistory (
 
     return data
         .map((turn) => {
+            let { timestamp } = turn;
             const { request, responses = [] } = turn;
 
+            if (!timestamp) {
+                timestamp = request.timestamp || null;
+            }
+
             return [
-                { fromBot: false, text: extractText(request) },
+                { fromBot: false, text: extractText(request), timestamp },
                 ...responses
-                    .map((response) => ({ fromBot: true, text: extractText(response) }))
+                    .map((response) => ({ fromBot: true, text: extractText(response), timestamp }))
             ];
         })
         .reduce((ret, arr) => [...ret, ...arr], [])

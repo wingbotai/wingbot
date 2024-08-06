@@ -110,12 +110,12 @@ function conversationsApi (
             subscribtions
         });
     } else if (options.mapper) {
-        mapState = (d) => mapObject({
-            ...d,
+        mapState = (d) => ({
+            ...mapObject(d, defaultMapperFactory(options.mapper)),
             lastInteraction: d.lastInteraction || (new Date(0)),
             history,
             subscribtions
-        }, defaultMapperFactory(options.mapper));
+        });
     } else {
         mapState = (d) => ({
             ...d,

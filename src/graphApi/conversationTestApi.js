@@ -48,7 +48,7 @@ function conversationTestApi (testsSource, botFactory, options, acl) {
 
             await ctx.audit('conversationTest', args);
 
-            return test.test(validationRequestBody, step, lang);
+            return test.test(validationRequestBody, step, lang, ctx.params.snapshot);
         }
     };
 }

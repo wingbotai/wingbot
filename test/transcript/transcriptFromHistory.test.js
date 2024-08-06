@@ -54,38 +54,46 @@ describe('transcriptFromHistory', () => {
 
         // console.log(transcript);
 
-        assert.deepStrictEqual(transcript, [
+        assert.deepStrictEqual(transcript.map((tr) => ({ ...tr, timestamp: null })), [
             {
                 fromBot: false,
-                text: 'start'
+                text: 'start',
+                timestamp: null
             },
             {
                 fromBot: true,
-                text: 'starting'
+                text: 'starting',
+                timestamp: null
             },
             {
                 fromBot: false,
-                text: 'dalsi'
+                text: 'dalsi',
+                timestamp: null
             },
             {
                 fromBot: true,
-                text: 'hoho'
+                text: 'hoho',
+                timestamp: null
             },
             {
                 fromBot: false,
-                text: 'sasalele'
+                text: 'sasalele',
+                timestamp: null
             },
             {
                 fromBot: true,
-                text: 'do not understand'
+                text: 'do not understand',
+                timestamp: null
             },
             {
                 fromBot: false,
-                text: 'random'
+                text: 'random',
+                timestamp: null
             },
             {
                 fromBot: true,
-                text: 'hoho'
+                text: 'hoho',
+                timestamp: null
             }
         ]);
 

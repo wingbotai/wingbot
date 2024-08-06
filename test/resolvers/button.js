@@ -14,7 +14,7 @@ describe('<button>', () => {
 
         it('should work', async () => {
 
-            let trans;
+            let trans = [];
 
             const bot = new Router();
 
@@ -51,11 +51,11 @@ describe('<button>', () => {
 
             await t.text('trans');
 
-            assert.deepStrictEqual(trans, [
-                { fromBot: false, text: 'x' },
-                { fromBot: true, text: 'abc' },
-                { fromBot: false, text: 'trans' },
-                { fromBot: true, text: 'something' }
+            assert.deepStrictEqual(trans.map((tr) => ({ ...tr, timestamp: null })), [
+                { fromBot: false, text: 'x', timestamp: null },
+                { fromBot: true, text: 'abc', timestamp: null },
+                { fromBot: false, text: 'trans', timestamp: null },
+                { fromBot: true, text: 'something', timestamp: null }
             ]);
 
         });

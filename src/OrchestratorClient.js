@@ -79,7 +79,8 @@ class OrchestratorClient {
                     fromBot: e.sender
                         ? e.sender.id !== this._senderId
                         : e.recipient.id === this._senderId,
-                    text
+                    text,
+                    timestamp: e.timestamp
                 };
             })
             .filter((ret) => !!ret.text);

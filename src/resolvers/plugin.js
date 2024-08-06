@@ -29,10 +29,15 @@ function plugin (params, context, plugins) {
     } = params;
     const { router, allowForbiddenSnippetWords } = context;
 
+    const options = plugins.getPluginOptions(codeBlockId);
+
     const itemsMap = Object.keys(items)
         .reduce((map, itemName) => {
             const item = items[itemName];
-            const builtResolvers = router.buildResolvers(item.resolvers);
+            const builtResolvers = router.buildResolvers(item.resolvers, undefined, {
+                notLastMessage: Array.isArray(options.notLastMessageItems)
+                    && options.notLastMessageItems.includes(itemName)
+            });
 
             map.set(itemName, builtResolvers);
 

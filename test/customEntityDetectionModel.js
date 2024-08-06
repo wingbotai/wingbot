@@ -81,6 +81,27 @@ describe('customEntityDetectionModel', () => {
             ]);
         });
 
+        it('should work well case sensitive regexes', async () => {
+            m.setEntityDetector('casesensitive', /abcdef/i, { caseSensitiveRegex: true });
+
+            let entities = await m.resolveEntities('AbCdEf');
+
+            assert.deepEqual(entities, []);
+
+            entities = await m.resolveEntities('abcdef');
+
+            assert.deepEqual(entities, [
+                {
+                    entity: 'casesensitive',
+                    value: 'abcdef',
+                    text: 'abcdef',
+                    score: 1,
+                    start: 0,
+                    end: 6
+                }
+            ]);
+        });
+
         it('should work well with inconsistent optional entities', async () => {
             m.setEntityDetector('optional', /(@PARENT?\s?sasalele|foobar)/);
 

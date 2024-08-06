@@ -282,6 +282,7 @@ class Ai {
      * @param {Function|string} [options.extractValue] - entity extractor
      * @param {boolean} [options.matchWholeWords] - match whole words at regular expression
      * @param {boolean} [options.replaceDiacritics] - keep diacritics when matching regexp
+     * @param {boolean} [options.caseSensitiveRegex] - make regex case sensitive
      * @param {string[]} [options.dependencies] - array of dependent entities
      * @param {boolean} [options.clearOverlaps] - let longer entities from NLP to replace entity
      * @returns {this}
