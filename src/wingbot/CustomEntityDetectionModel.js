@@ -94,6 +94,7 @@ class CustomEntityDetectionModel {
     /**
      * @param {object} options
      * @param {string} [options.prefix]
+     * @param {boolean} [options.verbose]
      * @param {{ warn: Function, error: Function, log: Function }} [log]
      */
     constructor (options, log = console) {
@@ -303,13 +304,14 @@ class CustomEntityDetectionModel {
             return zLen - aLen;
         });
 
+        if (this._options.verbose) this._log.log('#NLP [nonOverlapping]', { entities, expectedEntities, justDuplicates });
+
         let res = [];
 
         for (let i = 0; i < entities.length; i++) {
             const entity = entities[i];
 
             const isExpected = expectedEntities.includes(entity.entity);
-
             const duplicate = res
                 .find((e) => e.start === entity.start && e.end === entity.end);
 
@@ -352,11 +354,21 @@ class CustomEntityDetectionModel {
                         const othersConflict = res.some((e) => putback === e
                             || (e.start < putback.end && e.end > putback.start));
 
+                        this._log.log(`#NLP (${i}|${k} [putBack: ${entity.entity}|${putback.entity}] (${i}|${k})`, {
+                            putback, entity, currentConflict, othersConflict
+                        });
+
                         if (!currentConflict && !othersConflict) {
                             res.push(putback);
                         }
                     }
                 }
+            }
+
+            if (this._options.verbose) {
+                this._log.log(`#NLP (${i}) [nonOverlapping| ${entity.entity}:${entity.value}]`, {
+                    willRemoveEntity: overlapping, overlapping, duplicate, isExpected, entity
+                });
             }
 
             if (!overlapping) {

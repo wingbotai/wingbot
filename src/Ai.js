@@ -237,20 +237,26 @@ class Ai {
      * @template {CustomEntityDetectionModel} T
      * @param {string|WingbotModel|T} model - wingbot model name or AI plugin
      * @param {string} prefix - model prefix
+     * @param {object} [options={}]
+     * @param {number} [options.cacheSize]
+     * @param {boolean} [options.verbose]
+     * @param {number} [options.cachePhrasesTime]
+     *
      *
      * @returns {T}
      * @memberOf Ai
      */
-    register (model = null, prefix = this.DEFAULT_PREFIX) {
+    register (model = null, prefix = this.DEFAULT_PREFIX, options = {}) {
         /** @type {T} */
         let modelObj;
 
         if (!model) {
             // @ts-ignore
-            modelObj = new CustomEntityDetectionModel({ prefix });
+            modelObj = new CustomEntityDetectionModel({ ...options, prefix });
         } else if (typeof model === 'string') {
             // @ts-ignore
             modelObj = new WingbotModel({
+                ...options,
                 model,
                 prefix
             }, this.logger);

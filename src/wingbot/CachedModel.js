@@ -37,6 +37,7 @@ class CachedModel extends CustomEntityDetectionModel {
      * @param {object} options
      * @param {string} [options.prefix]
      * @param {number} [options.cacheSize]
+     * @param {boolean} [options.verbose]
      * @param {number} [options.cachePhrasesTime]
      * @param {{ warn: Function, error: Function, log: Function }} [log]
      */
@@ -97,13 +98,19 @@ class CachedModel extends CustomEntityDetectionModel {
             .filter((e) => this._entityDetectors.has(e.entity)
                 && this._entityDetectors.get(e.entity).clearOverlaps);
 
+        if (this._options.verbose) this._log.log(`#NLP: ${text} [before]`, { before, intents, entities });
+
         [intents, entities] = this._attachEntities(intents, entities, before, expectedEntities);
 
         const after = local.entities
             .filter((e) => !this._entityDetectors.has(e.entity)
                 || !this._entityDetectors.get(e.entity).clearOverlaps);
 
+        if (this._options.verbose) this._log.log(`#NLP: ${text} [after]`, { after, intents, entities });
+
         [intents, entities] = this._attachEntities(intents, entities, after);
+
+        if (this._options.verbose) this._log.log(`#NLP: ${text} [attached]`, { intents, entities, expectedEntities });
 
         return {
             text: local.text,

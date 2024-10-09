@@ -49,6 +49,7 @@ describe('Notifications', function () {
             };
             // @ts-ignore
             const notifications = new Notifications(undefined, { log: logger });
+            notifications.limit = 20;
 
             const processorMock = {
                 processMessage: sinon.spy((message) => {
@@ -95,6 +96,47 @@ describe('Notifications', function () {
 
             assert.equal(subs.length, TEST_ITEMS, 'remains same because this should not trigger unsubscribtion');
             assert.equal(logger.error.callCount, iterations);
+        });
+
+        it('passes data to state', async () => {
+
+            const logger = {
+                error: sinon.spy()
+            };
+            // @ts-ignore
+            const notifications = new Notifications(undefined, { log: logger });
+
+            const b = new Router();
+            b.use((req, res) => { res.text('yay'); });
+            const t = new Tester(b);
+
+            await notifications._storage.batchSubscribe([{
+                senderId: t.senderId,
+                pageId: t.pageId,
+                tags: ['datatest'],
+                meta: {
+                    datatest: { local: 'C' }
+                }
+            }]);
+
+            let campaign = await notifications.createCampaign('namex', 'start', {
+                global: 'A',
+                local: 'B'
+            }, {
+                include: ['datatest']
+            });
+            await notifications.runCampaign(campaign);
+
+            await notifications.processQueue(t, 0);
+
+            campaign = await notifications._storage.getCampaignById(campaign.id);
+
+            // console.log(campaign);
+
+            t.stateContains({
+                global: 'A',
+                local: 'C'
+            });
         });
 
     });

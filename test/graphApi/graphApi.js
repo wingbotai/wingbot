@@ -728,6 +728,34 @@ describe('<GraphApi>', function () {
 
     });
 
+    describe('mutation { subscribeWithData () }', () => {
+
+        it('should add some subscribers ', async () => {
+            api._apiConnector._useBundledGql = true;
+
+            const res = await api.request({
+                query: `mutation SubscribeUsersWithData ($subscriptions: [SubscriptionData!]!) {
+                    subscribeWithData (subscriptions: $subscriptions)
+                }`,
+                variables: {
+                    subscriptions: [
+                        {
+                            pageId: '1',
+                            senderId: '1',
+                            tags: ['ddd']
+                        }
+                    ]
+                }
+            }, headers);
+
+            assert.equal(typeof res.data, 'object');
+            assert.deepEqual(res.data, {
+                subscribeWithData: true
+            });
+        });
+
+    });
+
     describe('audit log', () => {
 
         /** @type {import('sinon').SinonSpy} */

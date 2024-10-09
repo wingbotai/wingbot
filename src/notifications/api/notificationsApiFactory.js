@@ -5,6 +5,9 @@
 
 const apiAuthorizer = require('../../graphApi/apiAuthorizer');
 
+/** @typedef {import('../NotificationsStorage')} NotificationsStorage */
+/** @typedef {import('../Notifications')} Notifications */
+
 /**
  *
  * @param {*} info
@@ -38,6 +41,59 @@ function getFields (info) {
     }, {});
 }
 
+/**
+ * @typedef {object} Target
+ * @prop {string} senderId
+ * @prop {string} pageId
+ */
+
+/**
+ * @typedef {object} SubscriptionData
+ * @prop {string} pageId
+ * @prop {string} senderId
+ * @prop {string[]} tags
+ * @prop {boolean} [remove]
+ * @prop {{ [key: string]: object }} [meta]
+ */
+
+/**
+ *
+ * @callback PreprocessSubscribe
+ * @param {SubscriptionData[]} subscriptions
+ * @returns {Promise<SubscriptionData[]>}
+ */
+
+/**
+ *
+ * @callback PreprocessSubscriptions
+ * @param {Target[]} subscriptions
+ * @param {string} [pageId]
+ * @returns {Promise<Target[]>|Target[]}
+ */
+
+/**
+ *
+ * @callback PreprocessSubscribers
+ * @param {string[]} senderIds
+ * @param {string} pageId
+ * @param {string} tag
+ * @returns {Promise<string[]>|string[]}
+ */
+
+/**
+ * @typedef {object} NotificationsApiOptions
+ * @prop {PreprocessSubscribe} [preprocessSubscribe]
+ * @prop {PreprocessSubscriptions} [preprocessSubscriptions]
+ * @prop {PreprocessSubscribers} [preprocessSubscribers]
+ */
+
+/**
+ *
+ * @param {NotificationsStorage} storage
+ * @param {Notifications} notifications
+ * @param {*} acl
+ * @param {NotificationsApiOptions} options
+ */
 function notificationsApiFactory (storage, notifications, acl, options = {}) {
     return {
         async campaigns (args, ctx) {
@@ -210,6 +266,32 @@ function notificationsApiFactory (storage, notifications, acl, options = {}) {
                 }
             }
 
+            return true;
+        },
+
+        /**
+         * @typedef {object} SubscriptionData
+         * @prop {string} pageId
+         * @prop {string} senderId
+         * @prop {string[]} tags
+         * @prop {boolean} [remove]
+         * @prop {{ [key: string]: object }} [meta]
+         */
+
+        /**
+         *
+         * @param {{ subscriptions: SubscriptionData[] }} args
+         * @param {*} ctx
+         * @returns {Promise<boolean>}
+         */
+        async subscribeWithData (args, ctx) {
+            if (!apiAuthorizer(args, ctx, acl)) {
+                return null;
+            }
+
+            const { subscriptions } = args;
+
+            await storage.batchSubscribe(subscriptions, true);
             return true;
         },
 

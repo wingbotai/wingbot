@@ -121,6 +121,11 @@ type UserInteraction {
     err: String
 }
 
+type Subscription {
+    tag: String!
+    meta: Any
+}
+
 type Conversation {
     senderId: String!
     pageId: String!
@@ -128,6 +133,7 @@ type Conversation {
     name: String
     state: Any!
     subscribtions: [String]
+    subscriptions: [Subscription!]
     history (
         limit: Int! = 10
         startTimestamp: Float
@@ -188,6 +194,14 @@ input CreateCampaignInput {
 
     hasCondition: Boolean! = false
     condition: String
+}
+
+input SubscriptionData {
+    pageId: String!
+    senderId: String!
+    tags: [String!]!
+    remove: Boolean = false
+    meta: Any
 }
 
 input UpdateCampaignInput {
@@ -303,4 +317,7 @@ type Mutation {
 
     "subscribe users"
     subscribeUsers(pageId:String!, senderIds:[String!]!, tag: String): Boolean
+
+    "subscribe with metadata"
+    subscribeWithData (subscriptions: [SubscriptionData!]!): Boolean
 }

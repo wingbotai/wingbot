@@ -43,6 +43,7 @@ class WingbotModel extends CachedModel {
      * @param {string} options.model
      * @param {number} [options.cacheSize]
      * @param {number} [options.matches]
+     * @param {boolean} [options.verbose]
      * @param {Function} [options.fetch]
      * @param {{ warn: Function, log: Function, error: Function }} [log]
      */
@@ -101,6 +102,8 @@ class WingbotModel extends CachedModel {
             `matches=${encodeURIComponent(this._matches)}`
         ];
 
+        if (this._options.verbose) this._log.log(`#NLP: ${text} [query]`, { matches: this._matches, localEntities: entities });
+
         if (entities) {
             const buf = await this._brotli(Buffer.from(JSON.stringify({ entities })));
             qs.push(`meta=${encodeURIComponent(buf.toString('base64url'))}`);
@@ -119,6 +122,8 @@ class WingbotModel extends CachedModel {
             }
 
             const response = await res.json();
+
+            if (this._options.verbose) this._log.log(`#NLP: ${text} [response]`, response);
 
             if (res.status >= 300) {
                 this._log.warn(`AI query failed: ${response.message || res.statusText}`);

@@ -1541,7 +1541,8 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
         campaign,
         timestamp = makeTimestamp(),
         data = null,
-        taskId = null
+        taskId = null,
+        setState = null
     ) {
         const postback = Request.postBack(
             senderId,
@@ -1551,6 +1552,11 @@ It looks like the bot isn't connected to class BotApp or the Processor is used w
             {},
             timestamp
         );
+
+        if (setState) {
+            Object.assign(postback.postback.payload, { setState });
+        }
+
         return Object.assign(postback, {
             campaign,
             taskId

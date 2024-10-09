@@ -7,6 +7,7 @@ const apiAuthorizer = require('./apiAuthorizer');
 const { apiTextOutputFilter, mapObject, defaultMapperFactory } = require('../utils/deepMapTools');
 
 /** @typedef {import('../utils/deepMapTools').Mapper} Mapper */
+/** @typedef {import('../notifications/Notifications')} Notifications */
 
 /**
  * @typedef {object} ConversationsAPI
@@ -18,11 +19,6 @@ const { apiTextOutputFilter, mapObject, defaultMapperFactory } = require('../uti
  * @typedef {object} StateStorage
  * @prop {Function} getStates
  * @prop {Function} getState
- */
-
-/**
- * @typedef {object} Notifications
- * @prop {Function} getSubscribtions
  */
 
 /**
@@ -92,6 +88,28 @@ function conversationsApi (
         return data;
     }
 
+    async function subscriptions () {
+        const { pageId, senderId } = this;
+
+        if (!notifications) {
+            return null;
+        }
+
+        if (typeof notifications.getSubscriptions === 'function') {
+            return notifications.getSubscriptions(senderId, pageId);
+        }
+
+        if (typeof notifications.getSubscribtions === 'function') {
+            const sups = await notifications.getSubscribtions(senderId, pageId);
+            return sups.map((s) => ({
+                tag: s,
+                meta: {}
+            }));
+        }
+
+        return null;
+    }
+
     async function subscribtions () {
         if (!notifications || typeof notifications.getSubscribtions !== 'function') {
             return null;
@@ -107,21 +125,24 @@ function conversationsApi (
             state: apiTextOutputFilter(d.state, options.stateTextFilter),
             lastInteraction: d.lastInteraction || (new Date(0)),
             history,
-            subscribtions
+            subscribtions,
+            subscriptions
         });
     } else if (options.mapper) {
         mapState = (d) => ({
             ...mapObject(d, defaultMapperFactory(options.mapper)),
             lastInteraction: d.lastInteraction || (new Date(0)),
             history,
-            subscribtions
+            subscribtions,
+            subscriptions
         });
     } else {
         mapState = (d) => ({
             ...d,
             lastInteraction: d.lastInteraction || (new Date(0)),
             history,
-            subscribtions
+            subscribtions,
+            subscriptions
         });
     }
 

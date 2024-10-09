@@ -10,7 +10,8 @@ const api = require('./api');
 const customFn = require('../utils/customFn');
 const customCondition = require('../utils/customCondition');
 
-const DEFAULT_LIMIT = 20;
+const DEFAULT_LIMIT = 400;
+const DEFAULT_SEND_LIMIT = 20;
 const DAY = 86400000;
 const WINDOW_24_HOURS = DAY; // 24 hours
 const REMOVED_CAMPAIGN = '<removed campaign>';
@@ -104,25 +105,26 @@ const DEFAULT_CAMPAIGN_DATA = {
  */
 
 /**
- * @typedef {object} Subscription
- * @prop {string} senderId
- * @prop {string} pageId
- * @prop {string} [meta]
+ * @typedef {object} SenderSubscription
+ * @prop {string} tag
+ * @prop {object} meta
  */
 
 /**
- * @callback PreprocessSubscriptions
- * @param {Subscription[]} subscriptions
- * @param {string} pageId
- * @returns {Promise<Subscription[]>|Subscription[]}
+ * @typedef {object} Logger
+ * @prop {Function} log
+ * @prop {Function} error
  */
 
+/** @typedef {import('./api/notificationsApiFactory').NotificationsApiOptions} ApiOptions */
+
 /**
- * @callback PreprocessSubscribers
- * @param {string[]} senderIds
- * @param {string} pageId
- * @param {string} tag
- * @returns {Promise<string[]>|string[]} list of senderIds
+ * @typedef {object} NotificationsServiceOptions
+ * @prop {Logger} [log]
+ * @prop {number} [options.default24Clearance] - use this clearance to ensure delivery in 24h
+ * @prop {string} [options.allAudienceTag] - tag to mark all users
+ *
+ * @typedef {ApiOptions & NotificationsServiceOptions} NotificationsOptions
  */
 
 /**
@@ -139,12 +141,7 @@ class Notifications extends EventEmitter {
      * @memberof Notifications
      *
      * @param {NotificationsStorage} notificationStorage
-     * @param {object} options
-     * @param {console} [options.log] - logger
-     * @param {number} [options.default24Clearance] - use this clearance to ensure delivery in 24h
-     * @param {string} [options.allAudienceTag] - tag to mark all users
-     * @param {PreprocessSubscribers} [options.preprocessSubscribers] - preprocess senderIds import
-     * @param {PreprocessSubscriptions} [options.preprocessSubscriptions]
+     * @param {NotificationsOptions} options
      */
     constructor (notificationStorage = new NotificationsStorage(), options = {}) {
         super();
@@ -156,7 +153,7 @@ class Notifications extends EventEmitter {
         this.limit = DEFAULT_LIMIT;
 
         /** @type {number} */
-        this.sendLimit = DEFAULT_LIMIT;
+        this.sendLimit = DEFAULT_SEND_LIMIT;
 
         this._default24Clearance = options.default24Clearance || DEFAULT_24_CLEARANCE;
         this._allAudienceTag = typeof options.allAudienceTag !== 'undefined'
@@ -166,6 +163,7 @@ class Notifications extends EventEmitter {
         // ensure unique timestamps for messages
         this._lts = new Map();
 
+        this._preprocessSubscribe = options.preprocessSubscribe;
         this._preprocessSubscribers = options.preprocessSubscribers;
         this._preprocessSubscriptions = options.preprocessSubscriptions;
     }
@@ -181,7 +179,8 @@ class Notifications extends EventEmitter {
     api (acl = null) {
         const options = {
             preprocessSubscribers: this._preprocessSubscribers,
-            preprocessSubscriptions: this._preprocessSubscriptions
+            preprocessSubscriptions: this._preprocessSubscriptions,
+            preprocessSubscribe: this._preprocessSubscribe
         };
         return api(this._storage, this, acl, options);
     }
@@ -405,6 +404,25 @@ class Notifications extends EventEmitter {
      */
     async getSubscribtions (senderId, pageId) {
         return this._storage.getSenderSubscribtions(senderId, pageId);
+    }
+
+    /**
+     *
+     * Get user subscribtions
+     *
+     * @param {string} senderId
+     * @param {string} pageId
+     * @returns {Promise<SenderSubscription[]>}
+     */
+    async getSubscriptions (senderId, pageId) {
+        if (typeof this._storage.getSenderSubscriptions !== 'function') {
+            const tags = await this._storage.getSenderSubscribtions(senderId, pageId);
+            return tags.map((tag) => ({
+                tag,
+                meta: {}
+            }));
+        }
+        return this._storage.getSenderSubscriptions(senderId, pageId);
     }
 
     async _preloadSubscribtions (req, res) {
@@ -788,24 +806,38 @@ class Notifications extends EventEmitter {
 
         let queued = 0;
 
+        const campaignData = campaign.data || {};
+
         while (hasUsers) {
             const { data: targets, lastKey: key } = await this._storage
                 .getSubscribtions(include, exclude, this.limit, campaign.pageId, lastKey);
 
             lastKey = key;
 
-            const campaignTargets = targets.map((target) => ({
-                senderId: target.senderId,
-                pageId: target.pageId,
-                campaignId: campaign.id,
-                enqueue
-            }));
+            const campaignTargets = targets.map((target) => {
+                const data = include.length === 0
+                    ? campaignData
+                    : Object.assign(
+                        {},
+                        campaignData,
+                        // @ts-ignore
+                        ...include.map((t) => (target.meta && target.meta[t]) || {})
+                    );
+
+                return {
+                    senderId: target.senderId,
+                    pageId: target.pageId,
+                    campaignId: campaign.id,
+                    enqueue,
+                    data
+                };
+            });
 
             const actions = await this.pushTasksToQueue(campaignTargets);
 
             queued += actions.length;
 
-            hasUsers = targets.length > 0 && lastKey;
+            hasUsers = targets.length > 0 && !!lastKey;
         }
 
         return { queued };
@@ -910,7 +942,15 @@ class Notifications extends EventEmitter {
             return { status: 204 };
         }
 
-        const message = Request.campaignPostBack(task.senderId, campaign, ts, task.data, task.id);
+        const message = Request.campaignPostBack(
+            task.senderId,
+            campaign,
+            ts,
+            task.data,
+            task.id,
+            task.data
+        );
+
         let status;
         let mid;
 

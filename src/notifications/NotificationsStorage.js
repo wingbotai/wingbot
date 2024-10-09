@@ -6,26 +6,28 @@
 const uuid = require('uuid');
 
 /**
- * @typedef Tag {Object}
+ * @typedef {object} Tag
  * @prop {string} tag
  * @prop {number} subscribtions
  */
 
 /**
- * @typedef Target {Object}
+ * @typedef {object} Target
  * @prop {string} senderId
  * @prop {string} pageId
+ * @prop {{ [key: string]: object }} [meta]
  */
 
 /**
- * @typedef Subscribtion {Object}
+ * @typedef {object} Subscribtion
  * @prop {string} senderId
  * @prop {string} pageId
  * @prop {string[]} subs
+ * @prop {{ [key: string]: object }} [meta]
  */
 
 /**
- * @typedef Campaign {object}
+ * @typedef {object} Campaign
  * @prop {string} id
  * @prop {string} name
  *
@@ -63,7 +65,7 @@ const uuid = require('uuid');
  */
 
 /**
- * @typedef Task {Object}
+ * @typedef {object} Task
  * @prop {string} id
  * @prop {string} pageId
  * @prop {string} senderId
@@ -75,6 +77,21 @@ const uuid = require('uuid');
  * @prop {number} [insEnqueue]
  * @prop {boolean} [reaction] - user reacted
  * @prop {number} [leaved] - time the event was not sent because user left
+ */
+
+/**
+ * @typedef {object} Subscription
+ * @prop {string} tag
+ * @prop {object} meta
+ */
+
+/**
+ * @typedef {object} SubscriptionData
+ * @prop {string} pageId
+ * @prop {string} senderId
+ * @prop {string[]} tags
+ * @prop {boolean} [remove]
+ * @prop {{ [key: string]: object }} [meta]
  */
 
 const MAX_TS = 9999999999999;
@@ -450,9 +467,9 @@ class NotificationsStorage {
      * @param {string} senderId
      * @param {string} pageId
      * @param {string} tag
-     * @returns {Promise}
+     * @param {{}} [meta={}]
      */
-    _subscribe (senderId, pageId, tag) {
+    _subscribe (senderId, pageId, tag, meta = {}) {
         const key = `${senderId}|${pageId}`;
         let subscribtion = this._subscribtions.get(key);
         if (!subscribtion) {
@@ -463,7 +480,20 @@ class NotificationsStorage {
             };
         }
         if (!subscribtion.subs.includes(tag)) {
-            subscribtion = { ...subscribtion, subs: [...subscribtion.subs, tag] };
+            subscribtion = {
+                ...subscribtion,
+                subs: [...subscribtion.subs, tag]
+            };
+            if (meta && Object.keys(meta).length) {
+                Object.assign(subscribtion, {
+                    meta: {
+                        ...subscribtion.meta,
+                        [tag]: meta
+                    }
+                });
+            } else if (subscribtion.meta && subscribtion.meta[tag]) {
+                delete subscribtion.meta;
+            }
         }
 
         this._subscribtions.set(key, subscribtion);
@@ -471,12 +501,39 @@ class NotificationsStorage {
 
     /**
      *
+     * @param {SubscriptionData[]} subscriptionData
+     * @param {boolean} [onlyToKnown]
+     * @returns {Promise}
+     */
+    // eslint-disable-next-line no-unused-vars
+    async batchSubscribe (subscriptionData, onlyToKnown = null) {
+        subscriptionData.forEach(({
+            senderId, pageId, tags, remove = false, meta = {}
+        }) => {
+            if (remove) {
+                tags.forEach((tag) => {
+                    this._unsubscribe(senderId, pageId, tag);
+                });
+            } else {
+                tags.forEach((tag) => {
+                    this._subscribe(senderId, pageId, tag, meta[tag]);
+                });
+            }
+        });
+
+        return Promise.resolve();
+    }
+
+    /**
+     *
      * @param {string|string[]} senderId
      * @param {string} pageId
      * @param {string} tag
+     * @param {boolean} [onlyToKnown]
      * @returns {Promise}
      */
-    subscribe (senderId, pageId, tag) {
+    // eslint-disable-next-line no-unused-vars
+    subscribe (senderId, pageId, tag, onlyToKnown = null) {
         const insert = Array.isArray(senderId) ? senderId : [senderId];
         insert.forEach((sender) => this._subscribe(sender, pageId, tag));
         return Promise.resolve();
@@ -490,9 +547,14 @@ class NotificationsStorage {
      * @returns {Promise<string[]>}
      */
     unsubscribe (senderId, pageId, tag = null) {
+        const unsubscribtions = this._unsubscribe(senderId, pageId, tag);
+        return Promise.resolve(unsubscribtions);
+    }
+
+    _unsubscribe (senderId, pageId, tag = null) {
         const key = `${senderId}|${pageId}`;
         if (!this._subscribtions.has(key)) {
-            return Promise.resolve([]);
+            return [];
         }
         const unsubscribtions = [];
         let subscribtion = this._subscribtions.get(key);
@@ -507,12 +569,15 @@ class NotificationsStorage {
                     return !out;
                 })
         };
+        if ('meta' in subscribtion && subscribtion.meta[tag]) {
+            delete subscribtion.meta[tag];
+        }
         if (subscribtion.subs.length === 0) {
             this._subscribtions.delete(key);
         } else {
             this._subscribtions.set(key, subscribtion);
         }
-        return Promise.resolve(unsubscribtions);
+        return unsubscribtions;
     }
 
     /**
@@ -581,7 +646,8 @@ class NotificationsStorage {
 
         const data = ret.map((sub) => ({
             senderId: sub.senderId,
-            pageId: sub.pageId
+            pageId: sub.pageId,
+            ...(sub.meta ? { meta: sub.meta } : {})
         }));
 
         let nextLastKey = null;
@@ -598,12 +664,11 @@ class NotificationsStorage {
     }
 
     /**
-     *
      * @param {string} senderId
      * @param {string} pageId
-     * @returns {Promise<string[]>}
+     * @returns {Promise<Subscription[]>}
      */
-    getSenderSubscribtions (senderId, pageId) {
+    async getSenderSubscriptions (senderId, pageId) {
         const key = `${senderId}|${pageId}`;
 
         if (!this._subscribtions.has(key)) {
@@ -612,7 +677,21 @@ class NotificationsStorage {
 
         const sub = this._subscribtions.get(key);
 
-        return Promise.resolve(sub.subs);
+        return sub.subs.map((tag) => ({
+            tag,
+            meta: (sub.meta && sub.meta[tag]) || {}
+        }));
+    }
+
+    /**
+     *
+     * @param {string} senderId
+     * @param {string} pageId
+     * @returns {Promise<string[]>}
+     */
+    async getSenderSubscribtions (senderId, pageId) {
+        const subs = await this.getSenderSubscriptions(senderId, pageId);
+        return subs.map((s) => s.tag);
     }
 
     /**
