@@ -15,7 +15,7 @@ const uuid = require('uuid');
  * @typedef {object} Target
  * @prop {string} senderId
  * @prop {string} pageId
- * @prop {{ [key: string]: object }} [meta]
+ * @prop {Object<string,object>} [meta]
  */
 
 /**
@@ -23,7 +23,7 @@ const uuid = require('uuid');
  * @prop {string} senderId
  * @prop {string} pageId
  * @prop {string[]} subs
- * @prop {{ [key: string]: object }} [meta]
+ * @prop {Object<string,object>} [meta]
  */
 
 /**
@@ -91,7 +91,7 @@ const uuid = require('uuid');
  * @prop {string} senderId
  * @prop {string[]} tags
  * @prop {boolean} [remove]
- * @prop {{ [key: string]: object }} [meta]
+ * @prop {Object<string,object>} [meta]
  */
 
 const MAX_TS = 9999999999999;

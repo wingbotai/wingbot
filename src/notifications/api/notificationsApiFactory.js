@@ -53,7 +53,7 @@ function getFields (info) {
  * @prop {string} senderId
  * @prop {string[]} tags
  * @prop {boolean} [remove]
- * @prop {{ [key: string]: object }} [meta]
+ * @prop {Object<string,object>} [meta]
  */
 
 /**
@@ -275,7 +275,7 @@ function notificationsApiFactory (storage, notifications, acl, options = {}) {
          * @prop {string} senderId
          * @prop {string[]} tags
          * @prop {boolean} [remove]
-         * @prop {{ [key: string]: object }} [meta]
+         * @prop {Object<string,object>} [meta]
          */
 
         /**
