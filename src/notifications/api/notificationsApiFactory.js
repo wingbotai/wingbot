@@ -289,7 +289,13 @@ function notificationsApiFactory (storage, notifications, acl, options = {}) {
                 return null;
             }
 
-            const { subscriptions } = args;
+            let { subscriptions } = args;
+
+            if (typeof options.preprocessSubscribe === 'function') {
+                subscriptions = await Promise.resolve(
+                    options.preprocessSubscribe(subscriptions)
+                );
+            }
 
             await storage.batchSubscribe(subscriptions, true);
             return true;
