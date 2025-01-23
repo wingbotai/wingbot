@@ -115,7 +115,13 @@ describe('Notifications', function () {
                 pageId: t.pageId,
                 tags: ['datatest'],
                 meta: {
-                    datatest: { local: 'C' }
+                    datatest: {
+                        local: 'C',
+                        withA: [
+                            { foo: 1 },
+                            { bar: 2 }
+                        ]
+                    }
                 }
             }]);
 
@@ -133,9 +139,15 @@ describe('Notifications', function () {
 
             // console.log(campaign);
 
+            t.debug();
+
             t.stateContains({
                 global: 'A',
-                local: 'C'
+                local: 'C',
+                withA: [
+                    { foo: 1 },
+                    { bar: 2 }
+                ]
             });
         });
 

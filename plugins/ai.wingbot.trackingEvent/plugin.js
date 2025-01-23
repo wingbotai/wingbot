@@ -69,7 +69,7 @@ async function trackingEvent (req, res) {
     const a = compileWithState(req, res, action).trim();
     const l = compileWithState(req, res, label).trim();
     const v = parseFloat(compileWithState(req, res, value)
-        .replace(/[^0-9.]+/, '')) || 0;
+        .replace(/[^0-9.,-]+/g, '').replace(/,+/g, '.')) || 0;
 
     const {
         '§gi': clientId,
