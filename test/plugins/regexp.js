@@ -44,7 +44,7 @@ describe('Plugins<regexp>', () => {
                 expression: '/^sasa lele$/i',
                 input: ''
             }, {
-                matches: (req, res) => { res.text('matches'); },
+                matches: 'matches',
                 not: (req, res) => { res.text('not'); }
             }, {
                 isLastIndex: true

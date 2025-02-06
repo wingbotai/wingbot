@@ -9,6 +9,7 @@ const Router = require('./Router'); // eslint-disable-line no-unused-vars
 const plugins = require('../plugins');
 const RouterWrap = require('./RouterWrap');
 const wrapPluginFunction = require('./utils/wrapPluginFunction');
+const { compileWithState } = require('./utils');
 
 /** @typedef {import('./Router').BaseConfiguration} BaseConfiguration */
 
@@ -101,7 +102,7 @@ class Plugins {
      *
      * @param {string} name
      * @param {object} [paramsData]
-     * @param {Map<string,Function[]>|Object<string,Middleware<S>>} [items]
+     * @param {Map<string,Function[]>|Object<string,Middleware<S>|string>} [items]
      * @param {object} [context]
      * @param {boolean} [context.isLastIndex]
      * @param {Router} [context.router]
@@ -138,10 +139,20 @@ class Plugins {
             // @ts-ignore
             useItems = new Map(
                 Object.keys(items)
-                    .map((key) => [
-                        key,
-                        [items[key]]
-                    ])
+                    .map((key) => {
+                        const responder = typeof items[key] === 'function'
+                            ? items[key]
+                            : (req, res) => {
+                                // @ts-ignore
+                                const text = compileWithState(req, res, items[key]);
+                                res.text(text);
+                            };
+
+                        return [
+                            key,
+                            [responder]
+                        ];
+                    })
             );
         }
 
