@@ -219,7 +219,7 @@ function makeQuickReplies (replies, path = '', translate = (w) => w, quickReplyC
 
             const hasData = Object.keys(data).length !== 0;
             const hasSetState = setState && Object.keys(setState).length !== 0;
-            const translatedTitle = translate(title);
+            const translatedTitle = translate(title, { quickReply: true });
 
             if (hasSetState) {
                 // replace {{this}}
