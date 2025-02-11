@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.69.7]
+
+### Added
+
+- The library calls translate function with extra pamarater {quickReply:true} when translating quick replies
+
 ## [3.69.6]
 
 ### Fixed
