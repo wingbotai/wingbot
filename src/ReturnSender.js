@@ -11,6 +11,7 @@ const extractText = require('./transcript/extractText');
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder')} Responder */
 /** @typedef {import('./Processor').TrackingObject} TrackingObject */
+/** @typedef {import('./LLMContext').LLMMessage} LLMMessage */
 
 /**
  * @callback GetInteractions

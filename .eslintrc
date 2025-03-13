@@ -1,6 +1,7 @@
 {
     "extends": "airbnb",
     "parserOptions": {
+        "ecmaVersion": "latest",
         "ecmaFeatures": {
             "defaultParams": false,
             "destructuring": false,

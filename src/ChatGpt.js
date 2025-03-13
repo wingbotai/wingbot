@@ -6,11 +6,14 @@
 const nodeFetch = require('node-fetch').default;
 const util = require('util');
 const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
+const LLM = require('./LLM');
 
 /** @typedef {import('node-fetch').default} Fetch */
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder')} Responder */
 /** @typedef {import('./Responder').QuickReply} QuickReply */
+/** @typedef {import('./LLM').LLMMessage} LLMMessage */
+/** @typedef {import('./LLM').LLMProviderOptions} LLMProviderOptions */
 
 /**
  * @typedef {object} Transcript
@@ -59,7 +62,7 @@ const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
 
 /**
  * @typedef {object} ChatGPTChoice
- * @prop {'stop'|'length'|'function_call'|'content_filter'|null} finish_reason
+ * @prop {'stop'|'length'|'tool_calls'|'content_filter'|null} finish_reason
  * @prop {number} index
  * @prop {Message} message
  */
@@ -238,15 +241,30 @@ class ChatGpt {
     }
 
     /**
+     * @param {LLMMessage[]} prompt
+     * @param {LLMProviderOptions} [options]
+     * @returns {Promise<LLMMessage>}
+     */
+    async requestChat (prompt, options) {
+
+        const choice = await this._request(prompt, options);
+
+        const { finish_reason: finishReason, message } = choice;
+
+        return {
+            finishReason,
+            ...message
+        };
+    }
+
+    /**
      *
-     * @param {string} content
-     * @param {string} [system]
-     * @param {Transcript[]} [transcript]
-     * @param {RequestOptions} [requestOptions]
-     * @param {string|Request} [user]
+     * @param {LLMMessage[]} chat
+     * @param {RequestOptions} requestOptions
+     * @param {string} user
      * @returns {Promise<ChatGPTChoice>}
      */
-    async request (content, system = null, transcript = [], requestOptions = {}, user = null) {
+    async _request (chat, requestOptions, user = null) {
         const {
             requestTokens,
             tokensLimit,
@@ -259,49 +277,50 @@ class ChatGpt {
             ...requestOptions
         };
 
+        let messages = chat;
         const maxTokens = Math.min(requestTokens, tokensLimit);
 
         let body;
-
         try {
+            let lastUserIndex = 0;
+            let totalTokens = messages
+                .reduce((total, m, i) => {
+                    if (m.role === LLM.ROLE_USER) {
+                        lastUserIndex = i;
+                    }
+                    return (m.content ? 0 : m.content.length) + total;
+                }, 0);
+
+            if (totalTokens > tokensLimit) {
+                messages = messages.filter((m, i) => {
+                    if (m.role === LLM.ROLE_SYSTEM
+                        || i >= lastUserIndex
+                        || totalTokens <= tokensLimit
+                        || !m.content) {
+
+                        return true;
+                    }
+                    totalTokens -= m.content.length;
+                    return false;
+                });
+            }
+
             body = {
                 model,
                 frequency_penalty: 0,
                 presence_penalty: presencePenalty,
                 max_tokens: maxTokens,
                 temperature,
-                ...(functions.length ? { functions } : {})
+                messages
             };
 
-            if (typeof user === 'string') {
+            if (user) {
                 Object.assign(body, { user });
-            } else if (user) {
-                Object.assign(body, { user: `${user.pageId}|${user.senderId}` });
-            } else if (this._defaultUser) {
-                Object.assign(body, { user: this._defaultUser });
             }
 
-            let total = (system ? system.length : 0)
-                + maxTokens
-                + content.length;
-
-            const ts = transcript.slice();
-
-            for (let i = ts.length - 1; i >= 0; i--) {
-                total += ts[i].text.length;
-                if (total > tokensLimit) {
-                    ts.splice(i, 1);
-                }
+            if (functions.length) {
+                Object.assign(body, { functions });
             }
-
-            /** @type {Message[]} */
-            const messages = [
-                ...(system ? [{ role: 'system', content: system }] : []),
-                ...ts.map((t) => ({ role: t.fromBot ? 'assistant' : 'user', content: t.text })),
-                { role: 'user', content }
-            ];
-
-            Object.assign(body, { messages });
 
             const apiUrl = `${this._openAiEndpoint}/chat/completions${this._apiKey ? '?api-version=2023-03-15-preview' : ''}`;
 
@@ -340,6 +359,37 @@ class ChatGpt {
             this._logger.error('#GPT failed', e, body);
             throw e;
         }
+    }
+
+    /**
+     *
+     * @deprecated
+     * @param {string} content
+     * @param {string} [system]
+     * @param {Transcript[]} [transcript]
+     * @param {RequestOptions} [requestOptions]
+     * @param {string|Request} [user]
+     * @returns {Promise<ChatGPTChoice>}
+     */
+    async request (content, system = null, transcript = [], requestOptions = {}, user = null) {
+
+        /** @type {Message[]} */
+        const messages = [
+            ...(system ? [{ role: 'system', content: system }] : []),
+            ...transcript.map((t) => ({ role: t.fromBot ? 'assistant' : 'user', content: t.text })),
+            { role: 'user', content }
+        ];
+
+        let useUser;
+        if (typeof user === 'string') {
+            useUser = user;
+        } else if (user) {
+            useUser = `${user.pageId}|${user.senderId}`;
+        } else if (this._defaultUser) {
+            useUser = this._defaultUser;
+        }
+
+        return this._request(messages, requestOptions, useUser);
     }
 
     /**

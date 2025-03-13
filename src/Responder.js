@@ -17,6 +17,8 @@ const {
     FEATURE_PHRASES
 } = require('./features');
 const transcriptFromHistory = require('./transcript/transcriptFromHistory');
+const LLM = require('./LLM');
+const LLMSession = require('./LLMSession');
 
 const TYPE_RESPONSE = 'RESPONSE';
 const TYPE_UPDATE = 'UPDATE';
@@ -28,8 +30,11 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 /** @typedef {import('./ReturnSender').SendOptions} SendOptions */
 /** @typedef {import('./ReturnSender').TextFilter} TextFilter */
 /** @typedef {import('./analytics/consts').TrackingCategory} TrackingCategory */
-/** @typedef {import('./analytics/consts').TrackingType} TrackingType */
 /** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */
+/** @typedef {import('./analytics/consts').TrackingType} TrackingType */
+
+/** @typedef {import('./LLM').LLMConfiguration} LLMConfiguration */
+/** @typedef {import('./LLMSession').LLMMessage} LLMMessage */
 
 /**
  * @enum {string} ExpectedInput
@@ -114,12 +119,14 @@ class Responder {
         options = {},
         data = {},
         configuration = {},
-        senderMeta = null
+        senderMeta = null,
+        llm = null
     ) {
         this._messageSender = messageSender;
         this._senderId = senderId;
         this._pageId = options.pageId;
         this.token = token;
+
         this._configuration = configuration;
 
         /**
@@ -214,20 +221,124 @@ class Responder {
 
         /** @type {SendOptions} */
         this._nextMessageSendOptions = null;
+
+        /** @type {LLM} */
+        this.llm = llm;
+
+        this.LLM_CTX_DEFAULT = 'default';
+
+        /** @type {Map<string,string[]>} */
+        this._llmContext = new Map([
+            [this.LLM_CTX_DEFAULT, []]
+        ]);
+    }
+
+    /**
+     *
+     * @param {string} systemPrompt
+     * @param {string} contextType
+     * @returns {this}
+     */
+    llmAddSystemPrompt (systemPrompt, contextType = this.LLM_CTX_DEFAULT) {
+        if (!systemPrompt || !systemPrompt.trim()) {
+            return this;
+        }
+        if (!this._llmContext.has(contextType)) {
+            // @todo make it array of messages / maybe keep it in a single array
+            this._llmContext.set(contextType, []);
+        }
+        this._llmContext.get(contextType).push(systemPrompt.trim());
+        return this;
+    }
+
+    llmSession (contextType = this.LLM_CTX_DEFAULT) {
+        const chat = this._getSystemContentForType(contextType)
+            .map((content) => ({ role: LLM.ROLE_SYSTEM, content }));
+
+        return new LLMSession(this.llm, chat, this._llmSend.bind(this));
+    }
+
+    /**
+     *
+     * @param {string} contextType
+     * @param {string[]} [callStack]
+     * @returns {string[]}
+     */
+    _getSystemContentForType (contextType, callStack = []) {
+        if (new Set(callStack).size < callStack.length) {
+            throw new Error(`Circular reference detected: contextType -> ${callStack}`);
+        }
+
+        if (!this._llmContext.has(contextType)) {
+            return [];
+        }
+
+        return this._llmContext.get(contextType)
+            .map((c) => c.replace(/\$\{([a-zA-Z0-9\s]+)\}/g, (str, requestType) => this
+                ._getSystemContentForType(requestType, [...callStack, contextType])
+                .join('\n\n')).trim());
+    }
+
+    async llmSessionWithHistory (contextType = this.LLM_CTX_DEFAULT) {
+        const {
+            transcriptAnonymize,
+            transcriptFlag,
+            transcriptLength
+        } = this.llm.configuration;
+
+        const systems = this._getSystemContentForType(contextType);
+        const transcript = await this.getTranscript(transcriptLength, transcriptFlag);
+
+        const chat = [
+            ...systems.map((content) => ({ role: LLM.ROLE_SYSTEM, content })),
+            ...LLM.anonymizeTranscript(transcript, transcriptAnonymize)
+        ];
+
+        return new LLMSession(this.llm, chat, this._llmSend.bind(this));
+    }
+
+    /**
+     *
+     * @param {LLMMessage[]} messages
+     * @param {QuickReply[]} quickReplies
+     */
+    _llmSend (messages, quickReplies) {
+        this.setFlag(LLM.GPT_FLAG);
+
+        const { persona } = this.llm.configuration;
+
+        if (typeof persona === 'string') {
+            this.setPersona({ name: persona });
+        } else if (persona) {
+            this.setPersona(persona);
+        }
+
+        messages.forEach((m, i) => {
+            const addQuickReply = i === (messages.length - 1);
+            this.text(m.content, addQuickReply ? quickReplies : null);
+        });
+
+        if (persona) {
+            this.setPersona({ name: null });
+        }
     }
 
     _findPersonaConfiguration (name) {
+        // @ts-ignore
         if (!name || !this._configuration.persona) {
             return null;
         }
+        // @ts-ignore
         if (!this._configuration._cachedPersonas) {
-            // eslint-disable-next-line no-param-reassign
+            // @ts-ignore
             this._configuration._cachedPersonas = new Map(
+                // @ts-ignore
                 Object.entries(this._configuration.persona)
                     .map(([k, v]) => [k === PERSONA_DEFAULT ? k : tokenize(k), v])
             );
         }
         const nameKey = name === PERSONA_DEFAULT ? PERSONA_DEFAULT : tokenize(name);
+        // @ts-ignore
         return this._configuration._cachedPersonas.get(nameKey);
     }
 
@@ -252,16 +363,16 @@ class Responder {
      */
     async getTranscript (limit = 10, onlyFlag = null, skipThisTurnaround = false) {
         const { chatLogStorage, timestamp } = this._messageSender;
-        if (!chatLogStorage) {
-            return [];
+        let transcript = [];
+        if (chatLogStorage) {
+            transcript = await transcriptFromHistory(
+                chatLogStorage,
+                this._senderId,
+                this._pageId,
+                limit,
+                onlyFlag
+            );
         }
-        const transcript = await transcriptFromHistory(
-            chatLogStorage,
-            this._senderId,
-            this._pageId,
-            limit,
-            onlyFlag
-        );
         if (!skipThisTurnaround) {
             const { responseTexts = [], requestTexts = [] } = this._messageSender;
             transcript.push(...requestTexts.map((text) => ({

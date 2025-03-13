@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "lib": ["es6"],
-        "target": "es2019",
+        "lib": ["es2019", "es2020.promise", "es2020.bigint", "es2020.string"],
+        "target": "ESNext",
         "allowSyntheticDefaultImports": true,
         "checkJs": true,
         "resolveJsonModule": true

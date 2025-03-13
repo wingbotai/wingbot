@@ -11,6 +11,8 @@ const Request = require('./Request');
 const Ai = require('./Ai');
 const ReturnSender = require('./ReturnSender');
 const { prepareState, mergeState, isUserInteraction } = require('./utils/stateVariables');
+const LLM = require('./LLM');
+const LLMMockProvider = require('./LLMMockProvider');
 
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Intent} Intent */
 /** @typedef {import('./ReducerWrapper')} ReducerWrapper */
@@ -19,6 +21,7 @@ const { prepareState, mergeState, isUserInteraction } = require('./utils/stateVa
 /** @typedef {import('./analytics/consts').TrackingCategory} TrackingCategory */
 /** @typedef {import('./analytics/consts').TrackingType} TrackingType */
 /** @typedef {import('./analytics/consts').ResponseFlag} ResponseFlag */
+/** @typedef {import('./LLM').LLMConfiguration} LLMConfiguration */
 
 /**
  * @typedef {object} AutoTypingConfig
@@ -110,6 +113,7 @@ const { prepareState, mergeState, isUserInteraction } = require('./utils/stateVa
  * @prop {string} [apiUrl] - Url for calling orchestrator API
  * @prop {Function} [fetch] - Fetch function for calling orchestrator API
  * @prop {number} [sessionDuration] - Session duration for analytic purposes
+ * @prop {LLMConfiguration} [llm] - LLM model configuration
  * @prop {Preloader<R>} [preloader]
  */
 
@@ -401,14 +405,19 @@ class Processor extends EventEmitter {
             return { status: 304 };
         }
 
+        const llm = new LLM({
+            provider: new LLMMockProvider(),
+            ...this.options.llm
+        });
+
         const result = await this
-            ._dispatch(message, pageId, messageSender, responderData, preloadPromise);
+            ._dispatch(message, pageId, messageSender, responderData, preloadPromise, llm);
 
         messageSender.defer(preloadPromise, this.options.log);
         return result;
     }
 
-    async _dispatch (message, pageId, messageSender, responderData, preloadPromise) {
+    async _dispatch (message, pageId, messageSender, responderData, preloadPromise, llm) {
         let req;
         let res;
         let state;
@@ -418,7 +427,14 @@ class Processor extends EventEmitter {
             ({
                 req, res, data, state
             } = await this
-                ._processMessage(message, pageId, messageSender, responderData, preloadPromise));
+                ._processMessage(
+                    message,
+                    pageId,
+                    messageSender,
+                    responderData,
+                    llm,
+                    preloadPromise
+                ));
 
             messageSender.defer(this._emitInteractionEvent(req, res, messageSender, state, data));
 
@@ -548,6 +564,7 @@ class Processor extends EventEmitter {
         pageId,
         messageSender,
         responderData,
+        llm,
         preloadPromise = null,
         senderMeta = null
     ) {
@@ -690,7 +707,8 @@ class Processor extends EventEmitter {
                 options,
                 responderData,
                 configuration,
-                senderMeta
+                senderMeta,
+                llm
             );
             const postBack = this._createPostBack(postbackAcumulator, req, res, features);
 
@@ -852,6 +870,7 @@ class Processor extends EventEmitter {
                 pageId,
                 messageSender,
                 responderData,
+                llm,
                 res.senderMeta
             );
 
@@ -949,6 +968,7 @@ class Processor extends EventEmitter {
         pageId,
         messageSender,
         responderData,
+        llm,
         senderMeta
     ) {
         return postbackAcumulator.reduce((promise, postback) => promise
@@ -966,6 +986,7 @@ class Processor extends EventEmitter {
                     pageId,
                     messageSender,
                     responderData,
+                    llm,
                     null,
                     senderMeta
                 );

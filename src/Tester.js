@@ -18,6 +18,7 @@ const ResponseAssert = require('./testTools/ResponseAssert');
 const Router = require('./Router'); // eslint-disable-line no-unused-vars
 const ReducerWrapper = require('./ReducerWrapper'); // eslint-disable-line no-unused-vars
 const { FEATURE_TEXT } = require('./features');
+const LLMMockProvider = require('./LLMMockProvider');
 
 /** @typedef {import('./Processor').ProcessorOptions<Router>} ProcessorOptions */
 
@@ -100,6 +101,10 @@ class Tester {
             log,
             // @ts-ignore
             loadUsers: false,
+            llm: {
+                provider: new LLMMockProvider(),
+                ...processorOptions.llm
+            },
             ...processorOptions
         }));
 

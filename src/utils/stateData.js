@@ -20,16 +20,21 @@ const { dateToISO8601String, zeroHourDate } = require('./datetime');
 
 /**
  *
- * @param {IStateRequest} req
- * @param {Responder} res
- * @param {object} configuration
+ * @param {IStateRequest} [req]
+ * @param {Responder} [res]
+ * @param {object} [configuration]
  * @param {object} [stateOverride]
  * @returns {object}
  */
-module.exports = function stateData (req, res = null, configuration = null, stateOverride = {}) {
-    const c = configuration || req.configuration;
+module.exports = function stateData (
+    req = null,
+    res = null,
+    configuration = null,
+    stateOverride = {}
+) {
+    const c = configuration || (req && req.configuration) || (res && res._configuration);
 
-    const $this = req.text();
+    const $this = req ? req.text() : '';
 
     const now = new Date();
 
@@ -42,15 +47,20 @@ module.exports = function stateData (req, res = null, configuration = null, stat
 
     const {
         senderId,
-        pageId
-    } = req;
+        pageId,
+        state
+    } = req || {
+        senderId: res._senderId,
+        pageId: res._pageId,
+        state: res.options.state
+    };
 
     return {
         senderId,
         pageId,
         c,
         configuration: c,
-        ...req.state,
+        ...state,
         ...(res ? res.newState : {}),
         ...stateOverride,
         $this,
@@ -59,7 +69,7 @@ module.exports = function stateData (req, res = null, configuration = null, stat
         $tomorrow,
         $yesterday,
         // yes - res because of circular dependency
-        ...(res && req.actionData()),
+        ...(res && req && req.actionData()),
         ...(res ? res.data : {}),
         $input: $this
     };
