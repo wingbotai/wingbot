@@ -17,10 +17,12 @@ const subscribtions = require('./subscribtions');
 const setState = require('./setState');
 const expectedInput = require('./expectedInput');
 const skip = require('./skip');
+const contextMessage = require('./contextMessage');
 
 module.exports = {
     path,
     message,
+    contextMessage,
     include,
     postback,
     expected,

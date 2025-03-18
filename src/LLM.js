@@ -8,7 +8,7 @@ const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
 /** @typedef {import('./Responder')} Responder */
 /** @typedef {import('./Responder').Persona} Persona */
 /** @typedef {import('./Router').BaseConfiguration} BaseConfiguration */
-/** @typedef {import('./LLMSession').LLMMessage} LLMMessage */
+/** @typedef {import('./LLMSession').LLMMessage<any>} LLMMessage */
 /** @typedef {import('./LLMSession').LLMRole} LLMRole */
 /** @typedef {import('./LLMSession')} LLMSession */
 /** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */

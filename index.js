@@ -3,8 +3,6 @@
  */
 'use strict';
 
-/** @typedef {import('./src/Processor').ProcessorOptions<Router|BuildRouter>} ProcessorOptions */
-
 const Processor = require('./src/Processor');
 const Router = require('./src/Router');
 const Request = require('./src/Request');

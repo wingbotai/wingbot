@@ -270,12 +270,23 @@ function selectTranslation (resolverId, params, texts, data) {
     ];
 }
 
-/** @typedef {import('../BuildRouter').BotContext} BotContext */
-/** @typedef {import('../Router').Resolver} Resolver */
+/** @typedef {import('../BuildRouter').BotContext<any>} BotContext */
+/** @typedef {import('../Router').Resolver<any>} Resolver */
 
 /**
  *
  * @param {object} params
+ * @param {any} params.text
+ * @param {boolean} [params.hasCondition]
+ * @param {string} [params.conditionFn]
+ * @param {string} [params.conditionDesc]
+ * @param {boolean} [params.hasEditableCondition]
+ * @param {any} [params.editableCondition]
+ * @param {string} [params.mode]
+ * @param {string} [params.persist]
+ * @param {any[]} [params.replies]
+ * @param {"message" | "prompt"} [params.type]
+ * @param {string} [params.llmContextType]
  * @param {BotContext} context
  * @returns {Resolver}
  */
@@ -284,8 +295,35 @@ function message (params, context = {}) {
         // @ts-ignore
         isLastIndex, isLastMessage, linksMap, configuration, resolverId
     } = context;
+
     if (typeof params.text !== 'string' && !Array.isArray(params.text)) {
         throw new Error('Message should be a text!');
+    }
+
+    if (params.type === 'prompt') {
+        return async (req, res) => {
+            const session = await res.llmSessionWithHistory(params.llmContextType);
+
+            const translatedText = getLanguageText(params.text, req.lang);
+
+            const response = await session.systemPrompt(translatedText)
+                .debug()
+                .generate();
+
+            // if (response.finishReason && response.finishReason !== 'length') {
+            //    // error maybe?
+            //    return Router.END;
+            // }
+
+            if (!response.content) {
+                // no response?
+                return Router.CONTINUE;
+            }
+
+            res.text(response.content);
+
+            return Router.CONTINUE;
+        };
     }
 
     // parse quick replies

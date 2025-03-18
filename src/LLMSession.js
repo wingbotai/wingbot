@@ -189,7 +189,7 @@ class LLMSession {
     /**
      *
      * @param {LLMProviderOptions} [options={}]
-     * @returns {Promise<LLMMessage>}
+     * @returns {Promise<LLMMessage<any>>}
      */
     async generate (options = {}) {
         const result = await this._llm.generate(this, options);

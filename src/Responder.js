@@ -248,6 +248,7 @@ class Responder {
             this._llmContext.set(contextType, []);
         }
         this._llmContext.get(contextType).push(systemPrompt.trim());
+
         return this;
     }
 
