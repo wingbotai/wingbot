@@ -35,7 +35,7 @@ class LLMSession {
     /**
      *
      * @param {LLM} llm
-     * @param {LLMMessage[]} [chat]
+     * @param {LLMMessage<any>[]} [chat]
      * @param {SendCallback} [onSend]
      */
     constructor (llm, chat = [], onSend = () => {}) {
@@ -43,7 +43,7 @@ class LLMSession {
 
         this._onSend = onSend;
 
-        /** @type {LLMMessage[]} */
+        /** @type {LLMMessage<any>[]} */
         this._chat = chat;
 
         this._generatedIndex = null;
@@ -63,6 +63,7 @@ class LLMSession {
     }
 
     _mergeSystem () {
+        /** @type {LLMMessage<any>[]} */
         const sysMessages = [];
 
         const otherMessages = this._chat.filter((message) => {
@@ -81,7 +82,7 @@ class LLMSession {
 
         const content = sysMessages.reduce((reduced, current, i) => {
             if (i === 0) {
-                return current.content;
+                return current.content || '';
             }
             if (!reduced.match(promptRegex)) {
                 return `${reduced}\n\n${current.content}`;

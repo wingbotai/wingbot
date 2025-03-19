@@ -80,4 +80,25 @@ describe('<LLM>', () => {
             .contains('Based on the users age explain what nuclear fusion is in 3 sentences.');
     });
 
+    it('should work with resolvers', async () => {
+        const bot = new Router();
+
+        bot.use(contextMessage({
+            context: 'The user is 5 years old.'
+        }, {}));
+
+        bot.use(message({
+            text: 'Based on the users age explain what nuclear fusion is in 3 sentences.',
+            type: 'prompt'
+        }, {}));
+
+        const t = new Tester(bot);
+
+        await t.text('hello this is user');
+
+        t.any()
+            .contains('The user is 5 years old.')
+            .contains('Based on the users age explain what nuclear fusion is in 3 sentences.');
+    });
+
 });

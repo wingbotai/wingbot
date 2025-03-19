@@ -304,7 +304,10 @@ function message (params, context = {}) {
         return async (req, res) => {
             const session = await res.llmSessionWithHistory(params.llmContextType);
 
-            const translatedText = getLanguageText(params.text, req.lang);
+            const translatedObject = getLanguageText(params.text, req.lang);
+            const translatedText = Array.isArray(translatedObject)
+                ? translatedObject[0]
+                : translatedObject;
 
             const response = await session.systemPrompt(translatedText)
                 .debug()
