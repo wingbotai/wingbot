@@ -571,8 +571,10 @@ class BuildRouter extends Router {
         };
 
         const [linksMap, nestedBlocksByStaticId] = this._createLinksMap(block);
+        // @ts-ignore
         this._linksMap = linksMap;
 
+        // @ts-ignore
         this._buildRoutes(block.routes, nestedBlocksByStaticId);
 
         this._configTs = setConfigTimestamp;
@@ -583,8 +585,9 @@ class BuildRouter extends Router {
 
     /**
      *
+     * returns {[LinksMap, BlockMap]}
+     *
      * @param {Block} block
-     * @returns {[LinksMap, BlockMap]}
      */
     _createLinksMap (block) {
         const { linksMap: prevLinksMap, blocks = [] } = this._resolvedContext;
