@@ -289,15 +289,13 @@ function message (params, context = {}) {
     }
 
     // parse quick replies
-    let quickReplies = null;
+    let quickReplies;
     if (params.replies && !Array.isArray(params.replies)) {
         throw new Error('Replies should be an array');
-    } else if (params.replies && params.replies.length > 0) {
-        quickReplies = parseReplies(params.replies, linksMap, context);
     }
 
     // compile condition
-    const condition = getCondition(params, context, 'Message condition');
+    let condition;
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
@@ -306,6 +304,17 @@ function message (params, context = {}) {
      * @param {Responder} res
      */
     return (req, res) => {
+        if (condition === undefined) {
+            condition = getCondition(params, context, 'Message condition');
+        }
+        if (quickReplies === undefined) {
+            if (params.replies && params.replies.length > 0) {
+                quickReplies = parseReplies(params.replies, linksMap, context);
+            } else {
+                quickReplies = null;
+            }
+        }
+
         const data = stateData(req, res, configuration);
 
         // filter supported messages

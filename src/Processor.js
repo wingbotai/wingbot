@@ -681,13 +681,13 @@ class Processor extends EventEmitter {
                     _sts: sessionTs,
                     _snew: sessionCreated
                 });
-            } else {
+            } /* else {
                 Object.assign(state, {
                     _snew: false
                 });
-            }
+            } */
 
-            prepareState(state, fromEvent, state._snew);
+            prepareState(state, fromEvent, state._snew && fromEvent);
 
             const features = [
                 ...(this.options.features || []),

@@ -26,3 +26,7 @@ plugins/**/*.gif
 .DS_Store
 
 documentation
+
+CPU.*.cpuprofile
+test/buildRouterPerf.test.js
+test/production-9.json

@@ -28,8 +28,8 @@ function button (params, context) {
         buttons = [],
         text = null
     } = params;
-    const compiledText = cachedTranslatedCompilator(text);
 
+    const compiledText = cachedTranslatedCompilator(text);
     const condition = getCondition(params, context, 'button');
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;

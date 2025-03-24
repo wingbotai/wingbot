@@ -32,11 +32,15 @@ function postback (params, context) {
         }
     }
 
-    const condition = getCondition(params, context, 'postback');
+    let condition;
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
 
     return (req, res, postBack) => {
+        if (condition === undefined) {
+            condition = getCondition(params, context, 'postback');
+        }
+
         if (!action || !shouldExecuteResolver(req, params)) {
             return ret;
         }
