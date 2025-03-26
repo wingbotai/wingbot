@@ -660,11 +660,17 @@ class Responder {
     }
 
     /**
+     * @typedef {object} MessageOptions
+     * @prop {boolean} [disableAutoTyping]
+     */
+
+    /**
      * Send text as a response
      *
      * @param {string} text - text to send to user, can contain placeholders (%s)
      * @param {Object.<string,string|QuickReply>|QuickReply[]} [replies] - quick replies
      * @param {VoiceControl} [voice] - voice control data
+     * @param {MessageOptions} [options={}]
      * @returns {this}
      *
      * @example
@@ -686,7 +692,7 @@ class Responder {
      *     }
      * ]);
      */
-    text (text, replies = null, voice = null) {
+    text (text, replies = null, voice = null, options = {}) {
         const messageData = {
             message: {
                 text: this._t(text)
@@ -736,7 +742,9 @@ class Responder {
             }
         }
 
-        this._autoTypingIfEnabled(messageData.message.text);
+        if (!options.disableAutoTyping) {
+            this._autoTypingIfEnabled(messageData.message.text);
+        }
         this.send(messageData);
         return this;
     }
