@@ -300,42 +300,12 @@ function message (params, context = {}) {
         throw new Error('Message should be a text!');
     }
 
-    if (params.type === 'prompt') {
-        return async (req, res) => {
-            const session = await res.llmSessionWithHistory(params.llmContextType);
-
-            const translatedObject = getLanguageText(params.text, req.lang);
-            const translatedText = Array.isArray(translatedObject)
-                ? translatedObject[0]
-                : translatedObject;
-
-            const response = await session.systemPrompt(translatedText)
-                .debug()
-                .generate();
-
-            // if (response.finishReason && response.finishReason !== 'length') {
-            //    // error maybe?
-            //    return Router.END;
-            // }
-
-            if (!response.content) {
-                // no response?
-                return Router.CONTINUE;
-            }
-
-            res.text(response.content);
-
-            return Router.CONTINUE;
-        };
-    }
-
     // parse quick replies
     let quickReplies;
     if (params.replies && !Array.isArray(params.replies)) {
         throw new Error('Replies should be an array');
     }
 
-    // compile condition
     let condition;
 
     const ret = isLastIndex ? Router.END : Router.CONTINUE;
@@ -344,10 +314,11 @@ function message (params, context = {}) {
      * @param {Request} req
      * @param {Responder} res
      */
-    return (req, res) => {
+    return async (req, res) => {
         if (condition === undefined) {
             condition = getCondition(params, context, 'Message condition');
         }
+
         if (quickReplies === undefined) {
             if (params.replies && params.replies.length > 0) {
                 quickReplies = parseReplies(params.replies, linksMap, context);
@@ -365,7 +336,8 @@ function message (params, context = {}) {
             data.lang
         );
 
-        const [text, seqState] = selectTranslation(
+        // eslint-disable-next-line prefer-const
+        let [text, seqState] = selectTranslation(
             resolverId,
             params,
             supportedText.translations,
@@ -442,6 +414,20 @@ function message (params, context = {}) {
                 ssml: ssmlAlternativeTemplate(data)
                     .trim()
             };
+        }
+
+        if (params.type === 'prompt') {
+            const session = await res.llmSessionWithHistory(params.llmContextType);
+
+            const response = await session.systemPrompt(text)
+                .debug()
+                .generate();
+
+            // if (!response.content) {
+            //    // no response?
+            // }
+
+            text = response.content;
         }
 
         res.text(text, sendReplies, voiceControl);
