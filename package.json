@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.69.8",
+  "version": "3.70.0-alpha.2",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "type": "commonjs",
@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/wingbot.ai/wingbot#readme",
   "devDependencies": {
+    "@types/mocha": "^10.0.10",
     "cpy-cli": "^5.0.0",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",

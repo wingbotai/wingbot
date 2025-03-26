@@ -38,20 +38,27 @@ class LLMMockProvider {
         if (prompt.length === 0) {
             throw new Error('Empty prompt');
         }
-        const stats = prompt.reduce((o, m) => Object.assign(o, {
-            [m.role]: (o[m.role] || 0) + 1
-        }), { system: 0, assistant: 0, user: 0 });
-
-        const statsText = JSON.stringify(stats)
-            .replace(/"/g, '');
-
-        const message = this._sequence[this._index];
-        this._index = (this._index + 1) % this._sequence.length;
+        // const stats = prompt.reduce((o, m) => Object.assign(o, {
+        //    [m.role]: (o[m.role] || 0) + 1
+        // }), { system: 0, assistant: 0, user: 0 });
+        //
+        // const statsText = JSON.stringify(stats)
+        //    .replace(/"/g, '');
+        //
+        /// / const message = this._sequence[this._index];
+        /// / this._index = (this._index + 1) % this._sequence.length;
+        //
+        // return {
+        //    role: LLM.ROLE_ASSISTANT,
+        //    finishReason: 'length',
+        // eslint-disable-next-line max-len
+        //    content: `${statsText} > ${LLMMockProvider.DEFAULT_MODEL}: ${prompt.map((m) => m.content).join(' ')}`
+        // };
 
         return {
             role: LLM.ROLE_ASSISTANT,
             finishReason: 'length',
-            content: `${statsText} > ${LLMMockProvider.DEFAULT_MODEL}: ${message}`
+            content: `${options.model || LLMMockProvider.DEFAULT_MODEL}:${prompt.map((m) => m.content).join(' ')}`
         };
     }
 

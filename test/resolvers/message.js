@@ -54,6 +54,7 @@ describe('Message voice control', () => {
         it('shows translated quick replies', async () => {
             const bot = new Router();
 
+            // @ts-ignore
             bot.use('go', message({
                 text: [
                     { l: 'cs', t: ['Czech text'] },

@@ -62,7 +62,7 @@ function isTextObjectEmpty (text) {
  * @param {Translations} translations
  * @param {string} [lang]
  * @param {boolean} [disableDefaulting] - it will try to find translation for other language
- * @returns {null|string}
+ * @returns {null|string|string[]}
  */
 function getLanguageText (translations, lang = null, disableDefaulting = false) {
     let foundText;

@@ -52,8 +52,6 @@ describe('transcriptFromHistory', () => {
 
         const transcript = await transcriptFromHistory(t.senderLogger, t.senderId, t.pageId);
 
-        // console.log(transcript);
-
         assert.deepStrictEqual(transcript.map((tr) => ({ ...tr, timestamp: null })), [
             {
                 fromBot: false,
