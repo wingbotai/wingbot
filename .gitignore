@@ -36,3 +36,7 @@ node_modules/
 .cache/
 public
 test/ChatGpt.test.js
+
+CPU.*.cpuprofile
+test/buildRouterPerf.test.js
+test/production-9.json

@@ -77,6 +77,10 @@ const PLUGIN_RESOLVER_NAME = 'botbuild.customCode';
  * @typedef {Map<string|number,string>} LinksMap
  */
 
+/**
+ * @typedef {Map<string|number, Block>} BlockMap
+ */
+
 /** @type {TransformedRoute} */
 const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
 
@@ -136,6 +140,7 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
 
 /**
  * @typedef {object} BotContextExtention
+ * @prop {BlockMap} [nestedBlocksByStaticId]
  * @prop {LinksMap} [linksMap]
  * @prop {boolean} [isLastIndex]
  * @prop {boolean} [isLastMessage]
@@ -565,11 +570,12 @@ class BuildRouter extends Router {
             ...this._resolvedContext, blockName, blockType, isRoot, staticBlockId, BuildRouter
         };
 
-        this._linksMap = this._createLinksMap(block);
+        const [linksMap, nestedBlocksByStaticId] = this._createLinksMap(block);
+        // @ts-ignore
+        this._linksMap = linksMap;
 
-        this._setExpectedFromResponderRoutes(block.routes);
-
-        this._buildRoutes(block.routes);
+        // @ts-ignore
+        this._buildRoutes(block.routes, nestedBlocksByStaticId);
 
         this._configTs = setConfigTimestamp;
 
@@ -577,74 +583,79 @@ class BuildRouter extends Router {
         this.emit('rebuild');
     }
 
-    _setExpectedFromResponderRoutes (routes) {
-        const set = new Set();
-
-        routes.forEach((route) => {
-            if (!route.isResponder) {
-                return;
-            }
-
-            // create the pseudopath ant set to set to corresponding route
-            const referredRoutePath = this._linksMap.get(route.respondsToRouteId);
-
-            if (!referredRoutePath) {
-                return;
-            }
-
-            const expectedPath = `${referredRoutePath}_responder`
-                .replace(/^\//, '');
-
-            Object.assign(route, { path: expectedPath });
-
-            // set expectedPath to referredRoute
-
-            if (set.has(route.respondsToRouteId)) {
-                return;
-            }
-            set.add(route.respondsToRouteId);
-
-            const referredRoute = routes.find((r) => r.id === route.respondsToRouteId);
-
-            Object.assign(referredRoute, { expectedPath });
-        });
-    }
-
     /**
      *
+     * returns {[LinksMap, BlockMap]}
+     *
      * @param {Block} block
-     * @returns {LinksMap}
      */
     _createLinksMap (block) {
+        const { linksMap: prevLinksMap, blocks = [] } = this._resolvedContext;
+
         /** @type {LinksMap} */
         const linksMap = new Map();
 
-        block.routes
-            .filter((route) => !route.isResponder)
-            .forEach((route) => linksMap.set(route.id, route.path));
-
-        const { linksMap: prevLinksMap } = this._resolvedContext;
-
         if (prevLinksMap) {
             for (const [from, to] of prevLinksMap.entries()) {
-                if (!linksMap.has(from)) {
-                    linksMap.set(from, this._joinPaths('..', to));
-                }
+                linksMap.set(from, `../${to}`); //  this._joinPaths('..', to)
             }
         }
 
+        const expectedFromResponders = new Set();
+
+        const blocksById = new Map();
+
+        block.routes
+            .forEach((route) => {
+                if (!route.isResponder) {
+                    linksMap.set(route.id, route.path);
+                }
+                blocksById.set(route.id, route);
+            });
+
+        let { nestedBlocksByStaticId } = this._resolvedContext;
+        if (!nestedBlocksByStaticId) {
+            nestedBlocksByStaticId = new Map();
+
+            blocks.forEach((b) => {
+                if (b.staticBlockId && !b.disabled) {
+                    nestedBlocksByStaticId.set(b.staticBlockId, b);
+                }
+            });
+
+            Object.assign(this._resolvedContext, { nestedBlocksByStaticId });
+        }
+
         block.routes.forEach((route) => {
-            const enabledNestedBlock = this._getBlockById(this._getIncludedBlockId(route));
-            if (!enabledNestedBlock) {
-                return;
+            const enabledNestedBlock = nestedBlocksByStaticId.get(this._getIncludedBlockId(route));
+            if (enabledNestedBlock) {
+                const routeConfig = this._getRouteConfig(route);
+                if (this._enabledByRouteConfig(routeConfig)) {
+                    this._findEntryPointsInResolver(linksMap, enabledNestedBlock, route);
+                }
             }
-            const routeConfig = this._getRouteConfig(route);
-            if (this._enabledByRouteConfig(routeConfig)) {
-                this._findEntryPointsInResolver(linksMap, enabledNestedBlock, route);
+
+            if (route.isResponder) {
+                // create the pseudopath ant set to set to corresponding route
+                const referredRoutePath = linksMap.get(route.respondsToRouteId);
+
+                if (referredRoutePath) {
+                    const expectedPath = `${referredRoutePath}_responder`
+                        .replace(/^\//, '');
+
+                    Object.assign(route, { path: expectedPath });
+
+                    if (!expectedFromResponders.has(route.respondsToRouteId)) {
+                        expectedFromResponders.add(route.respondsToRouteId);
+
+                        const referredRoute = blocksById.get(route.respondsToRouteId);
+                        Object.assign(referredRoute, { expectedPath });
+                    }
+                }
             }
         });
 
-        return linksMap;
+        return [linksMap, nestedBlocksByStaticId];
     }
 
     /**
@@ -680,24 +691,6 @@ class BuildRouter extends Router {
         return includeResolver
             ? includeResolver.params.staticBlockId
             : null;
-    }
-
-    /**
-     *
-     * @param {string} staticBlockId
-     * @returns {Block|null}
-     */
-    _getBlockById (staticBlockId) {
-        if (!staticBlockId) {
-            return null;
-        }
-        const nestedBlock = (this._resolvedContext.blocks || [])
-            .find((b) => b.staticBlockId === staticBlockId);
-
-        if (!nestedBlock || nestedBlock.disabled) {
-            return null;
-        }
-        return nestedBlock;
     }
 
     /**
@@ -811,8 +804,9 @@ class BuildRouter extends Router {
     /**
      *
      * @param {TransformedRoute[]} routes
+     * @param {BlockMap} nestedBlocksByStaticId
      */
-    _buildRoutes (routes) {
+    _buildRoutes (routes, nestedBlocksByStaticId) {
         routes.forEach((route, i) => {
             const routeConfig = this._getRouteConfig(route);
 
@@ -821,7 +815,7 @@ class BuildRouter extends Router {
             }
 
             const includedBlockId = this._getIncludedBlockId(route);
-            const nestedBlock = this._getBlockById(includedBlockId);
+            const nestedBlock = nestedBlocksByStaticId.get(includedBlockId);
 
             if (includedBlockId && (!nestedBlock || !this._enabledByRouteConfig(routeConfig))) {
                 return;
@@ -882,9 +876,10 @@ class BuildRouter extends Router {
      * @param {Resolver[]} resolvers
      * @param {TransformedRoute} [route]
      * @param {BuildInfo} [buildInfo]
+     * @param {BlockMap} [nestedBlocksByStaticId=null]
      * @returns {Middleware<S,C>[]}
      */
-    buildResolvers (resolvers, route = DUMMY_ROUTE, buildInfo = {}) {
+    buildResolvers (resolvers, route = DUMMY_ROUTE, buildInfo = {}, nestedBlocksByStaticId = null) {
         const {
             path: ctxPath, isFallback, isResponder, expectedPath, id
         } = route;
@@ -911,7 +906,8 @@ class BuildRouter extends Router {
                 expectedPath,
                 routeId: id,
                 configuration,
-                resolverId: resolver.id
+                resolverId: resolver.id,
+                nestedBlocksByStaticId
             };
 
             const resFn = this._resolverFactory(resolver, context, buildInfo);

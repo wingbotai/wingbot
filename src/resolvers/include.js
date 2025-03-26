@@ -4,8 +4,9 @@
 'use strict';
 
 function include (params, context, plugins) {
-    const includedRouter = context.blocks
-        .find((block) => block.staticBlockId === params.staticBlockId);
+    const includedRouter = context.nestedBlocksByStaticId
+        ? context.nestedBlocksByStaticId.get(params.staticBlockId)
+        : context.blocks.find((block) => block.staticBlockId === params.staticBlockId);
 
     if (!includedRouter) {
         throw new Error(`Block ${params.staticBlockId} not found!`);
