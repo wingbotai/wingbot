@@ -103,6 +103,16 @@ Object.freeze(ExpectedInput);
  * @prop {string} [name]
  */
 
+/**
+ * @callback PromptGetter
+ * @param {Responder} res
+ * @returns {string|Promise<string>}
+ */
+
+/**
+ * @typedef {PromptGetter|string} PromptSource
+ */
+
 const PERSONA_DEFAULT = '_default';
 
 /**
@@ -227,7 +237,7 @@ class Responder {
 
         this.LLM_CTX_DEFAULT = 'default';
 
-        /** @type {Map<string,string[]>} */
+        /** @type {Map<string,(PromptSource|Promise<string>)[]>} */
         this._llmContext = new Map([
             [this.LLM_CTX_DEFAULT, []]
         ]);
@@ -235,37 +245,48 @@ class Responder {
 
     /**
      *
-     * @param {string} systemPrompt
+     * @param {PromptSource} systemPrompt
      * @param {string} contextType
      * @returns {this}
      */
     llmAddSystemPrompt (systemPrompt, contextType = this.LLM_CTX_DEFAULT) {
-        if (!systemPrompt || !systemPrompt.trim()) {
+        if (!systemPrompt) {
             return this;
         }
         if (!this._llmContext.has(contextType)) {
             // @todo make it array of messages / maybe keep it in a single array
             this._llmContext.set(contextType, []);
         }
-        this._llmContext.get(contextType).push(systemPrompt.trim());
+        this._llmContext.get(contextType).push(systemPrompt);
 
         return this;
     }
 
-    llmSession (contextType = this.LLM_CTX_DEFAULT) {
-        const chat = this._getSystemContentForType(contextType)
-            .map((content) => ({ role: LLM.ROLE_SYSTEM, content }));
+    async llmSession (contextType = this.LLM_CTX_DEFAULT) {
+        const system = await this._getSystemContentForType(contextType);
+
+        const chat = system.map((content) => ({ role: LLM.ROLE_SYSTEM, content }));
 
         return new LLMSession(this.llm, chat, this._llmSend.bind(this));
+    }
+
+    async _replaceAsync (str, regex, asyncFn) {
+        const promises = [];
+        str.replace(regex, (full, ...args) => {
+            promises.push(asyncFn(full, ...args));
+            return full;
+        });
+        const data = await Promise.all(promises);
+        return str.replace(regex, () => data.shift());
     }
 
     /**
      *
      * @param {string} contextType
      * @param {string[]} [callStack]
-     * @returns {string[]}
+     * @returns {Promise<string[]>}
      */
-    _getSystemContentForType (contextType, callStack = []) {
+    async _getSystemContentForType (contextType, callStack = []) {
         if (new Set(callStack).size < callStack.length) {
             throw new Error(`Circular reference detected: contextType -> ${callStack}`);
         }
@@ -274,10 +295,28 @@ class Responder {
             return [];
         }
 
-        return this._llmContext.get(contextType)
-            .map((c) => c.replace(/\$\{([a-zA-Z0-9\s]+)\}/g, (str, requestType) => this
-                ._getSystemContentForType(requestType, [...callStack, contextType])
-                .join('\n\n')).trim());
+        /** @type {Promise<string>[]} */
+        const promiseStrings = this._llmContext.get(contextType)
+            .map(async (p) => (typeof p === 'function' ? p(this) : p));
+        this._llmContext.set(contextType, promiseStrings);
+
+        const resolved = await Promise.all(
+            promiseStrings
+                .map(async (promiseString) => {
+                    const s = await promiseString;
+
+                    const replaced = await this._replaceAsync(s.trim(), /\$\{([a-zA-Z0-9\s]+)\}/g, async (str, reqType) => {
+                        const nested = await this
+                            ._getSystemContentForType(reqType, [...callStack, contextType]);
+
+                        return nested.join('\n\n');
+                    });
+
+                    return replaced.trim();
+                })
+        );
+
+        return resolved;
     }
 
     async llmSessionWithHistory (contextType = this.LLM_CTX_DEFAULT) {
@@ -287,8 +326,10 @@ class Responder {
             transcriptLength
         } = this.llm.configuration;
 
-        const systems = this._getSystemContentForType(contextType);
-        const transcript = await this.getTranscript(transcriptLength, transcriptFlag);
+        const [systems, transcript] = await Promise.all([
+            this._getSystemContentForType(contextType),
+            this.getTranscript(transcriptLength, transcriptFlag)
+        ]);
 
         const chat = [
             ...systems.map((content) => ({ role: LLM.ROLE_SYSTEM, content })),

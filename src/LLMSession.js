@@ -203,10 +203,10 @@ class LLMSession {
 
     /**
      *
-     * @param {QuickReply[]} quickReplies
-     * @returns {this}
+     * @param {boolean} [dontMarkAsSent=false]
+     * @returns {LLMMessage[]}
      */
-    send (quickReplies = undefined) {
+    messagesToSend (dontMarkAsSent = false) {
         if (!this._generatedIndex) {
             // eslint-disable-next-line no-console
             console.log('LLMSession', this.toString());
@@ -215,8 +215,24 @@ class LLMSession {
 
         let messages = this._chat.splice(this._generatedIndex);
         messages = messages.flatMap((msg) => LLM.toMessages(msg));
+
+        if (dontMarkAsSent) {
+            return messages;
+        }
+
         this._generatedIndex = null;
         this._chat.push(...messages);
+
+        return messages;
+    }
+
+    /**
+     *
+     * @param {QuickReply[]} quickReplies
+     * @returns {this}
+     */
+    send (quickReplies = undefined) {
+        const messages = this.messagesToSend();
 
         this._onSend(messages, quickReplies);
 

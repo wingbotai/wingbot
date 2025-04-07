@@ -25,11 +25,12 @@ const compileWithState = require('../utils/compileWithState');
 function contextMessage (params, context) {
 
     return async (req, res) => {
-        const translated = getLanguageText(params.context, req.state.lang);
-        const translatedText = Array.isArray(translated) ? translated[0] : translated;
-        const statefulPrompt = compileWithState(req, res, translatedText);
-
-        res.llmAddSystemPrompt(statefulPrompt, params.type);
+        res.llmAddSystemPrompt((r) => {
+            const translated = getLanguageText(params.context, req.state.lang);
+            const translatedText = Array.isArray(translated) ? translated[0] : translated;
+            const statefulPrompt = compileWithState(req, r, translatedText);
+            return statefulPrompt;
+        }, params.type);
 
         return Router.CONTINUE;
     };
