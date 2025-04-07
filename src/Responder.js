@@ -237,7 +237,9 @@ class Responder {
 
         this.LLM_CTX_DEFAULT = 'default';
 
-        /** @type {Map<string,(PromptSource|Promise<string>)[]>} */
+        /** @typedef {PromptSource|Promise<string>} PromptContextItem */
+
+        /** @type {Map<string,PromptContextItem[]>} */
         this._llmContext = new Map([
             [this.LLM_CTX_DEFAULT, []]
         ]);
@@ -295,7 +297,8 @@ class Responder {
             return [];
         }
 
-        /** @type {Promise<string>[]} */
+        /** @typedef {Promise<string>} PromisedString */
+        /** @type {PromisedString[]} */
         const promiseStrings = this._llmContext.get(contextType)
             .map(async (p) => (typeof p === 'function' ? p(this) : p));
         this._llmContext.set(contextType, promiseStrings);
