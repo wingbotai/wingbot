@@ -80,11 +80,13 @@ class LLMSession {
 
         const promptRegex = /\$\{prompt\(\)\}/g;
 
+        const last = sysMessages.length - 1;
+
         const content = sysMessages.reduce((reduced, current, i) => {
             if (i === 0) {
                 return current.content || '';
             }
-            if (!reduced.match(promptRegex)) {
+            if (last === i && !reduced.match(promptRegex)) {
                 return `${reduced}\n\n${current.content}`;
             }
             return reduced.replace(promptRegex, current.content).trim();

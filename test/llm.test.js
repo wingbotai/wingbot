@@ -9,6 +9,7 @@ const Router = require('../src/Router');
 const Tester = require('../src/Tester');
 const message = require('../src/resolvers/message');
 const contextMessage = require('../src/resolvers/contextMessage');
+const LLM = require('../src/LLM');
 
 describe('<LLM>', () => {
 
@@ -99,6 +100,58 @@ describe('<LLM>', () => {
         t.any()
             .contains('The user is 5 years old.')
             .contains('Based on the users age explain what nuclear fusion is in 3 sentences.');
+    });
+
+    it('should split messages correctly', () => {
+        const content = 'Samozřejmě! 🌟 V naší kategorii **Art** máme několik skvělých produktů. Můžete si vybrat z následujících možností:\n'
+            + '\n'
+            + '1. **Framed postery:**\n'
+            + '   - **The best is yet to come** - Optimistický motiv pro povzbuzení vašeho prostoru.\n'
+            + '   - **The adventure begins** - Skvělý pro inspiraci k novým začátkům.\n'
+            + '   - **Today is a good day** - Ideální pro pozitivní náladu.\n'
+            + '\n'
+            + '2. **Vektorové grafiky:**\n'
+            + '   - **Mountain fox** - Ideální pro tisk na různé formáty.\n'
+            + '   - **Brown bear** - Perfektní pro vaše kreativní projekty.\n'
+            + '   - **Hummingbird** - Krásná ilustrace pro tisk.\n'
+            + '\n'
+            + '3. **Pack Mug + Framed poster** - Skvělá kombinace pro příjemný nákup.\n'
+            + '\n'
+            + 'Jaký typ produktu vás zaujal nejvíce? 😊';
+
+        const splitted = LLM.toMessages({
+            role: 'agent',
+            content
+        });
+
+        assert.deepStrictEqual(splitted, [
+            {
+                content: 'Samozřejmě! 🌟 V naší kategorii **Art** máme několik skvělých produktů. Můžete si vybrat z následujících možností:',
+                role: 'agent'
+            },
+            {
+                content: '1. **Framed postery:**\n'
+                    + '- **The best is yet to come** - Optimistický motiv pro povzbuzení vašeho prostoru.\n'
+                    + '- **The adventure begins** - Skvělý pro inspiraci k novým začátkům.\n'
+                    + '- **Today is a good day** - Ideální pro pozitivní náladu.',
+                role: 'agent'
+            },
+            {
+                content: '2. **Vektorové grafiky:**\n'
+                    + '- **Mountain fox** - Ideální pro tisk na různé formáty.\n'
+                    + '- **Brown bear** - Perfektní pro vaše kreativní projekty.\n'
+                    + '- **Hummingbird** - Krásná ilustrace pro tisk.',
+                role: 'agent'
+            },
+            {
+                content: '3. **Pack Mug + Framed poster** - Skvělá kombinace pro příjemný nákup.',
+                role: 'agent'
+            },
+            {
+                content: 'Jaký typ produktu vás zaujal nejvíce? 😊',
+                role: 'agent'
+            }
+        ]);
     });
 
 });

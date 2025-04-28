@@ -139,6 +139,11 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  */
 
 /**
+ * @callback NestedLinksMapFactory
+ * @returns {LinksMap}
+ */
+
+/**
  * @typedef {object} BotContextExtention
  * @prop {BlockMap} [nestedBlocksByStaticId]
  * @prop {LinksMap} [linksMap]
@@ -155,6 +160,7 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  * @prop {boolean} [isRoot]
  * @prop {string} [staticBlockId]
  * @prop {Block[]} [blocks]
+ * @prop {NestedLinksMapFactory} [nestedLinksMapFactory]
  * @prop {object} [BuildRouter]
  * @prop {string|number} [resolverId] - only for text messages with random characters
  */
@@ -225,6 +231,9 @@ class BuildRouter extends Router {
 
         /** @type {LinksMap} */
         this._linksMap = new Map();
+
+        /** @type {LinksMap} */
+        this._nestedLinksMap = null;
 
         this._loadBotUrl = null;
 
@@ -512,7 +521,10 @@ class BuildRouter extends Router {
     buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER, lastmod = '-') {
         this._validateBlocks(blocks);
 
-        Object.assign(this._resolvedContext, { blocks });
+        Object.assign(this._resolvedContext, {
+            blocks,
+            nestedBlocksByStaticId: null
+        });
 
         const rootBlock = blocks.find((block) => block.isRoot);
 
@@ -573,6 +585,7 @@ class BuildRouter extends Router {
         const [linksMap, nestedBlocksByStaticId] = this._createLinksMap(block);
         // @ts-ignore
         this._linksMap = linksMap;
+        this._nestedLinksMap = null;
 
         // @ts-ignore
         this._buildRoutes(block.routes, nestedBlocksByStaticId);
@@ -583,6 +596,20 @@ class BuildRouter extends Router {
         this.emit('rebuild');
     }
 
+    _getNestedLinksMap () {
+        if (!this._nestedLinksMap) {
+            /** @type {LinksMap} */
+            const linksMap = new Map();
+
+            for (const [from, to] of this._linksMap.entries()) {
+                linksMap.set(from, `../${to}`); //  this._joinPaths('..', to)
+            }
+
+            this._nestedLinksMap = linksMap;
+        }
+        return this._nestedLinksMap;
+    }
+
     /**
      *
      * returns {[LinksMap, BlockMap]}
@@ -590,12 +617,18 @@ class BuildRouter extends Router {
      * @param {Block} block
      */
     _createLinksMap (block) {
-        const { linksMap: prevLinksMap, blocks = [] } = this._resolvedContext;
+        const {
+            linksMap: prevLinksMap,
+            blocks = [],
+            nestedLinksMapFactory
+        } = this._resolvedContext;
 
         /** @type {LinksMap} */
-        const linksMap = new Map();
+        const linksMap = nestedLinksMapFactory
+            ? new Map(nestedLinksMapFactory())
+            : new Map();
 
-        if (prevLinksMap) {
+        if (prevLinksMap && !nestedLinksMapFactory) {
             for (const [from, to] of prevLinksMap.entries()) {
                 linksMap.set(from, `../${to}`); //  this._joinPaths('..', to)
             }
@@ -900,6 +933,7 @@ class BuildRouter extends Router {
                 isLastMessage: lastMessageIndex === i && !buildInfo.notLastMessage,
                 router: this,
                 linksMap: this._linksMap,
+                nestedLinksMapFactory: this._getNestedLinksMap.bind(this),
                 path: ctxPath,
                 isFallback,
                 isResponder,

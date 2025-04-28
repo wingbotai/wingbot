@@ -180,10 +180,10 @@ class ChatGpt {
         /** @type {Required<DefaultRequestOptions>} */
         this._options = {
             requestTokens: 256,
-            tokensLimit: 4096,
+            tokensLimit: 128000,
             presencePenalty: 0.0, // -2.0-2.0
             temperature: 1.0,
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4o-mini',
             transcriptLength: -5,
             ...rest
         };
@@ -278,7 +278,6 @@ class ChatGpt {
         };
 
         let messages = chat;
-        const maxTokens = Math.min(requestTokens, tokensLimit);
 
         let body;
         try {
@@ -309,7 +308,7 @@ class ChatGpt {
                 model,
                 frequency_penalty: 0,
                 presence_penalty: presencePenalty,
-                max_tokens: maxTokens,
+                max_tokens: requestTokens,
                 temperature,
                 messages
             };
