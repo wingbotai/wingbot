@@ -6,19 +6,30 @@
 const LLM = require('./LLM');
 
 /** @typedef {import('./Responder').QuickReply} QuickReply */
-/** @typedef {'user'|'assistant'} LLMChatRole */
-/** @typedef {'system'} LLMSystemRole */
-/** @typedef {LLMChatRole|LLMSystemRole|string} LLMRole */
 /** @typedef {import('./LLM').LLMProviderOptions} LLMProviderOptions */
 
+/** @typedef {'user'|'assistant'} LLMChatRole */
+/** @typedef {'system'} LLMSystemRole */
+/** @typedef {'tool'} LLMToolRole */
+/** @typedef {LLMChatRole|LLMSystemRole|LLMToolRole|string} LLMRole */
+
 /** @typedef {'stop'|'length'|'tool_calls'|'content_filter'} LLMFinishReason */
+
+/**
+ * @typedef {object} ToolCall
+ * @prop {string} id
+ * @prop {string} name
+ * @prop {string} args - JSON string
+ */
 
 /**
  * @template {LLMRole} [R=LLMRole]
  * @typedef {object} LLMMessage
  * @prop {R} role
  * @prop {string} content
+ * @prop {string} [toolCallId]
  * @prop {LLMFinishReason} [finishReason]
+ * @prop {ToolCall[]} [toolCalls]
  */
 
 /**
@@ -78,7 +89,7 @@ class LLMSession {
             return otherMessages;
         }
 
-        const promptRegex = /\$\{prompt\(\)\}/g;
+        const promptRegex = /\$\{(prompt|last)\(\)\}/g;
 
         const last = sysMessages.length - 1;
 
@@ -210,9 +221,7 @@ class LLMSession {
      */
     messagesToSend (dontMarkAsSent = false) {
         if (!this._generatedIndex) {
-            // eslint-disable-next-line no-console
-            console.log('LLMSession', this.toString());
-            throw new Error('LLMSession: no message to send');
+            return [];
         }
 
         let messages = this._chat.splice(this._generatedIndex);

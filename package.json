@@ -1,6 +1,6 @@
 {
   "name": "wingbot",
-  "version": "3.70.6",
+  "version": "3.71.6",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "type": "commonjs",
@@ -51,8 +51,7 @@
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "rimraf": "^5.0.5",
-    "sinon": "^17.0.1",
-    "tsd-jsdoc": "^2.5.0"
+    "sinon": "^17.0.1"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.33",

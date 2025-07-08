@@ -65,6 +65,7 @@ const LLM = require('./LLM');
  * @prop {'stop'|'length'|'tool_calls'|'content_filter'|null} finish_reason
  * @prop {number} index
  * @prop {Message} message
+ * @prop {GptToolCall[]} [tool_calls]
  */
 
 /**
@@ -87,6 +88,15 @@ const LLM = require('./LLM');
  * @typedef {object} Logger
  * @prop {Function} log
  * @prop {Function} error
+ */
+
+/**
+ * @typedef {object} GptToolCall
+ * @prop {string} id
+ * @prop {'function'|string} type
+ * @prop {object} function
+ * @prop {string} function.name
+ * @prop {string} function.arguments - JSON string
  */
 
 /**
@@ -246,13 +256,17 @@ class ChatGpt {
      * @returns {Promise<LLMMessage>}
      */
     async requestChat (prompt, options) {
-
         const choice = await this._request(prompt, options);
 
-        const { finish_reason: finishReason, message } = choice;
+        const { finish_reason: finishReason, message, tool_calls: toolCalls = [] } = choice;
 
         return {
             finishReason,
+            toolCalls: toolCalls.map(({ id, function: { name, arguments: args } }) => ({
+                id,
+                name,
+                args
+            })),
             ...message
         };
     }

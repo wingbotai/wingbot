@@ -48,7 +48,8 @@ describe('<trackingProtocol>', () => {
                     confidence: Ai.ai.confidence,
                     entities: [],
                     intent: null,
-                    intents: []
+                    intents: [],
+                    prompts: []
                 }
             });
         });

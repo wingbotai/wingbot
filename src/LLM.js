@@ -9,6 +9,7 @@ const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
 /** @typedef {import('./Responder').Persona} Persona */
 /** @typedef {import('./Router').BaseConfiguration} BaseConfiguration */
 /** @typedef {import('./LLMSession').LLMMessage<any>} LLMMessage */
+/** @typedef {import('./LLMSession').ToolCall} ToolCall */
 /** @typedef {import('./LLMSession').LLMRole} LLMRole */
 /** @typedef {import('./LLMSession')} LLMSession */
 /** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */
@@ -40,12 +41,29 @@ const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
  * @prop {'gpt'|string} [transcriptFlag]
  * @prop {boolean} [transcriptAnonymize]
  * @prop {Persona|string|null} [persona]
+ * @prop {LLMLogger} [logger]
  */
 
 /**
  * @typedef {object} AnonymizeRegexp
  * @prop {string} [replacement]
  * @prop {RegExp} regex
+ */
+
+/**
+ * @typedef {object} PromptInfo
+ * @prop {LLMMessage[]} prompt
+ * @prop {LLMMessage} result
+ */
+
+/**
+ * @callback LogPrompt
+ * @param {PromptInfo} info
+ */
+
+/**
+ * @typedef {object} LLMLogger
+ * @prop {LogPrompt} logPrompt
  */
 
 /**
@@ -78,9 +96,12 @@ class LLM {
         const { provider, ...rest } = configuration;
 
         this._configuration = {
-            transcriptFlag: 'gpt',
+            transcriptFlag: null,
             transcriptLength: 5,
             provider: null,
+            logger: {
+                logPrompt: () => {}
+            },
             ...rest
         };
 
@@ -123,14 +144,25 @@ class LLM {
     async generate (session, options = {}) {
         /** @type {LLMProviderOptions} */
         const opts = {
-            model: this._configuration.model,
+            ...(this._configuration.model && { model: this._configuration.model }),
             ...options
         };
 
         const prompt = session.toArray();
         const result = await this._provider.requestChat(prompt, opts);
-
+        this._logPrompt(prompt, result);
         return result;
+    }
+
+    /**
+     *
+     * @param {LLMMessage[]} prompt
+     * @param {LLMMessage} result
+     */
+    _logPrompt (prompt, result) {
+        this._configuration.logger.logPrompt({
+            prompt, result
+        });
     }
 
     /**
@@ -140,9 +172,10 @@ class LLM {
      */
     static toMessages (result) {
         let filtered = result.content
-            .replace(/\n\n+/g, '\n')
-            .split(/\n+(?!-)/g)
-            .map((t) => t.trim())
+            .replace(/\n\n\n+/g, '\n\n')
+            .split(/\n\n+(?!\s*-)/g)
+            .map((t) => t.replace(/\s*\n\s+/g, '\n')
+                .trim())
             .filter((t) => !!t);
 
         if (result.finishReason === 'length' && filtered.length <= 0) {

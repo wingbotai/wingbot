@@ -95,6 +95,25 @@ type AiAction {
     winner: Boolean!
 }
 
+type ToolCall {
+    id: String
+    name: String
+    args: String
+}
+
+type LLMMessage {
+    role: String!
+    content: String
+    finishReason: String
+    toolCallId: String
+    toolCalls: [ToolCall!]
+}
+
+type PromptInfo {
+    prompt: [LLMMessage!]!
+    result: LLMMessage!
+}
+
 type UserInteraction {
     senderId: String!
     pageId: String!
@@ -117,6 +136,7 @@ type UserInteraction {
     request: Any!
     responses: [Any]!
     visitedInteractions: [String]
+    prompts: [PromptInfo!]
 
     err: String
 }

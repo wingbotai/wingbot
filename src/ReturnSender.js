@@ -11,7 +11,9 @@ const extractText = require('./transcript/extractText');
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder')} Responder */
 /** @typedef {import('./Processor').TrackingObject} TrackingObject */
-/** @typedef {import('./LLMContext').LLMMessage} LLMMessage */
+/** @typedef {import('./LLMSession').LLMMessage} LLMMessage */
+/** @typedef {import('./LLM').LLMLogger} LLMLogger */
+/** @typedef {import('./LLM').PromptInfo} PromptInfo */
 
 /**
  * @callback GetInteractions
@@ -68,6 +70,10 @@ const extractText = require('./transcript/extractText');
  * @returns {string} - filtered text
  */
 
+/**
+ * @class ReturnSender
+ * @implements {LLMLogger}
+ */
 class ReturnSender {
 
     /**
@@ -155,6 +161,9 @@ class ReturnSender {
             events: []
         };
 
+        /** @type {PromptInfo[]} */
+        this._prompts = [];
+
         this._responseTexts = [];
 
         this._intentsAndEntities = [];
@@ -183,6 +192,14 @@ class ReturnSender {
             this._throwAtTheEnd = null;
             throw e;
         }
+    }
+
+    /**
+     *
+     * @param {PromptInfo} promptInfo
+     */
+    logPrompt (promptInfo) {
+        this._prompts.push(promptInfo);
     }
 
     /**
@@ -651,7 +668,8 @@ class ReturnSender {
     _createTracking (req = null, res = null) {
         const payload = {};
         const meta = {
-            actions: this._visitedInteractions.slice()
+            actions: this._visitedInteractions.slice(),
+            prompts: this._prompts
         };
 
         if (req) {
@@ -678,7 +696,8 @@ class ReturnSender {
      */
     _createMeta (req = null, res = null) { // eslint-disable-line no-unused-vars
         const meta = {
-            visitedInteractions: this._visitedInteractions.slice()
+            visitedInteractions: this._visitedInteractions.slice(),
+            prompts: this._prompts
         };
 
         if (req) {

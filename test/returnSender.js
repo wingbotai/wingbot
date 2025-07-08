@@ -233,7 +233,7 @@ describe('<ReturnSender>', () => {
                         { message: { attachment: { type: 'template', payload: { text: 'good' } } } }
                     ],
                     { message: { text: 'good' } },
-                    { visitedInteractions: [] }
+                    { visitedInteractions: [], prompts: [] }
                 ]
             ]);
 

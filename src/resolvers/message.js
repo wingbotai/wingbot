@@ -20,6 +20,7 @@ const {
     FEATURE_SSML, FEATURE_TEXT, FEATURE_VOICE
 } = require('../features');
 const { vars, VAR_TYPES } = require('../utils/stateVariables');
+const LLM = require('../LLM');
 
 /** @typedef {import('../Responder').VoiceControl} VoiceControl */
 /** @typedef {import('./utils').Translations} Translations */
@@ -417,20 +418,36 @@ function message (params, context = {}) {
         }
 
         if (params.type === 'prompt') {
+            res.typingOn()
+                .wait(1000);
             const session = await res.llmSessionWithHistory(params.llmContextType);
 
-            const response = await session.systemPrompt(text)
-                .debug()
+            await session.systemPrompt(text)
                 .generate();
 
             // if (!response.content) {
             //    // no response?
             // }
 
-            text = response.content;
+            const messages = session.messagesToSend();
+
+            res.setFlag(LLM.GPT_FLAG);
+
+            const lastMessageI = messages.length - 1;
+            messages.forEach((m, i) => {
+                if (lastMessageI === i) {
+                    text = m.content;
+                } else {
+                    res.text(m.content, null, null, {
+                        disableAutoTyping: true
+                    });
+                }
+            });
         }
 
-        res.text(text, sendReplies, voiceControl);
+        res.text(text, sendReplies, voiceControl, {
+            disableAutoTyping: params.type === 'prompt'
+        });
 
         if (isLastMessage && !req.actionData()._resolverTag) {
             res.finalMessageSent = true;

@@ -405,10 +405,18 @@ class Processor extends EventEmitter {
             return { status: 304 };
         }
 
-        const llm = new LLM({
+        const llmOptions = {
             provider: new LLMMockProvider(),
             ...this.options.llm
-        });
+        };
+
+        if (typeof messageSender.logPrompt === 'function') {
+            Object.assign(llmOptions, {
+                logger: messageSender
+            });
+        }
+
+        const llm = new LLM(llmOptions);
 
         const result = await this
             ._dispatch(message, pageId, messageSender, responderData, preloadPromise, llm);
