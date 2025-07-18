@@ -10,7 +10,7 @@ const customFn = require('./customFn');
 /** @typedef {import('./customCondition').EditableCondition} EditableCondition */
 
 // eslint-disable-next-line max-len
-/** @typedef {Pick<BotContext,'configuration'|'allowForbiddenSnippetWords'|'linksMap'>} ConditionContext */
+/** @typedef {Pick<BotContext,'configuration'|'allowForbiddenSnippetWords'|'linksMap'|'ai'>} ConditionContext */
 
 /**
  * @typedef {object} ConditionDefinition

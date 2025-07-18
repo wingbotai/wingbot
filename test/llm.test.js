@@ -132,7 +132,7 @@ describe('<LLM>', () => {
         const bot = new Router();
 
         bot.use((req, res) => {
-            const preprocessed = res.llm.preprocessEvaluationRules([
+            const preprocessed = LLM.preprocessEvaluationRules([
                 {
                     aiTags: ['#discard#'],
                     action: LLM.EVALUATION_ACTIONS.DISCARD

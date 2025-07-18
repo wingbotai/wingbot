@@ -162,6 +162,7 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  * @prop {Block[]} [blocks]
  * @prop {NestedLinksMapFactory} [nestedLinksMapFactory]
  * @prop {object} [BuildRouter]
+ * @prop {Ai} [ai]
  * @prop {string|number} [resolverId] - only for text messages with random characters
  */
 
@@ -928,6 +929,7 @@ class BuildRouter extends Router {
         return resolvers.map((resolver, i) => {
 
             const context = {
+                ai: Ai.ai,
                 ...this._resolvedContext,
                 isLastIndex: lastIndex === i && !buildInfo.expectedToAddResolver,
                 isLastMessage: lastMessageIndex === i && !buildInfo.notLastMessage,

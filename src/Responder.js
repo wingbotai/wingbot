@@ -337,12 +337,14 @@ class Responder {
         let addRule = rule;
 
         if (Array.isArray(addRule)) {
-            [addRule] = this.llm.preprocessEvaluationRules([{
+            [addRule] = LLM.preprocessEvaluationRules([{
                 // @ts-ignore
                 aiTags: rule,
                 action,
                 setState
-            }]);
+            }], {
+                ai: this.llm.ai
+            });
         }
 
         if (!this._llmResultRules.has(contextType)) {

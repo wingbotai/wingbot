@@ -7,10 +7,10 @@ const { getSetState } = require('./utils/getUpdate');
 const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
 const getCondition = require('./utils/getCondition');
 const stateData = require('./utils/stateData');
+const Ai = require('./Ai');
 // const getCondition = require('./utils/getCondition');
 
 /** @typedef {import('./Responder')} Responder */
-/** @typedef {import('./Ai')} Ai */
 /** @typedef {import('./AiMatching').PreprocessorOutput} PreprocessorOutput */
 /** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder').Persona} Persona */
@@ -179,6 +179,13 @@ class LLM {
     }
 
     /**
+     * @returns {Ai}
+     */
+    get ai () {
+        return this._ai;
+    }
+
+    /**
      * @returns {LLMMessage}
      */
     get lastResult () {
@@ -271,14 +278,17 @@ class LLM {
      * @param {ConditionContext} [context]
      * @returns {PreprocessedRule[]}
      */
-    preprocessEvaluationRules (rules, context = {}) {
-        const { linksMap = new Map() } = context;
+    static preprocessEvaluationRules (rules, context = {}) {
+        const {
+            linksMap = new Map(),
+            ai = Ai.ai
+        } = context;
 
         return rules.map((evalRule) => {
             const { aiTags, targetRouteId, ...rest } = evalRule;
 
             const condition = getCondition(rest, context);
-            const rule = this._ai.matcher.preprocessRule(aiTags);
+            const rule = ai.matcher.preprocessRule(aiTags);
 
             let { action = null } = evalRule;
 
