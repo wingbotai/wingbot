@@ -3,16 +3,72 @@
  */
 'use strict';
 
+const { getSetState } = require('./utils/getUpdate');
 const { PHONE_REGEX, EMAIL_REGEX } = require('./systemEntities/regexps');
+const getCondition = require('./utils/getCondition');
+const stateData = require('./utils/stateData');
+// const getCondition = require('./utils/getCondition');
 
 /** @typedef {import('./Responder')} Responder */
+/** @typedef {import('./Ai')} Ai */
+/** @typedef {import('./AiMatching').PreprocessorOutput} PreprocessorOutput */
+/** @typedef {import('./Request')} Request */
 /** @typedef {import('./Responder').Persona} Persona */
 /** @typedef {import('./Router').BaseConfiguration} BaseConfiguration */
 /** @typedef {import('./LLMSession').LLMMessage<any>} LLMMessage */
 /** @typedef {import('./LLMSession').ToolCall} ToolCall */
 /** @typedef {import('./LLMSession').LLMRole} LLMRole */
+/** @typedef {import('./LLMSession').FilterScope} FilterScope */
 /** @typedef {import('./LLMSession')} LLMSession */
 /** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */
+/** @typedef {import('./utils/getCondition').ConditionDefinition} ConditionDefinition */
+/** @typedef {import('./utils/getCondition').ConditionContext} ConditionContext */
+/** @typedef {import('./utils/stateData').IStateRequest} IStateRequest */
+
+/** @typedef {string|'_DISCARD'} EvaluationRuleAction */
+
+/**
+ * @typedef {object} EvaluationRuleData
+ * @prop {EvaluationRuleAction} [action]
+ * @prop {object} [setState]
+ */
+
+/**
+ * @typedef {object} RuleDefinitionData
+ * @prop {string[]} aiTags
+ * @prop {EvaluationRuleAction} [targetRouteId]
+ */
+
+/**
+ * @typedef {EvaluationRuleData & RuleDefinitionData & ConditionDefinition} EvaluationRule
+ */
+
+/**
+ * @typedef {object} PrepocessedRuleData
+ * @prop {Function} condition
+ * @prop {PreprocessorOutput} rule
+ */
+
+/**
+ * @typedef {EvaluationRuleData & PrepocessedRuleData} PreprocessedRule
+ */
+
+/**
+ * @typedef {object} RuleScore
+ * @prop {number} score
+ */
+
+/**
+ * @typedef {RuleScore & PreprocessedRule} RuleWithScore
+ */
+
+/**
+ * @typedef {object} EvaluationResult
+ * @prop {string} action
+ * @prop {boolean} discard
+ * @prop {RuleWithScore[]} results
+ * @prop {object} setState
+ */
 
 /**
  * @callback LLMChatProviderPrompt
@@ -82,6 +138,13 @@ class LLM {
 
     static GPT_FLAG = 'gpt';
 
+    /** @type {FilterScope} */
+    static FILTER_SCOPE_CONVERSATION = 'conversation';
+
+    static EVALUATION_ACTIONS = {
+        DISCARD: '_DISCARD'
+    };
+
     /** @type {AnonymizeRegexp[]} */
     static anonymizeRegexps = [
         { replacement: '@PHONE', regex: new RegExp(PHONE_REGEX.source, 'g') },
@@ -91,8 +154,9 @@ class LLM {
     /**
      *
      * @param {LLMConfiguration} configuration
+     * @param {Ai} ai
      */
-    constructor (configuration) {
+    constructor (configuration, ai) {
         const { provider, ...rest } = configuration;
 
         this._configuration = {
@@ -107,6 +171,18 @@ class LLM {
 
         /** @type {LLMChatProvider} */
         this._provider = provider;
+
+        this._ai = ai;
+
+        /** @type {LLMMessage} */
+        this._lastResult = null;
+    }
+
+    /**
+     * @returns {LLMMessage}
+     */
+    get lastResult () {
+        return this._lastResult;
     }
 
     /**
@@ -148,7 +224,7 @@ class LLM {
             ...options
         };
 
-        const prompt = session.toArray();
+        const prompt = session.toArray(true);
         const result = await this._provider.requestChat(prompt, opts);
         this._logPrompt(prompt, result);
         return result;
@@ -160,6 +236,7 @@ class LLM {
      * @param {LLMMessage} result
      */
     _logPrompt (prompt, result) {
+        this._lastResult = result;
         this._configuration.logger.logPrompt({
             prompt, result
         });
@@ -186,6 +263,100 @@ class LLM {
             content,
             role: result.role
         }));
+    }
+
+    /**
+     *
+     * @param {EvaluationRule[]} rules
+     * @param {ConditionContext} [context]
+     * @returns {PreprocessedRule[]}
+     */
+    preprocessEvaluationRules (rules, context = {}) {
+        const { linksMap = new Map() } = context;
+
+        return rules.map((evalRule) => {
+            const { aiTags, targetRouteId, ...rest } = evalRule;
+
+            const condition = getCondition(rest, context);
+            const rule = this._ai.matcher.preprocessRule(aiTags);
+
+            let { action = null } = evalRule;
+
+            if (!action && targetRouteId && linksMap.has(targetRouteId)) {
+                action = linksMap.get(targetRouteId);
+            }
+
+            return {
+                ...rest,
+                condition,
+                rule
+            };
+        });
+    }
+
+    /**
+     * Returns all actions, which has been recognized
+     * with higher score than threshold, but
+     *
+     * - _DISCARD action discards any other rules (will return all relevant _DISCARD actions)
+     * - only the TOP ranked "interaction" action will be returned
+     * - actions will come in THE SAME order, so the "setState" will be applied in the same order
+     *
+     *
+     * @param {LLMMessage|string} result
+     * @param {PreprocessedRule[]} rules
+     * @param {IStateRequest} req
+     * @param {Responder} res
+     * @returns {Promise<EvaluationResult>}
+     */
+    async evaluateResultWithRules (result, rules, req, res) {
+        const text = typeof result === 'string' ? result : result.content;
+        const nlpResult = await this._ai.queryModel(text, req);
+        const state = stateData(req, res);
+
+        let topRankedAction = null;
+        let topActionScore = 0;
+        let discard = false;
+        const setState = {};
+
+        const sAct = Object.values(LLM.EVALUATION_ACTIONS);
+
+        const results = rules
+            .filter((rule) => rule.condition(req, res))
+            .map((rule) => {
+                const matched = this._ai.matcher
+                    .matchText(text, rule.rule, nlpResult, state);
+
+                if (!matched || matched.score < this._ai.threshold) {
+                    return null;
+                }
+
+                if (rule.action === LLM.EVALUATION_ACTIONS.DISCARD) {
+                    discard = true;
+                } else if (rule.action && topActionScore < matched.score) {
+                    topRankedAction = rule.action;
+                    topActionScore = matched.score;
+                }
+
+                return {
+                    ...rule,
+                    score: matched.score
+                };
+            })
+            .filter((rule) => rule !== null
+                && (!discard || rule.action === LLM.EVALUATION_ACTIONS.DISCARD)
+                && (!rule.action || rule.action === topRankedAction || sAct.includes(rule.action)));
+
+        results.forEach((rule) => {
+            Object.assign(setState, getSetState(rule.setState, req, res, setState));
+        });
+
+        return {
+            setState,
+            results,
+            discard,
+            action: discard ? null : topRankedAction
+        };
     }
 
 }

@@ -3,11 +3,12 @@
  */
 'use strict';
 
-const { replaceDiacritics } = require('./utils/tokenizer');
+const { replaceDiacritics, tokenize } = require('./utils/tokenizer');
 const { vars } = require('./utils/stateVariables');
 const stateData = require('./utils/stateData');
 
 /** @typedef {import('handlebars')} Handlebars */
+/** @typedef {import('./Ai').Result} Result */
 
 /** @type {Handlebars} */
 let handlebars;
@@ -66,16 +67,18 @@ const COMPARE = {
 
 /**
  * @typedef {object} Entity
- * @param {string} entity
- * @param {string} value
- * @param {number} score
+ * @prop {string} entity
+ * @prop {string} value
+ * @prop {number} score
+ * @prop {number} [start]
+ * @prop {number} [end]
  */
 
 /**
  * @typedef {object} Intent
- * @param {string} [intent]
- * @param {number} score
- * @param {Entity[]} [entities]
+ * @prop {string} [intent]
+ * @prop {number} score
+ * @prop {Entity[]} [entities]
  */
 
 /**
@@ -461,34 +464,34 @@ class AiMatching {
     }
 
     /**
-     * Calculate a matching score of preprocessed rule against the request
      *
-     * @param {AIRequest} req
+     * @param {string} text
      * @param {PreprocessorOutput} rule
-     * @param {boolean} [stateless]
-     * @param {Entity[]} [reqEntities]
-     * @param {boolean} [noEntityThreshold]
+     * @param {Result} nlpResult
+     * @param {{}} state
      * @returns {Intent|null}
      */
-    match (req, rule, stateless = false, reqEntities = req.entities, noEntityThreshold = false) {
-        const { regexps, intents, entities } = rule;
+    matchText (text, rule, nlpResult, state = {}) {
+        return this._match(text, rule, state, nlpResult, true);
+    }
 
-        const noIntentHandicap = req.intents.length === 0 ? 0 : this.redundantIntentHandicap;
-        const regexpScore = this._matchRegexp(req, regexps, noIntentHandicap);
-        const textLength = req.text().trim().length;
+    _match (text, rule, useState, nlpResult, stateless = false, noEntityThreshold = false) {
+        let state = useState;
 
-        let useState;
-        if (stateless || intents.length === 0) {
-            useState = Object.entries(stateData(req))
-                .reduce((o, [k, v]) => {
-                    if (k.startsWith('@')) {
-                        return o;
-                    }
-                    return Object.assign(o, { [k]: v });
-                }, {});
-        } else {
-            useState = stateData(req);
+        if (stateless) {
+            state = Object.fromEntries(
+                Object.entries(state)
+                    .filter(([k]) => !k.startsWith('@'))
+            );
         }
+
+        const { regexps, intents, entities } = rule;
+        const { entities: reqEntities = [], intents: reqIntents = [] } = nlpResult;
+        const tokenized = tokenize(text) || text.trim();
+
+        const noIntentHandicap = reqIntents.length === 0 ? 0 : this.redundantIntentHandicap;
+        const regexpScore = this._matchRegexp(text, tokenized, regexps, noIntentHandicap);
+        const textLength = text.length;
 
         if (regexpScore !== 0 || (intents.length === 0 && regexps.length === 0)) {
 
@@ -511,7 +514,7 @@ class AiMatching {
                     textLength,
                     entities,
                     reqEntities,
-                    useState,
+                    state,
                     undefined,
                     undefined,
                     noEntityThreshold
@@ -563,7 +566,7 @@ class AiMatching {
             };
         }
 
-        if (!req.intents || req.intents.length === 0) {
+        if (reqIntents.length === 0) {
             return null;
         }
 
@@ -572,15 +575,15 @@ class AiMatching {
         intents
             .reduce((total, wanted) => {
                 let max = total;
-                for (const requestIntent of req.intents) {
+                for (const requestIntent of reqIntents) {
                     const { score, entities: matchedEntities } = this
                         ._intentMatchingScore(
                             textLength,
                             wanted,
                             requestIntent,
                             entities,
-                            req,
-                            useState,
+                            reqEntities,
+                            state,
                             noEntityThreshold
                         );
 
@@ -602,6 +605,27 @@ class AiMatching {
         return winningIntent;
     }
 
+    /**
+     * Calculate a matching score of preprocessed rule against the request
+     *
+     * @param {AIRequest} req
+     * @param {PreprocessorOutput} rule
+     * @param {boolean} [stateless]
+     * @param {Entity[]} [reqEntities]
+     * @param {boolean} [noEntityThreshold]
+     * @returns {Intent|null}
+     */
+    match (req, rule, stateless = false, reqEntities = req.entities, noEntityThreshold = false) {
+        const { intents } = rule;
+
+        const state = stateData(req);
+
+        return this._match(req.text(), rule, state, {
+            intents: req.intents,
+            entities: reqEntities
+        }, stateless || intents.length === 0, noEntityThreshold);
+    }
+
     _getMultiMatchGain (entitiesScore, matchedCount, fromState = 0) {
         return (this.multiMatchGain * entitiesScore) ** Math.max(matchedCount - fromState, 0);
     }
@@ -613,7 +637,7 @@ class AiMatching {
      * @param {string} wantedIntent
      * @param {Intent} requestIntent
      * @param {EntityExpression[]} wantedEntities
-     * @param {AIRequest} req
+     * @param {Entity[]} reqEntities
      * @param {object} useState
      * @param {boolean} [noEntityThreshold]
      * @returns {{score:number,entities:Entity[]}}
@@ -623,7 +647,7 @@ class AiMatching {
         wantedIntent,
         requestIntent,
         wantedEntities,
-        req,
+        reqEntities,
         useState,
         noEntityThreshold = false
     ) {
@@ -631,7 +655,7 @@ class AiMatching {
             return { score: 0, entities: [] };
         }
 
-        const useEntities = requestIntent.entities || req.entities;
+        const useEntities = requestIntent.entities || reqEntities;
 
         if (wantedEntities.length === 0) {
             return {
@@ -651,7 +675,7 @@ class AiMatching {
                 requestIntent.entities
                     ? (x) => Math.atan((x - 0.76) * 40) / Math.atan((1 - 0.76) * 40)
                     : (x) => x,
-                req.entities,
+                reqEntities,
                 noEntityThreshold
             );
 
@@ -941,18 +965,20 @@ class AiMatching {
 
     /**
      *
-     * @param {AIRequest} req
+     * @param {string} text
+     * @param {string} tokenized
      * @param {RegexpComparator[]} regexps
      * @param {number} noIntentHandicap
      * @returns {number}
      */
-    _matchRegexp (req, regexps, noIntentHandicap) {
+    _matchRegexp (text, tokenized, regexps, noIntentHandicap) {
         if (regexps.length === 0) {
             return 0;
         }
 
         const scores = regexps.map(({ r, t, f }) => {
-            const m = req.text(t).match(r);
+            const txt = t ? tokenized : text;
+            const m = txt.match(r);
 
             if (!m) {
                 return 0;

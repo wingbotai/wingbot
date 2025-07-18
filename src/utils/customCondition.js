@@ -175,9 +175,22 @@ const compare = (variable, operator, value = undefined) => {
     }
 };
 
+/** @typedef {'if'|'it'|'c'|'nc'|'mr'|'nmr'|'st'|'gt'|'set'|'get'|'eq'|'neq'} ConditionOperator */
+
+/**
+ * @typedef {object} EditableConditionRule
+ * @prop {string} value
+ * @prop {ConditionOperator} operator
+ * @prop {string} variable
+ */
+
+/**
+ * @typedef {EditableConditionRule[][]} EditableCondition
+ */
+
 /**
  *
- * @param {{value:string, operator:string, variable:string}[][]} condition
+ * @param {EditableCondition} condition
  * @param {object} configuration
  * @param {string} description
  */

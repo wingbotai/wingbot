@@ -13,6 +13,8 @@ const LLM = require('./LLM');
 /** @typedef {'tool'} LLMToolRole */
 /** @typedef {LLMChatRole|LLMSystemRole|LLMToolRole|string} LLMRole */
 
+/** @typedef {LLMRole|'conversation'} FilterScope */
+
 /** @typedef {'stop'|'length'|'tool_calls'|'content_filter'} LLMFinishReason */
 
 /**
@@ -39,6 +41,19 @@ const LLM = require('./LLM');
  */
 
 /**
+ * @callback LLMFilterFn
+ * @param {string} text
+ * @param {LLMRole} role
+ * @returns {boolean|string}
+ */
+
+/**
+ * @typedef {object} LLMFilter
+ * @prop {LLMFilterFn} filter
+ * @prop {FilterScope} scope
+ */
+
+/**
  * @class LLMSession
  */
 class LLMSession {
@@ -48,8 +63,9 @@ class LLMSession {
      * @param {LLM} llm
      * @param {LLMMessage<any>[]} [chat]
      * @param {SendCallback} [onSend]
+     * @param {LLMFilter[]} [filters=[]]
      */
-    constructor (llm, chat = [], onSend = () => {}) {
+    constructor (llm, chat = [], onSend = () => {}, filters = []) {
         this._llm = llm;
 
         this._onSend = onSend;
@@ -60,6 +76,13 @@ class LLMSession {
         this._generatedIndex = null;
 
         this._sort();
+
+        /** @type {LLMFilter[]} */
+        this._filters = filters;
+
+        this._SCOPE_CONVERSATION_ROLES = [
+            LLM.ROLE_ASSISTANT, LLM.ROLE_USER
+        ];
     }
 
     _sort (what = this._chat) {
@@ -114,10 +137,43 @@ class LLMSession {
     }
 
     /**
+     *
+     * @param {boolean} [filtered=false]
      * @returns {LLMMessage[]}
      */
-    toArray () {
-        return this._mergeSystem();
+    toArray (filtered = false) {
+        const messages = this._mergeSystem();
+        if (!filtered || this._filters.length === 0) {
+            return messages;
+        }
+        return messages
+            .map((message) => {
+                if (!message.content) {
+                    return message;
+                }
+                const content = this._filters.reduce((text, filter) => {
+                    if (!text) {
+                        return text;
+                    }
+                    if (filter.scope !== message.role
+                        && (filter.scope !== LLM.FILTER_SCOPE_CONVERSATION
+                            || !this._SCOPE_CONVERSATION_ROLES.includes(message.role))) {
+                        return text;
+                    }
+                    const res = filter.filter(text, message.role);
+                    return res === true ? text : res;
+                }, message.content);
+
+                if (!content) {
+                    return null;
+                }
+
+                return {
+                    ...message,
+                    content
+                };
+            })
+            .filter((message) => message !== null);
     }
 
     /**
@@ -202,6 +258,20 @@ class LLMSession {
 
     /**
      *
+     * @param {LLMFilter|LLMFilter[]} filter
+     * @returns {this}
+     */
+    addFilter (filter) {
+        if (Array.isArray(filter)) {
+            this._filters.push(...filter);
+        } else {
+            this._filters.push(filter);
+        }
+        return this;
+    }
+
+    /**
+     *
      * @param {LLMProviderOptions} [options={}]
      * @returns {Promise<LLMMessage<any>>}
      */
@@ -212,6 +282,23 @@ class LLMSession {
         this._chat.push(result);
 
         return result;
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    lastResponse () {
+        const messages = [];
+        for (let i = this._chat.length - 1; i >= 0; i--) {
+            const message = this._chat[i];
+
+            if (message.role !== LLM.ROLE_ASSISTANT || !message.content) {
+                break;
+            }
+            messages.unshift(message.content);
+        }
+        return messages.join('\n\n');
     }
 
     /**

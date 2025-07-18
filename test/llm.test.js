@@ -19,11 +19,11 @@ describe('<LLM>', () => {
         bot.use((req, res) => {
             res.text('attaching prompt');
 
-            res.llmAddSystemPrompt('start ${nonexisting}');
+            res.llmAddInstructions('start ${nonexisting}');
 
-            res.llmAddSystemPrompt('attach ${existing}');
+            res.llmAddInstructions('attach ${existing}');
 
-            res.llmAddSystemPrompt('on side ${prompt()}', 'existing');
+            res.llmAddInstructions('on side ${prompt()}', 'existing');
 
             return Router.CONTINUE;
         });
@@ -97,10 +97,89 @@ describe('<LLM>', () => {
 
         await t.text('hello this is user');
 
+        t.anyPrompt()
+            .instructionContains('The user is 5 years old')
+            .resultContains('mockmodel');
+
         t.any()
             .contains('The user is 5 years old.')
             .contains('Based on the users age explain what nuclear fusion is in 3 sentences.');
     });
+
+    it('should be able to filter input', async () => {
+        const bot = new Router();
+
+        bot.use((req, res) => {
+            res.llmAddFilter((text) => (text.startsWith('N') ? false : `X ${text} X`));
+            return Router.BREAK;
+        });
+
+        bot.use(message({
+            text: 'Based on the users age explain what nuclear fusion is in 3 sentences.',
+            type: 'prompt'
+        }, {}));
+
+        const t = new Tester(bot);
+
+        await t.text('text');
+
+        t.debug();
+
+        t.anyPrompt().promptContains('X text X');
+    });
+
+    it('should be able to evaluate input by the message', async () => {
+        const bot = new Router();
+
+        bot.use((req, res) => {
+            const preprocessed = res.llm.preprocessEvaluationRules([
+                {
+                    aiTags: ['#discard#'],
+                    action: LLM.EVALUATION_ACTIONS.DISCARD
+                },
+                {
+                    aiTags: ['#set-variable#'],
+                    setState: {
+                        lastResult: '{{$llmResult}}'
+                    }
+                },
+                {
+                    aiTags: ['#go-out#'],
+                    action: 'out'
+                }
+            ]);
+            preprocessed.forEach((prep) => res.llmAddResultRule(prep));
+            return Router.BREAK;
+        });
+
+        bot.use('out', (req, res) => {
+            res.text('out reached');
+        });
+
+        bot.use(message({
+            text: 'Based on the users age explain what nuclear fusion is in 3 sentences.',
+            type: 'prompt'
+        }, {}));
+
+        bot.use((req, res) => {
+            res.text('discarded');
+        });
+
+        const t = new Tester(bot);
+
+        await t.text('go out');
+        t.any().contains('out reached');
+
+        await t.text('discard');
+        t.any().contains('discarded');
+
+        await t.text('set variable');
+        t.stateContains({
+            lastResult: t.getLastPromptResult().content
+        });
+    });
+
+    it('should be able to evaluate results');
 
     it('should split messages correctly', () => {
         const content = 'Samozřejmě! 🌟 V naší kategorii **Art** máme několik skvělých produktů. Můžete si vybrat z následujících možností:\n'

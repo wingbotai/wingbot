@@ -23,8 +23,11 @@ const { vars, VAR_TYPES } = require('../utils/stateVariables');
 const LLM = require('../LLM');
 
 /** @typedef {import('../Responder').VoiceControl} VoiceControl */
+/** @typedef {import('../BuildRouter').LinksMap} LinksMap */
 /** @typedef {import('./utils').Translations} Translations */
 /** @typedef {import('./utils').TextObject} TextObject */
+/** @typedef {import('../utils/getCondition').ConditionDefinition} ConditionDefinition */
+/** @typedef {import('../utils/getCondition').ConditionContext} ConditionContext */
 /**
  * Returns voice control props from params
  *
@@ -68,6 +71,30 @@ function getVoiceControlFromParams (params, lang = null) {
     return Object.keys(voiceControl).length > 0 ? voiceControl : null;
 }
 
+/**
+ * @typedef {object} QuickReplyData
+ * @prop {boolean} [isLocation]
+ * @prop {boolean} [isEmail]
+ * @prop {boolean} [isPhone]
+ * @prop {boolean} [trackAsNegative]
+ * @prop {string} [action]
+ * @prop {string} [targetRouteId]
+ * @prop {{l:string,t:string[]}[] | string} [title]
+ * @prop {object} [setState]
+ * @prop {string[]} [aiTags]
+ * @prop {{l:string,t:string[]}[] | string} [aiTitle]
+ */
+
+/**
+ * @typedef {ConditionDefinition & QuickReplyData} QuickReply
+ */
+
+/**
+ *
+ * @param {QuickReply[]} replies
+ * @param {LinksMap} linksMap
+ * @param {ConditionContext} context
+ */
 function parseReplies (replies, linksMap, context) {
     return replies.map((reply) => {
 
@@ -314,8 +341,9 @@ function message (params, context = {}) {
     /**
      * @param {Request} req
      * @param {Responder} res
+     * @param {Function } postBack
      */
-    return async (req, res) => {
+    return async (req, res, postBack) => {
         if (condition === undefined) {
             condition = getCondition(params, context, 'Message condition');
         }
@@ -424,6 +452,20 @@ function message (params, context = {}) {
 
             await session.systemPrompt(text)
                 .generate();
+
+            const evaluation = await res.llmEvaluate(session, params.llmContextType);
+
+            if (evaluation.discard) {
+                if (isLastMessage && !req.actionData()._resolverTag) {
+                    res.finalMessageSent = true;
+                }
+                return ret;
+            }
+
+            if (evaluation.action) {
+                postBack(evaluation.action);
+                return Router.END;
+            }
 
             // if (!response.content) {
             //    // no response?

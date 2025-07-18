@@ -162,7 +162,7 @@ class ReturnSender {
         };
 
         /** @type {PromptInfo[]} */
-        this._prompts = [];
+        this.prompts = [];
 
         this._responseTexts = [];
 
@@ -199,7 +199,7 @@ class ReturnSender {
      * @param {PromptInfo} promptInfo
      */
     logPrompt (promptInfo) {
-        this._prompts.push(promptInfo);
+        this.prompts.push(promptInfo);
     }
 
     /**
@@ -669,7 +669,7 @@ class ReturnSender {
         const payload = {};
         const meta = {
             actions: this._visitedInteractions.slice(),
-            prompts: this._prompts
+            prompts: this.prompts
         };
 
         if (req) {
@@ -697,7 +697,7 @@ class ReturnSender {
     _createMeta (req = null, res = null) { // eslint-disable-line no-unused-vars
         const meta = {
             visitedInteractions: this._visitedInteractions.slice(),
-            prompts: this._prompts
+            prompts: this.prompts
         };
 
         if (req) {

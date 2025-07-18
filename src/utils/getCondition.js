@@ -7,11 +7,23 @@ const customCondition = require('./customCondition');
 const customFn = require('./customFn');
 
 /** @typedef {import('../BuildRouter').BotContext} BotContext */
+/** @typedef {import('./customCondition').EditableCondition} EditableCondition */
+
+// eslint-disable-next-line max-len
+/** @typedef {Pick<BotContext,'configuration'|'allowForbiddenSnippetWords'|'linksMap'>} ConditionContext */
+
+/**
+ * @typedef {object} ConditionDefinition
+ * @prop {boolean} [hasCondition]
+ * @prop {string} [conditionFn]
+ * @prop {boolean} [hasEditableCondition]
+ * @prop {EditableCondition} [editableCondition]
+ */
 
 /**
  *
- * @param {object} params
- * @param {BotContext} context
+ * @param {ConditionDefinition} params
+ * @param {ConditionContext} context
  * @param {string} description
  * @returns {Function}
  */
@@ -27,7 +39,7 @@ module.exports = function getCondition (params, context, description = '') {
         editableCondition = []
     } = params;
 
-    let condition = null;
+    let condition;
 
     if (hasCondition) {
         if (hasEditableCondition) {
@@ -36,7 +48,7 @@ module.exports = function getCondition (params, context, description = '') {
             condition = customFn(conditionFn, description, allowForbiddenSnippetWords);
         }
     } else {
-        condition = customFn('(req,res)=>true', description, allowForbiddenSnippetWords);
+        condition = () => true;
     }
     return condition;
 };

@@ -416,7 +416,7 @@ class Processor extends EventEmitter {
             });
         }
 
-        const llm = new LLM(llmOptions);
+        const llm = new LLM(llmOptions, Ai.ai);
 
         const result = await this
             ._dispatch(message, pageId, messageSender, responderData, preloadPromise, llm);

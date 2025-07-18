@@ -34,7 +34,14 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 /** @typedef {import('./analytics/consts').TrackingType} TrackingType */
 
 /** @typedef {import('./LLM').LLMConfiguration} LLMConfiguration */
+/** @typedef {import('./LLM').PreprocessedRule} PreprocessedRule */
+/** @typedef {import('./LLM').EvaluationRuleAction} EvaluationRuleAction */
+/** @typedef {import('./LLM').EvaluationResult} EvaluationResult */
 /** @typedef {import('./LLMSession').LLMMessage} LLMMessage */
+/** @typedef {import('./LLMSession').LLMFilterFn} LLMFilterFn */
+/** @typedef {import('./LLMSession').LLMFilter} LLMFilter */
+/** @typedef {import('./LLMSession').FilterScope} FilterScope */
+/** @typedef {import('./utils/stateData').IStateRequest} IStateRequest */
 
 /**
  * @enum {string} ExpectedInput
@@ -243,6 +250,28 @@ class Responder {
         this._llmContext = new Map([
             [this.LLM_CTX_DEFAULT, []]
         ]);
+
+        /** @type {Map<string,PreprocessedRule[]>} */
+        this._llmResultRules = new Map([
+            [this.LLM_CTX_DEFAULT, []]
+        ]);
+
+        /** @type {Map<string,LLMFilter[]>} */
+        this._llmFilters = new Map([
+            [this.LLM_CTX_DEFAULT, []],
+            [null, []]
+        ]);
+    }
+
+    /**
+     *
+     * @deprecated use llmAddInstructions() instead
+     * @param {PromptSource} systemPrompt
+     * @param {string} [contextType]
+     * @returns {this}
+     */
+    llmAddSystemPrompt (systemPrompt, contextType) {
+        return this.llmAddInstructions(systemPrompt, contextType);
     }
 
     /**
@@ -251,7 +280,7 @@ class Responder {
      * @param {string} contextType
      * @returns {this}
      */
-    llmAddSystemPrompt (systemPrompt, contextType = this.LLM_CTX_DEFAULT) {
+    llmAddInstructions (systemPrompt, contextType = this.LLM_CTX_DEFAULT) {
         if (!systemPrompt) {
             return this;
         }
@@ -264,12 +293,107 @@ class Responder {
         return this;
     }
 
+    /**
+     *
+     * @param {LLMFilter|LLMFilterFn} filter
+     * @param {FilterScope} [scope]
+     * @param {string} [contextType]
+     * @returns {this}
+     */
+    llmAddFilter (
+        filter,
+        scope = LLM.FILTER_SCOPE_CONVERSATION,
+        contextType = null
+    ) {
+        /** @type {LLMFilter} */
+        const addFilter = typeof filter === 'function'
+            ? {
+                filter,
+                scope
+            }
+            : filter;
+
+        if (!this._llmFilters.has(contextType)) {
+            this._llmFilters.set(contextType, []);
+        }
+        this._llmFilters.get(contextType).push(addFilter);
+        return this;
+    }
+
+    /**
+     *
+     * @param {string[]|PreprocessedRule} rule
+     * @param {EvaluationRuleAction} [action]
+     * @param {object} [setState]
+     * @param {string} [contextType]
+     * @returns {this}
+     */
+    llmAddResultRule (
+        rule,
+        action = null,
+        setState = null,
+        contextType = this.LLM_CTX_DEFAULT
+    ) {
+        let addRule = rule;
+
+        if (Array.isArray(addRule)) {
+            [addRule] = this.llm.preprocessEvaluationRules([{
+                // @ts-ignore
+                aiTags: rule,
+                action,
+                setState
+            }]);
+        }
+
+        if (!this._llmResultRules.has(contextType)) {
+            this._llmResultRules.set(contextType, []);
+        }
+        this._llmResultRules.get(contextType).push(addRule);
+        return this;
+    }
+
     async llmSession (contextType = this.LLM_CTX_DEFAULT) {
         const system = await this._getSystemContentForType(contextType);
 
         const chat = system.map((content) => ({ role: LLM.ROLE_SYSTEM, content }));
 
-        return new LLMSession(this.llm, chat, this._llmSend.bind(this));
+        const filters = this._filtersForContext(contextType);
+        return new LLMSession(this.llm, chat, this._llmSend.bind(this), filters);
+    }
+
+    /**
+     *
+     * @param {LLMSession} session
+     * @param {string} [contextType]
+     * @returns {Promise<EvaluationResult>}
+     */
+    async llmEvaluate (session, contextType = this.LLM_CTX_DEFAULT) {
+        const rules = this._llmResultRules.get(contextType) || [];
+        const text = session.lastResponse();
+
+        if (rules.length === 0 || !text) {
+            return {
+                action: null,
+                setState: {},
+                results: [],
+                discard: false
+            };
+        }
+
+        /** @type {IStateRequest} */
+        const req = {
+            state: this.options.state,
+            text: () => text,
+            senderId: this._senderId,
+            pageId: this._pageId,
+            actionData: () => this._data,
+            isConfidentInput: () => false
+        };
+
+        const result = await this.llm.evaluateResultWithRules(text, rules, req, this);
+        this.setState(result.setState);
+
+        return result;
     }
 
     async _replaceAsync (str, regex, asyncFn) {
@@ -339,7 +463,20 @@ class Responder {
             ...LLM.anonymizeTranscript(transcript, transcriptAnonymize)
         ];
 
-        return new LLMSession(this.llm, chat, this._llmSend.bind(this));
+        const filters = this._filtersForContext(contextType);
+        return new LLMSession(this.llm, chat, this._llmSend.bind(this), filters);
+    }
+
+    /**
+     *
+     * @param {string|null} contextType
+     * @returns {LLMFilter[]}
+     */
+    _filtersForContext (contextType) {
+        return [
+            ...(this._llmFilters.get(contextType) || []),
+            ...this._llmFilters.get(null)
+        ];
     }
 
     /**
@@ -394,6 +531,7 @@ class Responder {
      */
     setFlag (flag) {
         this._senderMeta.flag = flag;
+        // @ts-ignore
         return this;
     }
 

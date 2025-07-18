@@ -7,6 +7,9 @@ const assert = require('assert');
 const deepExtend = require('deep-extend');
 const { actionMatches, parseActionPayload } = require('../utils');
 
+/** @typedef {import('../LLM').PromptInfo} PromptInfo */
+/** @typedef {import('../LLM').LLMMessage} LLMMessage */
+
 /**
  * Format message
  *
@@ -29,9 +32,21 @@ function m (text, actual = null, expected = null) {
     return `${text}${result}`;
 }
 
-function ex (message, expected, actual) {
-    const actuals = Array.isArray(actual) ? actual : [actual];
-    return `${message}\n  + expected: "${expected}"\n  - actual:   ${actuals
+function ex (message, expected, actual = null) {
+    let actuals;
+    if (Array.isArray(actual)) {
+        actuals = actual;
+    } else {
+        actuals = actual === null ? [] : [actual];
+    }
+
+    const msg = `${message}\n  + expected: "${expected}"`;
+
+    if (actuals.length === 0) {
+        return msg;
+    }
+
+    return `${msg}\n  - actual:   ${actuals
         .map((a) => `"${a}"`).join('\n              ')}`;
 }
 
@@ -136,6 +151,28 @@ function contains (response, search, message = 'Should contain a text') {
         return false;
     }
     assert.ok(typeIsText, m(message, search, 'not a message'));
+    const match = searchMatchesText(search, text);
+    if (message === false) {
+        return match;
+    }
+    assert.ok(match, m(message, text, search));
+    return true;
+}
+
+/**
+ *
+ * @param {LLMMessage} llmMsg
+ * @param {string} search
+ * @param {string|false} message
+ */
+function llmContains (llmMsg, search, message = 'Should contain a text') {
+    const text = llmMsg.content;
+
+    const typeIsText = typeof text === 'string';
+    if (message === false && !typeIsText) {
+        return false;
+    }
+    assert.ok(typeIsText, m(message, search, 'not a text message'));
     const match = searchMatchesText(search, text);
     if (message === false) {
         return match;
@@ -374,5 +411,6 @@ module.exports = {
     quickReplyText,
     getText,
     parseActionPayload,
-    ex
+    ex,
+    llmContains
 };

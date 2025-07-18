@@ -16,6 +16,7 @@ const { dateToISO8601String, zeroHourDate } = require('./datetime');
  * @prop {object} [configuration]
  * @prop {Function} text
  * @prop {Function} [actionData]
+ * @prop {Function} [isConfidentInput]
  */
 
 /**
@@ -68,6 +69,7 @@ module.exports = function stateData (
         $today,
         $tomorrow,
         $yesterday,
+        $llmResult: res?.llm?.lastResult?.content,
         // yes - res because of circular dependency
         ...(res && req && req.actionData()),
         ...(res ? res.data : {}),

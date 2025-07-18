@@ -88,7 +88,7 @@ function toArray (previousValue) {
 const ENTITY_HBS_REGEXP = /^\s*\{\{\[?@([^@[\]{}\s]+)(\])?\}\}\s*$/;
 const VARIABLE_HBS_REGEXP = /^\s*\{\{\[?([^$@[\]{}\s]+)\]?\}\}\s*$/;
 
-function getSetState (setState, req, res = null, useState = null, configuration = null) {
+function getSetState (setState, req, res = null, stateOverride = null, configuration = null) {
     if (!setState) {
         return {};
     }
@@ -96,7 +96,7 @@ function getSetState (setState, req, res = null, useState = null, configuration 
         .filter((k) => k !== '_');
 
     let obj = {};
-    let state = stateData(req, res, configuration, useState);
+    let state = stateData(req, res, configuration, stateOverride);
 
     keys.forEach((k) => {
         const val = setState[k];
@@ -166,8 +166,8 @@ function getSetState (setState, req, res = null, useState = null, configuration 
                     if (entity && (!rear || req.entities.some((e) => e.entity === entity))) {
                         values = req.entities.filter((e) => e.entity === entity)
                             .map((e) => e.value);
-                        if (values.length === 0 && useState && useState[`@${entity}`]) {
-                            values = [useState[`@${entity}`]];
+                        if (values.length === 0 && stateOverride && stateOverride[`@${entity}`]) {
+                            values = [stateOverride[`@${entity}`]];
                         }
                     } else if (variable) {
                         values = toArray(getValue(variable, state));

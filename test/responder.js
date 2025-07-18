@@ -1012,7 +1012,6 @@ describe('Responder', function () {
             });
         });
 
-        // it.only('sentTextResponses', () => {
         it('sentTextResponses', () => {
 
             const { opts, messageSender } = createAssets();

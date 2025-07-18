@@ -19,8 +19,12 @@ const Router = require('./Router'); // eslint-disable-line no-unused-vars
 const ReducerWrapper = require('./ReducerWrapper'); // eslint-disable-line no-unused-vars
 const { FEATURE_TEXT } = require('./features');
 const LLMMockProvider = require('./LLMMockProvider');
+const PromptAssert = require('./testTools/PromptAssert');
 
 /** @typedef {import('./Processor').ProcessorOptions<Router>} ProcessorOptions */
+/** @typedef {import('./LLM').PromptInfo} PromptInfo */
+/** @typedef {import('./LLM').LLMRole} LLMRole */
+/** @typedef {import('./LLM').LLMMessage} LLMMessage */
 
 /**
  * Utility for testing requests
@@ -128,6 +132,9 @@ class Tester {
         this.responses = [];
         this.actions = [];
 
+        /** @type {PromptInfo[]} */
+        this.prompts = [];
+
         /**
          * @prop {object} predefined test data to use
          */
@@ -201,6 +208,7 @@ class Tester {
         this._actionsCollector = [];
         this._pluginBlocksCollector = [];
         this._responsesMock = [];
+        this.prompts = [];
     }
 
     /**
@@ -259,6 +267,7 @@ class Tester {
             throw Object.assign(new Error(`Processor failed with status ${res.status}`), { code: res.status });
         }
         this.responses = messageSender.responses;
+        this.prompts = messageSender.prompts;
         this.pluginBlocks = this._pluginBlocksCollector;
         this.actions = this._actionsCollector;
         this._actionsCollector = [];
@@ -386,6 +395,36 @@ class Tester {
         const stateObj = this.getState();
         stateObj.state = { ...stateObj.state, ...state };
         this.storage.saveState(stateObj);
+    }
+
+    /**
+     *
+     * @returns {PromptAssert}
+     */
+    anyPrompt () {
+        return new PromptAssert(this.prompts);
+    }
+
+    /**
+     *
+     * @returns {PromptAssert}
+     */
+    lastPrompt () {
+        return new PromptAssert(
+            this.prompts.length
+                ? [this.prompts[this.prompts.length - 1]]
+                : []
+        );
+    }
+
+    /**
+     *
+     * @returns {LLMMessage}
+     */
+    getLastPromptResult () {
+        return this.prompts.length
+            ? this.prompts[this.prompts.length - 1].result
+            : null;
     }
 
     /**
@@ -606,9 +645,10 @@ class Tester {
     /**
      * Prints last conversation turnaround
      *
-     * @param {boolean} [showPrivateKeys]
+     * @param {boolean} [full=false]
+     * @param {boolean} [showPrivateKeys=false]
      */
-    debug (showPrivateKeys = false) {
+    debug (full = false, showPrivateKeys = false) {
         // eslint-disable-next-line no-console
         console.log(
             '\n===== actions =====\n',
@@ -625,6 +665,8 @@ class Tester {
                 Object.entries(this.getState().state)
                     .filter((e) => showPrivateKeys || !e[0].startsWith('_'))
             ),
+            '\n------- LLM -------\n',
+            ...PromptAssert.debug(this.prompts, full, true),
             '\n===================\n'
         );
     }

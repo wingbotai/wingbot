@@ -41,8 +41,10 @@ let uq = 1;
 
 /** @typedef {import('./Request').IntentAction} IntentAction */
 /** @typedef {import('./Request')} Request */
+/** @typedef {import('./Request').TextAlternative} TextAlternative */
 /** @typedef {import('./Responder')} Responder */
 /** @typedef {import('./Router').Resolver} Resolver */
+/** @typedef {import('./utils/stateData').IStateRequest} IStateRequest */
 /** @typedef {import('./wingbot/CachedModel').Result} Result */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').Phrases} Phrases */
 /** @typedef {import('./wingbot/CustomEntityDetectionModel').EntityDetector} EntityDetector */
@@ -137,7 +139,7 @@ class Ai {
          * The prefix translator - for request-specific prefixes
          *
          * @param {string} defaultModel
-         * @param {Request} req
+         * @param {IStateRequest} req
          */
         this.getPrefix = (defaultModel, req) => req.state.lang || defaultModel; // eslint-disable-line
 
@@ -857,11 +859,22 @@ class Ai {
             .filter((alt) => alt.score >= this.sttScoreThreshold)
             .slice(0, this.sttMaxAlternatives);
 
-        const altMax = Math.max(0, ...texts.map((t) => t.score));
+        return this._queryModelWithTexts(model, texts, req);
+    }
+
+    /**
+     *
+     * @param {CustomEntityDetectionModel} model
+     * @param {TextAlternative[]} texts
+     * @param {Request} [req]
+     * @returns {Promise<Result>}
+     */
+    async _queryModelWithTexts (model, texts, req = null) {
         const altKoef = (1 - this.confidence);
+        const altMax = Math.max(0, ...texts.map((t) => t.score));
 
         const results = await Promise.all(
-            texts.map(({ text, score }) => model
+            texts.map(({ text, score = 1 }) => model
                 .resolve(this.textFilter(text), req)
                 .then((res) => ({
                     ...res,
@@ -908,6 +921,34 @@ class Ai {
             ...winner,
             intents
         };
+    }
+
+    /**
+     *
+     * @param {string} text
+     * @param {string|IStateRequest} langOrReq
+     * @returns {Promise<Result>}
+     */
+    async queryModel (text, langOrReq = this.DEFAULT_PREFIX) {
+        let model;
+
+        if (typeof langOrReq === 'string') {
+            model = this._keyworders.has(langOrReq)
+                ? this._keyworders.get(langOrReq)
+                : this._keyworders.get(this.DEFAULT_PREFIX);
+        } else {
+            model = this._getModelForRequest(langOrReq);
+        }
+
+        if (!model) {
+            return {
+                text,
+                intents: [],
+                entities: []
+            };
+        }
+
+        return this._queryModelWithTexts(model, [{ text, score: 1 }]);
     }
 
     /**
