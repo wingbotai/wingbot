@@ -109,9 +109,24 @@ type LLMMessage {
     toolCalls: [ToolCall!]
 }
 
+type VectorSearchDocument {
+  id: ID!
+  name: String!
+  text: String!
+  cosineDistance: Float! 
+}
+
+type VectorSearchResult {
+  maximalCosineDistanceThreshold: Float! 
+  nearestNeighbourCount: Int!
+  allResults: [VectorSearchDocument!]!  
+  resultsCroppedByCosineDistance: [VectorSearchDocument!]!  
+}
+
 type PromptInfo {
     prompt: [LLMMessage!]!
     result: LLMMessage!
+    vectorSearchResult: VectorSearchResult
 }
 
 type UserInteraction {
