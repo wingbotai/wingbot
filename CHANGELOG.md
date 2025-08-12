@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.72.0]
+
+### Added
+
+- LLM rules handling
+
 ## [3.71.0]
 
 ### Added
@@ -47,7 +53,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - support for notifications with data
-
 
 ## [3.68.4]
 
@@ -442,7 +447,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.52.1] - 2023-02-15
 
-### Fixed
+###  Fixed
 
 - behavior of empty messages
 
@@ -760,45 +765,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
- - removed request lib
+- removed request lib
 
 ## [3.31.4+5] 2022-05-12
 
 ### Fixed
 
- - behavior of local fallbacks in combination with Router-plugins
+- behavior of local fallbacks in combination with Router-plugins
 
 ## [3.31.2-3] 2022-05-12
 
 ### Fixed
 
- - do not track inside a plugin
-
+- do not track inside a plugin
 
 ## [3.31.1] 2022-05-12
 
 ### Fixed
 
- - SSML filtration at ReturnSender
- - Passing Sender options within a BotApp
+- SSML filtration at ReturnSender
+- Passing Sender options within a BotApp
 
 ## [3.31.0] 2022-04-28
 
 ### Added
- - Support for orchestrator attachment upload
+
+- Support for orchestrator attachment upload
 
 ## [3.30.0] 2022-03-10
 
 ### Fixed
+
 - Text alternatives sorting
 
 ### Added
- - Support for subscriptions preprocessor
+
+- Support for subscriptions preprocessor
 
 ## [3.29.0] 2022-03-10
 
 ### Added
- - Media conditions support
+
+- Media conditions support
 
 ## [3.27.0] 2022-02-02
 
@@ -898,6 +906,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Exception handling in Processor now propagates all conversational exceptions to `ChatLogStorage` (finally)
 -
+
 ## [3.21.1] 2021-09-27
 
 ### Fixed
@@ -970,7 +979,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - published entity matching methods on CustomEntityDetectionModel
 
-
 ## [3.16.1] 2021-06-21
 
 ### Fixed
@@ -996,6 +1004,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `Notifications` now passes through postbacks even with unsubscribtions
+
 ## [3.14.6] 2021-05-20
 
 ### Fixed
@@ -1081,7 +1090,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--  array of sent responses to the Responder class under `res.textResponses`
+- array of sent responses to the Responder class under `res.textResponses`
 
 ## [3.8.0] - 2020-12-14
 
@@ -1090,13 +1099,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - exports for `CustomEntityDetectionModel`
 - support for `_$text` and `_$entity` at quick replies
 
-### Fixed
+###  Fixed
 
 - examples in docs
 
 ## [3.7.5] - 2020-12-01
 
-### Fixed
+###  Fixed
 
 - keeps also limited score/life variables, when using `req.expectedContext()`
 
@@ -1113,7 +1122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - system entities for `email` and `phone`
 
-### Fixed
+###  Fixed
 
 - entity transformation for regexp entities
 
@@ -1134,16 +1143,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Method `res.send()` is now public.
 - New method `plugins.getWrappedPlugin()` simplifies testing of plugins
 - Entity persistence
-  + entites are persisted inside a dialoge
-  + they're accessible under `@<entity>` state variable
+  - entites are persisted inside a dialoge
+  - they're accessible under `@<entity>` state variable
 - Support for designers FAQ Bounce
 - Support for state variable metadata
-  + `vars.dialogContext()`
-  + `vars.expiresAfter()`
-  + `vars.preserveMeta()`
+  - `vars.dialogContext()`
+  - `vars.expiresAfter()`
+  - `vars.preserveMeta()`
 - Support for system entities
 - new `botbuild.plugin` resolver, which combines snippets (inlineCode) and plugins (customCode) resolvers
-  + public plugin library is now a part of the core Wingbot lib
+  - public plugin library is now a part of the core Wingbot lib
 - New flight director adapter class `BotApp`
 
 ### Fixed

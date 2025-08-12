@@ -1,0 +1,622 @@
+---
+title: bufferloader # Title of your page
+section: API # Sidebar navigation group title
+order: 6 # Order in the sidebar navigation group
+---
+
+## Classes
+
+<dl>
+<dt><a href="#MemoryStateStorage">MemoryStateStorage</a></dt>
+<dd><p>Memory conversation state storage for testing purposes</p>
+</dd>
+<dt><a href="#ReturnSender">ReturnSender</a></dt>
+<dd></dd>
+<dt><a href="#ReturnSender">ReturnSender</a></dt>
+<dd></dd>
+</dl>
+
+## Functions
+
+<dl>
+<dt><a href="#bufferloader">bufferloader(url, [limit], [limitJustByBody], [redirCount])</a> ⇒ <code>Promise.&lt;Buffer&gt;</code></dt>
+<dd><p>Downloads a file from url into a buffer. Supports size limits and redirects.</p>
+</dd>
+<dt><a href="#compileWithState">compileWithState(req, res, template)</a> ⇒ <code>string</code></dt>
+<dd><p>Utility, which helps to render handlebars syntax with all variables within conversations state</p>
+</dd>
+<dt><a href="#makeExpectedKeyword">makeExpectedKeyword(action, title, [matcher], [payloadData], [setState], [aiTitle])</a> ⇒ <code><a href="#ExpectedKeyword">ExpectedKeyword</a></code></dt>
+<dd></dd>
+<dt><del><a href="#disambiguationQuickReply">disambiguationQuickReply(title, likelyIntent, disambText, action, data)</a></del></dt>
+<dd><p>Create a disambiguation quick reply</p>
+</dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#ExpectedKeyword">ExpectedKeyword</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#QuickReplyAction">QuickReplyAction</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#State">State</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#StateCondition">StateCondition</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#GetInteractions">GetInteractions</a> ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code></dt>
+<dd></dd>
+<dt><a href="#ChatLogStorage">ChatLogStorage</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#ReturnSenderOptions">ReturnSenderOptions</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#UploadResult">UploadResult</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#DeferOperation">DeferOperation</a> ⇒ <code>Promise.&lt;any&gt;</code></dt>
+<dd></dd>
+<dt><a href="#ErrorLogger">ErrorLogger</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#SendOptions">SendOptions</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TextFilter">TextFilter</a> ⇒ <code>string</code></dt>
+<dd><p>Text filter function</p>
+</dd>
+</dl>
+
+<div id="MemoryStateStorage">&nbsp;</div>
+
+## MemoryStateStorage
+Memory conversation state storage for testing purposes
+
+**Kind**: global class  
+
+* [MemoryStateStorage](#MemoryStateStorage)
+    * [.getState(senderId, pageId)](#MemoryStateStorage_getState) ⇒ <code>Promise.&lt;(State\|null)&gt;</code>
+    * [.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout)](#MemoryStateStorage_getOrCreateAndLock) ⇒ [<code>Promise.&lt;State&gt;</code>](#State)
+    * [.saveState(state)](#MemoryStateStorage_saveState) ⇒ <code>Promise</code>
+    * [.getStates(condition, limit, lastKey)](#MemoryStateStorage_getStates) ⇒ <code>Promise.&lt;{Array.&lt;data:State&gt;, lastKey:string}&gt;</code>
+
+<div id="MemoryStateStorage_getState">&nbsp;</div>
+
+### memoryStateStorage.getState(senderId, pageId) ⇒ <code>Promise.&lt;(State\|null)&gt;</code>
+**Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
+
+| Param | Type |
+| --- | --- |
+| senderId | <code>string</code> | 
+| pageId | <code>string</code> | 
+
+<div id="MemoryStateStorage_getOrCreateAndLock">&nbsp;</div>
+
+### memoryStateStorage.getOrCreateAndLock(senderId, pageId, defaultState, lockTimeout) ⇒ [<code>Promise.&lt;State&gt;</code>](#State)
+**Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
+**Returns**: [<code>Promise.&lt;State&gt;</code>](#State) - - conversation state  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| senderId | <code>string</code> |  | sender identifier |
+| pageId | <code>string</code> |  | page or channel identifier |
+| defaultState | <code>object</code> |  | default state of the conversation |
+| lockTimeout | <code>number</code> | <code>300</code> | duration of lock |
+
+<div id="MemoryStateStorage_saveState">&nbsp;</div>
+
+### memoryStateStorage.saveState(state) ⇒ <code>Promise</code>
+**Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| state | <code>object</code> | conversation state |
+
+<div id="MemoryStateStorage_getStates">&nbsp;</div>
+
+### memoryStateStorage.getStates(condition, limit, lastKey) ⇒ <code>Promise.&lt;{Array.&lt;data:State&gt;, lastKey:string}&gt;</code>
+**Kind**: instance method of [<code>MemoryStateStorage</code>](#MemoryStateStorage)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| condition | [<code>StateCondition</code>](#StateCondition) |  | 
+| limit | <code>number</code> | <code>20</code> | 
+| lastKey | <code>string</code> | <code>null</code> | 
+
+<div id="ReturnSender">&nbsp;</div>
+
+## ReturnSender
+**Kind**: global class  
+**Implements**: <code>LLMLogger</code>  
+
+* [ReturnSender](#ReturnSender)
+    * [new ReturnSender(options, senderId, incommingMessage, logger)](#new_ReturnSender_new)
+    * [.responses](#ReturnSender_responses) : <code>Array.&lt;object&gt;</code>
+    * [._responseOptions](#ReturnSender__responseOptions) : [<code>Array.&lt;SendOptions&gt;</code>](#SendOptions)
+    * [.waits](#ReturnSender_waits) : <code>boolean</code>
+    * [.textFilter](#ReturnSender_textFilter) : [<code>TextFilter</code>](#TextFilter)
+    * [.prompts](#ReturnSender_prompts) : <code>Array.&lt;PromptInfo&gt;</code>
+    * [.requestTexts](#ReturnSender_requestTexts) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.responseTexts](#ReturnSender_responseTexts) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.chatLogStorage](#ReturnSender_chatLogStorage) ⇒ [<code>ChatLogStorage</code>](#ChatLogStorage)
+    * [.tracking](#ReturnSender_tracking) ⇒ <code>TrackingObject</code>
+    * [.logPrompt(promptInfo)](#ReturnSender_logPrompt)
+    * [.defer(operation, logger)](#ReturnSender_defer)
+    * [.upload(data, contentType, fileName)](#ReturnSender_upload) ⇒ [<code>Promise.&lt;UploadResult&gt;</code>](#UploadResult)
+    * [.send(payload, options)](#ReturnSender_send) ⇒ <code>void</code>
+    * [.modifyStateAfterLoad()](#ReturnSender_modifyStateAfterLoad) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+    * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+    * [.finished([req], [res], [err], [reportError])](#ReturnSender_finished) ⇒ <code>Promise.&lt;Object&gt;</code>
+
+<div id="new_ReturnSender_new">&nbsp;</div>
+
+### new ReturnSender(options, senderId, incommingMessage, logger)
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | [<code>ReturnSenderOptions</code>](#ReturnSenderOptions) |  |  |
+| senderId | <code>string</code> |  |  |
+| incommingMessage | <code>object</code> |  |  |
+| logger | [<code>ChatLogStorage</code>](#ChatLogStorage) | <code></code> | console like logger |
+
+<div id="ReturnSender_responses">&nbsp;</div>
+
+### returnSender.responses : <code>Array.&lt;object&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender__responseOptions">&nbsp;</div>
+
+### returnSender.\_responseOptions : [<code>Array.&lt;SendOptions&gt;</code>](#SendOptions)
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_waits">&nbsp;</div>
+
+### returnSender.waits : <code>boolean</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_textFilter">&nbsp;</div>
+
+### returnSender.textFilter : [<code>TextFilter</code>](#TextFilter)
+Preprocess text for NLP
+For example to remove any confidential data
+
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
+
+<div id="ReturnSender_prompts">&nbsp;</div>
+
+### returnSender.prompts : <code>Array.&lt;PromptInfo&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_requestTexts">&nbsp;</div>
+
+### returnSender.requestTexts ⇒ <code>Array.&lt;string&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_responseTexts">&nbsp;</div>
+
+### returnSender.responseTexts ⇒ <code>Array.&lt;string&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_chatLogStorage">&nbsp;</div>
+
+### returnSender.chatLogStorage ⇒ [<code>ChatLogStorage</code>](#ChatLogStorage)
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_tracking">&nbsp;</div>
+
+### returnSender.tracking ⇒ <code>TrackingObject</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_logPrompt">&nbsp;</div>
+
+### returnSender.logPrompt(promptInfo)
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| promptInfo | <code>PromptInfo</code> | 
+
+<div id="ReturnSender_defer">&nbsp;</div>
+
+### returnSender.defer(operation, logger)
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| operation | [<code>DeferOperation</code>](#DeferOperation) \| <code>Promise</code> | 
+| logger | [<code>ErrorLogger</code>](#ErrorLogger) | 
+
+<div id="ReturnSender_upload">&nbsp;</div>
+
+### returnSender.upload(data, contentType, fileName) ⇒ [<code>Promise.&lt;UploadResult&gt;</code>](#UploadResult)
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| data | <code>Buffer</code> | 
+| contentType | <code>string</code> | 
+| fileName | <code>string</code> | 
+
+<div id="ReturnSender_send">&nbsp;</div>
+
+### returnSender.send(payload, options) ⇒ <code>void</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| payload | <code>object</code> | 
+| options | [<code>SendOptions</code>](#SendOptions) | 
+
+<div id="ReturnSender_modifyStateAfterLoad">&nbsp;</div>
+
+### returnSender.modifyStateAfterLoad() ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_modifyStateBeforeStore">&nbsp;</div>
+
+### returnSender.modifyStateBeforeStore() ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_finished">&nbsp;</div>
+
+### returnSender.finished([req], [res], [err], [reportError]) ⇒ <code>Promise.&lt;Object&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [req] | <code>Request</code> | <code></code> | 
+| [res] | <code>Responder</code> | <code></code> | 
+| [err] | <code>Error</code> | <code></code> | 
+| [reportError] | <code>function</code> |  | 
+
+<div id="ReturnSender">&nbsp;</div>
+
+## ReturnSender
+**Kind**: global class  
+
+* [ReturnSender](#ReturnSender)
+    * [new ReturnSender(options, senderId, incommingMessage, logger)](#new_ReturnSender_new)
+    * [.responses](#ReturnSender_responses) : <code>Array.&lt;object&gt;</code>
+    * [._responseOptions](#ReturnSender__responseOptions) : [<code>Array.&lt;SendOptions&gt;</code>](#SendOptions)
+    * [.waits](#ReturnSender_waits) : <code>boolean</code>
+    * [.textFilter](#ReturnSender_textFilter) : [<code>TextFilter</code>](#TextFilter)
+    * [.prompts](#ReturnSender_prompts) : <code>Array.&lt;PromptInfo&gt;</code>
+    * [.requestTexts](#ReturnSender_requestTexts) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.responseTexts](#ReturnSender_responseTexts) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.chatLogStorage](#ReturnSender_chatLogStorage) ⇒ [<code>ChatLogStorage</code>](#ChatLogStorage)
+    * [.tracking](#ReturnSender_tracking) ⇒ <code>TrackingObject</code>
+    * [.logPrompt(promptInfo)](#ReturnSender_logPrompt)
+    * [.defer(operation, logger)](#ReturnSender_defer)
+    * [.upload(data, contentType, fileName)](#ReturnSender_upload) ⇒ [<code>Promise.&lt;UploadResult&gt;</code>](#UploadResult)
+    * [.send(payload, options)](#ReturnSender_send) ⇒ <code>void</code>
+    * [.modifyStateAfterLoad()](#ReturnSender_modifyStateAfterLoad) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+    * [.modifyStateBeforeStore()](#ReturnSender_modifyStateBeforeStore) ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+    * [.finished([req], [res], [err], [reportError])](#ReturnSender_finished) ⇒ <code>Promise.&lt;Object&gt;</code>
+
+<div id="new_ReturnSender_new">&nbsp;</div>
+
+### new ReturnSender(options, senderId, incommingMessage, logger)
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | [<code>ReturnSenderOptions</code>](#ReturnSenderOptions) |  |  |
+| senderId | <code>string</code> |  |  |
+| incommingMessage | <code>object</code> |  |  |
+| logger | [<code>ChatLogStorage</code>](#ChatLogStorage) | <code></code> | console like logger |
+
+<div id="ReturnSender_responses">&nbsp;</div>
+
+### returnSender.responses : <code>Array.&lt;object&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender__responseOptions">&nbsp;</div>
+
+### returnSender.\_responseOptions : [<code>Array.&lt;SendOptions&gt;</code>](#SendOptions)
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_waits">&nbsp;</div>
+
+### returnSender.waits : <code>boolean</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_textFilter">&nbsp;</div>
+
+### returnSender.textFilter : [<code>TextFilter</code>](#TextFilter)
+Preprocess text for NLP
+For example to remove any confidential data
+
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| text | <code>string</code> | 
+
+<div id="ReturnSender_prompts">&nbsp;</div>
+
+### returnSender.prompts : <code>Array.&lt;PromptInfo&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_requestTexts">&nbsp;</div>
+
+### returnSender.requestTexts ⇒ <code>Array.&lt;string&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_responseTexts">&nbsp;</div>
+
+### returnSender.responseTexts ⇒ <code>Array.&lt;string&gt;</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_chatLogStorage">&nbsp;</div>
+
+### returnSender.chatLogStorage ⇒ [<code>ChatLogStorage</code>](#ChatLogStorage)
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_tracking">&nbsp;</div>
+
+### returnSender.tracking ⇒ <code>TrackingObject</code>
+**Kind**: instance property of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_logPrompt">&nbsp;</div>
+
+### returnSender.logPrompt(promptInfo)
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| promptInfo | <code>PromptInfo</code> | 
+
+<div id="ReturnSender_defer">&nbsp;</div>
+
+### returnSender.defer(operation, logger)
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| operation | [<code>DeferOperation</code>](#DeferOperation) \| <code>Promise</code> | 
+| logger | [<code>ErrorLogger</code>](#ErrorLogger) | 
+
+<div id="ReturnSender_upload">&nbsp;</div>
+
+### returnSender.upload(data, contentType, fileName) ⇒ [<code>Promise.&lt;UploadResult&gt;</code>](#UploadResult)
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| data | <code>Buffer</code> | 
+| contentType | <code>string</code> | 
+| fileName | <code>string</code> | 
+
+<div id="ReturnSender_send">&nbsp;</div>
+
+### returnSender.send(payload, options) ⇒ <code>void</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type |
+| --- | --- |
+| payload | <code>object</code> | 
+| options | [<code>SendOptions</code>](#SendOptions) | 
+
+<div id="ReturnSender_modifyStateAfterLoad">&nbsp;</div>
+
+### returnSender.modifyStateAfterLoad() ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_modifyStateBeforeStore">&nbsp;</div>
+
+### returnSender.modifyStateBeforeStore() ⇒ <code>Promise.&lt;(object\|null)&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+<div id="ReturnSender_finished">&nbsp;</div>
+
+### returnSender.finished([req], [res], [err], [reportError]) ⇒ <code>Promise.&lt;Object&gt;</code>
+**Kind**: instance method of [<code>ReturnSender</code>](#ReturnSender)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [req] | <code>Request</code> | <code></code> | 
+| [res] | <code>Responder</code> | <code></code> | 
+| [err] | <code>Error</code> | <code></code> | 
+| [reportError] | <code>function</code> |  | 
+
+<div id="bufferloader">&nbsp;</div>
+
+## bufferloader(url, [limit], [limitJustByBody], [redirCount]) ⇒ <code>Promise.&lt;Buffer&gt;</code>
+Downloads a file from url into a buffer. Supports size limits and redirects.
+
+**Kind**: global function  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| url | <code>string</code> |  |  |
+| [limit] | <code>number</code> | <code>0</code> | limit in bytes |
+| [limitJustByBody] | <code>boolean</code> | <code>false</code> | when true, content size in header is ignored |
+| [redirCount] | <code>number</code> | <code>3</code> | maximmum amount of redirects |
+
+**Example**  
+```js
+router.use('*', (req, res, postBack) => {
+    if (req.isFile()) {
+        bufferloader(req.attachmentUrl())
+            .then(buffer => postBack('downloaded', { data: buffer }))
+            .catch(err => postBack('donwloaded', { err }))
+    }
+});
+```
+<div id="compileWithState">&nbsp;</div>
+
+## compileWithState(req, res, template) ⇒ <code>string</code>
+Utility, which helps to render handlebars syntax with all variables within conversations state
+
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+| res | <code>Responder</code> | 
+| template | <code>string</code> | 
+
+**Example**  
+```js
+const { compileWithState } = require('wingbot');
+
+function myPluginFactory (params) {
+
+    return (req, res) => {
+        const text = compileWithState(req, res, params.text);
+        res.text(text);
+    };
+}
+```
+<div id="makeExpectedKeyword">&nbsp;</div>
+
+## makeExpectedKeyword(action, title, [matcher], [payloadData], [setState], [aiTitle]) ⇒ [<code>ExpectedKeyword</code>](#ExpectedKeyword)
+**Kind**: global function  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| action | <code>string</code> |  | 
+| title | <code>string</code> |  | 
+| [matcher] | <code>RegExp</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code> | <code></code> | 
+| [payloadData] | <code>object</code> |  | 
+| [setState] | <code>object</code> | <code></code> | 
+| [aiTitle] | <code>string</code> | <code>null</code> | 
+
+<div id="disambiguationQuickReply">&nbsp;</div>
+
+## ~~disambiguationQuickReply(title, likelyIntent, disambText, action, data)~~
+***Deprecated***
+
+Create a disambiguation quick reply
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| title | <code>string</code> | quick reply title |
+| likelyIntent | <code>string</code> | possible intent |
+| disambText | <code>string</code> | users text input |
+| action | <code>string</code> | action to process the disambbiguation |
+| data | <code>object</code> | optional data |
+
+<div id="ExpectedKeyword">&nbsp;</div>
+
+## ExpectedKeyword : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| action | <code>string</code> | 
+| title | <code>string</code> | 
+| match | <code>null</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code> | 
+| data | <code>object</code> | 
+| [hasAiTitle] | <code>boolean</code> | 
+| [setState] | <code>object</code> | 
+
+<div id="QuickReplyAction">&nbsp;</div>
+
+## QuickReplyAction : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| aboveConfidence | <code>boolean</code> | 
+| action | <code>string</code> | 
+| title | <code>string</code> | 
+| match | <code>null</code> \| <code>string</code> \| <code>Array.&lt;string&gt;</code> | 
+| data | <code>object</code> | 
+| score | <code>number</code> | 
+| sort | <code>number</code> | 
+| [title] | <code>string</code> | 
+| [setState] | <code>object</code> | 
+| [_aiKeys] | <code>Array.&lt;string&gt;</code> | 
+| [intent] | <code>Intent</code> | 
+
+<div id="State">&nbsp;</div>
+
+## State : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| senderId | <code>string</code> | 
+| pageId | <code>string</code> | 
+| state | <code>object</code> | 
+
+<div id="StateCondition">&nbsp;</div>
+
+## StateCondition : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [search] | <code>string</code> | 
+
+<div id="GetInteractions">&nbsp;</div>
+
+## GetInteractions ⇒ <code>Promise.&lt;Array.&lt;object&gt;&gt;</code>
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| senderId | <code>string</code> |  |
+| pageId | <code>string</code> |  |
+| [limit] | <code>number</code> |  |
+| [endAt] | <code>number</code> | iterate backwards to history |
+| [startAt] | <code>number</code> | iterate forward to last interaction |
+
+<div id="ChatLogStorage">&nbsp;</div>
+
+## ChatLogStorage : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| log | <code>function</code> | 
+| error | <code>function</code> | 
+| [getInteractions] | [<code>GetInteractions</code>](#GetInteractions) | 
+
+<div id="ReturnSenderOptions">&nbsp;</div>
+
+## ReturnSenderOptions : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| [dontWaitForDeferredOps] | <code>boolean</code> |  |
+| [textFilter] | [<code>TextFilter</code>](#TextFilter) | filter for saving the texts |
+| [logStandbyEvents] | <code>boolean</code> | log the standby events |
+| [confidentInputFilter] | [<code>TextFilter</code>](#TextFilter) | filter for confident input (@CONFIDENT) |
+
+<div id="UploadResult">&nbsp;</div>
+
+## UploadResult : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [url] | <code>string</code> | 
+| [attachmentId] | <code>string</code> \| <code>number</code> | 
+
+<div id="DeferOperation">&nbsp;</div>
+
+## DeferOperation ⇒ <code>Promise.&lt;any&gt;</code>
+**Kind**: global typedef  
+<div id="ErrorLogger">&nbsp;</div>
+
+## ErrorLogger : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| error | <code>function</code> | 
+
+<div id="SendOptions">&nbsp;</div>
+
+## SendOptions : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [anonymizer] | [<code>TextFilter</code>](#TextFilter) | 
+
+<div id="TextFilter">&nbsp;</div>
+
+## TextFilter ⇒ <code>string</code>
+Text filter function
+
+**Kind**: global typedef  
+**Returns**: <code>string</code> - - filtered text  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | input text |
+| key | <code>&#x27;text&#x27;</code> \| <code>&#x27;title&#x27;</code> \| <code>&#x27;url&#x27;</code> \| <code>&#x27;content&#x27;</code> |  |
+

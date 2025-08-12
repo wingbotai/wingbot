@@ -32,16 +32,25 @@ const WEBVIEW_COMPACT = 'compact';
  */
 
 /**
+ * null = text+voice
+ * t = text only
+ * v = voice only
+ * s = ssml
+ *
+ * @typedef {"t"|"v"|"s"|null} Purpose
+ */
+
+/**
  * @typedef Translation
  * @property {string|string[]} t - text alternatives
  * @property {string | null} l - language
- * @property {string|string[]} [p] - purposes
- * null = default + voice
- * t = text
- * v = voice
- * s = ssml
+ * @property {Purpose | Purpose[]} [p] - purposes
  */
 
+/**
+ * @param {string | string[] | Translation | Translation[]} translations
+ * @returns {translations is Translation[]}
+ */
 function isArrayOfObjects (translations) {
     return Array.isArray(translations)
         && typeof translations[0] === 'object'

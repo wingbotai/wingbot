@@ -16,11 +16,15 @@ const LLM = require('../LLM');
 /** @typedef {import('../LLM').EvaluationRule} EvaluationRule */
 
 /**
+ * @typedef {object} ContextMessageParams
+ * @property {Translations} context
+ * @property {string} [type]
+ * @property {EvaluationRule[]} [rules]
+ */
+
+/**
  *
- * @param {object} params
- * @param {Translations} params.context
- * @param {string} [params.type]
- * @param {EvaluationRule[]} [params.rules]
+ * @param {ContextMessageParams} params
  * @param {BotContext} context
  * @returns {Resolver}
  */

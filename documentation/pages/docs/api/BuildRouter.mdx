@@ -1,0 +1,827 @@
+---
+title: BuildRouter # Title of your page
+section: API # Sidebar navigation group title
+order: 9 # Order in the sidebar navigation group
+---
+
+## Classes
+
+<dl>
+<dt><a href="#BuildRouter">BuildRouter</a> ⇐ <code>Router</code></dt>
+<dd></dd>
+<dt><a href="#BuildRouter">BuildRouter</a></dt>
+<dd></dd>
+<dt><a href="#Plugins">Plugins</a></dt>
+<dd></dd>
+</dl>
+
+## Constants
+
+<dl>
+<dt><a href="#DUMMY_ROUTE">DUMMY_ROUTE</a> : <code><a href="#TransformedRoute">TransformedRoute</a></code></dt>
+<dd></dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#BuildInfo">BuildInfo</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#Resolver">Resolver</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#Route">Route</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#TransformedRoute">TransformedRoute</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#LinksMap">LinksMap</a> : <code>Map.&lt;(string|number), string&gt;</code></dt>
+<dd></dd>
+<dt><a href="#BlockMap">BlockMap</a> : <code>Map.&lt;(string|number), Block&gt;</code></dt>
+<dd></dd>
+<dt><a href="#Block">Block</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#BotConfig">BotConfig</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#ConfigStorage">ConfigStorage</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#RouteConfig">RouteConfig</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#LinkTranslator">LinkTranslator</a> ⇒ <code>string</code></dt>
+<dd></dd>
+<dt><a href="#BuildRouterContext">BuildRouterContext</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#NestedLinksMapFactory">NestedLinksMapFactory</a> ⇒ <code><a href="#LinksMap">LinksMap</a></code></dt>
+<dd></dd>
+<dt><a href="#BotContextExtention">BotContextExtention</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#BotContext">BotContext</a> : <code><a href="#BotContextExtention">BotContextExtention</a></code> | <code>BuildRouterContext.&lt;C&gt;</code></dt>
+<dd></dd>
+<dt><a href="#Plugin">Plugin</a> : <code>function</code></dt>
+<dd></dd>
+<dt><a href="#PluginFactory">PluginFactory</a> ⇒ <code>Router</code> | <code>Middleware</code></dt>
+<dd></dd>
+<dt><a href="#PluginFactoryOptions">PluginFactoryOptions</a> : <code>object</code></dt>
+<dd></dd>
+</dl>
+
+<div id="BuildRouter">&nbsp;</div>
+
+## BuildRouter ⇐ <code>Router</code>
+**Kind**: global class  
+**Extends**: <code>Router</code>  
+
+* [BuildRouter](#BuildRouter) ⇐ <code>Router</code>
+    * [new BuildRouter()](#new_BuildRouter_new)
+    * [new BuildRouter(block, plugins, context, [fetchFn])](#new_BuildRouter_new)
+    * _instance_
+        * [._context](#BuildRouter__context) : <code>BotContext.&lt;C&gt;</code> \| <code>Promise.&lt;BuildRouterContext.&lt;C&gt;&gt;</code>
+        * [._resolvedContext](#BuildRouter__resolvedContext) : <code>BotContext.&lt;C&gt;</code>
+        * [._linksMap](#BuildRouter__linksMap) : [<code>LinksMap</code>](#LinksMap)
+        * [._nestedLinksMap](#BuildRouter__nestedLinksMap) : [<code>LinksMap</code>](#LinksMap)
+        * [._configStorage](#BuildRouter__configStorage) : [<code>ConfigStorage</code>](#ConfigStorage) \| [<code>Promise.&lt;ConfigStorage&gt;</code>](#ConfigStorage)
+        * [.keepConfigFor](#BuildRouter_keepConfigFor) : <code>number</code>
+        * [.loadBot()](#BuildRouter_loadBot) ⇒ <code>Promise.&lt;object&gt;</code>
+        * [._buildBot(block, setConfigTimestamp, lastmod)](#BuildRouter__buildBot)
+        * [._createLinksMap(block)](#BuildRouter__createLinksMap)
+        * [._enabledByRouteConfig(routeConfig)](#BuildRouter__enabledByRouteConfig)
+        * [._getIncludedBlockId(route)](#BuildRouter__getIncludedBlockId) ⇒ <code>string</code> \| <code>null</code>
+        * [._getRouteConfig(route)](#BuildRouter__getRouteConfig) ⇒ [<code>RouteConfig</code>](#RouteConfig)
+        * [._findEntryPointsInResolver(linksMap, includedBlock, route)](#BuildRouter__findEntryPointsInResolver) ⇒ <code>void</code>
+        * [._buildRouteHead(route, nextRouteIsSameResponder, includedBlockId)](#BuildRouter__buildRouteHead) ⇒ <code>Array.&lt;Middleware&gt;</code>
+        * [._buildRoutes(routes, nestedBlocksByStaticId)](#BuildRouter__buildRoutes)
+        * [._lastMessageIndex(resolvers)](#BuildRouter__lastMessageIndex) ⇒ <code>number</code>
+        * [.buildResolvers(resolvers, [route], [buildInfo], [nestedBlocksByStaticId])](#BuildRouter_buildResolvers) ⇒ <code>Array.&lt;Middleware&gt;</code>
+        * [._resolverFactory(resolver, context, buildInfo)](#BuildRouter__resolverFactory) ⇒ <code>Middleware</code>
+    * _static_
+        * [.fromData(blocks, [plugins], [context])](#BuildRouter_fromData)
+
+<div id="new_BuildRouter_new">&nbsp;</div>
+
+### new BuildRouter()
+Build bot from Wingbot configuration file or snapshot url
+
+<div id="new_BuildRouter_new">&nbsp;</div>
+
+### new BuildRouter(block, plugins, context, [fetchFn])
+Create new router from configuration
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| block | [<code>BotConfig</code>](#BotConfig) \| [<code>Block</code>](#Block) |  |
+| plugins | [<code>Plugins</code>](#Plugins) | custom code blocks resource |
+| context | <code>BuildRouterContext.&lt;C&gt;</code> \| <code>Promise.&lt;BuildRouterContext.&lt;C&gt;&gt;</code> | the building context |
+| [fetchFn] | <code>fetch</code> | override a request function |
+
+**Example**  
+```js
+// usage of plugins
+
+const { BuildRouter, Plugins } = require('wingbot');
+const dynamoDb = require('./lib/dynamodb');
+const config = require('./config');
+
+const plugins = new Plugins();
+
+plugins.register('exampleBlock', async (req, res, postBack) => {
+    await res.run('responseBlockName');
+});
+
+const bot = new BuildRouter({
+    botId: 'b7a71c27-c295-4ab0-b64e-6835b50a0db0',
+    snapshot: 'master',
+    token: 'adjsadlkadjj92n9u9'
+}, plugins);
+
+module.exports = bot;
+```
+<div id="BuildRouter__context">&nbsp;</div>
+
+### buildRouter.\_context : <code>BotContext.&lt;C&gt;</code> \| <code>Promise.&lt;BuildRouterContext.&lt;C&gt;&gt;</code>
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__resolvedContext">&nbsp;</div>
+
+### buildRouter.\_resolvedContext : <code>BotContext.&lt;C&gt;</code>
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__linksMap">&nbsp;</div>
+
+### buildRouter.\_linksMap : [<code>LinksMap</code>](#LinksMap)
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__nestedLinksMap">&nbsp;</div>
+
+### buildRouter.\_nestedLinksMap : [<code>LinksMap</code>](#LinksMap)
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__configStorage">&nbsp;</div>
+
+### buildRouter.\_configStorage : [<code>ConfigStorage</code>](#ConfigStorage) \| [<code>Promise.&lt;ConfigStorage&gt;</code>](#ConfigStorage)
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter_keepConfigFor">&nbsp;</div>
+
+### buildRouter.keepConfigFor : <code>number</code>
+Timeout, when the router is not checking for new configuration
+
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter_loadBot">&nbsp;</div>
+
+### buildRouter.loadBot() ⇒ <code>Promise.&lt;object&gt;</code>
+Loads conversation configuration
+
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__buildBot">&nbsp;</div>
+
+### buildRouter.\_buildBot(block, setConfigTimestamp, lastmod)
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| block | [<code>Block</code>](#Block) |  | 
+| setConfigTimestamp | <code>number</code> |  | 
+| lastmod | <code>string</code> | <code>&quot;-&quot;</code> | 
+
+<div id="BuildRouter__createLinksMap">&nbsp;</div>
+
+### buildRouter.\_createLinksMap(block)
+returns {[LinksMap, BlockMap]}
+
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| block | [<code>Block</code>](#Block) | 
+
+<div id="BuildRouter__enabledByRouteConfig">&nbsp;</div>
+
+### buildRouter.\_enabledByRouteConfig(routeConfig)
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| routeConfig | [<code>RouteConfig</code>](#RouteConfig) | 
+
+<div id="BuildRouter__getIncludedBlockId">&nbsp;</div>
+
+### buildRouter.\_getIncludedBlockId(route) ⇒ <code>string</code> \| <code>null</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| route | [<code>Route</code>](#Route) | 
+
+<div id="BuildRouter__getRouteConfig">&nbsp;</div>
+
+### buildRouter.\_getRouteConfig(route) ⇒ [<code>RouteConfig</code>](#RouteConfig)
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| route | [<code>TransformedRoute</code>](#TransformedRoute) | 
+
+<div id="BuildRouter__findEntryPointsInResolver">&nbsp;</div>
+
+### buildRouter.\_findEntryPointsInResolver(linksMap, includedBlock, route) ⇒ <code>void</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| linksMap | [<code>LinksMap</code>](#LinksMap) | 
+| includedBlock | [<code>Block</code>](#Block) | 
+| route | [<code>TransformedRoute</code>](#TransformedRoute) | 
+
+<div id="BuildRouter__buildRouteHead">&nbsp;</div>
+
+### buildRouter.\_buildRouteHead(route, nextRouteIsSameResponder, includedBlockId) ⇒ <code>Array.&lt;Middleware&gt;</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| route | [<code>TransformedRoute</code>](#TransformedRoute) | 
+| nextRouteIsSameResponder | <code>boolean</code> | 
+| includedBlockId | <code>string</code> | 
+
+<div id="BuildRouter__buildRoutes">&nbsp;</div>
+
+### buildRouter.\_buildRoutes(routes, nestedBlocksByStaticId)
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| routes | [<code>Array.&lt;TransformedRoute&gt;</code>](#TransformedRoute) | 
+| nestedBlocksByStaticId | [<code>BlockMap</code>](#BlockMap) | 
+
+<div id="BuildRouter__lastMessageIndex">&nbsp;</div>
+
+### buildRouter.\_lastMessageIndex(resolvers) ⇒ <code>number</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| resolvers | [<code>Array.&lt;Resolver&gt;</code>](#Resolver) | 
+
+<div id="BuildRouter_buildResolvers">&nbsp;</div>
+
+### buildRouter.buildResolvers(resolvers, [route], [buildInfo], [nestedBlocksByStaticId]) ⇒ <code>Array.&lt;Middleware&gt;</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| resolvers | [<code>Array.&lt;Resolver&gt;</code>](#Resolver) |  | 
+| [route] | [<code>TransformedRoute</code>](#TransformedRoute) |  | 
+| [buildInfo] | [<code>BuildInfo</code>](#BuildInfo) |  | 
+| [nestedBlocksByStaticId] | [<code>BlockMap</code>](#BlockMap) | <code></code> | 
+
+<div id="BuildRouter__resolverFactory">&nbsp;</div>
+
+### buildRouter.\_resolverFactory(resolver, context, buildInfo) ⇒ <code>Middleware</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| resolver | [<code>Resolver</code>](#Resolver) | 
+| context | <code>BotContext.&lt;C&gt;</code> | 
+| buildInfo | [<code>BuildInfo</code>](#BuildInfo) | 
+
+<div id="BuildRouter_fromData">&nbsp;</div>
+
+### BuildRouter.fromData(blocks, [plugins], [context])
+**Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blocks | [<code>Array.&lt;Block&gt;</code>](#Block) | blocks list |
+| [plugins] | [<code>Plugins</code>](#Plugins) |  |
+| [context] | <code>BotContext.&lt;C&gt;</code> |  |
+
+<div id="BuildRouter">&nbsp;</div>
+
+## BuildRouter
+**Kind**: global class  
+
+* [BuildRouter](#BuildRouter)
+    * [new BuildRouter()](#new_BuildRouter_new)
+    * [new BuildRouter(block, plugins, context, [fetchFn])](#new_BuildRouter_new)
+    * _instance_
+        * [._context](#BuildRouter__context) : <code>BotContext.&lt;C&gt;</code> \| <code>Promise.&lt;BuildRouterContext.&lt;C&gt;&gt;</code>
+        * [._resolvedContext](#BuildRouter__resolvedContext) : <code>BotContext.&lt;C&gt;</code>
+        * [._linksMap](#BuildRouter__linksMap) : [<code>LinksMap</code>](#LinksMap)
+        * [._nestedLinksMap](#BuildRouter__nestedLinksMap) : [<code>LinksMap</code>](#LinksMap)
+        * [._configStorage](#BuildRouter__configStorage) : [<code>ConfigStorage</code>](#ConfigStorage) \| [<code>Promise.&lt;ConfigStorage&gt;</code>](#ConfigStorage)
+        * [.keepConfigFor](#BuildRouter_keepConfigFor) : <code>number</code>
+        * [.loadBot()](#BuildRouter_loadBot) ⇒ <code>Promise.&lt;object&gt;</code>
+        * [._buildBot(block, setConfigTimestamp, lastmod)](#BuildRouter__buildBot)
+        * [._createLinksMap(block)](#BuildRouter__createLinksMap)
+        * [._enabledByRouteConfig(routeConfig)](#BuildRouter__enabledByRouteConfig)
+        * [._getIncludedBlockId(route)](#BuildRouter__getIncludedBlockId) ⇒ <code>string</code> \| <code>null</code>
+        * [._getRouteConfig(route)](#BuildRouter__getRouteConfig) ⇒ [<code>RouteConfig</code>](#RouteConfig)
+        * [._findEntryPointsInResolver(linksMap, includedBlock, route)](#BuildRouter__findEntryPointsInResolver) ⇒ <code>void</code>
+        * [._buildRouteHead(route, nextRouteIsSameResponder, includedBlockId)](#BuildRouter__buildRouteHead) ⇒ <code>Array.&lt;Middleware&gt;</code>
+        * [._buildRoutes(routes, nestedBlocksByStaticId)](#BuildRouter__buildRoutes)
+        * [._lastMessageIndex(resolvers)](#BuildRouter__lastMessageIndex) ⇒ <code>number</code>
+        * [.buildResolvers(resolvers, [route], [buildInfo], [nestedBlocksByStaticId])](#BuildRouter_buildResolvers) ⇒ <code>Array.&lt;Middleware&gt;</code>
+        * [._resolverFactory(resolver, context, buildInfo)](#BuildRouter__resolverFactory) ⇒ <code>Middleware</code>
+    * _static_
+        * [.fromData(blocks, [plugins], [context])](#BuildRouter_fromData)
+
+<div id="new_BuildRouter_new">&nbsp;</div>
+
+### new BuildRouter()
+Build bot from Wingbot configuration file or snapshot url
+
+<div id="new_BuildRouter_new">&nbsp;</div>
+
+### new BuildRouter(block, plugins, context, [fetchFn])
+Create new router from configuration
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| block | [<code>BotConfig</code>](#BotConfig) \| [<code>Block</code>](#Block) |  |
+| plugins | [<code>Plugins</code>](#Plugins) | custom code blocks resource |
+| context | <code>BuildRouterContext.&lt;C&gt;</code> \| <code>Promise.&lt;BuildRouterContext.&lt;C&gt;&gt;</code> | the building context |
+| [fetchFn] | <code>fetch</code> | override a request function |
+
+**Example**  
+```js
+// usage of plugins
+
+const { BuildRouter, Plugins } = require('wingbot');
+const dynamoDb = require('./lib/dynamodb');
+const config = require('./config');
+
+const plugins = new Plugins();
+
+plugins.register('exampleBlock', async (req, res, postBack) => {
+    await res.run('responseBlockName');
+});
+
+const bot = new BuildRouter({
+    botId: 'b7a71c27-c295-4ab0-b64e-6835b50a0db0',
+    snapshot: 'master',
+    token: 'adjsadlkadjj92n9u9'
+}, plugins);
+
+module.exports = bot;
+```
+<div id="BuildRouter__context">&nbsp;</div>
+
+### buildRouter.\_context : <code>BotContext.&lt;C&gt;</code> \| <code>Promise.&lt;BuildRouterContext.&lt;C&gt;&gt;</code>
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__resolvedContext">&nbsp;</div>
+
+### buildRouter.\_resolvedContext : <code>BotContext.&lt;C&gt;</code>
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__linksMap">&nbsp;</div>
+
+### buildRouter.\_linksMap : [<code>LinksMap</code>](#LinksMap)
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__nestedLinksMap">&nbsp;</div>
+
+### buildRouter.\_nestedLinksMap : [<code>LinksMap</code>](#LinksMap)
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__configStorage">&nbsp;</div>
+
+### buildRouter.\_configStorage : [<code>ConfigStorage</code>](#ConfigStorage) \| [<code>Promise.&lt;ConfigStorage&gt;</code>](#ConfigStorage)
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter_keepConfigFor">&nbsp;</div>
+
+### buildRouter.keepConfigFor : <code>number</code>
+Timeout, when the router is not checking for new configuration
+
+**Kind**: instance property of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter_loadBot">&nbsp;</div>
+
+### buildRouter.loadBot() ⇒ <code>Promise.&lt;object&gt;</code>
+Loads conversation configuration
+
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+<div id="BuildRouter__buildBot">&nbsp;</div>
+
+### buildRouter.\_buildBot(block, setConfigTimestamp, lastmod)
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| block | [<code>Block</code>](#Block) |  | 
+| setConfigTimestamp | <code>number</code> |  | 
+| lastmod | <code>string</code> | <code>&quot;-&quot;</code> | 
+
+<div id="BuildRouter__createLinksMap">&nbsp;</div>
+
+### buildRouter.\_createLinksMap(block)
+returns {[LinksMap, BlockMap]}
+
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| block | [<code>Block</code>](#Block) | 
+
+<div id="BuildRouter__enabledByRouteConfig">&nbsp;</div>
+
+### buildRouter.\_enabledByRouteConfig(routeConfig)
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| routeConfig | [<code>RouteConfig</code>](#RouteConfig) | 
+
+<div id="BuildRouter__getIncludedBlockId">&nbsp;</div>
+
+### buildRouter.\_getIncludedBlockId(route) ⇒ <code>string</code> \| <code>null</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| route | [<code>Route</code>](#Route) | 
+
+<div id="BuildRouter__getRouteConfig">&nbsp;</div>
+
+### buildRouter.\_getRouteConfig(route) ⇒ [<code>RouteConfig</code>](#RouteConfig)
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| route | [<code>TransformedRoute</code>](#TransformedRoute) | 
+
+<div id="BuildRouter__findEntryPointsInResolver">&nbsp;</div>
+
+### buildRouter.\_findEntryPointsInResolver(linksMap, includedBlock, route) ⇒ <code>void</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| linksMap | [<code>LinksMap</code>](#LinksMap) | 
+| includedBlock | [<code>Block</code>](#Block) | 
+| route | [<code>TransformedRoute</code>](#TransformedRoute) | 
+
+<div id="BuildRouter__buildRouteHead">&nbsp;</div>
+
+### buildRouter.\_buildRouteHead(route, nextRouteIsSameResponder, includedBlockId) ⇒ <code>Array.&lt;Middleware&gt;</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| route | [<code>TransformedRoute</code>](#TransformedRoute) | 
+| nextRouteIsSameResponder | <code>boolean</code> | 
+| includedBlockId | <code>string</code> | 
+
+<div id="BuildRouter__buildRoutes">&nbsp;</div>
+
+### buildRouter.\_buildRoutes(routes, nestedBlocksByStaticId)
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| routes | [<code>Array.&lt;TransformedRoute&gt;</code>](#TransformedRoute) | 
+| nestedBlocksByStaticId | [<code>BlockMap</code>](#BlockMap) | 
+
+<div id="BuildRouter__lastMessageIndex">&nbsp;</div>
+
+### buildRouter.\_lastMessageIndex(resolvers) ⇒ <code>number</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| resolvers | [<code>Array.&lt;Resolver&gt;</code>](#Resolver) | 
+
+<div id="BuildRouter_buildResolvers">&nbsp;</div>
+
+### buildRouter.buildResolvers(resolvers, [route], [buildInfo], [nestedBlocksByStaticId]) ⇒ <code>Array.&lt;Middleware&gt;</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| resolvers | [<code>Array.&lt;Resolver&gt;</code>](#Resolver) |  | 
+| [route] | [<code>TransformedRoute</code>](#TransformedRoute) |  | 
+| [buildInfo] | [<code>BuildInfo</code>](#BuildInfo) |  | 
+| [nestedBlocksByStaticId] | [<code>BlockMap</code>](#BlockMap) | <code></code> | 
+
+<div id="BuildRouter__resolverFactory">&nbsp;</div>
+
+### buildRouter.\_resolverFactory(resolver, context, buildInfo) ⇒ <code>Middleware</code>
+**Kind**: instance method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type |
+| --- | --- |
+| resolver | [<code>Resolver</code>](#Resolver) | 
+| context | <code>BotContext.&lt;C&gt;</code> | 
+| buildInfo | [<code>BuildInfo</code>](#BuildInfo) | 
+
+<div id="BuildRouter_fromData">&nbsp;</div>
+
+### BuildRouter.fromData(blocks, [plugins], [context])
+**Kind**: static method of [<code>BuildRouter</code>](#BuildRouter)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| blocks | [<code>Array.&lt;Block&gt;</code>](#Block) | blocks list |
+| [plugins] | [<code>Plugins</code>](#Plugins) |  |
+| [context] | <code>BotContext.&lt;C&gt;</code> |  |
+
+<div id="Plugins">&nbsp;</div>
+
+## Plugins
+**Kind**: global class  
+
+* [Plugins](#Plugins)
+    * [new Plugins()](#new_Plugins_new)
+    * [.getPluginOptions(name)](#Plugins_getPluginOptions) ⇒ [<code>PluginFactoryOptions</code>](#PluginFactoryOptions)
+    * [.getWrappedPlugin(name, [paramsData], [items], [context])](#Plugins_getWrappedPlugin)
+    * [.register(name, [plugin])](#Plugins_register)
+    * [.registerFactory(name, pluginFactory, [options])](#Plugins_registerFactory)
+
+<div id="new_Plugins_new">&nbsp;</div>
+
+### new Plugins()
+Custom code plugins for BuildRouter and wingbot.ai
+
+<div id="Plugins_getPluginOptions">&nbsp;</div>
+
+### plugins.getPluginOptions(name) ⇒ [<code>PluginFactoryOptions</code>](#PluginFactoryOptions)
+**Kind**: instance method of [<code>Plugins</code>](#Plugins)  
+
+| Param | Type |
+| --- | --- |
+| name | <code>string</code> | 
+
+<div id="Plugins_getWrappedPlugin">&nbsp;</div>
+
+### plugins.getWrappedPlugin(name, [paramsData], [items], [context])
+Get plugin for the router
+
+**Kind**: instance method of [<code>Plugins</code>](#Plugins)  
+
+| Param | Type |
+| --- | --- |
+| name | <code>string</code> | 
+| [paramsData] | <code>object</code> | 
+| [items] | <code>Map.&lt;string, Array.&lt;function()&gt;&gt;</code> \| <code>Object.&lt;string, (Middleware\|string)&gt;</code> | 
+| [context] | <code>object</code> | 
+| [context.isLastIndex] | <code>boolean</code> | 
+| [context.router] | <code>Router</code> | 
+| [context.configuration] | <code>object</code> | 
+| [context.defaultPlugin] | <code>Middleware</code> | 
+
+**Example**  
+```js
+const { Router } = require('wingbot');
+
+const bot = new Router();
+
+// simply
+bot.use('simple-route', plugins.getWrappedPlugin('myCoolPLugin'));
+
+// fully
+bot.use('full-plugin-route', plugins
+ .getWrappedPlugin(
+    'fancyPLugin',
+    { param: 123 },
+    {
+         onSuccess: (req, res) => { res.text('yes, success'); }
+    }
+));
+```
+<div id="Plugins_register">&nbsp;</div>
+
+### plugins.register(name, [plugin])
+Register plugin
+
+**Kind**: instance method of [<code>Plugins</code>](#Plugins)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> \| <code>Plugins.&lt;S, C&gt;</code> | plugin name or plugins object to include |
+| [plugin] | <code>Plugin.&lt;S, C&gt;</code> \| <code>Router</code> | plugin - optional when including plugin object |
+
+<div id="Plugins_registerFactory">&nbsp;</div>
+
+### plugins.registerFactory(name, pluginFactory, [options])
+Register plugin factory
+
+**Kind**: instance method of [<code>Plugins</code>](#Plugins)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | plugin name or plugins object to include |
+| pluginFactory | <code>PluginFactory.&lt;S, C&gt;</code> | function, which returns a plugin |
+| [options] | [<code>PluginFactoryOptions</code>](#PluginFactoryOptions) |  |
+
+<div id="DUMMY_ROUTE">&nbsp;</div>
+
+## DUMMY\_ROUTE : [<code>TransformedRoute</code>](#TransformedRoute)
+**Kind**: global constant  
+<div id="BuildInfo">&nbsp;</div>
+
+## BuildInfo : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [expectedToAddResolver] | <code>boolean</code> | 
+| [attachedRouter] | <code>boolean</code> | 
+| [notLastMessage] | <code>boolean</code> | 
+
+<div id="Resolver">&nbsp;</div>
+
+## Resolver : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| [id] | <code>string</code> \| <code>number</code> | only for text messages with random characters |
+| type | <code>string</code> |  |
+| params | <code>object</code> |  |
+| [params.staticBlockId] | <code>string</code> |  |
+| [params.items] | <code>object</code> |  |
+| [tag] | <code>string</code> |  |
+
+<div id="Route">&nbsp;</div>
+
+## Route : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| id | <code>number</code> | 
+| path | <code>string</code> \| <code>null</code> | 
+| [skill] | <code>string</code> \| <code>null</code> | 
+| resolvers | [<code>Array.&lt;Resolver&gt;</code>](#Resolver) | 
+| [isFallback] | <code>boolean</code> | 
+| [aiTags] | <code>Array.&lt;string&gt;</code> | 
+| [isResponder] | <code>boolean</code> | 
+| [respondsToRouteId] | <code>number</code> | 
+| [aiTitle] | <code>string</code> \| <code>Array.&lt;any&gt;</code> | 
+| [aiGlobal] | <code>boolean</code> | 
+| [bounceAllowedTo] | <code>BounceAllow</code> | 
+| [bounceReturn] | <code>BounceReturn</code> | 
+| [isEntryPoint] | <code>boolean</code> | 
+
+<div id="TransformedRoute">&nbsp;</div>
+
+## TransformedRoute : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [expectedPath] | <code>string</code> | 
+
+<div id="LinksMap">&nbsp;</div>
+
+## LinksMap : <code>Map.&lt;(string\|number), string&gt;</code>
+**Kind**: global typedef  
+<div id="BlockMap">&nbsp;</div>
+
+## BlockMap : <code>Map.&lt;(string\|number), Block&gt;</code>
+**Kind**: global typedef  
+<div id="Block">&nbsp;</div>
+
+## Block : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| staticBlockId | <code>string</code> | 
+| routes | [<code>Array.&lt;Route&gt;</code>](#Route) | 
+| [isRoot] | <code>boolean</code> | 
+| [disabled] | <code>boolean</code> | 
+| [blockName] | <code>string</code> | 
+| [blockType] | <code>string</code> | 
+
+<div id="BotConfig">&nbsp;</div>
+
+## BotConfig : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| botId | <code>string</code> | the ID of bot |
+| snapshot | <code>string</code> | snapshot stage of bot |
+| token | <code>string</code> \| <code>Promise.&lt;string&gt;</code> | authorization token for bot |
+| [url] | <code>string</code> | specify alternative configuration resource |
+
+<div id="ConfigStorage">&nbsp;</div>
+
+## ConfigStorage : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| invalidateConfig | <code>Object</code> | 
+| getConfigTimestamp | <code>Object</code> | 
+| updateConfig | <code>Object</code> | 
+| getConfig | <code>Object</code> | 
+
+<div id="RouteConfig">&nbsp;</div>
+
+## RouteConfig : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| path | <code>string</code> | 
+| [enabled] | <code>boolean</code> | 
+
+<div id="LinkTranslator">&nbsp;</div>
+
+## LinkTranslator ⇒ <code>string</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| senderId | <code>string</code> | 
+| textLabel | <code>string</code> | 
+| urlText | <code>string</code> | 
+| isExtUrl | <code>boolean</code> | 
+| state | <code>object</code> | 
+| pageId | <code>string</code> | 
+
+<div id="BuildRouterContext">&nbsp;</div>
+
+## BuildRouterContext : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| [linksTranslator] | [<code>LinkTranslator</code>](#LinkTranslator) | function, that translates links globally |
+| [configStorage] | [<code>ConfigStorage</code>](#ConfigStorage) | function, that translates links globally |
+| [allowForbiddenSnippetWords] | <code>boolean</code> | disable security rule |
+| [defaultPlugin] | <code>Middleware</code> | to be able to test configurations without plugins |
+| [routeConfigs] | [<code>Array.&lt;RouteConfig&gt;</code>](#RouteConfig) | list of disabled routes |
+| [configuration] | <code>C</code> | context data |
+
+<div id="NestedLinksMapFactory">&nbsp;</div>
+
+## NestedLinksMapFactory ⇒ [<code>LinksMap</code>](#LinksMap)
+**Kind**: global typedef  
+<div id="BotContextExtention">&nbsp;</div>
+
+## BotContextExtention : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| [nestedBlocksByStaticId] | [<code>BlockMap</code>](#BlockMap) |  |
+| [linksMap] | [<code>LinksMap</code>](#LinksMap) |  |
+| [isLastIndex] | <code>boolean</code> |  |
+| [isLastMessage] | <code>boolean</code> |  |
+| [router] | [<code>BuildRouter</code>](#BuildRouter) |  |
+| [path] | <code>string</code> |  |
+| [isFallback] | <code>boolean</code> |  |
+| [expectedPath] | <code>string</code> |  |
+| [isResponder] | <code>boolean</code> |  |
+| [routeId] | <code>string</code> \| <code>number</code> |  |
+| [blockName] | <code>string</code> |  |
+| [blockType] | <code>string</code> |  |
+| [isRoot] | <code>boolean</code> |  |
+| [staticBlockId] | <code>string</code> |  |
+| [blocks] | [<code>Array.&lt;Block&gt;</code>](#Block) |  |
+| [nestedLinksMapFactory] | [<code>NestedLinksMapFactory</code>](#NestedLinksMapFactory) |  |
+| [BuildRouter] | <code>object</code> |  |
+| [ai] | <code>Ai</code> |  |
+| [resolverId] | <code>string</code> \| <code>number</code> | only for text messages with random characters |
+
+<div id="BotContext">&nbsp;</div>
+
+## BotContext : [<code>BotContextExtention</code>](#BotContextExtention) \| <code>BuildRouterContext.&lt;C&gt;</code>
+**Kind**: global typedef  
+<div id="Plugin">&nbsp;</div>
+
+## Plugin : <code>function</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| req | <code>Request</code> | 
+| res | <code>Responder</code> | 
+| [postBack] | <code>function</code> | 
+| [context] | <code>Object</code> | 
+| [paramsData] | <code>object</code> | 
+
+<div id="PluginFactory">&nbsp;</div>
+
+## PluginFactory ⇒ <code>Router</code> \| <code>Middleware</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| params | <code>object</code> | 
+| configuration | <code>C</code> | 
+
+<div id="PluginFactoryOptions">&nbsp;</div>
+
+## PluginFactoryOptions : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| [notLastMessageItems] | <code>Array.&lt;string&gt;</code> | 
+

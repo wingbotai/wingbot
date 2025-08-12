@@ -14,19 +14,24 @@
     * [Conversations](#conversations)
     * [Entity](#entity)
     * [Intent](#intent)
+    * [LLMMessage](#llmmessage)
     * [PostBackResult](#postbackresult)
+    * [PromptInfo](#promptinfo)
     * [QueuingResult](#queuingresult)
     * [Subscribtion](#subscribtion)
     * [Subscribtions](#subscribtions)
+    * [Subscription](#subscription)
     * [Tag](#tag)
     * [Tags](#tags)
     * [TestResult](#testresult)
+    * [ToolCall](#toolcall)
     * [UserInteraction](#userinteraction)
     * [ValidationResult](#validationresult)
   * [Inputs](#inputs)
     * [CampaignsCondition](#campaignscondition)
     * [ConversationsCondition](#conversationscondition)
     * [CreateCampaignInput](#createcampaigninput)
+    * [SubscriptionData](#subscriptiondata)
     * [UpdateCampaignInput](#updatecampaigninput)
   * [Scalars](#scalars)
     * [Any](#any)
@@ -287,6 +292,11 @@ validate conversation data
 <td></td>
 </tr>
 <tr>
+<td colspan="2" align="right" valign="top">compressed</td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>updateBot</strong></td>
 <td valign="top"><a href="#boolean">Boolean</a></td>
 <td>
@@ -407,6 +417,20 @@ subscribe users
 <tr>
 <td colspan="2" align="right" valign="top">tag</td>
 <td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>subscribeWithData</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td>
+
+subscribe with metadata
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right" valign="top">subscriptions</td>
+<td valign="top">[<a href="#subscriptiondata">SubscriptionData</a>!]!</td>
 <td></td>
 </tr>
 </tbody>
@@ -712,6 +736,11 @@ subscribe users
 <td></td>
 </tr>
 <tr>
+<td colspan="2" valign="top"><strong>subscriptions</strong></td>
+<td valign="top">[<a href="#subscription">Subscription</a>!]</td>
+<td></td>
+</tr>
+<tr>
 <td colspan="2" valign="top"><strong>history</strong></td>
 <td valign="top">[<a href="#userinteraction">UserInteraction</a>]</td>
 <td></td>
@@ -819,6 +848,46 @@ subscribe users
 </tbody>
 </table>
 
+### LLMMessage
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>role</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>content</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>finishReason</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>toolCallId</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>toolCalls</strong></td>
+<td valign="top">[<a href="#toolcall">ToolCall</a>!]</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ### PostBackResult
 
 <table>
@@ -834,6 +903,31 @@ subscribe users
 <tr>
 <td colspan="2" valign="top"><strong>status</strong></td>
 <td valign="top"><a href="#int">Int</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### PromptInfo
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>prompt</strong></td>
+<td valign="top">[<a href="#llmmessage">LLMMessage</a>!]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>result</strong></td>
+<td valign="top"><a href="#llmmessage">LLMMessage</a>!</td>
 <td></td>
 </tr>
 </tbody>
@@ -914,6 +1008,31 @@ subscribe users
 <tr>
 <td colspan="2" valign="top"><strong>count</strong></td>
 <td valign="top"><a href="#int">Int</a>!</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### Subscription
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>tag</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>meta</strong></td>
+<td valign="top"><a href="#any">Any</a></td>
 <td></td>
 </tr>
 </tbody>
@@ -1019,6 +1138,36 @@ subscribe users
 </tbody>
 </table>
 
+### ToolCall
+
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="right">Argument</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>id</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>name</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>args</strong></td>
+<td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
 ### UserInteraction
 
 <table>
@@ -1119,6 +1268,11 @@ subscribe users
 <tr>
 <td colspan="2" valign="top"><strong>visitedInteractions</strong></td>
 <td valign="top">[<a href="#string">String</a>]</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>prompts</strong></td>
+<td valign="top">[<a href="#promptinfo">PromptInfo</a>!]</td>
 <td></td>
 </tr>
 <tr>
@@ -1293,6 +1447,45 @@ subscribe users
 <tr>
 <td colspan="2" valign="top"><strong>condition</strong></td>
 <td valign="top"><a href="#string">String</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+### SubscriptionData
+
+<table>
+<thead>
+<tr>
+<th colspan="2" align="left">Field</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" valign="top"><strong>pageId</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>senderId</strong></td>
+<td valign="top"><a href="#string">String</a>!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>tags</strong></td>
+<td valign="top">[<a href="#string">String</a>!]!</td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>remove</strong></td>
+<td valign="top"><a href="#boolean">Boolean</a></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2" valign="top"><strong>meta</strong></td>
+<td valign="top"><a href="#any">Any</a></td>
 <td></td>
 </tr>
 </tbody>

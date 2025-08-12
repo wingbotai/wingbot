@@ -1,0 +1,251 @@
+---
+title: GA4 # Title of your page
+section: API # Sidebar navigation group title
+order: 12 # Order in the sidebar navigation group
+---
+
+## Classes
+
+<dl>
+<dt><a href="#GA4">GA4</a></dt>
+<dd></dd>
+<dt><a href="#GA4">GA4</a></dt>
+<dd></dd>
+</dl>
+
+## Constants
+
+<dl>
+<dt><a href="#CATEGORY_LABELS">CATEGORY_LABELS</a> : <code>Object.&lt;TrackingCategory, string&gt;</code></dt>
+<dd></dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#FetchResult">FetchResult</a> : <code>object</code></dt>
+<dd></dd>
+<dt><a href="#MockFetch">MockFetch</a> ⇒ <code><a href="#FetchResult">Promise.&lt;FetchResult&gt;</a></code></dt>
+<dd></dd>
+<dt><a href="#GAOptions">GAOptions</a> : <code>object</code></dt>
+<dd></dd>
+</dl>
+
+<div id="GA4">&nbsp;</div>
+
+## GA4
+**Kind**: global class  
+**Implements**: <code>IAnalyticsStorage</code>  
+
+* [GA4](#GA4)
+    * [new GA4(options)](#new_GA4_new)
+    * [._logger](#GA4__logger) : <code>IGALogger</code>
+    * [.setDefaultLogger(logger)](#GA4_setDefaultLogger)
+    * [.createUserSession(pageId, senderId, sessionId, [metadata], [ts], [nonInteractive])](#GA4_createUserSession) ⇒ <code>Promise</code>
+    * [.storeEvents(pageId, senderId, sessionId, events, [user], [ts])](#GA4_storeEvents) ⇒ <code>Promise</code>
+
+<div id="new_GA4_new">&nbsp;</div>
+
+### new GA4(options)
+
+| Param | Type |
+| --- | --- |
+| options | [<code>GAOptions</code>](#GAOptions) | 
+
+<div id="GA4__logger">&nbsp;</div>
+
+### gA4.\_logger : <code>IGALogger</code>
+**Kind**: instance property of [<code>GA4</code>](#GA4)  
+<div id="GA4_setDefaultLogger">&nbsp;</div>
+
+### gA4.setDefaultLogger(logger)
+**Kind**: instance method of [<code>GA4</code>](#GA4)  
+
+| Param | Type |
+| --- | --- |
+| logger | <code>IGALogger</code> | 
+
+<div id="GA4_createUserSession">&nbsp;</div>
+
+### gA4.createUserSession(pageId, senderId, sessionId, [metadata], [ts], [nonInteractive]) ⇒ <code>Promise</code>
+**Kind**: instance method of [<code>GA4</code>](#GA4)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| pageId | <code>string</code> |  | 
+| senderId | <code>string</code> |  | 
+| sessionId | <code>string</code> |  | 
+| [metadata] | <code>SessionMetadata</code> |  | 
+| [ts] | <code>number</code> |  | 
+| [nonInteractive] | <code>boolean</code> | <code>false</code> | 
+
+<div id="GA4_storeEvents">&nbsp;</div>
+
+### gA4.storeEvents(pageId, senderId, sessionId, events, [user], [ts]) ⇒ <code>Promise</code>
+**Kind**: instance method of [<code>GA4</code>](#GA4)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| pageId | <code>string</code> |  | 
+| senderId | <code>string</code> |  | 
+| sessionId | <code>string</code> |  | 
+| events | <code>Array.&lt;Event&gt;</code> |  | 
+| [user] | <code>GAUser</code> | <code></code> | 
+| [ts] | <code>number</code> |  | 
+
+<div id="GA4">&nbsp;</div>
+
+## GA4
+**Kind**: global class  
+
+* [GA4](#GA4)
+    * [new GA4(options)](#new_GA4_new)
+    * [._logger](#GA4__logger) : <code>IGALogger</code>
+    * [.setDefaultLogger(logger)](#GA4_setDefaultLogger)
+    * [.createUserSession(pageId, senderId, sessionId, [metadata], [ts], [nonInteractive])](#GA4_createUserSession) ⇒ <code>Promise</code>
+    * [.storeEvents(pageId, senderId, sessionId, events, [user], [ts])](#GA4_storeEvents) ⇒ <code>Promise</code>
+
+<div id="new_GA4_new">&nbsp;</div>
+
+### new GA4(options)
+
+| Param | Type |
+| --- | --- |
+| options | [<code>GAOptions</code>](#GAOptions) | 
+
+<div id="GA4__logger">&nbsp;</div>
+
+### gA4.\_logger : <code>IGALogger</code>
+**Kind**: instance property of [<code>GA4</code>](#GA4)  
+<div id="GA4_setDefaultLogger">&nbsp;</div>
+
+### gA4.setDefaultLogger(logger)
+**Kind**: instance method of [<code>GA4</code>](#GA4)  
+
+| Param | Type |
+| --- | --- |
+| logger | <code>IGALogger</code> | 
+
+<div id="GA4_createUserSession">&nbsp;</div>
+
+### gA4.createUserSession(pageId, senderId, sessionId, [metadata], [ts], [nonInteractive]) ⇒ <code>Promise</code>
+**Kind**: instance method of [<code>GA4</code>](#GA4)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| pageId | <code>string</code> |  | 
+| senderId | <code>string</code> |  | 
+| sessionId | <code>string</code> |  | 
+| [metadata] | <code>SessionMetadata</code> |  | 
+| [ts] | <code>number</code> |  | 
+| [nonInteractive] | <code>boolean</code> | <code>false</code> | 
+
+<div id="GA4_storeEvents">&nbsp;</div>
+
+### gA4.storeEvents(pageId, senderId, sessionId, events, [user], [ts]) ⇒ <code>Promise</code>
+**Kind**: instance method of [<code>GA4</code>](#GA4)  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| pageId | <code>string</code> |  | 
+| senderId | <code>string</code> |  | 
+| sessionId | <code>string</code> |  | 
+| events | <code>Array.&lt;Event&gt;</code> |  | 
+| [user] | <code>GAUser</code> | <code></code> | 
+| [ts] | <code>number</code> |  | 
+
+<div id="ResponseFlag">&nbsp;</div>
+
+## ResponseFlag : <code>enum</code>
+**Kind**: global enum  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| DISAMBIGUATION_SELECTED | <code>string</code> | <code>&quot;d&quot;</code> | Disambiguation quick reply was selected |
+| DISAMBIGUATION_OFFERED | <code>string</code> | <code>&quot;o&quot;</code> | Disambiguation occured - user was asked to choose the right meaning |
+| DO_NOT_LOG | <code>string</code> | <code>&quot;!&quot;</code> | Do not log the event |
+| HANDOVER | <code>string</code> | <code>&quot;h&quot;</code> | Handover occurred |
+
+<div id="TrackingType">&nbsp;</div>
+
+## TrackingType : <code>enum</code>
+**Kind**: global enum  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| CONVERSATION_EVENT | <code>string</code> | <code>&quot;conversation&quot;</code> | 
+| TRAINING | <code>string</code> | <code>&quot;train&quot;</code> | 
+| PAGE_VIEW | <code>string</code> | <code>&quot;page_view&quot;</code> | 
+| REPORT | <code>string</code> | <code>&quot;report&quot;</code> | 
+
+<div id="TrackingCategory">&nbsp;</div>
+
+## TrackingCategory : <code>enum</code>
+TrackingCategory
+
+**Kind**: global enum  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| PAGE_VIEW_FIRST | <code>string</code> | <code>&quot;pf&quot;</code> | 
+| PAGE_VIEW_SUBSEQUENT | <code>string</code> | <code>&quot;pp&quot;</code> | 
+| STICKER | <code>string</code> | <code>&quot;sti&quot;</code> | 
+| IMAGE | <code>string</code> | <code>&quot;img&quot;</code> | 
+| LOCATION | <code>string</code> | <code>&quot;loc&quot;</code> | 
+| ATTACHMENT | <code>string</code> | <code>&quot;att&quot;</code> | 
+| TEXT | <code>string</code> | <code>&quot;txt&quot;</code> | 
+| QUICK_REPLY | <code>string</code> | <code>&quot;qr&quot;</code> | 
+| OPT_IN | <code>string</code> | <code>&quot;oin&quot;</code> | 
+| REFERRAL | <code>string</code> | <code>&quot;ref&quot;</code> | 
+| POSTBACK_BUTTON | <code>string</code> | <code>&quot;btn&quot;</code> | 
+| URL_LINK | <code>string</code> | <code>&quot;url&quot;</code> | 
+| OTHER | <code>string</code> | <code>&quot;oth&quot;</code> | 
+| HANDOVER_TO_BOT | <code>string</code> | <code>&quot;bot&quot;</code> | 
+| INTENT_DETECTION | <code>string</code> | <code>&quot;int&quot;</code> | 
+| DISAMBIGUATION_SELECTED | <code>string</code> | <code>&quot;dis&quot;</code> | 
+| DISAMBIGUATION_OFFERED | <code>string</code> | <code>&quot;dio&quot;</code> | 
+| REPORT_FEEDBACK | <code>string</code> | <code>&quot;fdb&quot;</code> | 
+| HANDOVER_OCCURRED | <code>string</code> | <code>&quot;hum&quot;</code> | 
+
+<div id="CATEGORY_LABELS">&nbsp;</div>
+
+## CATEGORY\_LABELS : <code>Object.&lt;TrackingCategory, string&gt;</code>
+**Kind**: global constant  
+<div id="FetchResult">&nbsp;</div>
+
+## FetchResult : <code>object</code>
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| status | <code>number</code> | 
+| [statusText] | <code>string</code> | 
+| json | <code>Promise.&lt;object&gt;</code> | 
+
+<div id="MockFetch">&nbsp;</div>
+
+## MockFetch ⇒ [<code>Promise.&lt;FetchResult&gt;</code>](#FetchResult)
+**Kind**: global typedef  
+
+| Param | Type |
+| --- | --- |
+| url | <code>string</code> | 
+| [options] | <code>RequestInit</code> | 
+
+<div id="GAOptions">&nbsp;</div>
+
+## GAOptions : <code>object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| measurementId | <code>string</code> | 
+| apiSecret | <code>string</code> | 
+| [debug] | <code>boolean</code> | 
+| [log] | <code>IGALogger</code> | 
+| [fetch] | [<code>MockFetch</code>](#MockFetch) | 
+
