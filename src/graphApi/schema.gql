@@ -110,17 +110,17 @@ type LLMMessage {
 }
 
 type VectorSearchDocument {
-  id: ID!
+  id: String!
   name: String!
   text: String!
-  cosineDistance: Float! 
+  cosineDistance: Float!
+  excludedByCosineDistanceThreshold: Boolean!
 }
 
 type VectorSearchResult {
   maximalCosineDistanceThreshold: Float! 
   nearestNeighbourCount: Int!
-  allResults: [VectorSearchDocument!]!  
-  resultsCroppedByCosineDistance: [VectorSearchDocument!]!  
+  resultDocuments: [VectorSearchDocument!]!  
 }
 
 type PromptInfo {
