@@ -405,6 +405,7 @@ class Processor extends EventEmitter {
             return { status: 304 };
         }
 
+        /** @type {LLMConfiguration} */
         const llmOptions = {
             provider: new LLMMockProvider(),
             ...this.options.llm

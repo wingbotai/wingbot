@@ -60,6 +60,18 @@ class PromptAssert {
     }
 
     /**
+     * Check if vector search documents contain selected string
+     *
+     * @param {string} search
+     * @returns {this}
+     */
+    vectorSearchContains (search) {
+        const documents = this._flatVectorSearchDocuments();
+        this._promptContains(search, documents, false, 'in vector search documents');
+        return this;
+    }
+
+    /**
      *
      * @param {(value: LLMMessage, index: number, array: LLMMessage[]) => unknown} filter
      * @returns {LLMMessage[]}
@@ -77,6 +89,16 @@ class PromptAssert {
     _flatResults () {
         return this._prompts
             .map((prompt) => prompt.result);
+    }
+
+    /**
+     *
+     * @returns {LLMMessage[]}
+     */
+    _flatVectorSearchDocuments () {
+        return this._prompts
+            .flatMap((prompt) => prompt.vectorSearchResult?.resultDocuments || [])
+            .map((doc) => ({ role: 'system', content: doc.text }));
     }
 
     _promptContains (search, messages, notContains = false, addMessage = 'No LLM message found') {

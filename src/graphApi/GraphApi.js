@@ -27,9 +27,6 @@ const DEFAULT_CACHE = 86400000; // 24 hours
 /** @typedef {import('../CallbackAuditLog')} AuditLog */
 /** @typedef {import('graphql')} GqlLib */
 
-/**
- * Experimental chatbot API
- */
 class GraphApi {
 
     /**

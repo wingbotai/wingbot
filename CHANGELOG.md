@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Vector search documents support
+
+## [3.72.0]
+
+### Added
+
 - LLM rules handling
 
 ## [3.71.0]

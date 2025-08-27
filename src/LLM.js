@@ -110,6 +110,7 @@ const Ai = require('./Ai');
  * @typedef {object} PromptInfo
  * @prop {LLMMessage[]} prompt
  * @prop {LLMMessage} result
+ * @prop {VectorSearchResult} [vectorSearchResult]
  */
 
 /**
@@ -122,6 +123,20 @@ const Ai = require('./Ai');
  * @prop {LogPrompt} logPrompt
  */
 
+/**
+ * @typedef {object} VectorSearchDocument
+ * @property {string} id
+ * @property {string} name
+ * @property {string} text
+ * @property {number} cosineDistance
+ * @property {boolean} excludedByCosineDistanceThreshold
+ */
+/**
+ * @typedef {object} VectorSearchResult
+ * @property {number} maximalCosineDistanceThreshold
+ * @property {number} nearestNeighbourCount
+ * @property {VectorSearchDocument[]} resultDocuments
+ */
 /**
  * @class LLM
  */
@@ -233,7 +248,7 @@ class LLM {
 
         const prompt = session.toArray(true);
         const result = await this._provider.requestChat(prompt, opts);
-        this._logPrompt(prompt, result);
+        this.logPrompt(prompt, result);
         return result;
     }
 
@@ -241,11 +256,12 @@ class LLM {
      *
      * @param {LLMMessage[]} prompt
      * @param {LLMMessage} result
+     * @param {VectorSearchResult} [vectorSearchResult]
      */
-    _logPrompt (prompt, result) {
+    logPrompt (prompt, result, vectorSearchResult) {
         this._lastResult = result;
         this._configuration.logger.logPrompt({
-            prompt, result
+            prompt, result, vectorSearchResult
         });
     }
 
