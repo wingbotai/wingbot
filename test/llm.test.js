@@ -128,6 +128,56 @@ describe('<LLM>', () => {
         t.anyPrompt().promptContains('X text X');
     });
 
+    it('should be able to add vector documents', async () => {
+        const bot = new Router();
+
+        bot.use((req, res) => {
+            const vectorSearchResult = {
+                maximalCosineDistanceThreshold: 0.5,
+                nearestNeighbourCount: 2,
+                resultDocuments: [
+                    {
+                        id: 'doc1',
+                        name: 'Document 1',
+                        text: 'Document 1: This is a test document for vector search.',
+                        cosineDistance: 0.1,
+                        excludedByCosineDistanceThreshold: false
+                    },
+                    {
+                        id: 'doc2',
+                        name: 'Document 2',
+                        text: 'Document 2: Another document with relevant information.',
+                        cosineDistance: 0.2,
+                        excludedByCosineDistanceThreshold: false
+                    }
+                ]
+            };
+
+            res.llm.logPrompt(
+                [{ role: 'user', content: 'analyze documents' }],
+                { role: 'assistant', content: 'mock response' },
+                vectorSearchResult
+            );
+
+            return Router.BREAK;
+        });
+
+        bot.use(message({
+            text: 'Based on the provided documents, explain the main topics.',
+            type: 'prompt'
+        }, {}));
+
+        const t = new Tester(bot);
+
+        await t.text('analyze documents');
+
+        t.debug();
+
+        t.anyPrompt()
+            .vectorSearchContains('Document 1: This is a test document for vector search')
+            .vectorSearchContains('Document 2: Another document with relevant information');
+    });
+
     it('should be able to evaluate input by the message', async () => {
         const bot = new Router();
 

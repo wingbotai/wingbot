@@ -34,9 +34,6 @@ const DEFAULT_CACHE = 86400000; // 24 hours
  * @prop {Function} error
  */
 
-/**
- * Experimental chatbot API
- */
 class GraphApi {
 
     /**
