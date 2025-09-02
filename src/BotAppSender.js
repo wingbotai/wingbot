@@ -41,12 +41,12 @@ class BotAppSender extends ReturnSender {
     /**
      *
      * @param {SenderOptions} options
-     * @param {string} userId
+     * @param {string} senderId
      * @param {object} incommingMessage
      * @param {ChatLogStorage} logger - console like logger
      */
-    constructor (options, userId, incommingMessage, logger = null) {
-        super(options, userId, incommingMessage, logger);
+    constructor (options, senderId, incommingMessage, logger = null) {
+        super(options, senderId, incommingMessage, logger);
 
         this.waits = true;
 
@@ -98,14 +98,16 @@ class BotAppSender extends ReturnSender {
      * @param {Buffer} data
      * @param {string} contentType
      * @param {string} fileName
+     * @param {string} [senderId]
      * @returns {Promise<UploadResult>}
      */
-    async upload (data, contentType, fileName) {
+    async upload (data, contentType, fileName, senderId = this._senderId) {
         const formData = new FormData();
 
         const nonce = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(36).padEnd(11, '0');
 
         formData.append('nonce', nonce);
+        formData.append('senderId', senderId || '');
         formData.append('f0', data, { filename: fileName, contentType });
 
         const [token, agent] = await Promise.all([
