@@ -83,6 +83,11 @@ const Ai = require('./Ai');
  */
 
 /**
+ * @typedef {object} LLMLogOptions
+ * @prop {VectorSearchResult} [vectorSearchResult]
+ */
+
+/**
  * @typedef {object} LLMChatProvider
  * @prop {LLMChatProviderPrompt} requestChat
  */
@@ -237,9 +242,10 @@ class LLM {
      *
      * @param {LLMSession} session
      * @param {LLMProviderOptions} [options={}]
+     * @param {LLMLogOptions} [logOptions]
      * @returns {Promise<LLMMessage>}
      */
-    async generate (session, options = {}) {
+    async generate (session, options = {}, logOptions = {}) {
         /** @type {LLMProviderOptions} */
         const opts = {
             ...(this._configuration.model && { model: this._configuration.model }),
@@ -248,7 +254,7 @@ class LLM {
 
         const prompt = session.toArray(true);
         const result = await this._provider.requestChat(prompt, opts);
-        this.logPrompt(prompt, result);
+        this.logPrompt(prompt, result, logOptions.vectorSearchResult);
         return result;
     }
 

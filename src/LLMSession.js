@@ -7,6 +7,7 @@ const LLM = require('./LLM');
 
 /** @typedef {import('./Responder').QuickReply} QuickReply */
 /** @typedef {import('./LLM').LLMProviderOptions} LLMProviderOptions */
+/** @typedef {import('./LLM').LLMLogOptions} LLMLogOptions */
 
 /** @typedef {'user'|'assistant'} LLMChatRole */
 /** @typedef {'system'} LLMSystemRole */
@@ -272,11 +273,12 @@ class LLMSession {
 
     /**
      *
-     * @param {LLMProviderOptions} [options={}]
+     * @param {LLMProviderOptions} [providerOptions={}]
+     * @param {LLMLogOptions} [logOptions]
      * @returns {Promise<LLMMessage<any>>}
      */
-    async generate (options = {}) {
-        const result = await this._llm.generate(this, options);
+    async generate (providerOptions = {}, logOptions = {}) {
+        const result = await this._llm.generate(this, providerOptions, logOptions);
 
         this._generatedIndex = this._chat.length;
         this._chat.push(result);
