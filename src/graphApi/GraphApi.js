@@ -8,6 +8,7 @@ const WingbotApiConnector = require('./WingbotApiConnector');
 // @ts-ignore
 const packageJson = require('../../package.json');
 const headersToAuditMeta = require('../utils/headersToAuditMeta');
+const gqlRules = require('./gqlRules');
 
 const DEFAULT_GROUPS = ['botEditor', 'botAdmin', 'appToken'];
 const KEYS_URL = 'https://api.wingbot.ai/keys';
@@ -27,6 +28,12 @@ const DEFAULT_CACHE = 86400000; // 24 hours
 /** @typedef {import('../CallbackAuditLog')} AuditLog */
 /** @typedef {import('graphql')} GqlLib */
 
+/**
+ * @typedef {object} Logger
+ * @prop {Function} log
+ * @prop {Function} error
+ */
+
 class GraphApi {
 
     /**
@@ -38,8 +45,11 @@ class GraphApi {
      * @param {string[]} [options.groups] - list of allowed bot groups
      * @param {boolean} [options.useBundledGql] - uses library bundled graphql definition
      * @param {AuditLog} [options.auditLog]
+     * @param {boolean} [options.isProduction]
+     * @param {boolean} [options.hideVerboseErrors]
+     * @param {Logger} [log=console]
      */
-    constructor (apis, options) {
+    constructor (apis, options, log = console) {
         this._root = {
             version () {
                 return packageJson.version;
@@ -60,6 +70,13 @@ class GraphApi {
                     // noop
                 }
             }
+        };
+
+        this._log = log;
+        this._options = {
+            hideVerboseErrors: true,
+            isProduction: true,
+            ...options
         };
 
         Object.assign(opts, options);
@@ -148,6 +165,19 @@ class GraphApi {
         }
 
         const schema = await this._schema();
+
+        const { isProduction = true, hideVerboseErrors } = this._options;
+        const ast = this._gql.parse(body.query);
+        const errors = this._gql.validate(
+            schema,
+            ast,
+            gqlRules(body.variables, isProduction, hideVerboseErrors, this._log)
+        );
+
+        if (errors.length > 0) {
+            this._log.error('GQL failed', errors);
+            return { errors };
+        }
 
         const ctx = {
             token,
