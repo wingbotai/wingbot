@@ -1235,10 +1235,11 @@ class Responder {
      * Converts relative action to absolute action path
      *
      * @param {string} action - relative action to covert to absolute
+     * @param {boolean} [forceStartingSlash=false]
      * @returns {string} absolute action path
      */
-    toAbsoluteAction (action) {
-        return makeAbsolute(action, this.path);
+    toAbsoluteAction (action, forceStartingSlash = false) {
+        return makeAbsolute(action, this.path || (forceStartingSlash ? '/' : ''));
     }
 
     /**
