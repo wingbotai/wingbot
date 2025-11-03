@@ -65,13 +65,14 @@ describe('OrchestratorClient', () => {
         });
     });
 
-    it.skip('works', async () => {
+    it('works', async () => {
         const oc = new OrchestratorClient({
             apiUrl: 'https://chat-dev-api.flyto.cloud/api',
             appId: 'bots-lambda',
             senderId: 'LVP599a3UDmMRy',
             pageId: '660d7cf118bf6ff208514a38',
-            secret: '<PUT>'
+            secret: '<PUT>',
+            mock: true
         });
 
         // eslint-disable-next-line no-unused-vars
@@ -182,18 +183,18 @@ describe('OrchestratorClient', () => {
         );
     });
 
-    // Test for running orchestrator
-    it.skip('call orchestrator tester', async () => {
+    it('call orchestrator tester', async () => {
         const client = new OrchestratorClient({
             secret: Promise.resolve(SECRET),
             apiUrl: 'http://localhost:3000/api/api',
             appId: 'ced24e1e-8383-4ab0-95d8-e566fb7354e6',
             pageId: 'cfe27018-f5e3-4919-93cf-75bfb20ea449',
-            senderId: 'FfNVjz2zABy71Y'
+            senderId: 'FfNVjz2zABy71Y',
+            mock: true
         });
 
         const url = await client.addConversationTokenToUrl('http://localhost:3000/test', 3600, 'wbchtoken');
-        assert.strictEqual(url, '');
+        assert.strictEqual(url, 'http://localhost:3000/test?wbchtoken=mock-token');
     });
 
 });

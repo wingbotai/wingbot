@@ -18,6 +18,7 @@ const extractText = require('./transcript/extractText');
  * @property {string} [pageId]
  * @property {string} [appId]
  * @property {Function} [fetch]
+ * @property {boolean} [mock]
  */
 
 class OrchestratorClient {
@@ -32,6 +33,7 @@ class OrchestratorClient {
         this._senderId = options.senderId;
         this._pageId = options.pageId;
         this._fetch = options.fetch || fetch;
+        this._mock = !!options.mock;
     }
 
     /**
@@ -214,6 +216,47 @@ class OrchestratorClient {
      * @param {object} payload
      */
     async _send (payload) {
+        if (this._mock) {
+            const [, queryName] = payload.query.match(/^[a-z]+\s+([a-z]+)/i);
+
+            switch (queryName) {
+                case 'GetConversationToken':
+                    return {
+                        data: {
+                            chat: {
+                                conversationToken: 'mock-token'
+                            }
+                        }
+                    };
+                case 'FetchHistory':
+                    return {
+                        data: {
+                            chat: {
+                                history: {
+                                    events: [
+                                        {
+                                            sender: {
+                                                id: this._senderId || 'sender'
+                                            },
+                                            recipient: {
+                                                id: this._pageId || 'sender'
+                                            },
+                                            message: {
+                                                text: 'Hello'
+                                            },
+                                            timestamp: 1234567890123
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    };
+
+                default:
+                    return {};
+            }
+        }
+
         const body = JSON.stringify(payload);
 
         const token = await BotAppSender.signBody(
