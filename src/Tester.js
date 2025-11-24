@@ -651,8 +651,13 @@ class Tester {
     debug (full = false, showPrivateKeys = false) {
         // eslint-disable-next-line no-console
         console.log(
-            '\n===== actions =====\n',
-            this._actionsDebug(true),
+            '\n====== state ======\n',
+            Object.fromEntries(
+                Object.entries(this.getState().state)
+                    .filter((e) => showPrivateKeys || !e[0].startsWith('_'))
+            ),
+            '\n------- LLM -------\n',
+            ...PromptAssert.debug(this.prompts, full, true),
             '\n---- responses ----\n',
             inspect(
                 this.responses.map(({ messaging_type: m, recipient, ...o }) => o),
@@ -660,13 +665,8 @@ class Tester {
                 null,
                 true
             ),
-            '\n------ state ------\n',
-            Object.fromEntries(
-                Object.entries(this.getState().state)
-                    .filter((e) => showPrivateKeys || !e[0].startsWith('_'))
-            ),
-            '\n------- LLM -------\n',
-            ...PromptAssert.debug(this.prompts, full, true),
+            '\n----- actions -----\n',
+            this._actionsDebug(true),
             '\n===================\n'
         );
     }

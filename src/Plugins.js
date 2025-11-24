@@ -131,9 +131,22 @@ class Plugins {
         name,
         paramsData = {},
         items = new Map(),
-        context = { isLastIndex: true, configuration: {} }
+        context = {}
     ) {
         let useItems = items;
+        const {
+            isLastIndex = true,
+            configuration = {},
+            router = new Router(),
+            ...rest
+        } = context;
+
+        const ctx = {
+            isLastIndex,
+            configuration,
+            router,
+            ...rest
+        };
 
         if (!(items instanceof Map)) {
             // @ts-ignore
@@ -156,15 +169,15 @@ class Plugins {
             );
         }
 
-        const cleanParams = Object.entries(paramsData)
-            .filter(([, e]) => e !== null && e !== undefined)
-            .map(([k, e]) => ({ [k]: e }))
-            .reduce(Object.assign, {});
+        const cleanParams = Object.fromEntries(
+            Object.entries(paramsData)
+                .filter(([, e]) => e !== null && e !== undefined)
+        );
 
         const customFn = this.getPluginFactory(
             name,
             cleanParams,
-            context.configuration,
+            configuration,
             context.defaultPlugin
         );
 
@@ -174,9 +187,7 @@ class Plugins {
             return new RouterWrap(customFn, useItems, cleanParams);
         }
 
-        const { router = new Router() } = context;
-
-        return wrapPluginFunction(customFn, cleanParams, useItems, context, router);
+        return wrapPluginFunction(customFn, cleanParams, useItems, ctx, router);
     }
 
     code (name, factoryFn = null) {
