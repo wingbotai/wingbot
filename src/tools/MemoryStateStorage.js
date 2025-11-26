@@ -13,6 +13,8 @@
 /**
  * @typedef {object} StateCondition
  * @prop {string} [search]
+ * @prop {string[]} [senderIds]
+ * @prop {string} [pageId]
  */
 
 /**
@@ -114,12 +116,21 @@ class MemoryStateStorage {
                 // const matches = conditionKeys
                 //     .every(k => state[k] === condition[k]);
 
-                const matches = !condition.search
-                    || condition.search === state.senderId;
+                let matches = true;
 
-                if (!matches) {
-                    return false;
+                if (condition.search) {
+                    matches = matches && condition.search === state.senderId;
                 }
+
+                if (Array.isArray(condition.senderIds)) {
+                    matches = matches && condition.senderIds.includes(state.senderId);
+                }
+
+                if (typeof condition.pageId === 'string') {
+                    matches = matches && condition.pageId === state.pageId;
+                }
+
+                if (!matches) return false;
 
                 if (limit !== null && filtered >= limit) {
                     hasNext = true;
