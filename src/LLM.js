@@ -103,6 +103,7 @@ const Ai = require('./Ai');
  * @prop {boolean} [transcriptAnonymize]
  * @prop {Persona|string|null} [persona]
  * @prop {LLMLogger} [logger]
+ * @prop {boolean} [disableLLM]
  */
 
 /**
@@ -217,6 +218,14 @@ class LLM {
      */
     get configuration () {
         return this._configuration;
+    }
+
+    /**
+     *
+     * @param {Partial<LLMConfiguration>} override
+     */
+    setSessionConfig (override) {
+        Object.assign(this._configuration, override);
     }
 
     /**

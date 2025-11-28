@@ -21,6 +21,7 @@ const {
 } = require('../features');
 const { vars, VAR_TYPES } = require('../utils/stateVariables');
 const LLM = require('../LLM');
+const canaryLog = require('../utils/canaryLog');
 
 /** @typedef {import('../Responder').VoiceControl} VoiceControl */
 /** @typedef {import('../BuildRouter').LinksMap} LinksMap */
@@ -445,7 +446,7 @@ function message (params, context = {}) {
             };
         }
 
-        if (params.type === 'prompt') {
+        if (params.type === 'prompt' && !res.llm.configuration.disableLLM) {
             res.typingOn()
                 .wait(1000);
             const session = await res.llmSessionWithHistory(params.llmContextType);
@@ -456,6 +457,10 @@ function message (params, context = {}) {
             const evaluation = await res.llmEvaluate(session, params.llmContextType);
 
             if (evaluation.discard) {
+                canaryLog(context.log, context.canaryLogs, 'LLM discarded', {
+                    evaluation,
+                    session
+                });
                 if (isLastMessage && !req.actionData()._resolverTag) {
                     res.finalMessageSent = true;
                 }
