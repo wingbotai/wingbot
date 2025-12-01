@@ -165,6 +165,10 @@ class MemoryStateStorage {
         return Promise.resolve({ data, lastKey: nextLastKey });
     }
 
+    drop () {
+        this.store.clear();
+    }
+
 }
 
 module.exports = MemoryStateStorage;
