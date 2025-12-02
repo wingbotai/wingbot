@@ -459,11 +459,17 @@ class Responder {
             transcriptLength: transcriptLengthCfg
         } = this.llm.configuration;
 
+        const computedTranscriptLength = transcriptLength === undefined
+            ? transcriptLengthCfg
+            : transcriptLength;
+        const computedTranscriptFlag = transcriptFlag === undefined
+            ? transcriptFlagCfg : transcriptFlag;
+
         const [systems, transcript] = await Promise.all([
             this._getSystemContentForType(contextType),
             this.getTranscript(
-                transcriptLength ?? transcriptLengthCfg,
-                transcriptFlag ?? transcriptFlagCfg
+                computedTranscriptLength,
+                computedTranscriptFlag
             )
         ]);
 
