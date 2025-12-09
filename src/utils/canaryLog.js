@@ -13,7 +13,7 @@
 /**
  *
  * @param {ILogger} logger
- * @param {boolean|keyof ILogger} setting
+ * @param {boolean|string} setting
  * @param {string} message
  * @param {...*} args
  * @returns {void}

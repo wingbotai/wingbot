@@ -142,7 +142,7 @@ const DUMMY_ROUTE = { id: 0, path: null, resolvers: [] };
  * @prop {boolean} [allowForbiddenSnippetWords] - disable security rule
  * @prop {Middleware} [defaultPlugin] - to be able to test configurations without plugins
  * @prop {RouteConfig[]} [routeConfigs] - list of disabled routes
- * @prop {boolean|keyof ILogger} [canaryLogs]
+ * @prop {boolean|string} [canaryLogs]
  * @prop {ILogger} [log]
  * @prop {C} [configuration] - context data
  */
