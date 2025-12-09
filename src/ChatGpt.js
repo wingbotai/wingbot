@@ -37,8 +37,8 @@ const LLM = require('./LLM');
  * @typedef {object} DefaultRequestOptions
  * @prop {ChatGPTModel} [model]
  * @prop {number} [presencePenalty=0.0]
- * @prop {number} [requestTokens=256]
- * @prop {number} [tokensLimit=4096]
+ * @prop {number} [requestTokens]
+ * @prop {number} [tokensLimit]
  * @prop {number} [temperature=1.0]
  * @prop {number} [transcriptLength=-5]
  */
@@ -189,8 +189,8 @@ class ChatGpt {
 
         /** @type {Required<DefaultRequestOptions>} */
         this._options = {
-            requestTokens: 256,
-            tokensLimit: 128000,
+            requestTokens: null,
+            tokensLimit: null,
             presencePenalty: 0.0, // -2.0-2.0
             temperature: 1.0,
             model: 'gpt-4o-mini',
@@ -304,7 +304,7 @@ class ChatGpt {
                     return (m.content ? 0 : m.content.length) + total;
                 }, 0);
 
-            if (totalTokens > tokensLimit) {
+            if (tokensLimit !== null && totalTokens > tokensLimit) {
                 messages = messages.filter((m, i) => {
                     if (m.role === LLM.ROLE_SYSTEM
                         || i >= lastUserIndex
@@ -322,7 +322,7 @@ class ChatGpt {
                 model,
                 frequency_penalty: 0,
                 presence_penalty: presencePenalty,
-                max_tokens: requestTokens,
+                ...(requestTokens ? { max_completion_tokens: requestTokens } : {}),
                 temperature,
                 messages
             };
