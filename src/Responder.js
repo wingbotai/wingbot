@@ -448,16 +448,29 @@ class Responder {
         return resolved;
     }
 
-    async llmSessionWithHistory (contextType = this.LLM_CTX_DEFAULT) {
+    async llmSessionWithHistory (
+        contextType = this.LLM_CTX_DEFAULT,
+        transcriptLength = undefined,
+        transcriptFlag = undefined
+    ) {
         const {
             transcriptAnonymize,
-            transcriptFlag,
-            transcriptLength
+            transcriptFlag: transcriptFlagCfg,
+            transcriptLength: transcriptLengthCfg
         } = this.llm.configuration;
+
+        const computedTranscriptLength = transcriptLength === undefined
+            ? transcriptLengthCfg
+            : transcriptLength;
+        const computedTranscriptFlag = transcriptFlag === undefined
+            ? transcriptFlagCfg : transcriptFlag;
 
         const [systems, transcript] = await Promise.all([
             this._getSystemContentForType(contextType),
-            this.getTranscript(transcriptLength, transcriptFlag)
+            this.getTranscript(
+                computedTranscriptLength,
+                computedTranscriptFlag
+            )
         ]);
 
         const chat = [
