@@ -461,35 +461,32 @@ function message (params, context = {}) {
                     evaluation,
                     session
                 });
-                if (isLastMessage && !req.actionData()._resolverTag) {
-                    res.finalMessageSent = true;
+            } else {
+
+                if (evaluation.action) {
+                    postBack(evaluation.action);
+                    return Router.END;
                 }
-                return ret;
+
+                // if (!response.content) {
+                //    // no response?
+                // }
+
+                const messages = session.messagesToSend();
+
+                res.setFlag(LLM.GPT_FLAG);
+
+                const lastMessageI = messages.length - 1;
+                messages.forEach((m, i) => {
+                    if (lastMessageI === i) {
+                        text = m.content;
+                    } else {
+                        res.text(m.content, null, null, {
+                            disableAutoTyping: true
+                        });
+                    }
+                });
             }
-
-            if (evaluation.action) {
-                postBack(evaluation.action);
-                return Router.END;
-            }
-
-            // if (!response.content) {
-            //    // no response?
-            // }
-
-            const messages = session.messagesToSend();
-
-            res.setFlag(LLM.GPT_FLAG);
-
-            const lastMessageI = messages.length - 1;
-            messages.forEach((m, i) => {
-                if (lastMessageI === i) {
-                    text = m.content;
-                } else {
-                    res.text(m.content, null, null, {
-                        disableAutoTyping: true
-                    });
-                }
-            });
         }
 
         res.text(text, sendReplies, voiceControl, {
