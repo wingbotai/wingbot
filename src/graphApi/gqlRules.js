@@ -3,6 +3,10 @@
  * @author David Menger
  */
 'use strict';
+const {
+    OverlappingFieldsCanBeMergedRule,
+    UniqueDirectivesPerLocationRule
+} = require('graphql');
 
 /** @typedef {import('graphql').ValidationRule} ValidationRule */
 
@@ -29,6 +33,8 @@ function gqlRules (variables, isProduction, hideVerboseErrors, log = console) {
     return [
         ...(hideVerboseErrors ? [NoSchemaIntrospectionCustomRule] : []),
         depthLimit(10),
+        OverlappingFieldsCanBeMergedRule,
+        UniqueDirectivesPerLocationRule,
         createComplexityRule({
             // The maximum allowed query complexity, queries above this threshold will be rejected
             maximumComplexity: 1000,
