@@ -449,14 +449,25 @@ function message (params, context = {}) {
         if (params.type === 'prompt' && !res.llm.configuration.disableLLM) {
             res.typingOn()
                 .wait(1000);
-            const session = await res.llmSessionWithHistory(params.llmContextType);
 
-            await session.systemPrompt(text)
-                .generate();
+            let session;
+            let evaluation;
+            let discard;
 
-            const evaluation = await res.llmEvaluate(session, params.llmContextType);
+            try {
+                session = await res.llmSessionWithHistory(params.llmContextType);
 
-            if (evaluation.discard) {
+                await session.systemPrompt(text)
+                    .generate();
+
+                evaluation = await res.llmEvaluate(session, params.llmContextType);
+                ({ discard } = evaluation);
+            } catch (e) {
+                (context.log || console).error(`LLM ERR: ${e.message} [${req.senderId}]`, e);
+                discard = true;
+            }
+
+            if (discard) {
                 canaryLog(context.log, context.canaryLogs, 'LLM discarded', {
                     evaluation,
                     session
