@@ -36,6 +36,7 @@ const LLM = require('./LLM');
 /**
  * @typedef {object} DefaultRequestOptions
  * @prop {ChatGPTModel} [model]
+ * @prop {'node'|'low'|'medium'|'high'} [reasoningEffort]
  * @prop {number} [presencePenalty=0.0]
  * @prop {number} [requestTokens]
  * @prop {number} [tokensLimit]
@@ -195,6 +196,7 @@ class ChatGpt {
             temperature: 1.0,
             model: 'gpt-4o-mini',
             transcriptLength: -5,
+            reasoningEffort: null,
             ...rest
         };
 
@@ -285,6 +287,7 @@ class ChatGpt {
             model,
             presencePenalty,
             temperature,
+            reasoningEffort,
             functions = []
         } = {
             ...this._options,
@@ -323,6 +326,9 @@ class ChatGpt {
                 frequency_penalty: 0,
                 presence_penalty: presencePenalty,
                 ...(requestTokens ? { max_completion_tokens: requestTokens } : {}),
+                ...(reasoningEffort ? {
+                    reasoning: { effort: reasoningEffort }
+                } : {}),
                 temperature,
                 messages
             };
