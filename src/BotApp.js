@@ -231,6 +231,7 @@ class BotApp {
 
         const { onInteraction, onEvent } = onInteractionHandler({
             log,
+            // @ts-ignore
             anonymize: this._textFilter,
             snapshot,
             botId,

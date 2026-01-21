@@ -29,6 +29,7 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 /** @typedef {import('./ReturnSender').UploadResult} UploadResult */
 /** @typedef {import('./ReturnSender').SendOptions} SendOptions */
 /** @typedef {import('./ReturnSender').TextFilter} TextFilter */
+/** @typedef {import('./BotAppSender').DownloadedFile} DownloadedFile */
 /** @typedef {import('./analytics/consts').TrackingCategory} TrackingCategory */
 /** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */
 /** @typedef {import('./analytics/consts').TrackingType} TrackingType */
@@ -1272,6 +1273,19 @@ class Responder {
             return `/${ret}`;
         }
         return ret;
+    }
+
+    /**
+     *
+     * @param {string} url
+     * @returns {Promise<DownloadedFile>}
+     */
+    async dowloadFromChat (url) {
+        if (typeof this._messageSender.download !== 'function') {
+            throw new Error('Message sender doesn\'t support dowload method');
+        }
+        const fileData = await this._messageSender.download(url);
+        return fileData;
     }
 
     /**

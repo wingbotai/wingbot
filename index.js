@@ -65,6 +65,7 @@ const { version: wingbotVersion } = require('./package.json');
 const { fuzzy } = require('./src/fuzzy');
 const prepareFuzzyIndex = require('./src/fuzzy/prepareFuzzyIndex');
 const factoryFuzzySearch = require('./src/fuzzy/factoryFuzzySearch');
+const LLM = require('./src/LLM');
 
 module.exports = {
 
@@ -153,5 +154,7 @@ module.exports = {
     extractText,
     htmlBodyFromTranscript,
     textBodyFromTranscript,
-    transcriptFromHistory
+    transcriptFromHistory,
+
+    LLM
 };

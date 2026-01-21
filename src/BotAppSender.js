@@ -34,7 +34,18 @@ const ReturnSender = require('./ReturnSender');
  * @typedef {BotAppSenderOptions & ReturnSenderOptions} SenderOptions
  */
 
+/**
+ * @typedef {object} DownloadedFile
+ * @prop {string} fileName
+ * @prop {string} mimeType
+ * @prop {string} extension
+ * @prop {Buffer} buffer
+ */
+
 const sign = promisify(jwt.sign);
+
+const CONTENT_DISPO_ATTACH = /attachment;\s*filename="([^"]+)\.([a-z0-9]{2,6})"/i;
+const FILENAME_MATCHER = /^http.+\/([a-zA-Z0-9-]+)_[a-zA-Z0-9]+\.(([a-zA-Z0-9]+)?)$/i;
 
 class BotAppSender extends ReturnSender {
 
@@ -60,21 +71,26 @@ class BotAppSender extends ReturnSender {
         this._tls = options.tls;
         this._agent = null;
 
+        /** @type {import('node-fetch').default} */
+        // @ts-ignore
         this._fetch = options.fetch || fetch;
     }
 
     static async signBody (body, secret, appId) {
         const goodSecret = await Promise.resolve(secret);
 
-        const sha1 = crypto.createHash('sha1')
-            .update(body)
-            .digest('hex');
+        const sha1 = body === null
+            ? null
+            : crypto.createHash('sha1')
+                .update(body)
+                .digest('hex');
 
         return sign({
             appId,
             sha1,
             iss: 'apiapp',
             t: 'at'
+        // @ts-ignore
         }, goodSecret);
     }
 
@@ -91,6 +107,52 @@ class BotAppSender extends ReturnSender {
         }
 
         return this._agent;
+    }
+
+    /**
+     *
+     * @param {string} url
+     * @returns {Promise<DownloadedFile>}
+     */
+    async download (url) {
+        const [token, agent] = await Promise.all([
+            BotAppSender.signBody(null, this._secret, this._appId),
+            this._getAgent()
+        ]);
+
+        const headers = new Headers();
+
+        headers.set('Authorization', token);
+
+        const res = await this._fetch(url, {
+            headers, agent, method: 'GET'
+        });
+
+        // 'Content-Disposition': `attachment; filename="${file.origFileName}"`
+        const disposition = res.headers.get('content-disposition');
+
+        let name;
+        let extension;
+        if (disposition && disposition.match(CONTENT_DISPO_ATTACH)) {
+            [, name, extension] = disposition.match(CONTENT_DISPO_ATTACH);
+        } else if (url.match(FILENAME_MATCHER)) {
+            [, name, extension] = url.match(FILENAME_MATCHER);
+        } else {
+            throw new Error(`Can't resolve file extension on "${disposition || url}"`);
+        }
+
+        const mimeType = res.headers.get('content-type');
+
+        const buffer = await res.buffer();
+
+        const fileName = `${name}.${extension.toLowerCase()}`;
+
+        return {
+            mimeType,
+            fileName,
+            extension,
+            buffer
+        };
     }
 
     /**
