@@ -1372,7 +1372,7 @@ class Responder {
     _attachment (attachmentUrl, type, reusable = false) {
         let url = attachmentUrl;
 
-        if (!url.match(/^https?:\/\//)) {
+        if (!url.match(/^https?:\/\/|^data:/)) {
             url = `${this.options.appUrl}${url}`;
         }
 
