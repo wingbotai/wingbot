@@ -119,6 +119,52 @@ describe('customEntityDetectionModel', () => {
             ]);
         });
 
+        it('should work well with inconsistent optional entities', async () => {
+            m.setEntityDetector('mena', /AB/);
+            m.setEntityDetector('number', /CD/);
+            m.setEntityDetector('optional', /@NUMBER\s?@MENA|([$€]|@MENA)\s?@NUMBER/);
+
+            const entities = await m.resolveEntities('AB CD');
+
+            assert.deepEqual(entities, [
+                {
+                    entity: 'optional',
+                    value: 'cd',
+                    text: 'AB CD',
+                    score: 1,
+                    start: 0,
+                    end: 5
+                }
+            ]);
+        });
+
+        it('should detect two same entities', async () => {
+            m.setEntityDetector('mena', /x/);
+            m.setEntityDetector('number', /[45]a00/);
+            m.setEntityDetector('optional', /@NUMBER\s?@MENA|([$€]|@MENA)\s?@NUMBER/);
+
+            const entities = await m.resolveEntities('4a00 x nebo 5a00 x');
+
+            assert.deepEqual(entities, [
+                {
+                    end: 6,
+                    entity: 'optional',
+                    score: 1,
+                    start: 0,
+                    text: '4a00 x',
+                    value: '4a00'
+                },
+                {
+                    end: 18,
+                    entity: 'optional',
+                    score: 1,
+                    start: 12,
+                    text: '5a00 x',
+                    value: '5a00'
+                }
+            ]);
+        });
+
         it('should resolve entities somehow', async () => {
             const entities = await m.resolveEntities('hello 123 456');
 

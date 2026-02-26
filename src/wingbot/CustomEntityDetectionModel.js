@@ -245,7 +245,7 @@ class CustomEntityDetectionModel {
                     ...entities.filter((e) => dependencies.includes(`@${e.entity.toUpperCase()}`))
                 ];
                 const res = await Promise.resolve(
-                    entityDetector(t, dependentEntities, detectSubWords)
+                    entityDetector(t, dependentEntities, detectSubWords, o)
                 );
 
                 const resWasArray = Array.isArray(res);
@@ -599,8 +599,9 @@ class CustomEntityDetectionModel {
          * @param {string} text
          * @param {DetectedEntity[]} entities
          * @param {boolean} searchWithinWords
+         * @param {number} [offset]
          */
-        return (text, entities, searchWithinWords) => {
+        return (text, entities, searchWithinWords, offset = 0) => {
             if (typeof extractValue === 'string'
                 && !this._entityByDependency(entities, extractValue)) {
 
@@ -646,7 +647,8 @@ class CustomEntityDetectionModel {
             const end = start + match[0].length;
             matchText = lc.substring(start, end);
 
-            const useEntities = entities.filter((e) => e.start >= start && e.end <= end);
+            const useEntities = entities
+                .filter((e) => e.start >= (start + offset) && e.end <= (end + offset));
 
             let value;
 
@@ -658,6 +660,7 @@ class CustomEntityDetectionModel {
                     : dependencies[0];
 
                 const entity = this._entityByDependency(useEntities, entityName);
+
                 value = entity ? entity.value : null;
             } else {
                 [value] = match;
