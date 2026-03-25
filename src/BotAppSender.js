@@ -181,10 +181,17 @@ class BotAppSender extends ReturnSender {
 
         headers.set('Authorization', token);
 
-        const response = await this._fetch(`${this._apiUrl}/${this._pageId}`, {
+        const res = await this._fetch(`${this._apiUrl}/${this._pageId}`, {
             headers, body: formData, agent, method: 'POST'
-        })
-            .then((r) => r.json());
+        });
+
+        const responseText = await res.text();
+        let response;
+        try {
+            response = JSON.parse(responseText);
+        } catch (e) {
+            throw new Error(`[${res.status}] Invalid JSON response: ${responseText}`);
+        }
 
         return response;
     }
@@ -212,10 +219,17 @@ class BotAppSender extends ReturnSender {
         headers.set('Authorization', token);
         headers.set('Content-Type', 'application/json');
 
-        const response = await this._fetch(this._apiUrl, {
+        const res = await this._fetch(this._apiUrl, {
             headers, body, agent, method: 'POST'
-        })
-            .then((r) => r.json());
+        });
+
+        const responseText = await res.text();
+        let response;
+        try {
+            response = JSON.parse(responseText);
+        } catch (e) {
+            throw new Error(`[${res.status}] Invalid JSON response: ${responseText}`);
+        }
 
         const { request, errors = null } = response;
 

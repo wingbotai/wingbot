@@ -272,7 +272,14 @@ class OrchestratorClient {
 
         const response = await this._fetch(this._apiUrl, { headers, body, method: 'POST' });
 
-        const responseJson = response.json();
+        const responseText = await response.text();
+        let responseJson;
+        try {
+            responseJson = JSON.parse(responseText);
+        } catch (e) {
+            throw new Error(`[${response.status}] Invalid JSON response: ${responseText}`);
+        }
+
         const { errors = null } = responseJson;
 
         if (errors) {

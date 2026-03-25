@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- better logging when response.json is not an json but html
+
+## [3.73.14]
+
+### Fixed
+
 - nested entities detection
 
 ## [3.73.13]
