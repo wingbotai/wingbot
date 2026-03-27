@@ -57,7 +57,7 @@ describe('BotApp', () => {
         fetch = sinon.spy(async (url, { body }) => {
             const req = JSON.parse(body);
 
-            return { json: () => Promise.resolve({ request: { ...req, mid: 'X' } }) };
+            return { text: () => Promise.resolve(JSON.stringify({ request: { ...req, mid: 'X' } })), status: 200 };
         });
 
         app = new BotApp(bot, {

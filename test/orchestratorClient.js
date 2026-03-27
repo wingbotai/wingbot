@@ -61,7 +61,7 @@ describe('OrchestratorClient', () => {
                 variableValues: req.variables
             });
             // Return result in format like from orchestrator
-            return { json: () => ({ data: res.data, request: {} }) };
+            return { text: () => JSON.stringify({ data: res.data, request: {} }), status: 200 };
         });
     });
 
