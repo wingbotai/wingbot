@@ -21,7 +21,12 @@ const apiAuthorizer = require('./apiAuthorizer');
  */
 async function validate (bot, validationRequestBody, postBackTest = null, textTest = null) {
     try {
-        bot.buildWithSnapshot(validationRequestBody.blocks, Number.MAX_SAFE_INTEGER);
+        bot.buildWithSnapshot(
+            validationRequestBody.blocks,
+            Number.MAX_SAFE_INTEGER,
+            undefined,
+            validationRequestBody.deployedConfiguration
+        );
     } catch (e) {
         const error = `Bot build failed: ${e.message}`;
         // eslint-disable-next-line no-console
