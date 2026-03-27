@@ -83,4 +83,145 @@ describe('<buildRouterConfiguration>', () => {
 
     });
 
+    describe('deployedConfiguration', () => {
+
+        it('should merge deployedConfiguration into c variables', async () => {
+            const blocks = [
+                {
+                    isRoot: true,
+                    blockName: 'Root',
+                    staticBlockId: 'root-block',
+                    routes: [
+                        {
+                            id: 1,
+                            path: 'start',
+                            isEntryPoint: true,
+                            isFallback: false,
+                            resolvers: [
+                                {
+                                    type: 'botbuild.message',
+                                    params: {
+                                        text: [
+                                            'Hello {{c.brandEmail}}'
+                                        ],
+                                        replies: []
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
+
+            const rootBlock = blocks.find((b) => b.isRoot);
+            // @ts-ignore
+            const bot = new BuildRouter(rootBlock, new Plugins(), {
+                blocks,
+                configuration: {}
+            });
+
+            bot.buildWithSnapshot(blocks, undefined, undefined, {
+                brandEmail: 'test@example.com'
+            });
+
+            const tester = new Tester(bot);
+
+            await tester.postBack('start');
+
+            tester.any().contains('Hello test@example.com');
+        });
+
+        it('should merge deployedConfiguration with existing configuration', async () => {
+            const blocks = [
+                {
+                    isRoot: true,
+                    blockName: 'Root',
+                    staticBlockId: 'root-block',
+                    routes: [
+                        {
+                            id: 1,
+                            path: 'start',
+                            isEntryPoint: true,
+                            isFallback: false,
+                            resolvers: [
+                                {
+                                    type: 'botbuild.message',
+                                    params: {
+                                        text: [
+                                            '{{c.existing}} {{c.brandEmail}}'
+                                        ],
+                                        replies: []
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
+
+            const rootBlock = blocks.find((b) => b.isRoot);
+            // @ts-ignore
+            const bot = new BuildRouter(rootBlock, new Plugins(), {
+                blocks,
+                configuration: { existing: 'keep' }
+            });
+
+            bot.buildWithSnapshot(blocks, undefined, undefined, {
+                brandEmail: 'hello@brand.com'
+            });
+
+            const tester = new Tester(bot);
+
+            await tester.postBack('start');
+
+            tester.any().contains('keep hello@brand.com');
+        });
+
+        it('should work without deployedConfiguration', async () => {
+            const blocks = [
+                {
+                    isRoot: true,
+                    blockName: 'Root',
+                    staticBlockId: 'root-block',
+                    routes: [
+                        {
+                            id: 1,
+                            path: 'start',
+                            isEntryPoint: true,
+                            isFallback: false,
+                            resolvers: [
+                                {
+                                    type: 'botbuild.message',
+                                    params: {
+                                        text: [
+                                            'Hello world'
+                                        ],
+                                        replies: []
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
+
+            const rootBlock = blocks.find((b) => b.isRoot);
+            // @ts-ignore
+            const bot = new BuildRouter(rootBlock, new Plugins(), {
+                blocks,
+                configuration: { foo: 'bar' }
+            });
+
+            bot.buildWithSnapshot(blocks);
+
+            const tester = new Tester(bot);
+
+            await tester.postBack('start');
+
+            tester.any().contains('Hello world');
+            assert.equal(/** @type {any} */ (bot.configuration).foo, 'bar');
+        });
+
+    });
+
 });

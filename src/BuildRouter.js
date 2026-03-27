@@ -395,7 +395,12 @@ class BuildRouter extends Router {
                 if (!snapshot) {
                     snapshot = await this.loadBot();
                 }
-                this.buildWithSnapshot(snapshot.blocks);
+                this.buildWithSnapshot(
+                    snapshot.blocks,
+                    undefined,
+                    undefined,
+                    snapshot.deployedConfiguration
+                );
             } catch (e) {
                 if (this._configTs > 0 && !snapshot) {
                     // mute
@@ -437,7 +442,12 @@ class BuildRouter extends Router {
             // wait for running request
             await Promise.all(this._runningReqs);
 
-            this.buildWithSnapshot(snapshot.blocks, snapshot.timestamp, snapshot.lastmod);
+            this.buildWithSnapshot(
+                snapshot.blocks,
+                snapshot.timestamp,
+                snapshot.lastmod,
+                snapshot.deployedConfiguration
+            );
         } catch (e) {
             await configStorage.invalidateConfig();
             throw e;
@@ -528,8 +538,19 @@ class BuildRouter extends Router {
         blocks.forEach((b) => this._validateBlock(b, action));
     }
 
-    buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER, lastmod = '-') {
+    buildWithSnapshot (blocks, setConfigTimestamp = Number.MAX_SAFE_INTEGER, lastmod = '-', deployedConfiguration = null) {
         this._validateBlocks(blocks);
+
+        if (deployedConfiguration && typeof deployedConfiguration === 'object') {
+            if (this._configuration instanceof Promise) {
+                this._configuration = this._configuration
+                    .then((c) => Object.assign(c || /** @type {C} */ ({}), deployedConfiguration));
+            } else {
+                const cfg = this._configuration || /** @type {C} */ ({});
+                Object.assign(cfg, deployedConfiguration);
+                this._configuration = cfg;
+            }
+        }
 
         Object.assign(this._resolvedContext, {
             blocks,
