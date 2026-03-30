@@ -34,7 +34,7 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 /** @typedef {import('./transcript/transcriptFromHistory').Transcript} Transcript */
 /** @typedef {import('./analytics/consts').TrackingType} TrackingType */
 
-/** @typedef {import('./LLM').LLMConfiguration} LLMConfiguration */
+/** @typedef {import('./LLM').LLMCallPreset} LLMCallPreset */
 /** @typedef {import('./LLM').PreprocessedRule} PreprocessedRule */
 /** @typedef {import('./LLM').EvaluationRuleAction} EvaluationRuleAction */
 /** @typedef {import('./LLM').EvaluationResult} EvaluationResult */
@@ -42,6 +42,8 @@ const EXCEPTION_HOPCOUNT_THRESHOLD = 5;
 /** @typedef {import('./LLMSession').LLMFilterFn} LLMFilterFn */
 /** @typedef {import('./LLMSession').LLMFilter} LLMFilter */
 /** @typedef {import('./LLMSession').FilterScope} FilterScope */
+/** @typedef {import('./LLMSession').LLMMessageSrc} LLMMessageSrc */
+/** @typedef {import('./LLMSession').AsyncLLMMessage} AsyncLLMMessage */
 /** @typedef {import('./utils/stateData').IStateRequest} IStateRequest */
 
 /**
@@ -355,13 +357,34 @@ class Responder {
         return this;
     }
 
-    async llmSession (contextType = this.LLM_CTX_DEFAULT) {
+    /**
+     *
+     * @param {string} contextType
+     * @returns {AsyncLLMMessage}
+     */
+    async _getSystemMessagesForType (contextType) {
         const system = await this._getSystemContentForType(contextType);
+        return system.map((content) => ({ role: LLM.ROLE_SYSTEM, content }));
+    }
 
-        const chat = system.map((content) => ({ role: LLM.ROLE_SYSTEM, content }));
+    /**
+     *
+     * @param {string} contextType
+     * @returns {Promise<LLMSession>}
+     */
+    async llmSession (contextType = this.LLM_CTX_DEFAULT) {
+        const system = this._getSystemMessagesForType(contextType);
 
         const filters = this._filtersForContext(contextType);
-        return new LLMSession(this.llm, chat, this._llmSend.bind(this), filters);
+        return new LLMSession(this.llm, [system], this._llmSend.bind(this), filters);
+    }
+
+    /**
+     *
+     * @returns {LLMSession}
+     */
+    llmSessionEmpty () {
+        return new LLMSession(this.llm, [], this._llmSend.bind(this));
     }
 
     /**
@@ -372,7 +395,7 @@ class Responder {
      */
     async llmEvaluate (session, contextType = this.LLM_CTX_DEFAULT) {
         const rules = this._llmResultRules.get(contextType) || [];
-        const text = session.lastResponse();
+        const text = session.lastResponseSync();
 
         if (rules.length === 0 || !text) {
             return {
@@ -449,38 +472,35 @@ class Responder {
         return resolved;
     }
 
-    async llmSessionWithHistory (
+    /**
+     *
+     * @param {'default'|string} contextType
+     * @param {LLMCallPreset} callPreset
+     * @returns {LLMSession}
+     */
+    llmSessionWithHistory (
         contextType = this.LLM_CTX_DEFAULT,
-        transcriptLength = undefined,
-        transcriptFlag = undefined
+        callPreset = undefined
     ) {
         const {
             transcriptAnonymize,
-            transcriptFlag: transcriptFlagCfg,
-            transcriptLength: transcriptLengthCfg
-        } = this.llm.configuration;
-
-        const computedTranscriptLength = transcriptLength === undefined
-            ? transcriptLengthCfg
-            : transcriptLength;
-        const computedTranscriptFlag = transcriptFlag === undefined
-            ? transcriptFlagCfg : transcriptFlag;
-
-        const [systems, transcript] = await Promise.all([
-            this._getSystemContentForType(contextType),
-            this.getTranscript(
-                computedTranscriptLength,
-                computedTranscriptFlag
-            )
-        ]);
-
-        const chat = [
-            ...systems.map((content) => ({ role: LLM.ROLE_SYSTEM, content })),
-            ...LLM.anonymizeTranscript(transcript, transcriptAnonymize)
-        ];
+            transcriptFlag,
+            transcriptLength
+        } = this.llm.llmOptions(callPreset);
 
         const filters = this._filtersForContext(contextType);
-        return new LLMSession(this.llm, chat, this._llmSend.bind(this), filters);
+        return new LLMSession(this.llm, [
+            this._getSystemMessagesForType(contextType),
+            this._getTranscriptMessages(transcriptLength, transcriptFlag, transcriptAnonymize)
+        ], this._llmSend.bind(this), filters);
+    }
+
+    async _getTranscriptMessages (transcriptLength, transcriptFlag, transcriptAnonymize) {
+        const transcript = await this.getTranscript(
+            transcriptLength,
+            transcriptFlag
+        );
+        return LLM.anonymizeTranscript(transcript, transcriptAnonymize);
     }
 
     /**

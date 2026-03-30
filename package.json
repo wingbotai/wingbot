@@ -1,10 +1,11 @@
 {
   "name": "wingbot",
-  "version": "3.74.0",
+  "version": "3.74.0-alpha.1",
   "description": "Enterprise Messaging Bot Conversation Engine",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
+    "start": "node --trace-uncaught --stack-trace-limit=50 ./chat/www.js",
     "tsd:update": "jsdoc -t ./node_modules/tsd-jsdoc/dist/ -r ./src",
     "doc:gql": "graphql-markdown ./src/graphApi/schema.gql > doc/api/graphqlSchema.md",
     "doc": "npm run doc:gql && node ./bin/makeApiDoc.js && cpy ./CHANGELOG.md ./doc && gitbook install ./doc && gitbook build ./doc && rimraf -rf ./docs && rimraf --rf ./doc/CHANGELOG.md && move-cli ./doc/_book ./docs",
@@ -38,6 +39,7 @@
   "homepage": "https://github.com/wingbot.ai/wingbot#readme",
   "devDependencies": {
     "@types/mocha": "^10.0.10",
+    "@wingbotai/wingbot-ai-orchestrator": "^2.13.3",
     "cpy-cli": "^5.0.0",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -46,9 +48,12 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-mocha": "^10.2.0",
     "eslint-plugin-react": "^7.33.2",
+    "express": "^4.22.1",
     "graphql-markdown": "^7.0.0",
+    "js-yaml": "^4.1.1",
     "jsdoc-to-markdown": "^8.0.0",
     "mocha": "^10.2.0",
+    "mongodb-memory-server": "^11.0.1",
     "nyc": "^15.1.0",
     "rimraf": "^5.0.5",
     "sinon": "^17.0.1"

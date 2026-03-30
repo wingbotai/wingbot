@@ -66,6 +66,9 @@ const { fuzzy } = require('./src/fuzzy');
 const prepareFuzzyIndex = require('./src/fuzzy/prepareFuzzyIndex');
 const factoryFuzzySearch = require('./src/fuzzy/factoryFuzzySearch');
 const LLM = require('./src/LLM');
+const LLMSession = require('./src/LLMSession');
+const LLMTool = require('./src/LLMTool');
+const LLMType = require('./src/LLMType');
 
 module.exports = {
 
@@ -156,5 +159,8 @@ module.exports = {
     textBodyFromTranscript,
     transcriptFromHistory,
 
-    LLM
+    LLM,
+    LLMSession,
+    LLMTool,
+    LLMType
 };

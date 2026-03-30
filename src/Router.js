@@ -7,8 +7,13 @@ const { pathToRegexp } = require('path-to-regexp');
 const ReducerWrapper = require('./ReducerWrapper');
 const { makeAbsolute } = require('./utils');
 
-const Responder = require('./Responder'); // eslint-disable-line no-unused-vars
-const Request = require('./Request'); // eslint-disable-line no-unused-vars
+/** @typedef {import('./Responder')} Responder */
+
+/**
+ * @template {object} [S=object]
+ * @template {BaseConfiguration} [C=object]
+ * @typedef {import('./Request')<S, C>} Request
+ */
 
 function defaultPathContext () {
     return { globalIntentsMeta: {}, path: '/*' };

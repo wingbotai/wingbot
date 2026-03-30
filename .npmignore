@@ -30,3 +30,5 @@ documentation
 CPU.*.cpuprofile
 test/buildRouterPerf.test.js
 test/production-9.json
+
+chat

@@ -21,7 +21,7 @@ const LLMMockProvider = require('./LLMMockProvider');
 /** @typedef {import('./analytics/consts').TrackingCategory} TrackingCategory */
 /** @typedef {import('./analytics/consts').TrackingType} TrackingType */
 /** @typedef {import('./analytics/consts').ResponseFlag} ResponseFlag */
-/** @typedef {import('./LLM').LLMConfiguration} LLMConfiguration */
+/** @typedef {import('./LLM').LLMGlobalConfig} LLMGlobalConfig */
 
 /**
  * @typedef {object} AutoTypingConfig
@@ -113,7 +113,7 @@ const LLMMockProvider = require('./LLMMockProvider');
  * @prop {string} [apiUrl] - Url for calling orchestrator API
  * @prop {Function} [fetch] - Fetch function for calling orchestrator API
  * @prop {number} [sessionDuration] - Session duration for analytic purposes
- * @prop {LLMConfiguration} [llm] - LLM model configuration
+ * @prop {LLMGlobalConfig} [llm] - LLM model configuration
  * @prop {Preloader<R>} [preloader]
  */
 
@@ -405,7 +405,7 @@ class Processor extends EventEmitter {
             return { status: 304 };
         }
 
-        /** @type {LLMConfiguration} */
+        /** @type {LLMGlobalConfig} */
         const llmOptions = {
             provider: new LLMMockProvider(),
             ...this.options.llm
@@ -417,7 +417,7 @@ class Processor extends EventEmitter {
             });
         }
 
-        const llm = new LLM(llmOptions, Ai.ai);
+        const llm = new LLM(llmOptions, Ai.ai, this.options.log);
 
         const result = await this
             ._dispatch(message, pageId, messageSender, responderData, preloadPromise, llm);

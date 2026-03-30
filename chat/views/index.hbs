@@ -1,0 +1,39 @@
+{{#> layout }}
+<section class="hero is-fullheight">
+    <!-- Hero head: will stick at the top -->
+    <div class="hero-head has-cs-bg">
+        <div class="level menu is-mobile">
+            <div class="level-item">
+                <!-- LOGO -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero content: will be in the middle -->
+    <div class="hero-body">
+        <div id="webchat" class="chat"></div>
+        <link href="https://chat.wingbot.ai/styles/wingbotChat.css" rel='stylesheet' type='text/css'>
+
+        <div id="chat"></div>
+        <script>
+            window.wingbotChatCmds=window.wingbotChatCmds||[];window.wingbotChat=window.wingbotChat||function(){wingbotChatCmds.push(arguments)}
+
+            wingbotChat('init', {
+                api: '{{{apiUrl}}}',
+                websocket: '{{{wsUrl}}}',
+                pageId: '{{pageId}}',
+                fullscreen: true,
+                cdnEmoji: true
+            }, document.getElementById('chat'));
+        </script>
+        <script async src="https://chat.wingbot.ai/wingbotChat.js"></script>
+    </div>
+
+    <div class="hero-foot">
+        <div class="container">
+            <div class="section has-text-black has-text-centered p-2">
+            </div>
+        </div>
+    </div>
+</section>
+{{/layout}}

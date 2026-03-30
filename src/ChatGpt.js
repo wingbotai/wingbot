@@ -14,6 +14,8 @@ const LLM = require('./LLM');
 /** @typedef {import('./Responder').QuickReply} QuickReply */
 /** @typedef {import('./LLM').LLMMessage} LLMMessage */
 /** @typedef {import('./LLM').LLMProviderOptions} LLMProviderOptions */
+/** @typedef {import('./LLMSession').ToolFunction} ToolFunction */
+/** @typedef {import('./LLMSession').JsonSchemaProp} SimpleJsonSchema */
 
 /**
  * @typedef {object} Transcript
@@ -34,14 +36,25 @@ const LLM = require('./LLM');
 /** @typedef {'gpt-3.5-turbo'|'gpt-4'|'gpt-4-32k'|'gpt-3.5-turbo-16k'|string} ChatGPTModel */
 
 /**
+ * @typedef {object} ForcedFn
+ * @prop {'function'|string} type
+ * @prop {string} name
+ */
+
+/**
  * @typedef {object} DefaultRequestOptions
  * @prop {ChatGPTModel} [model]
- * @prop {'node'|'low'|'medium'|'high'} [reasoningEffort]
+ * @prop {'none'|'low'|'medium'|'high'} [reasoningEffort]
  * @prop {number} [presencePenalty=0.0]
  * @prop {number} [requestTokens]
  * @prop {number} [tokensLimit]
  * @prop {number} [temperature=1.0]
  * @prop {number} [transcriptLength=-5]
+ * @prop {boolean} [parallelToolCalls]
+ * @prop {'auto'|'required'|ForcedFn|string} [toolChoice]
+ * @prop {'none'|'low'|'medium'|'high'|string} [reasoningEffort]
+ * @prop {'low'|'medium'|'high'|string} [verbosity]
+ * @prop {'text'|SimpleJsonSchema} [responseFormat]
  */
 
 /**
@@ -59,6 +72,7 @@ const LLM = require('./LLM');
  * @typedef {object} Message
  * @prop {'system'|'user'|'assistant'|string} role
  * @prop {string} content
+ * @prop {GptToolCall[]} [tool_calls]
  */
 
 /**
@@ -66,7 +80,6 @@ const LLM = require('./LLM');
  * @prop {'stop'|'length'|'tool_calls'|'content_filter'|null} finish_reason
  * @prop {number} index
  * @prop {Message} message
- * @prop {GptToolCall[]} [tool_calls]
  */
 
 /**
@@ -188,7 +201,7 @@ class ChatGpt {
 
         this._defaultUser = defaultUser;
 
-        /** @type {Required<DefaultRequestOptions>} */
+        /** @type {DefaultRequestOptions} */
         this._options = {
             requestTokens: null,
             tokensLimit: null,
@@ -255,20 +268,23 @@ class ChatGpt {
     /**
      * @param {LLMMessage[]} prompt
      * @param {LLMProviderOptions} [options]
+     * @param {ToolFunction[]} [tools=[]]
      * @returns {Promise<LLMMessage>}
      */
-    async requestChat (prompt, options) {
-        const choice = await this._request(prompt, options);
+    async requestChat (prompt, options, tools = []) {
+        const choice = await this._request(prompt, options, tools);
 
-        const { finish_reason: finishReason, message, tool_calls: toolCalls = [] } = choice;
+        const { finish_reason: finishReason, message } = choice;
 
         return {
             finishReason,
-            toolCalls: toolCalls.map(({ id, function: { name, arguments: args } }) => ({
-                id,
-                name,
-                args
-            })),
+            toolCalls: (message.tool_calls || [])
+                .map(({ id, type, function: { name, arguments: args } }) => ({
+                    id,
+                    type,
+                    name,
+                    args
+                })),
             ...message
         };
     }
@@ -276,11 +292,11 @@ class ChatGpt {
     /**
      *
      * @param {LLMMessage[]} chat
-     * @param {RequestOptions} requestOptions
-     * @param {string} user
+     * @param {LLMProviderOptions} requestOptions
+     * @param {ToolFunction[]} [tools=[]]
      * @returns {Promise<ChatGPTChoice>}
      */
-    async _request (chat, requestOptions, user = null) {
+    async _request (chat, requestOptions, tools = []) {
         const {
             requestTokens,
             tokensLimit,
@@ -288,13 +304,40 @@ class ChatGpt {
             presencePenalty,
             temperature,
             reasoningEffort,
-            functions = []
+            functions = [],
+            toolChoice,
+            parallelToolCalls,
+            verbosity,
+            responseFormat
         } = {
             ...this._options,
             ...requestOptions
         };
 
-        let messages = chat;
+        let messages = chat.map((msg) => {
+            const { toolCallId, toolCalls, ...rest } = msg;
+            if (toolCalls) {
+                return {
+                    ...rest,
+                    tool_calls: toolCalls.map((tc) => ({
+                        id: tc.id,
+                        type: tc.type || 'function',
+                        function: {
+                            name: tc.name,
+                            arguments: tc.args
+                        }
+                    }))
+                };
+            }
+            if (toolCallId) {
+                return {
+                    tool_call_id: toolCallId,
+                    ...rest
+                };
+            }
+
+            return msg;
+        });
 
         let body;
         try {
@@ -304,7 +347,7 @@ class ChatGpt {
                     if (m.role === LLM.ROLE_USER) {
                         lastUserIndex = i;
                     }
-                    return (m.content ? 0 : m.content.length) + total;
+                    return (m.content ? m.content.length : 0) + total;
                 }, 0);
 
             if (tokensLimit !== null && totalTokens > tokensLimit) {
@@ -321,21 +364,65 @@ class ChatGpt {
                 });
             }
 
+            let rf;
+
+            if (typeof responseFormat === 'object' && responseFormat) {
+                const { name = 'output', ...schema } = responseFormat;
+                rf = {
+                    type: 'json_schema',
+                    json_schema: {
+                        name,
+                        schema
+                    }
+                };
+            } else if (typeof responseFormat === 'string') {
+                rf = { type: responseFormat };
+            }
+
+            let tc;
+
+            if (typeof toolChoice === 'string') {
+                tc = toolChoice;
+            } else if (typeof toolChoice === 'object' && toolChoice) {
+                tc = {
+                    type: toolChoice.type || 'function',
+                    function: {
+                        name: toolChoice.name
+                    }
+                };
+            }
+
             body = {
                 model,
                 frequency_penalty: 0,
                 presence_penalty: presencePenalty,
-                ...(requestTokens ? { max_completion_tokens: requestTokens } : {}),
+                ...(requestTokens ? {
+                    max_completion_tokens: requestTokens
+                } : {}),
                 ...(reasoningEffort ? {
                     reasoning: { effort: reasoningEffort }
                 } : {}),
+                ...(typeof parallelToolCalls === 'boolean' ? {
+                    parallel_tool_calls: parallelToolCalls
+                } : {}),
+                ...(rf ? {
+                    response_format: rf
+                } : {}),
+                ...(tc ? {
+                    tool_choice: tc
+                } : {}),
+                ...(verbosity ? {
+                    verbosity
+                } : {}),
                 temperature,
-                messages
+                messages,
+                tools: tools.map((tool) => ({
+                    type: 'function',
+                    function: tool
+                }))
+                // prompt_cache_key
+                // prompt_cache_retention in-memory" or "24h"
             };
-
-            if (user) {
-                Object.assign(body, { user });
-            }
 
             if (functions.length) {
                 Object.assign(body, { functions });
@@ -387,10 +474,9 @@ class ChatGpt {
      * @param {string} [system]
      * @param {Transcript[]} [transcript]
      * @param {RequestOptions} [requestOptions]
-     * @param {string|Request} [user]
      * @returns {Promise<ChatGPTChoice>}
      */
-    async request (content, system = null, transcript = [], requestOptions = {}, user = null) {
+    async request (content, system = null, transcript = [], requestOptions = {}) {
 
         /** @type {Message[]} */
         const messages = [
@@ -399,16 +485,7 @@ class ChatGpt {
             { role: 'user', content }
         ];
 
-        let useUser;
-        if (typeof user === 'string') {
-            useUser = user;
-        } else if (user) {
-            useUser = `${user.pageId}|${user.senderId}`;
-        } else if (this._defaultUser) {
-            useUser = this._defaultUser;
-        }
-
-        return this._request(messages, requestOptions, useUser);
+        return this._request(messages, requestOptions);
     }
 
     /**

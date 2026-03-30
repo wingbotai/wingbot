@@ -35,9 +35,36 @@ class LLMMockProvider {
      */
     // eslint-disable-next-line no-unused-vars
     async requestChat (prompt, options) {
+
         if (prompt.length === 0) {
             throw new Error('Empty prompt');
         }
+
+        if (prompt.some((p) => p?.content?.includes('THROW EXCEPTION'))) {
+            throw new Error('THROW EXCEPTION');
+        }
+
+        if (prompt.some((p) => p.toolCallId)) {
+            return {
+                role: LLM.ROLE_ASSISTANT,
+                content: 'got tool call id'
+            };
+        }
+
+        if (prompt.some((p) => p?.content?.includes('CALL MOCK TOOL'))) {
+            return {
+                role: LLM.ROLE_ASSISTANT,
+                toolCalls: [
+                    {
+                        id: `${Date.now()}${Math.floor(Math.random() * 10)}`,
+                        type: 'function',
+                        name: 'mock',
+                        args: JSON.stringify({ mock: true })
+                    }
+                ]
+            };
+        }
+
         // const stats = prompt.reduce((o, m) => Object.assign(o, {
         //    [m.role]: (o[m.role] || 0) + 1
         // }), { system: 0, assistant: 0, user: 0 });

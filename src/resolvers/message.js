@@ -455,8 +455,7 @@ function message (params, context = {}) {
             let discard;
 
             try {
-                session = await res.llmSessionWithHistory(params.llmContextType);
-
+                session = res.llmSessionWithHistory(params.llmContextType);
                 await session.systemPrompt(text)
                     .generate();
 
@@ -483,7 +482,7 @@ function message (params, context = {}) {
                 //    // no response?
                 // }
 
-                const messages = session.messagesToSend();
+                const messages = session.messagesToSendSync();
 
                 res.setFlag(LLM.GPT_FLAG);
 

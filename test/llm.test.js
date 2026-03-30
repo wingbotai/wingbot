@@ -10,6 +10,7 @@ const Tester = require('../src/Tester');
 const message = require('../src/resolvers/message');
 const contextMessage = require('../src/resolvers/contextMessage');
 const LLM = require('../src/LLM');
+const LLMSession = require('../src/LLMSession');
 
 describe('<LLM>', () => {
 
@@ -29,9 +30,9 @@ describe('<LLM>', () => {
         });
 
         bot.use(async (req, res) => {
-            const s = await res.llmSessionWithHistory();
+            const s = res.llmSessionWithHistory();
 
-            assert.deepStrictEqual(s.toArray(), [
+            assert.deepStrictEqual(await s.toArray(), [
                 {
                     content: 'start\n\nattach on side',
                     role: 'system'
@@ -248,7 +249,7 @@ describe('<LLM>', () => {
             + '\n'
             + 'Jaký typ produktu vás zaujal nejvíce? 😊';
 
-        const splitted = LLM.toMessages({
+        const splitted = LLMSession.toMessages({
             role: 'agent',
             content
         });
