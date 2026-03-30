@@ -43,6 +43,8 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
 
+    if: github.ref != 'refs/heads/master'
+
     strategy:
       matrix:
         node-version: [20.x]
@@ -51,7 +53,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Node.js ${{ matrix.node-version }} setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          registry-url: https://npm.pkg.github.com
+          scope: '@wingbotai'
+
       - name: Npm install
+        run: npm i
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.WINGBOT_PCKG_READ_PAT }}
+
+      - name: Npm install docs
         run: cd documentation && npm install --legacy-peer-deps && cd ..
 
       - name: Rewrite gatsby confing inside smoothdoc
@@ -63,9 +78,8 @@ jobs:
       - name: Build documentation website with gatsby
         run: cd documentation && npm run build
 
-  deploy-docs:
-    name: deploy docs
-    needs: build-docs
+  build-and-deploy-docs:
+    name: build and deploy docs
     runs-on: ubuntu-latest
 
     if: github.ref == 'refs/heads/master'
@@ -77,6 +91,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Node.js ${{ matrix.node-version }} setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          registry-url: https://npm.pkg.github.com
+          scope: '@wingbotai'
+
+      - name: Npm install
+        run: npm i
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.WINGBOT_PCKG_READ_PAT }}
+
+      - name: Npm install docs
+        run: cd documentation && npm install --legacy-peer-deps && cd ..
+
+      - name: Rewrite gatsby confing inside smoothdoc
+        run: cp documentation/smooth-doc-gatsby-config.js documentation/node_modules/smooth-doc/gatsby-config.js
+
+      - name: Generate mdx documentation files
+        run: node bin/makeApiDoc
+
+      - name: Build documentation website with gatsby
+        run: cd documentation && npm run build
 
       - name: Deploy documentation to github pages
         uses: JamesIves/github-pages-deploy-action@v4
