@@ -36,7 +36,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.WINGBOT_PCKG_READ_PAT }}
 
       - name: Test
-        run: npm run Test
+        run: npm run test
 
   build-docs:
     name: build docs
