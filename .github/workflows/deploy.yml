@@ -20,7 +20,7 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Node.js ${{ matrix.node-version }} setup
         uses: actions/setup-node@v4
@@ -43,11 +43,15 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
 
+    if: github.ref == 'refs/heads/master'
+
     strategy:
       matrix:
         node-version: [20.x]
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Npm install
         run: cd documentation && npm install --legacy-peer-deps && cd ..
@@ -60,6 +64,21 @@ jobs:
 
       - name: Build documentation website with gatsby
         run: cd documentation && npm run build
+
+  deploy-docs:
+    name: deploy docs
+    needs: build-docs
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/master'
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Deploy documentation to github pages
         uses: JamesIves/github-pages-deploy-action@v4
